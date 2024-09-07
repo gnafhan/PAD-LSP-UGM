@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #343a40;
+}
+
+p {
+    line-height: 1.6;
+}
+
+footer {
+    background-color: #343a40;
+    color: white;
+    padding: 10px 0;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: bold;
+}
