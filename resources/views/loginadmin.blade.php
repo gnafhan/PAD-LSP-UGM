@@ -45,7 +45,7 @@
                 <input type="checkbox" id="remember" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                 <label for="remember" class="ml-2 text-sm text-gray-700">Remember Me</label>
             </div>
-            <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Forgot Password?</a>
+            <a href="/forgetpw" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Forgot Password?</a>
         </div>
 
         <!-- Login Button -->
