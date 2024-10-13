@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
 
 Route::get('/', function () {
     return view('home');
@@ -38,3 +39,14 @@ Route::get('/resetpw', function () {
 Route::get('/forgetpw', function () {
     return view('forgetpw');
 });
+
+//testing login yak
+Route::get('/loginasesi', function () {
+    return view('loginasesi');
+})->name('login.form');
+
+Route::post('/loginasesi', [LoginController::class, 'login'])->name('login.post');
+
+Route::get('/home', function () {
+    return view('home');
+})->name('home');
