@@ -12,11 +12,11 @@ class LoginController extends Controller
     {
         // Validasi input
         $request->validate([
-            'username' => 'required',
+            'email' => 'required',
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->username)
+        $user = User::where('email', $request->email)
             ->where('password', $request->password)
             ->first();
 
@@ -25,7 +25,7 @@ class LoginController extends Controller
             Auth::login($user);
             return redirect('/home');
         } else {
-            return back()->withErrors(['msg' => 'Username atau password salah.']);
+            return back()->withErrors(['msg' => 'Email atau password salah.']);
         }
     }
 }
