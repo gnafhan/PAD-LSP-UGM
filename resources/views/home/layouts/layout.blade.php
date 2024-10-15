@@ -7,10 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    @include('partials.navbar')
+    @include('home.partials.navbar')
     <main>
         @yield('content')
     </main>
-    @include('partials.footer')
+    @include('home.partials.footer')
 </body>
 </html>

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 
 Route::get('/', function () {
-    return view('home');
+    return view('home/home');
 });
 Route::get('/masuk', function () {
     return view('masuk');
@@ -33,11 +33,11 @@ Route::get('/admin', function () {
 Route::get('/register', function () {
     return view('register');
 });
-Route::get('/resetpw', function () {
-    return view('resetpw');
+Route::get('/reset-password', function () {
+    return view('auth/password/reset-password');
 });
-Route::get('/forgetpw', function () {
-    return view('forgetpw');
+Route::get('/forget-password', function () {
+    return view('auth/password/forget-password');
 });
 
 //testing login yak
