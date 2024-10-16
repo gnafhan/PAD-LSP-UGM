@@ -25,8 +25,10 @@
         <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">Reset Password</h1>
 
         <!-- Form -->
-        <form action="/your-action-url" method="POST"> <!-- Ganti '/your-action-url' dengan URL yang sesuai -->
+        <form action="{{ route('password.update') }}" method="POST"> <!-- Ganti '/your-action-url' dengan URL yang sesuai -->
+            @csrf
             <!-- Input Token Field -->
+            {{-- <input type="hidden" name="token" value="{{ $token }}"> --}}
             <div class="mb-4">
                 <label for="input-token" class="block text-sm font-medium text-gray-700 mb-2">Token</label>
                 <input type="text" id="input-token" name="token" placeholder="Enter Token..."
@@ -43,14 +45,14 @@
             <!-- New Password Field -->
             <div class="mb-4">
                 <label for="new-password" class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-                <input type="password" id="new-password" name="new_password" placeholder="Enter New Password..."
+                <input type="password" id="new-password" name="password" placeholder="Enter New Password..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
             </div>
 
             <!-- Confirm Password Field -->
             <div class="mb-4">
                 <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-                <input type="password" id="confirm-password" name="confirm_password" placeholder="Enter Confirm Password..."
+                <input type="password" id="confirm-password" name="password_confirmation" placeholder="Enter Confirm Password..."
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
             </div>
 

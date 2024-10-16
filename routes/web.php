@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PasswordResetController;
 
 Route::get('/', function () {
     return view('home/home');
@@ -40,6 +41,7 @@ Route::get('/forget-password', function () {
     return view('auth/password/forget-password');
 });
 
+
 //testing login yak
 Route::get('/loginasesi', function () {
     return view('loginasesi');
@@ -48,5 +50,10 @@ Route::get('/loginasesi', function () {
 Route::post('/loginasesi', [LoginController::class, 'login'])->name('login.post');
 
 Route::get('/home', function () {
-    return view('home');
+    return view('home/home');
 })->name('home');
+//testing forget password
+Route::get('password/reset', [PasswordResetController::class, 'showResetForm'])->name('password.request');
+Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.update'); // buat isi token pake post

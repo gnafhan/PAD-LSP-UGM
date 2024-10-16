@@ -25,7 +25,8 @@
         <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">Forget Password</h1>
 
         <!-- Form -->
-        <form action="/your-action-url" method="POST"> <!-- Ganti '/your-action-url' dengan URL yang sesuai -->
+        <form action="{{ route('password.email') }}" method="POST"> <!-- Ganti '/your-action-url' dengan URL yang sesuai -->
+            @csrf
             <!-- Email Field -->
             <div class="mb-4">
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
@@ -36,7 +37,7 @@
             <!-- Submit Button -->
             <button type="submit"
                 class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md font-semibold transition transform hover:scale-105">
-                <i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;Forget Password
+                <i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;Send Link Reset Password
             </button>
         </form>
     </div>

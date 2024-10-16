@@ -17,14 +17,14 @@ class ResetPasswordMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($token)
     {
         $this->token = $token;
     }
 
     public function build()
     {
-        return $this->view('auth.reset-password') //tampilan gmail reset password
+        return $this->view('auth.password.email') //tampilan gmail reset password // tunggu belda
                     ->with(['token' => $this->token]);
     }
 
@@ -44,7 +44,7 @@ class ResetPasswordMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'auth.password.email',
         );
     }
 

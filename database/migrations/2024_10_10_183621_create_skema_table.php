@@ -12,11 +12,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('skema', function (Blueprint $table) {
-            $table->increments('id_skema');
-            $table->string('nomor_skema', 10);
+            $table->string('id_skema', 20)->primary();
+            $table->string('nomor_skema', 100);
             $table->string('nama_skema', 100);
-            $table->binary('dokumen_skema');
-            $table->string('persyaratan_skema', 100);
+            $table->binary('dokumen_skkni');
+            $table->longText('persyaratan_skema');
             $table->timestamps();
         });
     }
