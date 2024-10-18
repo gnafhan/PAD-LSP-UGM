@@ -28,19 +28,19 @@
             <h3 class="text-3xl font-semibold text-blue-500">SERTIFIKASI YANG TERSEDIA</h3>
             <div class="flex flex-wrap justify-center mt-8 gap-8">
                 <div class="border-2 border-blue-500 p-8 rounded-lg shadow-lg w-64">
-                    <img src="web-dev-icon.png" alt="Web Developer" class="w-16 mx-auto">
+                    <img src="{{ asset('images/webdev.png') }}" alt="Web Developer" class="w-16 mx-auto">
                     <h4 class="text-2xl font-semibold mt-4">Web Developer</h4>
                 </div>
                 <div class="border-2 border-blue-500 p-8 rounded-lg shadow-lg w-64">
-                    <img src="web-dev-icon.png" alt="Data Analyst" class="w-16 mx-auto">
+                    <img src="{{ asset('images/ros.png') }}" alt="Data Analyst" class="w-16 mx-auto">
                     <h4 class="text-2xl font-semibold mt-4">Data Analyst</h4>
                 </div>
                 <div class="border-2 border-blue-500 p-8 rounded-lg shadow-lg w-64">
-                    <img src="web-dev-icon.png" alt="Network Engineer" class="w-16 mx-auto">
+                    <img src="{{ asset('images/cysec.png') }}" alt="Network Engineer" class="w-16 mx-auto">
                     <h4 class="text-2xl font-semibold mt-4">Network Engineer</h4>
                 </div>
                 <div class="border-2 border-blue-500 p-8 rounded-lg shadow-lg w-64">
-                    <img src="web-dev-icon.png" alt="UI/UX Designer" class="w-16 mx-auto">
+                    <img src="{{ asset('images/ux.png') }}" alt="UI/UX Designer" class="w-16 mx-auto">
                     <h4 class="text-2xl font-semibold mt-4">UI/UX Designer</h4>
                 </div>
             </div>

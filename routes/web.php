@@ -40,6 +40,9 @@ Route::get('/reset-password', function () {
 Route::get('/forget-password', function () {
     return view('auth/password/forget-password');
 });
+Route::get('/panduan', function () {
+    return view('home/panduan');
+});
 
 
 //testing login yak
