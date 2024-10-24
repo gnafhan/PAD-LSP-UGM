@@ -2,7 +2,12 @@
 module.exports = {
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      fontfamily: {
+        ugm: ['"UGMFont', 'sans-serif'],
+        
+      }
+    },
   },
   plugins: [],
 }

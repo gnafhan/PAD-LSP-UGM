@@ -31,6 +31,7 @@ Route::get('/admin', function () {
     return view('loginadmin');
 });
 
+//home visitor
 Route::get('/register', function () {
     return view('register');
 });
@@ -43,7 +44,32 @@ Route::get('/forget-password', function () {
 Route::get('/panduan', function () {
     return view('home/panduan');
 });
+Route::get('/profile', function () {
+    return view('home/profile');
+});
 
+//home asesi
+Route::get('/home-asesi', function () {
+    return view('home-asesi/home-asesi');
+});
+Route::get('/jadwal-uji-kompetensi', function () {
+    return view('home-asesi/jadwal-uji-kompetensi');
+});
+Route::get('/data-pengajuan', function () {
+    return view('home-asesi/data-pengajuan');
+});
+Route::get('/profile-peserta', function () {
+    return view('home-asesi/profile-peserta');
+});
+Route::get('/konfirmasi', function () {
+    return view('home-asesi/konfirmasi');
+});
+Route::get('/dokumen-portofolio', function () {
+    return view('home-asesi/dokumen-portofolio');
+});
+Route::get('/asesmen-mandiri', function () {
+    return view('home-asesi/asesmen-mandiri');
+});
 
 //testing login yak
 Route::get('/loginasesi', function () {
@@ -55,6 +81,7 @@ Route::post('/loginasesi', [LoginController::class, 'login'])->name('login.post'
 Route::get('/home', function () {
     return view('home/home');
 })->name('home');
+
 //testing forget password
 Route::get('password/reset', [PasswordResetController::class, 'showResetForm'])->name('password.request');
 Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
