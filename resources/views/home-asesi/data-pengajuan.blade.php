@@ -29,7 +29,7 @@
         <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>
         <p class="text-sm text-gray-800 ml-2">Dokumen Portofolio</p>
       </div>
-      
+
       <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
       <div class="flex items-center">
         <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">5</div>

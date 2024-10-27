@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\AsesiController;
 
 Route::get('/', function () {
     return view('home/home');
@@ -87,3 +88,9 @@ Route::get('password/reset', [PasswordResetController::class, 'showResetForm'])-
 Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.update'); // buat isi token pake post
+
+//testing home-asesi
+Route::get('/home-asesi', [AsesiController::class, 'index'])->middleware('auth');
+Route::post('/data-pengajuan', [AsesiPengajuanController::class, 'storeDataPengajuan'])->name('data-pengajuan');
+Route::post('/profile-peserta', [AsesiPengajuanController::class, 'storeProfilePeserta'])->name('profile-peserta');
+Route::post('/dokumen-portofolio', [AsesiPengajuanController::class, 'storeDokumenPortofolio'])->name('dokumen-portofolio');
