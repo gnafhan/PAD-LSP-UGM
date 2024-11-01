@@ -16,13 +16,11 @@ return new class extends Migration
             $table->string('kode_tuk', 20);
             $table->string('nama_tuk', 60);
             $table->string('alamat', 255);
-            $table->string('id_penanggung_jawab', 20);
+            $table->string('id_penanggung_jawab', 20)->nullable();
             $table->string('no_lisensi_skkn', 200);
             $table->timestamps();
 
-            $table->foreign('id_penanggung_jawab')
-                    ->references('id_penanggung_jawab')
-                    ->on('penanggung_jawab');
+            $table->foreign('id_penanggung_jawab')->references('id_penanggung_jawab')->on('penanggung_jawab')->onDelete('no action');
         });
     }
 
