@@ -52,24 +52,55 @@ Route::get('/profile', function () {
 Route::get('/home-asesi', function () {
     return view('home-asesi/home-asesi');
 });
+
+Route::get('/assesi', function () {
+    return view('home-asesi/assesi');
+});
+
+// Bagian Pilih Aksi
+
+Route::get('/aksi', function () {
+    return view('home-asesi/pilih-aksi');
+});
+
+Route::get('/persetujuan', function () {
+    return view('home-asesi/persetujuan');
+});
+
+Route::get('/ak1', function () {
+    return view('home-asesi/FRAK-01/frak01');
+});
+
+Route::get('/ak3', function () {
+    return view('home-asesi/FRAK-03/frak3');
+});
+
+Route::get('/ia2', function () {
+    return view('home-asesi/FRIA-02/soal-praktek-upload-jawaban');
+});
+
 Route::get('/jadwal-uji-kompetensi', function () {
     return view('home-asesi/jadwal-uji-kompetensi');
 });
-Route::get('/data-pengajuan', function () {
-    return view('home-asesi/data-pengajuan');
+
+Route::get('/apl2', function () {
+    return view('home-asesi/APL-02/asesmen-mandiri');
 });
-Route::get('/profile-peserta', function () {
-    return view('home-asesi/profile-peserta');
+
+// Bagian FR.AK APL - 01
+Route::get('/apl1/b2', function () {
+    return view('home-asesi/APL-01/data-sertifikasi');
 });
-Route::get('/konfirmasi', function () {
-    return view('home-asesi/konfirmasi');
+Route::get('/apl1/b1', function () {
+    return view('home-asesi/APL-01/data-pribadi');
 });
-Route::get('/dokumen-portofolio', function () {
-    return view('home-asesi/dokumen-portofolio');
+Route::get('/apl1/b3', function () {
+    return view('home-asesi/APL-01/bukti-pemohon');
 });
-Route::get('/asesmen-mandiri', function () {
-    return view('home-asesi/asesmen-mandiri');
+Route::get('/apl1/b4', function () {
+    return view('home-asesi/APL-01/konfirmasi');
 });
+
 
 //testing login yak
 Route::get('/loginasesi', function () {
