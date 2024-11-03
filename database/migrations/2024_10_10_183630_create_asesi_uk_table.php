@@ -12,8 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('asesi_uk', function (Blueprint $table) {
-            $table->id();
+            $table->string('id_asesiUK', 20)->primary();
+            $table->string('id_asesi', 20);
+            $table->string('id_uk', 20);
+            $table->longText('kriteria_uk');
+            $table->boolean('jawaban_kriteria')->default(false);
+            $table->binary('file_bukti');
             $table->timestamps();
+
+            $table->foreign('id_asesi')->references('id_asesi')->on('asesi')->onDelete('cascade');
+            $table->foreign('id_uk')->references('id_uk')->on('uk')->onDelete('restrict');
         });
     }
 

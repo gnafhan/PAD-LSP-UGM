@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ujian_muk', function (Blueprint $table) {
-            $table->id();
+        Schema::create('muk', function (Blueprint $table) {
+            $table->string('id_muk', 20)->primary();
+            $table->binary('file_muk');
             $table->timestamps();
         });
     }
@@ -22,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ujian_muk');
+        Schema::dropIfExists('muk');
     }
 };
