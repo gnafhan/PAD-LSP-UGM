@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('muk', function (Blueprint $table) {
-            $table->id();
+        Schema::create('uk', function (Blueprint $table) {
+            $table->string('id_uk', 20)->primary();
+            $table->string('nama_uk', 100);
+            $table->string('id_bidang', 20)->nullable();
             $table->timestamps();
+
+            $table->foreign('id_bidang')->references('id_bidang')->on('uk_bidang')->onDelete('set null');
         });
+
     }
 
     /**
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('muk');
+        Schema::dropIfExists('uk');
     }
 };

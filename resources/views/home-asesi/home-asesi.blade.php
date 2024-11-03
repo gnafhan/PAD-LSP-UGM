@@ -6,16 +6,28 @@
 <div class="min-h-screen bg-gray-100 flex items-center justify-center">
   <div class="w-3/4 bg-white rounded-lg shadow-lg p-6">
 <<<<<<< HEAD
-    <h1 class="text-2xl font-semibold mb-4">Selamat Datang, Asesi</h1>
-
-    <p class="text-sm text-gray-700 mb-6">Anda telah berhasil masuk sebagai asesi.
-    <br>Berikut adalah informasi penting dan tautan yang dapat membantu Anda dalam proses sertifikasi.</p>
-
+<<<<<<< HEAD
 =======
     <h1 class="text-2xl font-semibold mb-4">Selamat Datang, Assesi!</h1> 
 
     <p class="text-sm text-gray-700 mb-6">Anda telah berhasil masuk sebagai asesi.</p>
     
+=======
+>>>>>>> frontend
+    <h1 class="text-2xl font-semibold mb-4">Selamat Datang, Asesi</h1>
+
+    <p class="text-sm text-gray-700 mb-6">Anda telah berhasil masuk sebagai asesi.
+    <br>Berikut adalah informasi penting dan tautan yang dapat membantu Anda dalam proses sertifikasi.</p>
+
+<<<<<<< HEAD
+=======
+    <h1 class="text-2xl font-semibold mb-4">Selamat Datang, Assesi!</h1> 
+
+    <p class="text-sm text-gray-700 mb-6">Anda telah berhasil masuk sebagai asesi.</p>
+    
+>>>>>>> frontend
+=======
+>>>>>>> backend
 >>>>>>> frontend
     <!-- Tabel Informasi Asesi -->
     <div class="mb-6">
@@ -35,9 +47,16 @@
           <tr>
             <td class="border border-gray-300 px-4 py-2">Email</td>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <td class="border border-gray-300 px-4 py-2">{{ $user->email }}</td>
 =======
             <td class="border border-gray-300 px-4 py-2">user@example.id</td> 
+>>>>>>> frontend
+=======
+            <td class="border border-gray-300 px-4 py-2">user@example.id</td> 
+=======
+            <td class="border border-gray-300 px-4 py-2">{{ $user->email }}</td>
+>>>>>>> backend
 >>>>>>> frontend
           </tr>
           <tr>
