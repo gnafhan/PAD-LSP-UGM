@@ -10,7 +10,7 @@
 
         <!-- Tombol Aksi -->
         <div class="flex flex-wrap gap-2">
-            <a href="/aksi" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
+            <a href="/assesi" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
             <div class="bg-green-500 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
                 FR.APL.02 ASESMEN MANDIRI
             </div>

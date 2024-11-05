@@ -6,13 +6,31 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\AsesiController;
 
 Route::get('/', function () {
-    return view('home/home');
-});
-Route::get('/masuk', function () {
-    return view('masuk');
+    return view('home/home'); 
 });
 
-// Opsi Login Pertama
+Route::get('/masuk', function () {
+    return view('visitor/masuk');
+});
+
+// VISITOR
+Route::get('/register', function () {
+    return view('visitor/register');
+});
+Route::get('/reset-password', function () {
+    return view('auth/password/reset-password');
+});
+Route::get('/forget-password', function () {
+    return view('auth/password/forget-password');
+});
+Route::get('/panduan', function () {
+    return view('visitor/panduan');
+});
+Route::get('/profile', function () {
+    return view('visitor/profile');
+});
+
+// VISITOR BAGIAN LOGIN USER
 Route::get('/loginasesi', function () {
     return view('loginasesi');
 });
@@ -32,24 +50,7 @@ Route::get('/admin', function () {
     return view('loginadmin');
 });
 
-//home visitor
-Route::get('/register', function () {
-    return view('register');
-});
-Route::get('/reset-password', function () {
-    return view('auth/password/reset-password');
-});
-Route::get('/forget-password', function () {
-    return view('auth/password/forget-password');
-});
-Route::get('/panduan', function () {
-    return view('home/panduan');
-});
-Route::get('/profile', function () {
-    return view('home/profile');
-});
-
-//home asesi
+// ASESI
 Route::get('/home-asesi', function () {
     return view('home-asesi/home-asesi');
 });
@@ -58,7 +59,7 @@ Route::get('/assesi', function () {
     return view('home-asesi/assesi');
 });
 
-// Bagian Pilih Aksi
+// BAGIAN PILIH AKSI 
 
 Route::get('/aksi', function () {
     return view('home-asesi/pilih-aksi');
@@ -88,7 +89,7 @@ Route::get('/apl2', function () {
     return view('home-asesi/APL-02/asesmen-mandiri');
 });
 
-// Bagian FR.AK APL - 01
+// Bagian Pilih Aksi FR.AK APL - 01
 Route::get('/apl1/b2', function () {
     return view('home-asesi/APL-01/data-sertifikasi');
 });
@@ -101,6 +102,48 @@ Route::get('/apl1/b3', function () {
 Route::get('/apl1/b4', function () {
     return view('home-asesi/APL-01/konfirmasi');
 });
+
+// Asesor
+Route::get('/home-asesor', function () {
+    return view('home-asesor/home-asesor');
+});
+Route::get('/asesor1', function () {
+    return view('home-asesor/asesor');
+});
+Route::get('/aksi2', function () {
+    return view('home-asesor/aktif');
+});
+Route::get('/aksi3', function () {
+    return view('home-asesor/tutup');
+});
+Route::get('/frak5', function () {
+    return view('home-asesor/FRAK-05/frak05');
+});
+
+
+// Admin
+Route::get('/home-admin', function () {
+    return view('home-admin/home');
+});
+Route::get('/admin2', function () {
+    return view('home-admin/event');
+});
+Route::get('/admin3', function () {
+    return view('home-admin/skema');
+});
+Route::get('/admin4', function () {
+    return view('home-admin/daftar-asesi');
+});
+Route::get('/admin5', function () {
+    return view('home-admin/daftar-asesor');
+});
+Route::get('/admin6', function () {
+    return view('home-admin/settings');
+});
+Route::get('/form', function () {
+    return view('home-admin/form-asesor');
+});
+
 
 
 //testing login yak
@@ -120,8 +163,8 @@ Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEma
 Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.update'); // buat isi token pake post
 
-//testing home-asesi
+// //testing home-asesi
 Route::get('/home-asesi', [AsesiController::class, 'index'])->middleware('auth');
-Route::post('/data-pengajuan', [AsesiPengajuanController::class, 'storeDataPengajuan'])->name('data-pengajuan');
-Route::post('/profile-peserta', [AsesiPengajuanController::class, 'storeProfilePeserta'])->name('profile-peserta');
-Route::post('/dokumen-portofolio', [AsesiPengajuanController::class, 'storeDokumenPortofolio'])->name('dokumen-portofolio');
+// Route::post('/data-pengajuan', [AsesiPengajuanController::class, 'storeDataPengajuan'])->name('data-pengajuan');
+// Route::post('/profile-peserta', [AsesiPengajuanController::class, 'storeProfilePeserta'])->name('profile-peserta');
+// Route::post('/dokumen-portofolio', [AsesiPengajuanController::class, 'storeDokumenPortofolio'])->name('dokumen-portofolio');

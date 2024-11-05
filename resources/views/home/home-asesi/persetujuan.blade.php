@@ -26,7 +26,7 @@
         </div>
         <div class="flex justify-end items-center border-t p-2">
             <button class="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600">Setuju</button>
-            <a href="/aksi" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Tutup</a>
+            <a href="/assesi" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Tutup</a>
         </div>
     </div>
 </div>

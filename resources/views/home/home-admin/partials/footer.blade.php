@@ -14,8 +14,6 @@
     <footer class="bg-blue-300 py-6">
     <div class="container mx-auto flex flex-col items-center text-center space-y-4">
         
-        
-
         <!-- Logo Section -->
         <div class="flex justify-center items-center space-x-4">
             <img src="{{ asset('images/logo.png') }}" alt="LSP UGM Logo" class="w-20 h-30"> <!-- Mengatur ukuran gambar lebih kecil -->
@@ -54,5 +52,6 @@
         </div>
     </div>
 </footer>
+
 </body>
 </html>
