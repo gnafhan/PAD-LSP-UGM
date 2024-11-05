@@ -5,46 +5,46 @@
 @section('content')
 
 <div class="min-h-screen bg-gray-100 flex items-center justify-center">
-<div class="w-3/4 bg-white rounded-lg shadow-lg p-6">
+    <div class="w-3/4 bg-white rounded-lg shadow-lg p-6">
 
-<div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2">
             <a href="/apl1/b2" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
             <div class="bg-green-500 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
             FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI
             </div>
-    </div>
+        </div>
     
-    <div class="flex flex-wrap gap-3 mt-5">
+        <div class="flex flex-wrap gap-3 mt-5">
         <h2 class="text-lg font-semibold mb-4">FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI </h2>
-    </div>
+        </div>
 
     <!-- Progress Bar -->
     <div class="flex justify-between items-center mb-8">
+        
     <!-- Update breadcrumb di sini -->
-    <div class="flex items-center">
-        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">1</div>
-        <p class="text-sm text-gray-800 ml-2">Rincian Data Pemohon Sertifikasi</p>
-    </div>
+        <div class="flex items-center">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">1</div>
+            <p class="text-sm text-gray-800 ml-2">Rincian Data Pemohon Sertifikasi</p>
+        </div>
 
-    <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
-    <div class="flex items-center">
-        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">2</div>
-        <p class="text-sm text-gray-800 ml-2">Data Sertifikasi</p>
-    </div>
+        <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
+        <div class="flex items-center">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">2</div>
+            <p class="text-sm text-gray-800 ml-2">Data Sertifikasi</p>
+        </div>
 
-    <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
-    <div class="flex items-center">
-        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">3</div>
-        <p class="text-sm text-gray-800 ml-2">Bukti Kelengkapan Pemohon</p>
-    </div>
+        <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
+        <div class="flex items-center">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">3</div>
+            <p class="text-sm text-gray-800 ml-2">Bukti Kelengkapan Pemohon</p>
+        </div>
 
-    <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
-    <div class="flex items-center">
-        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>
-        <p class="text-sm text-gray-800 ml-2">Konfirmasi Data Asesi</p>
+        <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
+        <div class="flex items-center">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>
+            <p class="text-sm text-gray-800 ml-2">Konfirmasi Data Asesi</p>
+        </div>
     </div>
-
-</div>
 
     <!-- Judul Form -->
     <div class="border border-gray-300 rounded-lg p-4">
