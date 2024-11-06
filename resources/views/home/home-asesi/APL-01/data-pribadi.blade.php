@@ -1,4 +1,4 @@
-@extends('home-asesi.layouts.layout-asesi')
+@extends('home.home-asesi.layouts.layout-asesi')
 
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
@@ -13,7 +13,7 @@
             FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI
             </div>
         </div>
-        
+
         <div class="flex flex-wrap gap-3 mt-5">
             <h2 class="text-lg font-semibold mb-4">FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI </h2>
         </div>
@@ -47,7 +47,7 @@
     </div>
 
         <!-- Form Card untuk Profil Peserta -->
-        
+
         <div class="border border-gray-300 rounded-lg p-4">
         <h2 class="text-lg font-semibold mb-4">Bagian 1 : Rincian Data Pemohon Sertifikasi</h2>
         <p class="text-sm mb-6">Pada bagian ini, cantumkan data pribadi, data pendidikan formal serta data pekerjaan anda pada saat ini.</p>
@@ -97,7 +97,7 @@
             <label for="jadwal" class="block text-sm font-medium text-gray-700">Pendidikan Terakhir</label>
             <input type="text" id="no-telepon" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="">
         </div>
-        
+
         <!-- Button Kembali dan Selanjutnya -->
         <div class="flex justify-end">
         <a href="/apl1/b2" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>

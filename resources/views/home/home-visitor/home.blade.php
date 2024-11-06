@@ -1,4 +1,4 @@
-@extends('visitor.layouts.layout')
+@extends('home.home-visitor.layouts.layout')
 
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
@@ -28,7 +28,7 @@
             <h3 class="text-3xl font-semibold text-blue-500">SERTIFIKASI YANG TERSEDIA</h3>
             <div class="flex flex-wrap justify-center mt-8 gap-8">
                 <div class="border-2 border-blue-500 p-8 rounded-lg shadow-lg w-64">
-                    
+
                 <img src="{{ asset('images/webdev.png') }}" alt="Web Developer" class="w-16 mx-auto">
                     <h4 class="text-2xl font-semibold mt-4">Web Developer</h4>
                 </div>

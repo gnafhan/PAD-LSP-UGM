@@ -1,4 +1,4 @@
-@extends('home-asesi.layouts.layout-asesi')
+@extends('home.home-asesi.layouts.layout-asesi')
 
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
@@ -13,7 +13,7 @@
             </div>
             <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm md:text-base hover:bg-blue-700">SAVE</button>
         </div>
-    
+
     <div class="flex flex-wrap gap-3 mt-5">
         <h2 class="text-lg font-semibold mb-4">FR.AK-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI </h2>
     </div>

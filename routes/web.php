@@ -1,21 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\AsesiController;
 
 Route::get('/', function () {
-    return view('home/home'); 
+    return view('home/home');
 });
 
 Route::get('/masuk', function () {
-    return view('visitor/masuk');
+    return view('home/home-visitor/masuk');
 });
 
 // VISITOR
 Route::get('/register', function () {
-    return view('visitor/register');
+    return view('home/home-visitor/register');
 });
 Route::get('/reset-password', function () {
     return view('auth/password/reset-password');
@@ -24,137 +24,140 @@ Route::get('/forget-password', function () {
     return view('auth/password/forget-password');
 });
 Route::get('/panduan', function () {
-    return view('visitor/panduan');
+    return view('home/home-visitor/panduan');
 });
 Route::get('/profile', function () {
-    return view('visitor/profile');
+    return view('home/home-visitor/profile');
 });
 
 // VISITOR BAGIAN LOGIN USER
-Route::get('/loginasesi', function () {
-    return view('loginasesi');
-});
-Route::get('/loginasesor', function () {
-    return view('loginasesor');
-});
-Route::get('/loginadmin', function () {
-    return view('loginadmin');
-});
+Route::get('/login', function () {
+    return view('home/home-visitor/login');
+})->name('login');
+// Route::get('/loginasesor', function () {
+//     return view('home/home-visitor/loginasesor');
+// });
+// Route::get('/loginadmin', function () {
+//     return view('home/home-visitor/loginadmin');
+// });
 
 // Opsi login kedua
 // asesi tetep make opsi pertama
 Route::get('/asesor', function () {
-    return view('loginasesor');
+    return view('home/home-visitor/loginasesor');
 });
 Route::get('/admin', function () {
-    return view('loginadmin');
+    return view('home/home-visitor/loginadmin');
 });
 
 // ASESI
 Route::get('/home-asesi', function () {
-    return view('home-asesi/home-asesi');
+    return view('home/home-asesi/home-asesi');
 });
 
 Route::get('/assesi', function () {
-    return view('home-asesi/assesi');
+    return view('home/home-asesi/assesi'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
 });
 
-// BAGIAN PILIH AKSI 
+// BAGIAN PILIH AKSI
 
 Route::get('/aksi', function () {
-    return view('home-asesi/pilih-aksi');
+    return view('home/home-asesi/pilih-aksi');
 });
 
 Route::get('/persetujuan', function () {
-    return view('home-asesi/persetujuan');
+    return view('home/home-asesi/persetujuan');
 });
 
 Route::get('/ak1', function () {
-    return view('home-asesi/FRAK-01/frak01');
+    return view('home/home-asesi/FRAK-01/frak01');
 });
 
 Route::get('/ak3', function () {
-    return view('home-asesi/FRAK-03/frak3');
+    return view('home/home-asesi/FRAK-03/frak3');
 });
 
 Route::get('/ia2', function () {
-    return view('home-asesi/FRIA-02/soal-praktek-upload-jawaban');
+    return view('home/home-asesi/FRIA-02/soal-praktek-upload-jawaban');
 });
 
 Route::get('/jadwal-uji-kompetensi', function () {
-    return view('home-asesi/jadwal-uji-kompetensi');
+    return view('home/home-asesi/APL-02/jadwal-uji-kompetensi');
 });
 
 Route::get('/apl2', function () {
-    return view('home-asesi/APL-02/asesmen-mandiri');
+    return view('home/home-asesi/APL-02/asesmen-mandiri');
 });
 
 // Bagian Pilih Aksi FR.AK APL - 01
-Route::get('/apl1/b2', function () {
-    return view('home-asesi/APL-01/data-sertifikasi');
-});
 Route::get('/apl1/b1', function () {
-    return view('home-asesi/APL-01/data-pribadi');
+    return view('home/home-asesi/APL-01/data-pribadi');
+});
+Route::get('/apl1/b2', function () {
+    return view('home/home-asesi/APL-01/data-sertifikasi');
 });
 Route::get('/apl1/b3', function () {
-    return view('home-asesi/APL-01/bukti-pemohon');
+    return view('home/home-asesi/APL-01/bukti-pemohon');
 });
 Route::get('/apl1/b4', function () {
-    return view('home-asesi/APL-01/konfirmasi');
+    return view('home/home-asesi/APL-01/konfirmasi');
 });
 
 // Asesor
 Route::get('/home-asesor', function () {
-    return view('home-asesor/home-asesor');
-});
+    return view('home/home-asesor/home-asesor');
+})->name('home-asesor');
 Route::get('/asesor1', function () {
-    return view('home-asesor/asesor');
+    return view('home/home-asesor/asesor');
 });
 Route::get('/aksi2', function () {
-    return view('home-asesor/aktif');
+    return view('home/home-asesor/aktif');
 });
 Route::get('/aksi3', function () {
-    return view('home-asesor/tutup');
+    return view('home/home-asesor/tutup');
 });
 Route::get('/frak5', function () {
-    return view('home-asesor/FRAK-05/frak05');
+    return view('home/home-asesor/FRAK-05/frak05');
 });
 
 
 // Admin
 Route::get('/home-admin', function () {
-    return view('home-admin/home');
-});
+    return view('home/home-admin/home');
+})->name('home-admin');
 Route::get('/admin2', function () {
-    return view('home-admin/event');
+    return view('home/home-admin/event');
 });
 Route::get('/admin3', function () {
-    return view('home-admin/skema');
+    return view('home/home-admin/skema');
 });
 Route::get('/admin4', function () {
-    return view('home-admin/daftar-asesi');
+    return view('home/home-admin/daftar-asesi');
 });
 Route::get('/admin5', function () {
-    return view('home-admin/daftar-asesor');
+    return view('home/home-admin/daftar-asesor');
 });
 Route::get('/admin6', function () {
-    return view('home-admin/settings');
+    return view('home/home-admin/settings');
 });
 Route::get('/form', function () {
-    return view('home-admin/form-asesor');
+    return view('home/home-admin/form-asesor');
 });
 
 
+Route::get('/register', function () {
+    return view('home/home-visitor/register');
+})->name('register.form');
 
-//testing login yak
-Route::get('/loginasesi', function () {
-    return view('loginasesi');
-})->name('login.form');
+Route::post('/register', [LoginRegisterController::class, 'store'])->name('register.store');
+Route::post('/login', [LoginRegisterController::class, 'authenticate'])->name('login.post');
 
-Route::post('/loginasesi', [LoginController::class, 'login'])->name('login.post');
+Route::get('/login', function () {
+    return view('home/home-visitor/login');
+})->name('login');
 
 Route::get('/home', function () {
-    return view('home/home');
+    return view('home/home-visitor/home');
 })->name('home');
 
 //testing forget password
@@ -165,6 +168,3 @@ Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])
 
 // //testing home-asesi
 Route::get('/home-asesi', [AsesiController::class, 'index'])->middleware('auth');
-// Route::post('/data-pengajuan', [AsesiPengajuanController::class, 'storeDataPengajuan'])->name('data-pengajuan');
-// Route::post('/profile-peserta', [AsesiPengajuanController::class, 'storeProfilePeserta'])->name('profile-peserta');
-// Route::post('/dokumen-portofolio', [AsesiPengajuanController::class, 'storeDokumenPortofolio'])->name('dokumen-portofolio');

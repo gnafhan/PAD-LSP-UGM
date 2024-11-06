@@ -15,11 +15,10 @@ class User extends Authenticatable
         'email',
         'password',
         'no_hp',
-        'id_asesi',
-        'id_asesor',
+        'level',
     ];
 
     protected $primaryKey = 'id_user';
-    public $incrementing = false;
+    public $incrementing = true;
     protected $keyType = 'string';
 }

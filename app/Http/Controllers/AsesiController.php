@@ -11,10 +11,9 @@ class AsesiController extends Controller
 {
     public function index()
     {
-
         $user = Auth::user();
 
-        return view('home-asesi.home-asesi', compact('user'));
+        return view('home.home-asesi.home-asesi', compact('user'));
     }
 
     // Method untuk menyimpan data dari view data-pengajuan

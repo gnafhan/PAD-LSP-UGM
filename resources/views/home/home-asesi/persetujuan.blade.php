@@ -1,4 +1,4 @@
-@extends('home-asesi.layouts.layout-asesi')
+@extends('home.home-asesi.layouts.layout-asesi')
 
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 

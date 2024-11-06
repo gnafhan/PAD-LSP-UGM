@@ -1,4 +1,4 @@
-@extends('home-admin.layouts.layout')
+@extends('home.home-admin.layouts.layout')
 
 @section('title', 'Event Management - Lembaga Sertifikasi Profesi UGM')
 

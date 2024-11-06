@@ -1,4 +1,4 @@
-@extends('home-asesi.layouts.layout-asesi')
+@extends('home.home-asesi.layouts.layout-asesi')
 
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
@@ -13,7 +13,7 @@
             FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI
             </div>
     </div>
-    
+
     <div class="flex flex-wrap gap-3 mt-5">
         <h2 class="text-lg font-semibold mb-4">FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI </h2>
     </div>
@@ -112,7 +112,7 @@
             </table>
     </div>
 
-    
+
     <!-- Button Kembali dan Selanjutnya -->
     <div class="flex justify-end">
     <a href="/apl1/b3" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>

@@ -1,4 +1,4 @@
-@extends('home-asesor.layouts.layout')
+@extends('home.home-asesor.layouts.layout')
 
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
@@ -12,12 +12,12 @@
                 </div>
                 <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm md:text-base hover:bg-blue-700">SAVE</button>
             </div>
-    
+
             <div class="flex flex-wrap gap-3 mt-5">
                 <h2 class="text-lg font-semibold mb-4">FR.AK-05 LAPORAN ASESSMEN</h2>
             </div>
         <!-- Table structure -->
-        
+
             <table class="w-full border-collapse border border-gray-300 text-sm">
                 <tr>
                     <td class="border border-gray-300 p-2 font-semibold" colspan="2">Skema Sertifikasi KKNI/Okupasi/Klaster</td>
@@ -60,7 +60,7 @@
                     <td class="border border-gray-300 p-2 font-semibold">Judul Unit</td>
                     <td class="border border-gray-300 p-2">Unit</td>
                 </tr>
-                
+
                 <!-- Additional rows as needed -->
             </table>
 

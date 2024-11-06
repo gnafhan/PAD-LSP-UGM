@@ -1,4 +1,4 @@
-@extends('home-admin.layouts.layout')
+@extends('home.home-admin.layouts.layout')
 
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
@@ -18,7 +18,7 @@
 
     <form id="asesor-form" onsubmit="return saveAsesor(event)" class="bg-white p-6 rounded-md shadow-md">
       <input type="hidden" id="asesor-id">
-      
+
       <div class="grid grid-cols-2 gap-4">
         <!-- Kode Registrasi -->
         <div class="mb-4">
