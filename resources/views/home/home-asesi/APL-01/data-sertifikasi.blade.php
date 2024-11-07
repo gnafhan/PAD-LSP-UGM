@@ -63,7 +63,6 @@
 
             <div class="mb-4">
                 <label for="skemaDropdown" class="block text-sm font-medium text-gray-700">Judul Skema Sertifikasi</label>
-                {{-- <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="Frontend Developer" readonly> --}}
                 <select id="skemaDropdown" name="skemaDropdown" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     <option value="">Pilih Skema</option>
                     @foreach($skemaList as $skema)
@@ -103,17 +102,16 @@
                 <tbody id="ukTableBody">
                 </tbody>
             </table>
-    </div>
+        </div>
 
-
-    <!-- Button Kembali dan Selanjutnya -->
-    <div class="flex justify-end">
-    <a href="{{ route('bukti') }}" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>
-    </div>
+        <!-- Button Kembali dan Selanjutnya -->
+        <div class="flex justify-end">
+            <a href="{{ route('bukti') }}" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>
+        </div>
     </div>
 </div>
 </div>
-@endsection
+
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -131,10 +129,11 @@
             var namaSkema = $(this).val();
             console.log("Nama Skema:", namaSkema);
 
-            // AJAX untuk mendapatkan nomor skema
+            // AJAX untuk mendapatkan nomor skema dan tujuan asesmen berdasarkan nama skema
             $.get('/get-nomor-skema', { nama_skema: namaSkema }, function(response) {
                 console.log(response);
-                $('#nomorSkemaInput').val(response.nomor_skema ? response.nomor_skema : '');
+                $('#nomorSkemaInput').val(response.nomor_skema || '');
+                $('#tujuan_asesmen').val(response.tujuan_asesmen || 'sertifikasi');
             });
 
             // AJAX untuk mendapatkan daftar UK berdasarkan skema
@@ -151,42 +150,15 @@
                             <tr>
                                 <td class="border border-gray-300 p-2 text-center">${index + 1}</td>
                                 <td class="border border-gray-300 p-2">${uk.id_uk}</td>
-                                <td class="border border-gray-300 p-2">${uk.nama_uk}</td>
+                                <td class="border border-gray-300 p-2">${uk.judul_unit}</td>
                                 <td class="border border-gray-300 p-2">${uk.jenis_standar}</td>
                             </tr>
                         `);
                     });
-                } else {
-                    $('#ukTableBody').append('<tr><td colspan="4" class="border border-gray-300 p-2 text-center">Tidak ada data UK</td></tr>');
                 }
             });
         });
     });
-    // Fungsi AJAX untuk menyimpan data sertifikasi
-    function saveDataSertifikasi() {
-        const dataSertifikasi = {
-            _token: '{{ csrf_token() }}',
-            skema_sertifikasi: $('#skema_sertifikasi').val(),
-            skemaDropdown: $('#skemaDropdown').val(),
-            nomorSkemaInput: $('#nomorSkemaInput').val(),
-            tujuan_asesmen: $('#tujuan_asesmen').val(),
-        };
-
-        $.ajax({
-            url: '/save-data-sertifikasi',
-            type: 'POST',
-            data: dataSertifikasi,
-            success: function(response) {
-                console.log('Data sertifikasi tersimpan sementara:', response);
-            },
-            error: function(xhr, status, error) {
-                console.error('Error menyimpan data sertifikasi:', error);
-            }
-        });
-    }
-    $('#btn-selanjutnya').on('click', function(event) {
-        event.preventDefault();
-        saveDataSertifikasi();
 </script>
-
+@endsection
 @endsection
