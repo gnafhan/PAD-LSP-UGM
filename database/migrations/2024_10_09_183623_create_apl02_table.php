@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('apl02', function (Blueprint $table) {
             $table->string('id_apl02', 20)->primary();
-            // $table->string('id_skema', 20);
             $table->string('id_uk', 20);
             $table->timestamps();
 
+            // $table->string('id_skema', 20);
             // $table->foreign('id_skema')->references('id_skema')->on('skema')->onDelete('restrict');
             $table->foreign('id_uk')->references('id_uk')->on('uk')->onDelete('restrict');
         });

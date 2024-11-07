@@ -10,28 +10,52 @@ class AsesiPengajuan extends Model
     use HasFactory;
 
     protected $table = 'asesi_pengajuan';
+    protected $primaryKey = 'id_pengajuan';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
-        'id_asesi',
+        'id_pengajuan',
+        'id_user',
         'id_skema',
-        'nama_skema',
-        'id_ujian',
-        'tgl_ujian',
+        'nama_user',
         'nik',
-        'nama_asesi',
-        'jenis_kelamin',
-        'tempat_tanggal_lahir',
-        'alamat_sesuai_ktp',
-        'kode_pos',
-        'email',
         'nim',
+        'kota_domisili',
+        'tempat_tanggal_lahir',
+        'jenis_kelamin',
+        'kebangsaan',
+        'alamat_rumah',
         'no_telp',
-        'kewarganegaraan',
-        'dokumen',
+        'pendidikan_terakhir',
+        'skema_sertifikasi',
+        'nama_skema',
+        'nomor_skema',
+        'tujuan_asesmen',
         'sumber_anggaran',
+        'email',
+        'file_persyaratan_dasar_pemohon',
+        'file_administratif',
+        'ttd_pemohon',
+        'status_rekomendasi'
     ];
 
     protected $casts = [
-        'dokumen' => 'array',
+        'file_persyaratan_dasar_pemohon' => 'array',
+        'file_administratif' => 'array',
+        'ttd_pemohon' => 'string',
     ];
+
+    public $timestamps = true;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $lastId = self::max('id_pengajuan');
+            $number = $lastId ? intval(substr($lastId, 9)) + 1 : 1;
+            $model->id_pengajuan = 'PENGAJUAN' . str_pad($number, 6, '0', STR_PAD_LEFT);
+        });
+    }
 }

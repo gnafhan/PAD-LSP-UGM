@@ -11,14 +11,32 @@ class UKSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
-        foreach (range(1, 10) as $index) {
-            UK::create([
-                'id_uk' => 'UK' . str_pad($index, 3, '0', STR_PAD_LEFT),
-                'nama_uk' => fake()->sentence(2),
-                'id_bidang' => 'BID' . str_pad(fake()->numberBetween(1, 5), 3, '0', STR_PAD_LEFT),
-            ]);
+        $data = [
+            [
+                'kode_uk' => 'J.620100.009.01',
+                'nama_uk' => 'Menggunakan spesifikasi program',
+                'id_bidang' => null,
+                'jenis_standar' => 'SKKNI',
+            ],
+            [
+                'kode_uk' => 'J.620100.016.01',
+                'nama_uk' => 'Menulis Kode dengan Prinsip sesuai Guidelines dan Best Practices',
+                'id_bidang' => null,
+                'jenis_standar' => 'SKKNI',
+            ],
+            [
+                'kode_uk' => 'J.620100.017.02',
+                'nama_uk' => 'Mengimplementasikan pemrograman terstruktur',
+                'id_bidang' => null,
+                'jenis_standar' => 'SKKNI',
+            ],
+
+        ];
+
+        foreach ($data as $item) {
+            UK::create($item);
         }
     }
 }

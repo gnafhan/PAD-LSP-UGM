@@ -25,8 +25,10 @@ return new class extends Migration
             $table->string('email', 200);
             $table->string('nim', 20);
             $table->string('id_user', 20);
-            $table->binary('file_sertifikat')->nullable();
+            $table->longText('file_sertifikat')->nullable();
             $table->string('id_skema', 20);
+            $table->json('file_kelengkapan_pemohon');
+            $table->longText('ttd_pemohon');
             $table->timestamps();
 
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');

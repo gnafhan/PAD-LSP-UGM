@@ -15,7 +15,8 @@ return new class extends Migration
             $table->string('id_skema', 20)->primary();
             $table->string('nomor_skema', 100);
             $table->string('nama_skema', 100);
-            $table->binary('dokumen_skkni');
+            $table->string('dokumen_skkni', 100);
+            $table->json('daftar_id_uk');
             $table->longText('persyaratan_skema');
             $table->timestamps();
         });

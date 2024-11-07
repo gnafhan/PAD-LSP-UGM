@@ -54,7 +54,7 @@
         <div class="border border-gray-300 rounded-lg p-4 mb-6">
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700">Skema Sertifikasi</label>
-                <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                <select id="skema_sertifikasi" name="skema_sertifikasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     <option value="kkni">KKNI</option>
                     <option value="okupasi">Okupasi</option>
                     <option value="klaster">Klaster</option>
@@ -62,18 +62,24 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Judul Skema Sertifikasi</label>
-                <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="Frontend Developer" readonly>
+                <label for="skemaDropdown" class="block text-sm font-medium text-gray-700">Judul Skema Sertifikasi</label>
+                {{-- <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="Frontend Developer" readonly> --}}
+                <select id="skemaDropdown" name="skemaDropdown" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <option value="">Pilih Skema</option>
+                    @foreach($skemaList as $skema)
+                        <option value="{{ $skema->nama_skema }}">{{ $skema->nama_skema }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Nomor Skema Sertifikasi</label>
-                <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="SKM/0720/00020/2/2024/24" readonly>
+                <label for="nomorSkemaInput" class="block text-sm font-medium text-gray-700">Nomor Skema Sertifikasi</label>
+                <input type="text" id="nomorSkemaInput" name="nomorSkemaInput" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="" readonly>
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Tujuan Assesmen</label>
-                <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                <label for="tujuan_asesmen" class="block text-sm font-medium text-gray-700">Tujuan Assesmen</label>
+                <select id="tujuan_asesmen" name="tujuan_asesmen" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     <option value="sertifikasi">Sertifikasi</option>
                     <option value="pkt">Pengakuan Kompetensi Terkini '(PKT)'</option>
                     <option value="rpl">Rekognisi Pembelajaran Lampau '(RPL)'</option>
@@ -91,23 +97,10 @@
                         <th class="border border-gray-300 p-2">No.</th>
                         <th class="border border-gray-300 p-2">Kode Unit</th>
                         <th class="border border-gray-300 p-2">Judul Unit</th>
-                        <th class="border border-gray-300 p-2">Jenis Standar '(Standar Khusus/Standar Internasional/SKKNI)'</th>
+                        <th class="border border-gray-300 p-2">Jenis Standar (Standar Khusus/Standar Internasional/SKKNI)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td class="border border-gray-300 p-2 text-center">1</td>
-                        <td class="border border-gray-300 p-2">G.890000.005.02</td>
-                        <td class="border border-gray-300 p-2">Mengimplementasikan User Interface</td>
-                        <td class="border border-gray-300 p-2">SKKNI</td>
-                    </tr>
-                    <tr>
-                        <td class="border border-gray-300 p-2 text-center">2</td>
-                        <td class="border border-gray-300 p-2">G.456000.021.10/td>
-                        <td class="border border-gray-300 p-2">Menerapkan Perintah Eksekusi Bahasa Pemrograman Berbasis Teks, Grafik, dan Multimedia</td>
-                        <td class="border border-gray-300 p-2">SKKNI</td>
-                    </tr>
-                    <!-- Add more rows as needed -->
+                <tbody id="ukTableBody">
                 </tbody>
             </table>
     </div>
@@ -115,9 +108,85 @@
 
     <!-- Button Kembali dan Selanjutnya -->
     <div class="flex justify-end">
-    <a href="/apl1/b3" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>
+    <a href="{{ route('bukti') }}" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>
     </div>
     </div>
 </div>
 </div>
+@endsection
+@section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        console.log("Script loaded");
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Event listener untuk perubahan pada dropdown skema
+        $('#skemaDropdown').change(function() {
+            var namaSkema = $(this).val();
+            console.log("Nama Skema:", namaSkema);
+
+            // AJAX untuk mendapatkan nomor skema
+            $.get('/get-nomor-skema', { nama_skema: namaSkema }, function(response) {
+                console.log(response);
+                $('#nomorSkemaInput').val(response.nomor_skema ? response.nomor_skema : '');
+            });
+
+            // AJAX untuk mendapatkan daftar UK berdasarkan skema
+            $.get('/get-daftar-uk', { nama_skema: namaSkema }, function(response) {
+                console.log(response);
+
+                // Kosongkan tabel sebelum menambah data baru
+                $('#ukTableBody').empty();
+
+                // Masukkan data baru ke dalam tabel
+                if (response.ukList.length > 0) {
+                    response.ukList.forEach(function(uk, index) {
+                        $('#ukTableBody').append(`
+                            <tr>
+                                <td class="border border-gray-300 p-2 text-center">${index + 1}</td>
+                                <td class="border border-gray-300 p-2">${uk.id_uk}</td>
+                                <td class="border border-gray-300 p-2">${uk.nama_uk}</td>
+                                <td class="border border-gray-300 p-2">${uk.jenis_standar}</td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    $('#ukTableBody').append('<tr><td colspan="4" class="border border-gray-300 p-2 text-center">Tidak ada data UK</td></tr>');
+                }
+            });
+        });
+    });
+    // Fungsi AJAX untuk menyimpan data sertifikasi
+    function saveDataSertifikasi() {
+        const dataSertifikasi = {
+            _token: '{{ csrf_token() }}',
+            skema_sertifikasi: $('#skema_sertifikasi').val(),
+            skemaDropdown: $('#skemaDropdown').val(),
+            nomorSkemaInput: $('#nomorSkemaInput').val(),
+            tujuan_asesmen: $('#tujuan_asesmen').val(),
+        };
+
+        $.ajax({
+            url: '/save-data-sertifikasi',
+            type: 'POST',
+            data: dataSertifikasi,
+            success: function(response) {
+                console.log('Data sertifikasi tersimpan sementara:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error menyimpan data sertifikasi:', error);
+            }
+        });
+    }
+    $('#btn-selanjutnya').on('click', function(event) {
+        event.preventDefault();
+        saveDataSertifikasi();
+</script>
+
 @endsection

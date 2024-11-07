@@ -4,6 +4,24 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\AsesiController;
+use App\Http\Controllers\PengajuanController;
+
+Route::get('/apl1/b2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
+Route::get('/get-nomor-skema', [PengajuanController::class, 'getNomorSkema']);
+Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
+
+Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
+Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi']);
+Route::post('/apl1/kirim', [PengajuanController::class, 'storePengajuan']);
+
+Route::get('/apl1/b3', function () {
+    return view('home/home-asesi/APL-01/bukti-pemohon');
+})->name('bukti');
+Route::get('/apl1/b4', function () {
+    return view('home/home-asesi/APL-01/konfirmasi');
+})->name('konfirmasi');
+
+
 
 Route::get('/', function () {
     return view('home/home');
@@ -93,15 +111,15 @@ Route::get('/apl2', function () {
 Route::get('/apl1/b1', function () {
     return view('home/home-asesi/APL-01/data-pribadi');
 });
-Route::get('/apl1/b2', function () {
-    return view('home/home-asesi/APL-01/data-sertifikasi');
-});
-Route::get('/apl1/b3', function () {
-    return view('home/home-asesi/APL-01/bukti-pemohon');
-});
-Route::get('/apl1/b4', function () {
-    return view('home/home-asesi/APL-01/konfirmasi');
-});
+// Route::get('/apl1/b2', function () {
+//     return view('home/home-asesi/APL-01/data-sertifikasi');
+// });  //kalo udah di get pake controller, ternyata gabisa di get untuk return view juga bel
+// Route::get('/apl1/b3', function () {
+//     return view('home/home-asesi/APL-01/bukti-pemohon');
+// });
+// Route::get('/apl1/b4', function () {
+//     return view('home/home-asesi/APL-01/konfirmasi');
+// })->name('konfirmasi');
 
 // Asesor
 Route::get('/home-asesor', function () {
@@ -146,8 +164,7 @@ Route::get('/form', function () {
 
 
 Route::get('/register', function () {
-    return view('home/home-visitor/register');
-})->name('register.form');
+    return view('home/home-visitor/register');})->name('register.form');
 
 Route::post('/register', [LoginRegisterController::class, 'store'])->name('register.store');
 Route::post('/login', [LoginRegisterController::class, 'authenticate'])->name('login.post');
@@ -168,3 +185,5 @@ Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])
 
 // //testing home-asesi
 Route::get('/home-asesi', [AsesiController::class, 'index'])->middleware('auth');
+
+

@@ -13,14 +13,18 @@ class SkemaSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (range(1, 10) as $index) {
-            Skema::create([
-                'id_skema' => 'SKM' . str_pad($index, 3, '0', STR_PAD_LEFT),
-                'nomor_skema' => 'SKM-' . fake()->unique()->numerify('####'),
-                'nama_skema' => fake()->sentence(3),
-                'dokumen_skkni' => fake()->randomHtml(),
-                'persyaratan_skema' => fake()->paragraph(2),
-            ]);
+        $data = [
+            [
+                'nomor_skema' => 'SKM/0317/00010/2/2019/22',
+                'nama_skema' => 'Programmer',
+                'dokumen_skkni' => 'dokumen_skkni_1.pdf',
+                'daftar_id_uk' => json_encode(['UK1', 'UK2', 'UK3']),
+                'persyaratan_skema' => 'Ijazah Terakhir, Pas Photo Berwarna, KTP/KK/Paspor, Transkrip Nilai, Bukti Magang/ Kerja Praktek',
+            ],
+        ];
+
+        foreach ($data as $item) {
+            Skema::create($item);
         }
     }
 }
