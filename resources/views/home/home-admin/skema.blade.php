@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-100">
-  <div class="container mx-auto p-4">
+<div class="container mx-auto p-4">
     <!-- Tombol Tambah Skema -->
     <button id="openModalBtn" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-4">
       Tambah Skema
@@ -47,32 +47,41 @@
     <!-- Tabel Daftar Skema -->
     <h2 class="text-xl font-bold mb-4">Daftar Skema</h2>
     <table class="w-full bg-white rounded-md shadow-md">
-      <thead>
-        <tr class="bg-gray-200">
-          <th class="p-2">Nama Skema</th>
-          <th class="p-2">Dokumen SKKNI</th>
-          <th class="p-2">Unit Kompetensi</th>
-          <th class="p-2">Gambar Skema</th>
-          <th class="p-2">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="p-2">Skema 1</td>
-          <td class="p-2"><a href="#" class="text-blue-500">Dokumen.pdf</a></td>
-          <td class="p-2">Unit 1, Unit 2</td>
-          <td class="p-2"><img src="#" alt="Gambar Skema" class="h-12 w-12"></td>
-          <td class="p-2">
-            <button class="bg-yellow-500 text-white p-1 rounded">Edit</button>
-            <button class="bg-red-500 text-white p-1 rounded">Hapus</button>
-          </td>
-        </tr>
-        <!-- Tambahkan baris lain sesuai kebutuhan -->
-      </tbody>
+        <thead>
+            <tr class="bg-gray-200">
+            <th class="p-2">Nama Skema</th>
+            <th class="p-2">Dokumen SKKNI</th>
+            <th class="p-2">Unit Kompetensi</th>
+            {{-- <th class="p-2">Gambar Skema</th> --}}
+            <th class="p-2">Aksi</th>
+            </tr>
+        </thead>
+    <tbody>
+        @foreach($skema as $skema)
+            <tr>
+                <td class="p-2">{{ $skema->nama_skema }}</td>
+                <td class="p-2">{{ $skema->dokumen_skkni }}</a></td>
+                <td class="p-2">{{ $skema->daftar_id_uk }}</td>
+                {{-- <td class="p-2"><img src="#" alt="Gambar Skema" class="h-12 w-12"></td> --}}
+                <td class="p-2">
+                    {{-- <button class="bg-yellow-500 text-white p-1 rounded">Edit</button>
+                    <button class="bg-red-500 text-white p-1 rounded">Hapus</button> --}}
+                    <a href="{{ route('admin.skema.edit', $skema->id_skema) }}" class="bg-yellow-500 text-white p-1 rounded">Edit</a>
+                    <form action="{{ route('admin.skema.delete', $skema->id_skema) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-yellow-500 text-white p-1 rounded">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
     </table>
-  </div>
+</div>
 </div>
 
+@endsection
+@section('scripts')
 <script>
   // JavaScript untuk menangani modal
   document.getElementById('openModalBtn').addEventListener('click', function() {

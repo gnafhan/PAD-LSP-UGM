@@ -10,6 +10,7 @@
     @include('home.home-admin.partials.navbar')
     <main>
         @yield('content')
+        @yield('scripts')
     </main>
     @include('home.home-admin.partials.footer')
 </body>

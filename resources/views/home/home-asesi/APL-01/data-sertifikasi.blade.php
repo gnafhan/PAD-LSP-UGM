@@ -50,10 +50,12 @@
         <h2 class="text-lg font-semibold mb-4">Bagian 2 : Data Sertifikasi</h2>
         <p class="text-sm mb-6">Tuliskan Judul dan Nomor Skema Sertifikasi, Tujuan Assesmen serta Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi yang Anda ajukan untuk mendapatkan pengakuan sesuai dengan latar belakang pendidikan, pelatihan serta pengalaman kerja yang Anda miliki.</p>
 
+        <form id="sertifikasiForm" method="POST" action="{{ route('save.data.sertifikasi') }}">
+        @csrf
         <!-- Certification Details -->
         <div class="border border-gray-300 rounded-lg p-4 mb-6">
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Skema Sertifikasi</label>
+                <label for="skema_sertifikasi" class="block text-sm font-medium text-gray-700">Skema Sertifikasi</label>
                 <select id="skema_sertifikasi" name="skema_sertifikasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     <option value="kkni">KKNI</option>
                     <option value="okupasi">Okupasi</option>
@@ -106,59 +108,127 @@
 
         <!-- Button Kembali dan Selanjutnya -->
         <div class="flex justify-end">
-            <a href="{{ route('bukti') }}" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>
+            {{-- <a href="{{ route('bukti') }}" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a> --}}
+            <button type="submit" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</button>
         </div>
+        </form>
     </div>
 </div>
 </div>
-
+@endsection
 @section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        console.log("Script loaded");
+    <script>
+        // $.ajaxSetup({
+        //     headers: {
+        //         'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        //     }
+        // });
+        // function saveDataSertifikasi() {
+        //     const dataSertifikasi = {
+        //         _token: '{{ csrf_token() }}',
+        //         skema_sertifikasi: $('#skema_sertifikasi').val(),
+        //         skemaDropdown: $('#skemaDropdown').val(),
+        //         nomorSkemaInput: $('#nomorSkemaInput').val(),
+        //         tujuan_asesmen: $('#tujuan_asesmen').val(),
+        //     };
 
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        //     // console.log("Data yang dikirim:", dataSertifikasi);
 
-        // Event listener untuk perubahan pada dropdown skema
-        $('#skemaDropdown').change(function() {
-            var namaSkema = $(this).val();
-            console.log("Nama Skema:", namaSkema);
-
-            // AJAX untuk mendapatkan nomor skema dan tujuan asesmen berdasarkan nama skema
-            $.get('/get-nomor-skema', { nama_skema: namaSkema }, function(response) {
-                console.log(response);
-                $('#nomorSkemaInput').val(response.nomor_skema || '');
-                $('#tujuan_asesmen').val(response.tujuan_asesmen || 'sertifikasi');
-            });
-
-            // AJAX untuk mendapatkan daftar UK berdasarkan skema
-            $.get('/get-daftar-uk', { nama_skema: namaSkema }, function(response) {
-                console.log(response);
-
-                // Kosongkan tabel sebelum menambah data baru
-                $('#ukTableBody').empty();
-
-                // Masukkan data baru ke dalam tabel
-                if (response.ukList.length > 0) {
-                    response.ukList.forEach(function(uk, index) {
-                        $('#ukTableBody').append(`
-                            <tr>
-                                <td class="border border-gray-300 p-2 text-center">${index + 1}</td>
-                                <td class="border border-gray-300 p-2">${uk.id_uk}</td>
-                                <td class="border border-gray-300 p-2">${uk.judul_unit}</td>
-                                <td class="border border-gray-300 p-2">${uk.jenis_standar}</td>
-                            </tr>
-                        `);
-                    });
+        //     $.ajax({
+        //         url: '/save-data-sertifikasi',
+        //         type: 'POST',
+        //         data: dataSertifikasi,
+        //         success: function(response) {
+        //             console.log('Data sertifikasi tersimpan sementara:', response);
+        //             window.location.href = "{{ route('bukti') }}";
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error('Error menyimpan data sertifikasi:', error);
+        //             $('#message').html('<p class="text-red-500">Gagal menyimpan data. Silakan coba lagi.</p>');
+        //         }
+        //     });
+        // }
+        // $('#btn-selanjutnya').on('click', function(event) {
+        //     event.preventDefault();
+        //     saveDataSertifikasi();
+        // });
+        $(document).ready(function() {
+            console.log("Script loaded");
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             });
+            $('#skemaDropdown').change(function() {
+                var namaSkema = $(this).val();
+                console.log("Nama Skema:", namaSkema);
+
+                // AJAX untuk mendapatkan nomor skema dan tujuan asesmen berdasarkan nama skema
+                $.get('/get-nomor-skema', { nama_skema: namaSkema }, function(response) {
+                    console.log(response);
+                    $('#nomorSkemaInput').val(response.nomor_skema || '');
+                    $('#tujuan_asesmen').val(response.tujuan_asesmen || 'sertifikasi');
+                });
+
+                // AJAX untuk mendapatkan daftar UK berdasarkan skema
+                $.get('/get-daftar-uk', { nama_skema: namaSkema }, function(response) {
+                    console.log(response);
+
+                    $('#ukTableBody').empty();
+
+                    if (response.ukList.length > 0) {
+                        response.ukList.forEach(function(uk, index) {
+                            $('#ukTableBody').append(`
+                                <tr>
+                                    <td class="border border-gray-300 p-2 text-center">${index + 1}</td>
+                                    <td class="border border-gray-300 p-2">${uk.id_uk}</td>
+                                    <td class="border border-gray-300 p-2">${uk.nama_uk}</td>
+                                    <td class="border border-gray-300 p-2">${uk.jenis_standar}</td>
+                                </tr>
+                            `);
+                        });
+                    }
+                });
+            });
+            $('#sertifikasiForm').submit(function(event) {
+            event.preventDefault(); // Mencegah submit default form
+
+            // Data akan otomatis diambil dari form dan dikirimkan
+            // $.ajax({
+            //     type: 'POST',
+            //     url: "{{ route('save.data.sertifikasi') }}",
+            //     data: $(this).serialize(),
+            //     success: function(response) {
+            //         console.log('Data sertifikasi berhasil disimpan:', response);
+            //         window.location.href = "{{ route('bukti') }}";
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.error('Terjadi kesalahan:', error);
+            //     }
+            // });
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('save.data.sertifikasi') }}",
+                data: JSON.stringify({
+                    skema_sertifikasi: $('#skema_sertifikasi').val(),
+                    skemaDropdown: $('#skemaDropdown').val(),
+                    nomorSkemaInput: $('#nomorSkemaInput').val(),
+                    tujuan_asesmen: $('#tujuan_asesmen').val(),
+                }),
+                contentType: 'application/json',  // Mengirimkan data dalam format JSON
+                success: function(response) {
+                    console.log('Data sertifikasi berhasil disimpan:', response);
+                    window.location.href = "{{ route('bukti') }}";
+                },
+                error: function(xhr, status, error) {
+                    console.error('Terjadi kesalahan:', error);
+                }
+            });
+
         });
+
     });
-</script>
-@endsection
+
+    </script>
 @endsection

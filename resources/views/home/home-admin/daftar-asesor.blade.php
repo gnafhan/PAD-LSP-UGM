@@ -22,28 +22,22 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Contoh data, ganti dengan data dinamis dari database -->
-                <tr class="hover:bg-gray-100 transition duration-200">
-                    <td class="py-3 px-4 border-b">REG12345</td>
-                    <td class="py-3 px-4 border-b">John Doe</td>
-                    <td class="py-3 px-4 border-b">CERT98765</td>
-                    <td class="py-3 px-4 border-b">john@example.com</td>
-                    <td class="py-3 px-4 border-b">
-                        <a href="#" class="text-blue-500 hover:underline">Edit</a>
-                        <a href="#" class="text-red-500 hover:underline ml-4">Hapus</a>
-                    </td>
-                </tr>
-                <tr class="hover:bg-gray-100 transition duration-200">
-                    <td class="py-3 px-4 border-b">REG67890</td>
-                    <td class="py-3 px-4 border-b">Jane Smith</td>
-                    <td class="py-3 px-4 border-b">CERT54321</td>
-                    <td class="py-3 px-4 border-b">jane@example.com</td>
-                    <td class="py-3 px-4 border-b">
-                        <a href="#" class="text-blue-500 hover:underline">Edit</a>
-                        <a href="#" class="text-red-500 hover:underline ml-4">Hapus</a>
-                    </td>
-                </tr>
-                <!-- Tambahkan data asesor lainnya di sini -->
+                @foreach($asesors as $asesor)
+                    <tr class="hover:bg-gray-100 transition duration-200">
+                        <td class="py-3 px-4 border-b">{{ $asesor->kode_registrasi }}</td>
+                        <td class="py-3 px-4 border-b">{{ $asesor->nama_asesor }}</td>
+                        <td class="py-3 px-4 border-b">{{ $asesor->no_sertifikat }}</td>
+                        <td class="py-3 px-4 border-b">{{ $asesor->email_asesor }}</td>
+                        <td class="py-3 px-4 border-b">
+                            <a href="{{ route('admin.asesor.edit', $asesor->id_asesor) }}" class="text-blue-500 hover:underline">Edit</a>
+                            <form action="{{ route('admin.asesor.delete', $asesor->id_asesor) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-500 hover:underline ml-4">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

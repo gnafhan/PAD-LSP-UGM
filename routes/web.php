@@ -5,14 +5,29 @@ use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\AsesiController;
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\AdminController;
 
+Route::post('admin/asesor', [AdminController::class, 'storeDataAsesor'])->name('admin.asesor.store');
+Route::get('/admin5', [AdminController::class, 'indexDataAsesor'])->name('admin.asesor.index');
+Route::get('/admin5/{id}/edit', [AdminController::class, 'editDataAsesor'])->name('admin.asesor.edit');
+Route::put('/admin5/{id}/update', [AdminController::class, 'updateDataAsesor'])->name('admin.asesor.update');
+Route::delete('/admin5/{id}', [AdminController::class, 'destroyDataAsesor'])->name('admin.asesor.delete');
+
+Route::get('/admin3', [AdminController::class, 'indexDataSkema'])->name('admin.skema.index');
+Route::get('/admin3/{id}/edit', [AdminController::class, 'editDataSkema'])->name('admin.skema.edit');
+Route::put('/admin3/{id}/update', [AdminController::class, 'updateDataSkema'])->name('admin.skema.update');
+Route::delete('/admin3/{id}', [AdminController::class, 'destroyDataSkema'])->name('admin.skema.delete');
+
+Route::get('/apl1/b1', function () {
+    return view('home/home-asesi/APL-01/data-pribadi');
+});
 Route::get('/apl1/b2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
 Route::get('/get-nomor-skema', [PengajuanController::class, 'getNomorSkema']);
 Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
 
 Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
-Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi']);
-Route::post('/apl1/kirim', [PengajuanController::class, 'storePengajuan']);
+Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save.data.sertifikasi');
+Route::post('/apl1/kirim', [PengajuanController::class, 'storePengajuan'])->name('save');
 
 Route::get('/apl1/b3', function () {
     return view('home/home-asesi/APL-01/bukti-pemohon');
@@ -108,9 +123,9 @@ Route::get('/apl2', function () {
 });
 
 // Bagian Pilih Aksi FR.AK APL - 01
-Route::get('/apl1/b1', function () {
-    return view('home/home-asesi/APL-01/data-pribadi');
-});
+// Route::get('/apl1/b1', function () {
+//     return view('home/home-asesi/APL-01/data-pribadi');
+// });
 // Route::get('/apl1/b2', function () {
 //     return view('home/home-asesi/APL-01/data-sertifikasi');
 // });  //kalo udah di get pake controller, ternyata gabisa di get untuk return view juga bel
@@ -146,21 +161,21 @@ Route::get('/home-admin', function () {
 Route::get('/admin2', function () {
     return view('home/home-admin/event');
 });
-Route::get('/admin3', function () {
-    return view('home/home-admin/skema');
-});
+// Route::get('/admin3', function () {
+//     return view('home/home-admin/skema');
+// });
 Route::get('/admin4', function () {
     return view('home/home-admin/daftar-asesi');
 });
-Route::get('/admin5', function () {
-    return view('home/home-admin/daftar-asesor');
-});
+// Route::get('/admin5', function () {
+//     return view('home/home-admin/daftar-asesor');
+// })->name('admin.asesor.index');
 Route::get('/admin6', function () {
     return view('home/home-admin/settings');
 });
 Route::get('/form', function () {
     return view('home/home-admin/form-asesor');
-});
+}); // untuk nambah asesor
 
 
 Route::get('/register', function () {

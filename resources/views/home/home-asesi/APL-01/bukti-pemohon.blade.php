@@ -46,8 +46,27 @@
         </div>
     </div>
 
+    @if(session('success'))
+        <div class="bg-green-500 text-white p-3 rounded mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-red-500 text-white p-3 rounded mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if(session('errorSession'))
+        <div class="bg-red-500 text-white p-3 rounded mb-4">
+            {{ session('errorSession') }}
+        </div>
+    @endif
+
+
     <!-- Judul Form -->
-    <form action="/apl1/kirim" method="POST">
+    <form method="POST" action="{{ route('save') }}" enctype="multipart/form-data">
         @csrf
         <div class="border border-gray-300 rounded-lg p-4">
             <h2 class="text-lg font-semibold mb-4">Bagian 3 : Bukti Kelengkapan Pemohon</h2>
@@ -64,7 +83,6 @@
                 <select class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     <option value="">Pilih Jenis Kandidat Asesi</option>
                     <option value="slta">Tenaga kerja berpendidikan minimal SLTA atau sederajat</option>
-                    <!-- Tambahkan opsi lain jika diperlukan -->
                 </select>
             </div>
             <table class="w-full border-collapse">
@@ -129,14 +147,15 @@
                         <td class="border border-gray-300 px-4 py-2 text-center">2</td>
                         <td class="border border-gray-300 px-4 py-2">Foto 3x4</td>
                         <td class="border border-gray-300 px-4 py-2">
-                            <input id="bukti_foto" name="bukti_jenjang_siswa" type="file" class="block w-full text-sm border-gray-300 rounded-md">
+                            <input id="bukti_foto" name="bukti_foto" type="file" class="block w-full text-sm border-gray-300 rounded-md">
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="flex justify-end mt-4">
-            <a type="submit" href="{{ route('konfirmasi') }}" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Kirim</a>
+            {{-- <a type="submit" href="{{ route('konfirmasi') }}" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Kirim</a> --}}
+            <button type="submit" id="btn-kirim" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Kirim</button>
         </div>
     </form>
 </div>

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('alamat', 200);
             $table->string('bidang', 100); //gausah po ya?
             $table->string('status_asesor', 10);
-            $table->binary('foto_asesor');
+            $table->string('foto_asesor', 100);
             $table->string('gelar_depan', 60)->nullable();
             $table->string('gelar_belakang', 60)->nullable();
             $table->string('no_ktp', 20);

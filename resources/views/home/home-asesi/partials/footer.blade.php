@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Website Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Link Font Awesome -->
-    <link rel="stylesheet" href="path/to/your/custom-styles.css"> <!-- Link file CSS custom, jika ada -->
+    {{-- <link rel="stylesheet" href="path/to/your/custom-styles.css"> <!-- Link file CSS custom, jika ada --> --}}
 </head>
 <body>
     <!-- Konten lainnya dari website kamu -->
-    
+
     <!-- Footer -->
     <footer class="bg-blue-300 py-6">
     <div class="container mx-auto flex flex-col items-center text-center space-y-4">
-        
-        
+
+
 
         <!-- Logo Section -->
         <div class="flex justify-center items-center space-x-4">

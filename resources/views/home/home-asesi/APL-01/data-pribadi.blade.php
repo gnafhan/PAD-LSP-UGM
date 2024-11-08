@@ -8,11 +8,11 @@
     <div class="w-3/4 bg-white rounded-lg shadow-lg p-6">
 
     <div class="flex flex-wrap gap-2">
-            <a href="/assesi" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
+        <a href="/assesi" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
             <div class="bg-green-500 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
             FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI
             </div>
-        </div>
+    </div>
 
         <div class="flex flex-wrap gap-3 mt-5">
             <h2 class="text-lg font-semibold mb-4">FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI </h2>
@@ -110,7 +110,8 @@
 
         <!-- Button Kembali dan Selanjutnya -->
         <div class="flex justify-end">
-        <a href="{{ route('sertifikasi') }}" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>
+        {{-- <a href="{{ route('sertifikasi') }}" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a> --}}
+            <button type="button" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</button>
         </div>
         </div>
     </div>
@@ -118,6 +119,11 @@
 @endsection
 @section('scripts')
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        });
         // AJAX untuk menyimpan data sementara
         function saveDataPribadi() {
             const dataPribadi = {
@@ -144,12 +150,13 @@
                 },
                 error: function(xhr, status, error) {
                     console.error('Error menyimpan data pribadi:', error);
+                    $('#message').html('<p class="text-red-500">Gagal menyimpan data. Silakan coba lagi.</p>');
                 }
             });
         }
         $('#btn-selanjutnya').on('click', function(event) {
-        event.preventDefault();
-        saveDataPribadi();
-    });
+            event.preventDefault();
+            saveDataPribadi();
+        });
     </script>
 @endsection
