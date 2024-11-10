@@ -97,4 +97,88 @@ class AdminController extends Controller
         return view('home.home-admin.edit-skema', compact('skema'));
     }
 
+    // nyobaa
+    public function createDataSkema()
+    {
+        return view('home.home-admin.tambah-skema');
+    }
+
+    // Menambahkan method untuk menyimpan data skema baru
+    public function storeDataSkema(Request $request)
+    {
+        $validatedData = $request->validate([
+            'kode_skema' => 'required|string|max:255',
+            'nama_skema' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string|max:1000',
+            'unit_kompetensi_id' => 'required|exists:unit_kompetensis,id',  // Asumsi ada relasi dengan unitKompetensi
+        ]);
+
+        Skema::create($validatedData);
+
+        return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil ditambahkan');
+    }
+
+    // Unit Kompetensi
+
+    public function indexDataUnits()
+    {
+        // Ambil semua data unit kompetensi (UK) untuk ditampilkan di halaman daftar UK
+        $units = Uk::all();
+        return view('home.home-admin.unit-kompetensi', compact('units'));
+    }
+
+    public function createDataUnit()
+    {
+        // Menampilkan halaman form untuk menambah unit kompetensi baru
+        return view('home.home-admin.tambah-uk');
+    }
+
+    public function storeDataUnit(Request $request)
+    {
+        // Validasi input dari form tambah unit kompetensi
+        $validatedData = $request->validate([
+            'kode_unit' => 'required|string|max:255|unique:uks,kode_unit',
+            'nama_unit' => 'required|string|max:255',
+        ]);
+
+        // Menyimpan data unit kompetensi baru ke dalam database
+        Uk::create($validatedData);
+
+        return redirect()->route('admin.units.index')->with('success', 'Unit Kompetensi berhasil ditambahkan');
+    }
+
+    // Events
+    public function create()
+    {
+        return view('home.home-admin.tambah-event');
+    }
+
+    public function store(Request $request)
+    {
+        // Validasi input form jika diperlukan
+        $validated = $request->validate([
+            'event_name' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'event_type' => 'required|string|max:255',
+            'event_scheme' => 'required|array',
+            'event_scheme.*' => 'string|max:255',
+        ]);
+
+        // Simpan data event ke database
+        // $event = Event::create([
+        //     'event_name' => $validated['event_name'],
+        //     'start_date' => $validated['start_date'],
+        //     'end_date' => $validated['end_date'],
+        //     'event_type' => $validated['event_type'],
+        // ]);
+
+        // Simpan skema terkait jika ada
+        // foreach ($validated['event_scheme'] as $scheme) {
+        //     $event->schemes()->create(['scheme_name' => $scheme]); // Pastikan hubungan dengan tabel skema
+        // }
+
+        return redirect()->route('home.home-admin.event')->with('success', 'Event berhasil ditambahkan');
+    }
+
 }

@@ -6,9 +6,10 @@
 <div class="min-h-screen bg-gray-100">
 <div class="container mx-auto p-4">
     <!-- Tombol Tambah Skema -->
-    <button id="openModalBtn" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-4">
+    <a href="{{ route('admin.skema.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
       Tambah Skema
-    </button>
+    </a>
+
 
     <!-- Modal -->
     <div id="schemeModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">

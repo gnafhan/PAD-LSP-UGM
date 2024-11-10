@@ -14,10 +14,46 @@ Route::get('/admin5/{id}/edit', [AdminController::class, 'editDataAsesor'])->nam
 Route::put('/admin5/{id}/update', [AdminController::class, 'updateDataAsesor'])->name('admin.asesor.update');
 Route::delete('/admin5/{id}', [AdminController::class, 'destroyDataAsesor'])->name('admin.asesor.delete');
 
-Route::get('/admin3', [AdminController::class, 'indexDataSkema'])->name('admin.skema.index');
-Route::get('/admin3/{id}/edit', [AdminController::class, 'editDataSkema'])->name('admin.skema.edit');
-Route::put('/admin3/{id}/update', [AdminController::class, 'updateDataSkema'])->name('admin.skema.update');
-Route::delete('/admin3/{id}', [AdminController::class, 'destroyDataSkema'])->name('admin.skema.delete');
+// Route::get('/admin3', [AdminController::class, 'indexDataSkema'])->name('admin.skema.index');
+// Route::get('/admin3/{id}/edit', [AdminController::class, 'editDataSkema'])->name('admin.skema.edit');
+// Route::put('/admin3/{id}/update', [AdminController::class, 'updateDataSkema'])->name('admin.skema.update');
+// Route::delete('/admin3/{id}', [AdminController::class, 'destroyDataSkema'])->name('admin.skema.delete');
+
+// nyoba by bell skema
+Route::prefix('admin3')->name('admin.skema.')->group(function() {
+    // Rute untuk menampilkan daftar skema
+    Route::get('/', [AdminController::class, 'indexDataSkema'])->name('index');
+
+    // Rute untuk form tambah skema
+    Route::get('/create', [AdminController::class, 'createDataSkema'])->name('create');
+    
+    // Rute untuk menyimpan data skema
+    Route::post('/', [AdminController::class, 'storeDataSkema'])->name('store');
+
+    // Rute untuk menampilkan form edit skema
+    Route::get('{id}/edit', [AdminController::class, 'editDataSkema'])->name('edit');
+
+    // Rute untuk memperbarui data skema
+    Route::put('{id}/update', [AdminController::class, 'updateDataSkema'])->name('update');
+
+    // Rute untuk menghapus data skema
+    Route::delete('{id}', [AdminController::class, 'destroyDataSkema'])->name('delete');
+});
+
+// Unit Kompetensi
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/units', [AdminController::class, 'indexDataUnits'])->name('units.index');
+    Route::get('/units/create', [AdminController::class, 'createDataUnit'])->name('units.create');
+    Route::post('/units', [AdminController::class, 'storeDataUnit'])->name('units.store');
+});
+// Events
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/events/create', [AdminController::class, 'create'])->name('events.create');
+    Route::post('/events', [AdminController::class, 'store'])->name('events.store');
+});
+
+
 
 Route::get('/apl1/b1', function () {
     return view('home/home-asesi/APL-01/data-pribadi');
