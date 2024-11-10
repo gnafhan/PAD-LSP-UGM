@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Asesor;
 use App\Models\Skema;
+use App\Models\Uk;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -17,7 +18,7 @@ class AdminController extends Controller
 
     public function storeDataAsesor(Request $request)
     {
-        // Validasi input data
+
         $validatedData = $request->validate([
             'kode_registrasi' => 'required|string|max:255',
             'nama_asesor' => 'required|string|max:255',
@@ -85,7 +86,8 @@ class AdminController extends Controller
 
     public function indexDataSkema()
     {
-        $skema = Skema::all();
+        // $skema = Skema::all();
+        $skema = Skema::with('unitKompetensi')->get();
         return view('home.home-admin.skema', compact('skema'));
     }
 

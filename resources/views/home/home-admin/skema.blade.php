@@ -61,7 +61,11 @@
             <tr>
                 <td class="p-2">{{ $skema->nama_skema }}</td>
                 <td class="p-2">{{ $skema->dokumen_skkni }}</a></td>
-                <td class="p-2">{{ $skema->daftar_id_uk }}</td>
+                <td class="p-2">
+                    @foreach($skema->unitKompetensi as $uk)
+                        {{ $uk->id_uk }}: {{ $uk->nama_uk }}<br>
+                    @endforeach
+                </td>
                 {{-- <td class="p-2"><img src="#" alt="Gambar Skema" class="h-12 w-12"></td> --}}
                 <td class="p-2">
                     {{-- <button class="bg-yellow-500 text-white p-1 rounded">Edit</button>

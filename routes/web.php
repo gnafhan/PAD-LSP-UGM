@@ -7,6 +7,7 @@ use App\Http\Controllers\AsesiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\AdminController;
 
+//maap bel ini buat percobaanku hehe
 Route::post('admin/asesor', [AdminController::class, 'storeDataAsesor'])->name('admin.asesor.store');
 Route::get('/admin5', [AdminController::class, 'indexDataAsesor'])->name('admin.asesor.index');
 Route::get('/admin5/{id}/edit', [AdminController::class, 'editDataAsesor'])->name('admin.asesor.edit');
@@ -27,14 +28,16 @@ Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
 
 Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
 Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save.data.sertifikasi');
-Route::post('/apl1/kirim', [PengajuanController::class, 'storePengajuan'])->name('save');
-
+Route::post('/apl1/b3', [PengajuanController::class, 'storePengajuan'])->name('save');
 Route::get('/apl1/b3', function () {
     return view('home/home-asesi/APL-01/bukti-pemohon');
 })->name('bukti');
+
 Route::get('/apl1/b4', function () {
     return view('home/home-asesi/APL-01/konfirmasi');
 })->name('konfirmasi');
+
+//batesnya sampe sini
 
 
 

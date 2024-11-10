@@ -118,40 +118,6 @@
 @endsection
 @section('scripts')
     <script>
-        // $.ajaxSetup({
-        //     headers: {
-        //         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        //     }
-        // });
-        // function saveDataSertifikasi() {
-        //     const dataSertifikasi = {
-        //         _token: '{{ csrf_token() }}',
-        //         skema_sertifikasi: $('#skema_sertifikasi').val(),
-        //         skemaDropdown: $('#skemaDropdown').val(),
-        //         nomorSkemaInput: $('#nomorSkemaInput').val(),
-        //         tujuan_asesmen: $('#tujuan_asesmen').val(),
-        //     };
-
-        //     // console.log("Data yang dikirim:", dataSertifikasi);
-
-        //     $.ajax({
-        //         url: '/save-data-sertifikasi',
-        //         type: 'POST',
-        //         data: dataSertifikasi,
-        //         success: function(response) {
-        //             console.log('Data sertifikasi tersimpan sementara:', response);
-        //             window.location.href = "{{ route('bukti') }}";
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error('Error menyimpan data sertifikasi:', error);
-        //             $('#message').html('<p class="text-red-500">Gagal menyimpan data. Silakan coba lagi.</p>');
-        //         }
-        //     });
-        // }
-        // $('#btn-selanjutnya').on('click', function(event) {
-        //     event.preventDefault();
-        //     saveDataSertifikasi();
-        // });
         $(document).ready(function() {
             console.log("Script loaded");
             $.ajaxSetup({
@@ -191,21 +157,7 @@
                 });
             });
             $('#sertifikasiForm').submit(function(event) {
-            event.preventDefault(); // Mencegah submit default form
-
-            // Data akan otomatis diambil dari form dan dikirimkan
-            // $.ajax({
-            //     type: 'POST',
-            //     url: "{{ route('save.data.sertifikasi') }}",
-            //     data: $(this).serialize(),
-            //     success: function(response) {
-            //         console.log('Data sertifikasi berhasil disimpan:', response);
-            //         window.location.href = "{{ route('bukti') }}";
-            //     },
-            //     error: function(xhr, status, error) {
-            //         console.error('Terjadi kesalahan:', error);
-            //     }
-            // });
+            event.preventDefault();
 
             $.ajax({
                 type: 'POST',
@@ -216,7 +168,7 @@
                     nomorSkemaInput: $('#nomorSkemaInput').val(),
                     tujuan_asesmen: $('#tujuan_asesmen').val(),
                 }),
-                contentType: 'application/json',  // Mengirimkan data dalam format JSON
+                contentType: 'application/json',
                 success: function(response) {
                     console.log('Data sertifikasi berhasil disimpan:', response);
                     window.location.href = "{{ route('bukti') }}";
@@ -229,6 +181,5 @@
         });
 
     });
-
     </script>
 @endsection

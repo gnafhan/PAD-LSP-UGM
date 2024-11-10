@@ -34,7 +34,6 @@ class UK extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            // Mengambil id terakhir dan menambahkan prefix
             $lastId = self::max('id_uk');
             $number = $lastId ? intval(substr($lastId, 2)) + 1 : 1;
             $model->id_uk = 'UK' . $number;

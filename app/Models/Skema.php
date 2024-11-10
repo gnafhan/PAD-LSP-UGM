@@ -27,6 +27,17 @@ class Skema extends Model
         'daftar_id_uk' => 'array',
     ];
 
+    public function unitKompetensi()
+    {
+        return $this->hasMany(Uk::class, 'id_uk', 'daftar_id_uk');
+    }
+
+    public function getUnitKompetensiAttribute()
+    {
+        $idArray = is_array($this->daftar_id_uk) ? $this->daftar_id_uk : json_decode($this->daftar_id_uk, true);
+        return UK::whereIn('id_uk', $idArray ?? [])->get();
+    }
+
     protected static function boot()
     {
         parent::boot();
