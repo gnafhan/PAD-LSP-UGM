@@ -15,6 +15,7 @@
                 <a href="/home" class="text-white font-semibold hover:text-gray-200">Home</a>
                 <a href="/panduan" class="text-white font-semibold hover:text-gray-200">Panduan</a>
                 <a href="/profile" class="text-white font-semibold hover:text-gray-200">Profil</a>
+                <a href="/skema" class="text-white font-semibold hover:text-gray-200">Skema</a>
                 <a href="/masuk" class="text-white font-semibold hover:text-gray-200">Masuk/Daftar</a>
             </nav>
         </div>

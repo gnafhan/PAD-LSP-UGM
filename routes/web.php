@@ -101,6 +101,9 @@ Route::get('/panduan', function () {
 Route::get('/profile', function () {
     return view('home/home-visitor/profile');
 });
+Route::get('/skema', function () {
+    return view('home/skema');
+});
 
 // VISITOR BAGIAN LOGIN USER
 Route::get('/login', function () {
