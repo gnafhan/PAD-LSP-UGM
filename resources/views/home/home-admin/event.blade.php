@@ -7,9 +7,8 @@
   <div class="container mx-auto p-4">
     <!-- Tombol Tambah Event -->
     <a href="{{ route('admin.events.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
-      Tambah Skema
+      Tambah Event
     </a>
-
     <!-- Modal -->
     <div id="eventModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
       <div class="bg-white rounded-md p-6 w-1/2">
