@@ -263,7 +263,7 @@ Route::get('/form', function () {
 
 
 Route::get('/register', function () {
-    return view('home/register');})->name('register.form');
+    return view('home/home-visitor/register');})->name('register.form');
 
 Route::post('/register', [LoginRegisterController::class, 'store'])->name('register.store');
 Route::post('/login', [LoginRegisterController::class, 'authenticate'])->name('login.post');

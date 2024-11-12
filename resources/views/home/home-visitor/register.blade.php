@@ -84,7 +84,7 @@
 
             <!-- Login Link -->
             <div class="text-center mt-6">
-                <p class="text-sm text-gray-700">Sudah Punya Akun? <a href="/loginasesi" class="text-indigo-600 hover:text-indigo-800 font-medium">Login</a></p>
+                <p class="text-sm text-gray-700">Sudah Punya Akun? <a href="/login" class="text-indigo-600 hover:text-indigo-800 font-medium">Login</a></p>
             </div>
         </form>
     </div>

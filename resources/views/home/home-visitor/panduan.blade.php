@@ -22,11 +22,11 @@
                 <tbody>
                     <tr>
                         <td class="border border-gray-300 px-4 py-2 text-center">1</td>
-                        <td class="border border-gray-300 px-4 py-2">Pendaftaran & APL-01</td>
+                        <td class="border border-gray-300 px-4 py-2">Registrasi Akun</td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 px-4 py-2 text-center">2</td>
-                        <td class="border border-gray-300 px-4 py-2">Pengisian APL-02</td>
+                        <td class="border border-gray-300 px-4 py-2">Pengisian FR.APL-01</td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 px-4 py-2 text-center">3</td>
