@@ -26,7 +26,7 @@ Route::prefix('admin3')->name('admin.skema.')->group(function() {
 
     // Rute untuk form tambah skema
     Route::get('/create', [AdminController::class, 'createDataSkema'])->name('create');
-    
+
     // Rute untuk menyimpan data skema
     Route::post('/', [AdminController::class, 'storeDataSkema'])->name('store');
 
