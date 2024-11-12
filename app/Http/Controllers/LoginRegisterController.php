@@ -25,6 +25,8 @@ class LoginRegisterController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
+        dd($request);
+
         $userId = 'USER' . Str::random(6);
 
         User::create([

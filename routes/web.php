@@ -263,14 +263,13 @@ Route::get('/form', function () {
 
 
 Route::get('/register', function () {
-    return view('home/register');})->name('register.form');
+    return view('home/home-visitor/register');})->name('register');
+Route::get('/login', function () {
+    return view('home/home-visitor/login');})->name('login');
 
 Route::post('/register', [LoginRegisterController::class, 'store'])->name('register.store');
 Route::post('/login', [LoginRegisterController::class, 'authenticate'])->name('login.post');
 
-Route::get('/login', function () {
-    return view('home/home-visitor/login');
-})->name('login');
 
 Route::get('/home', function () {
     return view('home/home-visitor/home');
