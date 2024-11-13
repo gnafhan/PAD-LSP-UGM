@@ -17,34 +17,43 @@
         <div class="flex flex-wrap gap-3 mt-5">
         <h2 class="text-lg font-semibold mb-4">FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI </h2>
         </div>
-
     <!-- Progress Bar -->
-    <div class="flex justify-between items-center mb-8">
-
-    <!-- Update breadcrumb di sini -->
-        <div class="flex items-center">
-            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">1</div>
-            <p class="text-sm text-gray-800 ml-2">Rincian Data Pemohon Sertifikasi</p>
-        </div>
-
-        <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
-        <div class="flex items-center">
-            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">2</div>
-            <p class="text-sm text-gray-800 ml-2">Data Sertifikasi</p>
-        </div>
-
-        <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
-        <div class="flex items-center">
-            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">3</div>
-            <p class="text-sm text-gray-800 ml-2">Bukti Kelengkapan Pemohon</p>
-        </div>
-
-        <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
-        <div class="flex items-center">
-            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>
-            <p class="text-sm text-gray-800 ml-2">Konfirmasi Data Asesi</p>
-        </div>
-    </div>
+    <div class="w-full max-w-4xl mx-auto px-4">
+                    <div class="flex flex-col md:flex-row justify-start items-start mb-8">
+                        <!-- Step 1 -->
+                        <div class="flex items-center mb-4 md:mb-0 md:w-auto">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">1</div>
+                            <p class="text-sm text-gray-800 ml-2">Rincian Data Pemohon Sertifikasi</p>
+                        </div>
+                        
+                        <!-- Garis Penghubung (dihide di tampilan kecil) -->
+                        <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
+                        
+                        <!-- Step 2 -->
+                        <div class="flex items-center mb-4 md:mb-0 md:w-auto">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">2</div>
+                            <p class="text-sm text-gray-800 ml-2">Data Sertifikasi</p>
+                        </div>
+                        
+                        <!-- Garis Penghubung (dihide di tampilan kecil) -->
+                        <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
+                        
+                        <!-- Step 3 -->
+                        <div class="flex items-center mb-4 md:mb-0 md:w-auto">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400  text-white">3</div>
+                            <p class="text-sm text-gray-800 ml-2">Bukti Kelengkapan Pemohon</p>
+                        </div>
+                        
+                        <!-- Garis Penghubung (dihide di tampilan kecil) -->
+                        <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
+                        
+                        <!-- Step 4 -->
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>
+                            <p class="text-sm text-gray-800 ml-2">Konfirmasi Data Asesi</p>
+                        </div>
+                    </div>
+                </div>
 
     @if(session('success'))
         <div class="bg-green-500 text-white p-3 rounded mb-4">

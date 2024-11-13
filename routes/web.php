@@ -62,8 +62,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/units/create', [AdminController::class, 'createDataUnit'])->name('units.create');
     Route::post('/units', [AdminController::class, 'storeDataUnit'])->name('units.store');
 });
-// Events
 
+
+// Events
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/events/create', [AdminController::class, 'create'])->name('events.create');
     Route::post('/events', [AdminController::class, 'store'])->name('events.store');
@@ -95,7 +96,7 @@ Route::get('/apl1/b4', function () {
 
 // DAFTAR SKEMA IN VISITOR
 Route::get('/apl/1', function () {
-    return view('home/home-visitor/APL-01/data-pribadi');
+    return view('home/home-visitor/APL-01/data1');
 });
 Route::get('/apl/2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
 
@@ -121,6 +122,10 @@ Route::get('/', function () {
 
 Route::get('/masuk', function () {
     return view('home/home-visitor/masuk');
+});
+
+Route::get('/admin', function () {
+    return view('home/home-admin/event2');
 });
 
 // VISITOR
@@ -175,6 +180,9 @@ Route::get('/assesi', function () {
 // HOME VISITOR SETELAH ASESI LOGIN
 
 // DAFTAR SKEMA
+Route::get('/setuju', function () {
+    return view('home/home-visitor/persetujuan'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
+});
 Route::get('/apl/1', function () {
     return view('home/home-visitor/APL-01/data-pribadi'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
 });
@@ -272,6 +280,16 @@ Route::get('/admin6', function () {
 Route::get('/form', function () {
     return view('home/home-admin/form-asesor');
 }); // untuk nambah asesor
+Route::get('/', function () {
+    return view('home/home-admin/form-asesor');
+}); // untuk nambah asesor
+Route::get('/dp', function () {
+    return view('home/home-admin/detail-pengajuan');
+}); // untuk nambah asesor
+Route::get('/frak1', function () {
+    return view('home/home-asesor/frak01');
+}); // untuk nambah asesor
+
 
 
 

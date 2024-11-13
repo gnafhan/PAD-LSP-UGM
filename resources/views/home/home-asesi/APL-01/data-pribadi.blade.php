@@ -55,9 +55,6 @@
                     </div>
                 </div>
 
-
-
-
             <!-- Form Card untuk Profil Peserta -->
             <form action="{{ route('sertifikasi') }}" method="POST" class="border border-gray-300 rounded-lg p-4">
             @csrf
