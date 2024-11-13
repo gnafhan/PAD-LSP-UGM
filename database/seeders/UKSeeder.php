@@ -15,20 +15,20 @@ class UKSeeder extends Seeder
     {
         $data = [
             [
-                'kode_uk' => 'J.620100.009.01',
-                'nama_uk' => 'Menggunakan spesifikasi program',
+                'kode_uk' => 'J.620100.009.02',
+                'nama_uk' => 'Melakukan coding sederhana',
+                'id_bidang' => null,
+                'jenis_standar' => 'Internasional',
+            ],
+            [
+                'kode_uk' => 'J.620100.013.07',
+                'nama_uk' => 'Menulis Kode dengan Kaidah yang baik',
                 'id_bidang' => null,
                 'jenis_standar' => 'SKKNI',
             ],
             [
-                'kode_uk' => 'J.620100.016.01',
-                'nama_uk' => 'Menulis Kode dengan Prinsip sesuai Guidelines dan Best Practices',
-                'id_bidang' => null,
-                'jenis_standar' => 'SKKNI',
-            ],
-            [
-                'kode_uk' => 'J.620100.017.02',
-                'nama_uk' => 'Mengimplementasikan pemrograman terstruktur',
+                'kode_uk' => 'J.620100.027.02',
+                'nama_uk' => 'Mengimplementasikan pemrograman kotlin',
                 'id_bidang' => null,
                 'jenis_standar' => 'SKKNI',
             ],

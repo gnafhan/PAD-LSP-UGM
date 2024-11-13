@@ -1,11 +1,25 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\AsesiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\LoginRegisterController;
+
+//visitor
+Route::get('/register', function () {
+    return view('home/home-visitor/register');})->name('register');
+Route::get('/login', function () {
+    return view('home/home-visitor/login');})->name('login');
+
+Route::post('/register', [LoginRegisterController::class, 'store'])->name('register.store');
+Route::post('/login', [LoginRegisterController::class, 'authenticate'])->name('login.post');
+
+Route::get('/home', function () {
+    return view('home/home-visitor/home');
+})->name('home');
+
 
 //maap bel ini buat percobaanku hehe
 Route::post('admin/asesor', [AdminController::class, 'storeDataAsesor'])->name('admin.asesor.store');
@@ -14,31 +28,33 @@ Route::get('/admin5/{id}/edit', [AdminController::class, 'editDataAsesor'])->nam
 Route::put('/admin5/{id}/update', [AdminController::class, 'updateDataAsesor'])->name('admin.asesor.update');
 Route::delete('/admin5/{id}', [AdminController::class, 'destroyDataAsesor'])->name('admin.asesor.delete');
 
-// Route::get('/admin3', [AdminController::class, 'indexDataSkema'])->name('admin.skema.index');
-// Route::get('/admin3/{id}/edit', [AdminController::class, 'editDataSkema'])->name('admin.skema.edit');
-// Route::put('/admin3/{id}/update', [AdminController::class, 'updateDataSkema'])->name('admin.skema.update');
-// Route::delete('/admin3/{id}', [AdminController::class, 'destroyDataSkema'])->name('admin.skema.delete');
+Route::get('/admin3', [AdminController::class, 'indexDataSkema'])->name('admin.skema.index');
+Route::get('/admin3/create', [AdminController::class, 'createDataSkema'])->name('admin.skema.create');
+Route::post('/admin3/create', [AdminController::class, 'storeDataSkema'])->name('admin.skema.store');
+Route::get('/admin3/{id}/edit', [AdminController::class, 'editDataSkema'])->name('admin.skema.edit');
+Route::put('/admin3/{id}/update', [AdminController::class, 'updateDataSkema'])->name('admin.skema.update');
+Route::delete('/admin3/{id}', [AdminController::class, 'destroyDataSkema'])->name('admin.skema.delete');
 
 // nyoba by bell skema
-Route::prefix('admin3')->name('admin.skema.')->group(function() {
-    // Rute untuk menampilkan daftar skema
-    Route::get('/', [AdminController::class, 'indexDataSkema'])->name('index');
+// Route::prefix('admin3')->name('admin.skema.')->group(function() {
+//     // Rute untuk menampilkan daftar skema
+//     Route::get('/', [AdminController::class, 'indexDataSkema'])->name('index');
 
-    // Rute untuk form tambah skema
-    Route::get('/create', [AdminController::class, 'createDataSkema'])->name('create');
+//     // Rute untuk form tambah skema
+//     Route::get('/create', [AdminController::class, 'createDataSkema'])->name('create');
 
-    // Rute untuk menyimpan data skema
-    Route::post('/', [AdminController::class, 'storeDataSkema'])->name('store');
+//     // Rute untuk menyimpan data skema
+//     Route::post('/', [AdminController::class, 'storeDataSkema'])->name('store');
 
-    // Rute untuk menampilkan form edit skema
-    Route::get('{id}/edit', [AdminController::class, 'editDataSkema'])->name('edit');
+//     // Rute untuk menampilkan form edit skema
+//     Route::get('{id}/edit', [AdminController::class, 'editDataSkema'])->name('edit');
 
-    // Rute untuk memperbarui data skema
-    Route::put('{id}/update', [AdminController::class, 'updateDataSkema'])->name('update');
+//     // Rute untuk memperbarui data skema
+//     Route::put('{id}/update', [AdminController::class, 'updateDataSkema'])->name('update');
 
-    // Rute untuk menghapus data skema
-    Route::delete('{id}', [AdminController::class, 'destroyDataSkema'])->name('delete');
-});
+//     // Rute untuk menghapus data skema
+//     Route::delete('{id}', [AdminController::class, 'destroyDataSkema'])->name('delete');
+// });
 
 // Unit Kompetensi
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -127,28 +143,24 @@ Route::get('/skema', function () {
     return view('home/skema');
 });
 
-// VISITOR BAGIAN LOGIN USER
-Route::get('/login', function () {
-    return view('home/home-visitor/login');
-})->name('login');
 
 
 
 // // Route::get('/loginasesor', function () {
-// //     return view('home/home-visitor/loginasesor');
-// // });
-// // Route::get('/loginadmin', function () {
-// //     return view('home/home-visitor/loginadmin');
-// // });
+    // //     return view('home/home-visitor/loginasesor');
+    // // });
+    // // Route::get('/loginadmin', function () {
+        // //     return view('home/home-visitor/loginadmin');
+        // // });
 
-// // Opsi login kedua
-// // asesi tetep make opsi pertama
-// Route::get('/asesor', function () {
-//     return view('home/home-visitor/loginasesor');
-// });
-// Route::get('/admin', function () {
-//     return view('home/home-visitor/loginadmin');
-// });
+        // // Opsi login kedua
+        // // asesi tetep make opsi pertama
+        // Route::get('/asesor', function () {
+            //     return view('home/home-visitor/loginasesor');
+            // });
+            // Route::get('/admin', function () {
+                //     return view('home/home-visitor/loginadmin');
+                // });
 
 // ASESI
 Route::get('/home-asesi', function () {
@@ -208,14 +220,14 @@ Route::get('/apl2', function () {
 
 // Bagian Pilih Aksi FR.AK APL - 01
 // Route::get('/apl1/b1', function () {
-//     return view('home/home-asesi/APL-01/data-pribadi');
-// });
-// Route::get('/apl1/b2', function () {
-//     return view('home/home-asesi/APL-01/data-sertifikasi');
-// });  //kalo udah di get pake controller, ternyata gabisa di get untuk return view juga bel
-// Route::get('/apl1/b3', function () {
-//     return view('home/home-asesi/APL-01/bukti-pemohon');
-// });
+    //     return view('home/home-asesi/APL-01/data-pribadi');
+    // });
+    // Route::get('/apl1/b2', function () {
+        //     return view('home/home-asesi/APL-01/data-sertifikasi');
+        // });  //kalo udah di get pake controller, ternyata gabisa di get untuk return view juga bel
+        // Route::get('/apl1/b3', function () {
+            //     return view('home/home-asesi/APL-01/bukti-pemohon');
+            // });
 // Route::get('/apl1/b4', function () {
 //     return view('home/home-asesi/APL-01/konfirmasi');
 // })->name('konfirmasi');
@@ -246,13 +258,13 @@ Route::get('/admin2', function () {
     return view('home/home-admin/event');
 });
 // Route::get('/admin3', function () {
-//     return view('home/home-admin/skema');
-// });
-Route::get('/admin4', function () {
-    return view('home/home-admin/daftar-asesi');
-});
+    //     return view('home/home-admin/skema');
+    // });
+    Route::get('/admin4', function () {
+        return view('home/home-admin/daftar-asesi');
+    });
 // Route::get('/admin5', function () {
-//     return view('home/home-admin/daftar-asesor');
+    //     return view('home/home-admin/daftar-asesor');
 // })->name('admin.asesor.index');
 Route::get('/admin6', function () {
     return view('home/home-admin/settings');
@@ -262,18 +274,6 @@ Route::get('/form', function () {
 }); // untuk nambah asesor
 
 
-Route::get('/register', function () {
-    return view('home/home-visitor/register');})->name('register');
-Route::get('/login', function () {
-    return view('home/home-visitor/login');})->name('login');
-
-Route::post('/register', [LoginRegisterController::class, 'store'])->name('register.store');
-Route::post('/login', [LoginRegisterController::class, 'authenticate'])->name('login.post');
-
-
-Route::get('/home', function () {
-    return view('home/home-visitor/home');
-})->name('home');
 
 //testing forget password
 Route::get('password/reset', [PasswordResetController::class, 'showResetForm'])->name('password.request');
@@ -283,5 +283,6 @@ Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])
 
 // //testing home-asesi
 Route::get('/home-asesi', [AsesiController::class, 'index'])->middleware('auth');
+
 
 

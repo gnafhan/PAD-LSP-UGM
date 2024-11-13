@@ -6,6 +6,7 @@ use App\Models\Asesor;
 use App\Models\Skema;
 use App\Models\Uk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -56,6 +57,7 @@ class AdminController extends Controller
         return view('home.home-admin.edit-asesor', compact('asesor'));
     }
 
+
     public function updateDataAsesor(Request $request, $id)
     {
         $request->validate([
@@ -84,6 +86,8 @@ class AdminController extends Controller
         return redirect()->route('admin.asesor.index')->with('success', 'Data asesor berhasil dihapus.');
     }
 
+
+
     public function indexDataSkema()
     {
         // $skema = Skema::all();
@@ -93,29 +97,87 @@ class AdminController extends Controller
 
     public function editDataSkema($id)
     {
-        $skema = Skema::findOrFail($id);
-        return view('home.home-admin.edit-skema', compact('skema'));
+        $skema = Skema::with('unitKompetensi')->findOrFail($id);
+        $ukList = Uk::all();
+        // Kirim data unit kompetensi dalam format JSON
+        $unitKompetensiJson = json_encode($skema->unitKompetensi);
+        $daftarIdUkJson = $skema->daftar_id_uk; // Ambil data daftar_id_uk langsung dari skema
+
+        return view('home.home-admin.edit-skema', [
+            'skema' => $skema,
+            'unitKompetensiJson' => $unitKompetensiJson,
+            'daftarIdUkJson' => $daftarIdUkJson,
+            'ukList' => $ukList
+        ]);
     }
 
-    // nyobaa
+    public function updateDataSkema(Request $request, $id)
+    {
+        $skema = Skema::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'nama_skema' => 'required|string|max:100',
+            'dokumen_skkni' => 'required|string|max:2048',
+        ]);
+
+        $validatedData['daftar_id_uk'] = $request->input('daftar_id_uk');
+
+        $skema->update($validatedData);
+
+        return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil diperbarui');
+    }
+
     public function createDataSkema()
     {
-        return view('home.home-admin.tambah-skema');
+        $ukList = Uk::all();
+        return view('home.home-admin.tambah-skema', ['ukList' => $ukList,]);
     }
 
-    // Menambahkan method untuk menyimpan data skema baru
     public function storeDataSkema(Request $request)
     {
+
+        $kodeUKs = json_decode($request->daftar_id_uk, true);
+        $idUKs = [];
+
+        foreach ($kodeUKs as $kodeUK) {
+            // Temukan id_uk berdasarkan kode_uk
+            $uk = Uk::where('kode_uk', $kodeUK)->first();
+
+            if ($uk) {
+                $idUKs[] = $uk->id_uk; // Masukkan id_uk yang ditemukan ke dalam array
+            } else {
+                return redirect()->back()->withErrors(['kode_uk' => "Kode UK $kodeUK tidak ditemukan."]);
+            }
+        }
+
         $validatedData = $request->validate([
-            'kode_skema' => 'required|string|max:255',
-            'nama_skema' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string|max:1000',
-            'unit_kompetensi_id' => 'required|exists:unit_kompetensis,id',  // Asumsi ada relasi dengan unitKompetensi
+            'nomor_skema' => 'required|string|max:100',
+            'nama_skema' => 'required|string|max:100',
+            'dokumen_skkni' => 'required|file|mimes:pdf|max:2048',
+            'persyaratan_skema' => 'required|string',
         ]);
+
+
+        $validatedData['daftar_id_uk'] = json_encode($idUKs);
+
+        if ($request->hasFile('dokumen_skkni')) {
+            Log::info('File uploaded:', ['file' => $request->file('dokumen_skkni')]);
+            $validatedData['dokumen_skkni'] = $request->file('dokumen_skkni')->store('skkni', 'public');
+        } else {
+            Log::warning('No file uploaded.');
+        }
 
         Skema::create($validatedData);
 
         return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil ditambahkan');
+    }
+
+    public function destroyDataSkema($id)
+    {
+        $Skema = Skema::findOrFail($id);
+        $Skema->delete();
+
+        return redirect()->route('admin.skema.index')->with('success', 'Data skema berhasil dihapus.');
     }
 
     // Unit Kompetensi

@@ -28,8 +28,8 @@
 
         <!-- Telephone Field -->
         <div class="mb-4">
-            <label for="telephone" class="block text-sm font-medium text-gray-700">Telephone</label>
-            <input type="text" id="telephone" name="telephone" placeholder="Enter Telephone..."
+            <label for="no_hp" class="block text-sm font-medium text-gray-700">Telephone</label>
+            <input type="text" id="no_hp" name="no_hp" placeholder="Enter Telephone..."
                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
         </div>
 
@@ -42,33 +42,21 @@
 
         <!-- Confirm Password Field -->
         <div class="mb-4">
-            <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-            <input type="password" id="confirm-password" name="confirm_password" placeholder="Enter Confirm Password..."
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+            <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Enter Confirm Password..."
                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
         </div>
 
         <!-- Register Button -->
         <div class="flex justify-end mt-6">
-            <button type="submit"
-                class="bg-indigo-600 text-white px-6 py-2 rounded-md font-semibold transition hover:bg-indigo-700">
-                Register
-            </button>
+            <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md font-semibold transition hover:bg-indigo-700">Register</button>
         </div>
 
         <!-- Login Link -->
         <div class="text-center mt-6">
-            <p class="text-sm text-gray-700">Sudah Punya Akun? <a href="/loginasesi" class="text-indigo-600 hover:text-indigo-800 font-medium">Login</a></p>
+            <p class="text-sm text-gray-700">Sudah Punya Akun? <a href="/login" class="text-indigo-600 hover:text-indigo-800 font-medium">Login</a></p>
         </div>
     </form>
   </div>
 </div>
 @endsection
-            <!-- Login Link -->
-            <div class="text-center mt-6">
-                <p class="text-sm text-gray-700">Sudah Punya Akun? <a href="/login" class="text-indigo-600 hover:text-indigo-800 font-medium">Login</a></p>
-            </div>
-        </form>
-    </div>
-</body>
-
-</html>
