@@ -18,19 +18,52 @@
         </tr>
       </thead>
       <tbody>
+        <!-- Data Dummy -->
         <tr>
           <td class="p-2 text-center">1</td>
           <td class="p-2">Annisa</td>
-          <td class="p-2 text-center">12/12/2024 15.30</td>
+          <td class="p-2 text-center">12/12/2024 15:30</td>
           <td class="p-2 text-center">EVENT-111</td>
           <td class="p-2">Junior Developer</td>
           <td class="p-2">
-            <button class="bg-blue-500 text-white p-1 rounded" onclick="showDetail()">Detail Pengajuan</button>
+            <a href="/dp" class="bg-blue-500 text-white p-1 rounded">Detail Pengajuan</a>
           </td>
         </tr>
-        <!-- Tambahkan baris lain sesuai kebutuhan -->
+        <tr>
+          <td class="p-2 text-center">2</td>
+          <td class="p-2">Budi</td>
+          <td class="p-2 text-center">14/12/2024 10:15</td>
+          <td class="p-2 text-center">EVENT-112</td>
+          <td class="p-2">Data Analyst</td>
+          <td class="p-2">
+            <a href="/dp" class="bg-blue-500 text-white p-1 rounded">Detail Pengajuan</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 text-center">3</td>
+          <td class="p-2">Citra</td>
+          <td class="p-2 text-center">15/12/2024 13:00</td>
+          <td class="p-2 text-center">EVENT-113</td>
+          <td class="p-2">Network Engineer</td>
+          <td class="p-2">
+            <a href="/dp" class="bg-blue-500 text-white p-1 rounded">Detail Pengajuan</a>
+          </td>
+        </tr>
+        <!-- Tambahkan data dummy lain sesuai kebutuhan -->
       </tbody>
     </table>
+
+    <!-- Pagination Manual -->
+    <div class="flex justify-center my-4">
+      <nav aria-label="Pagination">
+        <ul class="inline-flex items-center space-x-2">
+          <li><a href="#" class="bg-gray-200 px-3 py-1 rounded">1</a></li>
+          <li><a href="#" class="bg-gray-200 px-3 py-1 rounded">2</a></li>
+          <li><a href="#" class="bg-gray-200 px-3 py-1 rounded">3</a></li>
+          <!-- Tambahkan halaman lainnya sesuai kebutuhan -->
+        </ul>
+      </nav>
+    </div>
 
     <div id="detail-pengajuan" class="bg-white p-4 rounded shadow-md mb-4 hidden">
       <h2 class="text-xl font-bold mb-4">Detail Pengajuan Asesi</h2>
@@ -60,7 +93,7 @@
             <input type="checkbox" class="form-checkbox">
           </td>
         </tr>
-        <!-- Tambahkan baris lain sesuai kebutuhan -->
+        <!-- Tambahkan data dummy lain sesuai kebutuhan -->
       </tbody>
     </table>
 

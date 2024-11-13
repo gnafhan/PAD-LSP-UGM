@@ -5,13 +5,13 @@
 @section('content')
 <div class="min-h-screen bg-gray-100">
 <div class="container mx-auto p-4">
+    <div class="mb-5">
     <!-- Tombol Tambah Skema -->
-    <a href="{{ route('admin.skema.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
-      Tambah Skema
-    </a>
-
-
-    <!-- Modal -->
+      <a href="{{ route('admin.skema.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
+        Tambah Skema
+      </a>
+    </div>
+    <!-- Form Tambah Skema -->
     <div id="schemeModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
       <div class="bg-white rounded-md p-6 w-1/2">
         <h2 class="text-xl font-bold mb-4">Tambah Skema</h2>

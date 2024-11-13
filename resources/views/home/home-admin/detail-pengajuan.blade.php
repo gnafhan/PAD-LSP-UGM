@@ -1,129 +1,210 @@
 @extends('home.home-admin.layouts.layout')
 
-@section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
+@section('title', 'Event Management - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Pengajuan</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-<div class="min-h-screen bg-gray-100 p-4">
-  <div class="container mx-auto">
-    <h2 class="text-2xl font-bold mb-4 text-center">Detail Pengajuan</h2>
+<div class="min-h-screen bg-gray-100">
+  <div class="container mx-auto p-4">
+    <div class="max-w-3xl mx-auto bg-white p-8 rounded-md shadow-md">
+        <h1 class="text-2xl font-bold text-center mb-6">FR.APL.01 Permohonan Sertifikasi Kompetensi</h1>
 
-    <form id="asesor-form" onsubmit="return saveAsesor(event)" class="bg-white p-6 rounded-md shadow-md">
-      <input type="hidden" id="asesor-id">
-      
-      <div class="grid grid-cols-2 gap-4">
-        <!-- ID PENGAJUAN -->
-        <div class="mb-4">
-          <label for="kode-registrasi" class="block text-gray-700">ID Pengajuan:</label>
-          <input type="text" id="kode-registrasi" class="w-full p-2 border rounded-md" required>
+        <!-- Bagian 1: Rincian Data Pemohon Sertifikasi -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Bagian 1: Rincian Data Pemohon Sertifikasi</h2>
+            
+            <!-- Data Pribadi -->
+            <h3 class="text-lg font-semibold mb-2">a. Data Pribadi</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700">Nama Lengkap</label>
+                    <input type="text" value="Annisa Putri" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">No. KTP/NIK/Paspor</label>
+                    <input type="text" value="1234567890123456" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">Tempat / Tgl. Lahir</label>
+                    <input type="text" value="Yogyakarta, 12/12/1998" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">Jenis Kelamin</label>
+                    <input type="text" value="Perempuan" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">Kebangsaan</label>
+                    <input type="text" value="Indonesia" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">Alamat Rumah</label>
+                    <input type="text" value="Jl. Malioboro No. 1, Yogyakarta" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">Kode Pos</label>
+                    <input type="text" value="55281" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">No. Telepon / E-mail</label>
+                    <input type="text" value="08123456789 / annisa@gmail.com" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">Kualifikasi Pendidikan</label>
+                    <input type="text" value="S1 Teknik Informatika" class="w-full p-2 border rounded-md" />
+                </div>
+            </div>
+            
+            <!-- Data Pekerjaan Sekarang -->
+            <h3 class="text-lg font-semibold mt-6 mb-2">b. Data Pekerjaan Sekarang</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700">Nama Institusi / Perusahaan</label>
+                    <input type="text" value="PT Teknologi Indonesia" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">Jabatan</label>
+                    <input type="text" value="Software Developer" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">Alamat Kantor</label>
+                    <input type="text" value="Jl. Sudirman No. 10, Jakarta" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">Kode Pos</label>
+                    <input type="text" value="10220" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
+                    <label class="block text-gray-700">No. Telp/Fax/E-mail</label>
+                    <input type="text" value="02112345678 / info@teknologi.com" class="w-full p-2 border rounded-md" />
+                </div>
+            </div>
         </div>
 
-        <!-- ID USER -->
-        <div class="mb-4">
-          <label for="nama-asesor" class="block text-gray-700">ID User:</label>
-          <input type="text" id="nama-asesor" class="w-full p-2 border rounded-md" required>
+        <!-- Bagian 2: Data Sertifikasi -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Bagian 2: Data Sertifikasi</h2>
+            <div class="mb-4">
+                <label class="block text-gray-700">Skema Sertifikasi</label>
+                <input type="text" value="KKNI Level II - Junior Programmer" class="w-full p-2 border rounded-md" />
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">Nomor</label>
+                <input type="text" value="JP-123456" class="w-full p-2 border rounded-md" />
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">Tujuan Asesmen</label>
+                <select class="w-full p-2 border rounded-md">
+                    <option>Sertifikasi</option>
+                    <option>Sertifikasi Ulang</option>
+                    <option>Pengakuan Kompetensi Terkini (PKT)</option>
+                    <option>Rekognisi Pembelajaran Lampau</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">Daftar Unit Kompetensi</label>
+                <textarea class="w-full p-2 border rounded-md" rows="4">1. JP001 - Menerapkan Dasar Pemrograman
+2. JP002 - Mengembangkan Aplikasi Sederhana
+3. JP003 - Menguji Aplikasi</textarea>
+            </div>
         </div>
 
-        <!-- ID SKEMA -->
-        <div class="mb-4">
-          <label for="no-sertifikat" class="block text-gray-700">ID Skema:</label>
-          <input type="text" id="no-sertifikat" class="w-full p-2 border rounded-md" required>
+        <!-- Bagian 3: Bukti Kelengkapan Pemohon -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Bagian 3.1: Bukti Kelengkapan Pemohon</h2>
+            <table class="w-full mb-4 bg-gray-100 rounded-md">
+                <thead>
+                    <tr>
+                        <th class="p-2 border">No.</th>
+                        <th class="p-2 border">Bukti Persyaratan Dasar</th>
+                        <th class="p-2 border">Ada</th>
+                        <th class="p-2 border">Tidak Ada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="p-2 border text-center">1</td>
+                        <td class="p-2 border">Ijazah SMK/SMA sederajat</td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border text-center">2</td>
+                        <td class="p-2 border">Rapor semester 1 - 5</td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border text-center">3</td>
+                        <td class="p-2 border">Surat Pengalaman Kerja</td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border text-center">3</td>
+                        <td class="p-2 border">Surat Keterangan PKL/Magang</td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- SUMBER ANGGARAN -->
-        <div class="mb-4">
-          <label for="email-asesor" class="block text-gray-700">Sumber Anggaran:</label>
-          <input type="email" id="email-asesor" class="w-full p-2 border rounded-md" required>
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Bagian 3.2: Bukti Administratif</h2>
+            <table class="w-full mb-4 bg-gray-100 rounded-md">
+                <thead>
+                    <tr>
+                        <th class="p-2 border">No.</th>
+                        <th class="p-2 border">Bukti Administratif</th>
+                        <th class="p-2 border">Ada</th>
+                        <th class="p-2 border">Tidak Ada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="p-2 border text-center">1</td>
+                        <td class="p-2 border">KTP</td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border text-center">2</td>
+                        <td class="p-2 border">Foto 3x4</td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- NIK -->
-        <div class="mb-4">
-          <label for="alamat" class="block text-gray-700">NIK:</label>
-          <input type="text" id="alamat" class="w-full p-2 border rounded-md" required>
-        </div>
+        <div class="flex justify-between mt-8">
+            <!-- Pemohon -->
+            <div>
+                <h3 class="text-sm font-bold">Pemohon **)</h3>
+                <p class="mt-2">Nama: Belda Putri Pramono</p>
+                <div class="flex items-center space-x-2 mt-2">
+                    <input type="checkbox" id="approve-pemohon" class="h-4 w-4 text-blue-600 border-gray-300 rounded" checked disabled>
+                    <label for="approve-pemohon" class="text-sm">Dengan ini saya menyetujui permohonan</label>
+                </div>
+                <p class="mt-2">TTD: <img src="signature.png" alt="Signature" class="h-6 inline"></p>
+                <p>Tgl: 20-10-2024</p>
+            </div>
 
-        <!-- JENIS KELAMIN -->
-        <div class="mb-4">
-          <label for="bidang" class="block text-gray-700">Jenis Kelamin:</label>
-          <input type="text" id="bidang" class="w-full p-2 border rounded-md" required>
+            <!-- Admin LSP -->
+            <div>
+                <h3 class="text-sm font-bold">Admin LSP ***)</h3>
+                <p class="mt-2">Nama: Muhammad Abdul Karim</p>
+                <div class="flex items-center space-x-2 mt-2">
+                    <input type="checkbox" id="approve-admin" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                    <label for="approve-admin" class="text-sm">TTD Admin</label>
+                </div>
+                <p class="mt-2">TTD: <img src="admin-signature.png" alt="Admin Signature" class="h-6 inline"></p>
+                <p>Tgl: 20-10-2024</p>
+            </div>
         </div>
-
-        <!-- Tempat Lahir -->
-        <div class="mb-4">
-          <label for="status-asesor" class="block text-gray-700">Tempat Lahir:</label>
-          <input type="text" id="status-asesor" class="w-full p-2 border rounded-md" required>
+        <div class="mt-6">
+                <button class="bg-green-500 text-white px-4 py-2 rounded-md">Submit</button>
         </div>
-
-        <!-- Tanggal Lahir -->
-        <div class="mb-4">
-          <label for="gelar-depan" class="block text-gray-700">Tanggal Lahir:</label>
-          <input type="text" id="gelar-depan" class="w-full p-2 border rounded-md">
-        </div>
-
-        <!-- ALAMAT -->
-        <div class="mb-4">
-          <label for="gelar-belakang" class="block text-gray-700">Alamat:</label>
-          <input type="text" id="gelar-belakang" class="w-full p-2 border rounded-md">
-        </div>
-
-        <!-- KODE POS -->
-        <div class="mb-4">
-          <label for="no-ktp" class="block text-gray-700">Kode Pos:</label>
-          <input type="text" id="no-ktp" class="w-full p-2 border rounded-md" required>
-        </div>
-
-        <!-- EMAIL -->
-        <div class="mb-4">
-          <label for="jenis-kelamin" class="block text-gray-700">Email:</label>
-          <input type="text" id="email" class="w-full p-2 border rounded-md" required>
-        </div>
-
-        <!-- NIM -->
-        <div class="mb-4">
-          <label for="pendidikan-terakhir" class="block text-gray-700">NIM:</label>
-          <input type="text" id="pendidikan-terakhir" class="w-full p-2 border rounded-md">
-        </div>
-
-        <!-- NO TELP PRIBADI -->
-        <div class="mb-4">
-          <label for="keahlian" class="block text-gray-700">No Telepon:</label>
-          <input type="text" id="keahlian" class="w-full p-2 border rounded-md">
-        </div>
-
-        <!-- Kewarganegaraan -->
-        <div class="mb-4">
-          <label for="tempat-lahir" class="block text-gray-700">Kewarganegaraan:</label>
-          <input type="text" id="tempat-lahir" class="w-full p-2 border rounded-md">
-        </div>
-
-        <!-- FILE PORTOFOLIO PENGAJUAN -->
-        <div class="mb-4">
-          <label for="tanggal-lahir" class="block text-gray-700">File Portofolio:</label>
-          <input type="date" id="tanggal-lahir" class="w-full p-2 border rounded-md">
-        </div>
-
-      <div class="flex justify-end mt-4">
-        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md">Simpan</button>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
-
-<script>
-  function saveAsesor(event) {
-    event.preventDefault();
-    // Tambahkan logika untuk menyimpan data ke backend
-    alert('Data asesor berhasil disimpan.');
-  }
-</script>
-</body>
-</html>
 @endsection
