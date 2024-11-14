@@ -280,6 +280,12 @@ Route::get('/frak5', function () {
 Route::get('/home-admin', function () {
     return view('home/home-admin/home');
 })->name('home-admin');
+Route::get('/btn-asesi', function () {
+    return view('home/home-admin/button-asesi');
+});
+Route::get('/assign-asesor', function () {
+    return view('home/home-admin/assign-asesor');
+});
 // Route::get('/admin2', function () {
 //     return view('home/home-admin/event');
 // });
@@ -304,8 +310,6 @@ Route::get('/dp', function () {
 Route::get('/frak1', function () {
     return view('home/home-asesor/frak01');
 }); // untuk nambah asesor
-
-
 
 
 //testing forget password

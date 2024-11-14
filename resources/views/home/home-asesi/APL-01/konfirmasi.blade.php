@@ -95,7 +95,7 @@
         <div class="flex justify-end mt-6">
             <form action="/konfirmasi" method="POST">
                 @csrf
-                <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700">Konfirmasi</button>
+                <a href="/assesi" type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700">Konfirmasi</a>
             </form>
         </div>
 @endsection

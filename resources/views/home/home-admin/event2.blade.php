@@ -59,7 +59,7 @@
                         <th class="p-2">Tipe Event</th>
                         <th class="p-2">Skema</th>
                         <th class="p-2">Asesor</th>
-                        <th class="p-2">Aksi</th>
+                        <th class="p-2">Asesi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,10 +74,10 @@
                                 @endforeach
                             </td>
                             <td class="p-2">
-                                <a href="/admin5" class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded">Button Asesor</a>
+                                <a href="/admin5" class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded">Asesor</a>
                             </td>
                             <td class="p-2">
-                                <a href="/admin4" class="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">Button Asesi</a>
+                                <a href="/btn-asesi" class="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">Asesi</a>
                             </td>
                         </tr>
                     @endforeach

@@ -25,7 +25,7 @@
             <a href="/admin5" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Asesor</a>
             <a href="/admin4" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
-            Asesi</a>
+            Assign Asesor</a>
         </nav>
     </div>
 
