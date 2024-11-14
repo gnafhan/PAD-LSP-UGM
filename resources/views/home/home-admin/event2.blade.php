@@ -7,11 +7,11 @@
     <div class="container mx-auto px-6 py-8">
         <div class="mb-8">
             <!-- Tombol Tambah Event -->
-            <a href="{{ route('admin.events.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
+            <a href="{{ route('admin.event.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
                 Tambah Event
             </a>
 
-            <!-- Form Event -->
+            <!-- Form Event Modal -->
             <div id="eventModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
                 <div class="bg-white rounded-md p-6 w-full max-w-lg mx-4">
                     <h2 class="text-xl font-bold mb-4">Tambah Event</h2>
@@ -63,19 +63,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="p-2 text-center">12/12/2024</td>
-                        <td class="p-2">TILC</td>
-                        <td class="p-2">Offline</td>
-                        <td class="p-2">SKM-II</td>
-                        <td class="p-2">
-                            <a href="/admin5" class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded">Button Asesor</a>
-                        </td>
-                        <td class="p-2">
-                            <a href="/admin4" class="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">Button Asesi</a>
-                        </td>
-                    </tr>
-                    <!-- Tambahkan baris lain sesuai kebutuhan -->
+                    @foreach ($event as $event)
+                        <tr>
+                            <td class="p-2 text-center">{{ $event->tanggal_mulai_event }}</td>
+                            <td class="p-2">{{ $event->tuk }}</td>
+                            <td class="p-2">{{ $event->tipe_event }}</td>
+                            <td class="p-2">
+                                @foreach ($event->skema as $skema)
+                                    {{ $skema->nomor_skema }}: {{ $skema->nama_skema }}<br>
+                                @endforeach
+                            </td>
+                            <td class="p-2">
+                                <a href="/admin5" class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded">Button Asesor</a>
+                            </td>
+                            <td class="p-2">
+                                <a href="/admin4" class="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">Button Asesi</a>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

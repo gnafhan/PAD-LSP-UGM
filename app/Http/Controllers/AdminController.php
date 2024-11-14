@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Asesor;
 use App\Models\Skema;
 use App\Models\Uk;
+use App\Models\Tuk;
+use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -56,6 +59,7 @@ class AdminController extends Controller
         return view('home.home-admin.edit-asesor', compact('asesor'));
     }
 
+
     public function updateDataAsesor(Request $request, $id)
     {
         $request->validate([
@@ -84,101 +88,238 @@ class AdminController extends Controller
         return redirect()->route('admin.asesor.index')->with('success', 'Data asesor berhasil dihapus.');
     }
 
+
+
     public function indexDataSkema()
     {
-        // $skema = Skema::all();
         $skema = Skema::with('unitKompetensi')->get();
         return view('home.home-admin.skema', compact('skema'));
     }
 
     public function editDataSkema($id)
     {
-        $skema = Skema::findOrFail($id);
-        return view('home.home-admin.edit-skema', compact('skema'));
+        $skema = Skema::with('unitKompetensi')->findOrFail($id);
+        $ukList = Uk::all();
+        // Kirim data unit kompetensi dalam format JSON
+        $unitKompetensiJson = json_encode($skema->unitKompetensi);
+        $daftarIdUkJson = $skema->daftar_id_uk; // Ambil data daftar_id_uk langsung dari skema
+
+        return view('home.home-admin.edit-skema', [
+            'skema' => $skema,
+            'unitKompetensiJson' => $unitKompetensiJson,
+            'daftarIdUkJson' => $daftarIdUkJson,
+            'ukList' => $ukList
+        ]);
     }
 
-    // nyobaa
+    public function updateDataSkema(Request $request, $id)
+    {
+        $skema = Skema::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'nama_skema' => 'required|string|max:100',
+            'dokumen_skkni' => 'required|string|max:2048',
+        ]);
+
+        $validatedData['daftar_id_uk'] = $request->input('daftar_id_uk');
+
+        $skema->update($validatedData);
+
+        return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil diperbarui');
+    }
+
     public function createDataSkema()
     {
-        return view('home.home-admin.tambah-skema');
+        $ukList = Uk::all();
+        return view('home.home-admin.tambah-skema', ['ukList' => $ukList,]);
     }
 
-    // Menambahkan method untuk menyimpan data skema baru
     public function storeDataSkema(Request $request)
     {
+
+        $kodeUKs = json_decode($request->daftar_id_uk, true);
+        $idUKs = [];
+
+        foreach ($kodeUKs as $kodeUK) {
+            // Temukan id_uk berdasarkan kode_uk
+            $uk = Uk::where('kode_uk', $kodeUK)->first();
+
+            if ($uk) {
+                $idUKs[] = $uk->id_uk; // Masukkan id_uk yang ditemukan ke dalam array
+            } else {
+                return redirect()->back()->withErrors(['kode_uk' => "Kode UK $kodeUK tidak ditemukan."]);
+            }
+        }
+
         $validatedData = $request->validate([
-            'kode_skema' => 'required|string|max:255',
-            'nama_skema' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string|max:1000',
-            'unit_kompetensi_id' => 'required|exists:unit_kompetensis,id',  // Asumsi ada relasi dengan unitKompetensi
+            'nomor_skema' => 'required|string|max:100',
+            'nama_skema' => 'required|string|max:100',
+            'dokumen_skkni' => 'required|file|mimes:pdf|max:2048',
+            'persyaratan_skema' => 'required|string',
         ]);
+
+
+        $validatedData['daftar_id_uk'] = json_encode($idUKs);
+
+        if ($request->hasFile('dokumen_skkni')) {
+            Log::info('File uploaded:', ['file' => $request->file('dokumen_skkni')]);
+            $validatedData['dokumen_skkni'] = $request->file('dokumen_skkni')->store('skkni', 'public');
+        } else {
+            Log::warning('No file uploaded.');
+        }
 
         Skema::create($validatedData);
 
         return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil ditambahkan');
     }
 
-    // Unit Kompetensi
-
-    public function indexDataUnits()
+    public function destroyDataSkema($id)
     {
-        // Ambil semua data unit kompetensi (UK) untuk ditampilkan di halaman daftar UK
-        $units = Uk::all();
-        return view('home.home-admin.unit-kompetensi', compact('units'));
+        $Skema = Skema::findOrFail($id);
+        $Skema->delete();
+
+        return redirect()->route('admin.skema.index')->with('success', 'Data skema berhasil dihapus.');
     }
 
-    public function createDataUnit()
+
+    public function indexDataUk()
     {
-        // Menampilkan halaman form untuk menambah unit kompetensi baru
+        $uk = Uk::all();
+        return view('home.home-admin.unit-kompetensi', compact('uk'));
+    }
+
+    public function createDataUk()
+    {
         return view('home.home-admin.tambah-uk');
     }
 
-    public function storeDataUnit(Request $request)
+    public function storeDataUk(Request $request)
     {
-        // Validasi input dari form tambah unit kompetensi
         $validatedData = $request->validate([
-            'kode_unit' => 'required|string|max:255|unique:uks,kode_unit',
-            'nama_unit' => 'required|string|max:255',
+            'kode_uk' => 'required|string|max:100|unique:uk',
+            'nama_uk' => 'required|string|max:100',
+            'id_bidang' => 'nullable|string|max:20',
+            'jenis_standar' => 'required|string|max:50'
         ]);
 
-        // Menyimpan data unit kompetensi baru ke dalam database
         Uk::create($validatedData);
-
-        return redirect()->route('admin.units.index')->with('success', 'Unit Kompetensi berhasil ditambahkan');
+        return redirect()->route('admin.uk.index')->with('success', 'Unit Kompetensi berhasil ditambahkan');
     }
 
-    // Events
-    public function create()
+    public function editDataUk($id)
     {
-        return view('home.home-admin.tambah-event');
+        $uk = Uk::findOrFail($id);
+        return view('home.home-admin.edit-uk', compact('uk'));
     }
 
-    public function store(Request $request)
+    public function updateDataUk(Request $request, $id)
     {
-        // Validasi input form jika diperlukan
-        $validated = $request->validate([
-            'event_name' => 'required|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'event_type' => 'required|string|max:255',
-            'event_scheme' => 'required|array',
-            'event_scheme.*' => 'string|max:255',
+        $uk = Uk::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'kode_uk' => 'required|string|max:100',
+            'nama_uk' => 'required|string|max:100',
+            'id_bidang' => 'nullable|string|max:20',
+            'jenis_standar' => 'required|string|max:50'
         ]);
 
-        // Simpan data event ke database
-        // $event = Event::create([
-        //     'event_name' => $validated['event_name'],
-        //     'start_date' => $validated['start_date'],
-        //     'end_date' => $validated['end_date'],
-        //     'event_type' => $validated['event_type'],
-        // ]);
-
-        // Simpan skema terkait jika ada
-        // foreach ($validated['event_scheme'] as $scheme) {
-        //     $event->schemes()->create(['scheme_name' => $scheme]); // Pastikan hubungan dengan tabel skema
-        // }
-
-        return redirect()->route('home.home-admin.event')->with('success', 'Event berhasil ditambahkan');
+        $uk->update($validatedData);
+        return redirect()->route('admin.uk.index')->with('success', 'Unit Kompetensi berhasil diperbarui');
     }
+
+    public function destroyDataUk($id)
+    {
+        $uk = Uk::findOrFail($id);
+        $uk->delete();
+
+        return redirect()->route('admin.uk.index')->with('success', 'Data unit kompetensi berhasil dihapus.');
+    }
+
+
+
+    public function indexDataEvent()
+    {
+        $event = Event::with('skema')->get();
+        return view('home.home-admin.event2', compact('event'));
+    }
+
+    public function editDataEvent($id)
+    {
+        $skema = Skema::with('unitKompetensi')->findOrFail($id);
+        $ukList = Uk::all();
+        // Kirim data unit kompetensi dalam format JSON
+        $unitKompetensiJson = json_encode($skema->unitKompetensi);
+        $daftarIdUkJson = $skema->daftar_id_uk; // Ambil data daftar_id_uk langsung dari skema
+
+        return view('home.home-admin.edit-skema', [
+            'skema' => $skema,
+            'unitKompetensiJson' => $unitKompetensiJson,
+            'daftarIdUkJson' => $daftarIdUkJson,
+            'ukList' => $ukList
+        ]);
+    }
+
+    public function updateDataEvent(Request $request, $id)
+    {
+        $skema = Skema::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'nama_skema' => 'required|string|max:100',
+            'dokumen_skkni' => 'required|string|max:2048',
+        ]);
+
+        $validatedData['daftar_id_uk'] = $request->input('daftar_id_uk');
+
+        $skema->update($validatedData);
+
+        return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil diperbarui');
+    }
+
+    public function createDataEvent()
+    {
+        $skemaList = Skema::all();
+        return view('home.home-admin.tambah-event', ['skemaList' => $skemaList,]);
+    }
+
+    public function storeDataEvent(Request $request)
+    {
+
+        $nomorSkemas = json_decode($request->daftar_id_skema, true);
+        $idSkemas = [];
+
+        foreach ($nomorSkemas as $nomorSkema) {
+            // Temukan id_skema berdasarkan nomor_skema
+            $skema = Skema::where('nomor_skema', $nomorSkema)->first();
+
+            if ($skema) {
+                $idSkemas[] = $skema->id_skema; // Masukkan id_skema yang ditemukan ke dalam array
+            } else {
+                return redirect()->back()->withErrors(['nomor_skema' => "Nomor Skema $nomorSkema tidak ditemukan."]);
+            }
+        }
+
+        $validatedData = $request->validate([
+            'nama_event' => 'required|string|max:100',
+            'tanggal_mulai_event' => 'required|date',
+            'tanggal_berakhir_event' => 'required|date',
+            'tuk' => 'required|string|max:100',
+            'tipe_event' => 'required|string|max:50',
+        ]);
+
+        $validatedData['daftar_id_skema'] = json_encode($idSkemas);
+
+        Event::create($validatedData);
+
+        return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan');
+    }
+
+    public function destroyDataEvent($id)
+    {
+        $Skema = Skema::findOrFail($id);
+        $Skema->delete();
+
+        return redirect()->route('admin.event.index')->with('success', 'Data skema berhasil dihapus.');
+    }
+
 
 }

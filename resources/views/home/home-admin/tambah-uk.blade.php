@@ -6,14 +6,15 @@
 <div class="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Formulir Penambahan Unit Kompetensi</h2>
-        
-        <form action="{{ route('admin.units.store') }}" method="POST">
+
+        <form action="{{ route('admin.uk.store') }}" method="POST">
             @csrf
 
-            <div class="mb-4">
+            {{-- gausa ya karna dah digenerate --}}
+            {{-- <div class="mb-4">
                 <label for="id_uk" class="block font-medium text-gray-700">ID Unit Kompetensi</label>
                 <input type="text" name="id_uk" id="id_uk" class="w-full border-2 border-gray-500 rounded p-2" placeholder="Contoh: UK-001" required>
-            </div>
+            </div> --}}
 
             <div class="mb-4">
                 <label for="kode_uk" class="block font-medium text-gray-700">Kode Unit Kompetensi</label>
@@ -27,7 +28,7 @@
 
             <div class="mb-4">
                 <label for="id_bidang" class="block font-medium text-gray-700">ID Bidang</label>
-                <input type="text" name="id_bidang" id="id_bidang" class="w-full border-2 border-gray-500 rounded p-2" placeholder="Contoh: B01" required>
+                <input type="text" name="id_bidang" id="id_bidang" class="w-full border-2 border-gray-500 rounded p-2" placeholder="Contoh: B01">
             </div>
 
             <div class="mb-4">

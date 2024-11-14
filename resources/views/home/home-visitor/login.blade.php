@@ -1,11 +1,11 @@
-@extends('home.layouts.layout')
+@extends('home.home-visitor.layouts.layout')
 
 @section('title', 'Login - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
 <div class="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-    
+
     <!-- Logo Section -->
     <div class="flex flex-col items-center mb-6">
       <img src="{{ asset('images/logo.png') }}" alt="LSP UGM Logo" class="w-12">
@@ -52,7 +52,7 @@
             <p class="text-sm text-gray-700">Lupa Password? <a href="/password/reset" class="text-indigo-600 hover:text-indigo-800 font-medium">Reset Password</a></p>
         </div>
     </form>
-    
+
     <!-- Register Link -->
     <div class="text-center mt-6">
         <p class="text-sm text-gray-700">Belum Punya Akun? <a href="/register" class="text-indigo-600 hover:text-indigo-800 font-medium">Register</a></p>

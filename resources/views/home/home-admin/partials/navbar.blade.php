@@ -16,11 +16,11 @@
             <a href="/home-admin" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Home
             </a>
-            <a href="/admin" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="{{ route('admin.event.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Event</a>
             <a href="/admin3" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Skema</a>
-            <a href="{{ route('admin.units.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="{{ route('admin.uk.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Unit Kompetensi</a>
             <a href="/admin5" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Asesor</a>
@@ -34,17 +34,17 @@
             <a href="/home-admin" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Home
             </a>
-            <a href="/admin2" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="{{ route('admin.event.index') }}" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Event</a>
             <a href="/admin3" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Skema</a>
-            <a href="{{ route('admin.units.index') }}" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="{{ route('admin.uk.index') }}" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Unit Kompetensi</a>
             <a href="/admin5" class="text-white font-semibold hover:bg-blue-400 block hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Asesor</a>
             <a href="/admin4" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Asesi</a>
-        
+
     </nav>
 </header>
 

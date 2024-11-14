@@ -1,65 +1,75 @@
 @extends('home.home-admin.layouts.layout')
 
-@section('title', 'Edit Skema - Lembaga Sertifikasi Profesi UGM')
+@section('title', 'Edit Event - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
 <div class="min-h-screen bg-gray-100 p-4">
     <div class="container mx-auto p-4">
-        <h2 class="text-2xl font-bold mb-6 text-center">Edit Skema</h2>
+        <h2 class="text-2xl font-bold mb-6 text-center">Edit Event</h2>
 
-        <form action="{{ route('admin.skema.update', $skema->id_skema) }}" method="POST" class="bg-white p-6 rounded-md shadow-md">
+        <form action="{{ route('admin.event.update', $event->id_event) }}" method="POST" class="bg-white p-6 rounded-md shadow-md">
             @csrf
             @method('PUT')
 
 
             <div class="mb-4">
-                <label for="nama_skema" class="block text-gray-700">Nama Skema</label>
-                <input type="text" name="nama_skema" id="nama_skema" value="{{ $skema->nama_skema }}" class="w-full px-4 py-2 border rounded-md" required>
+                <label for="nama_event" class="block text-gray-700">Nama Event</label>
+                <input type="text" name="nama_event" id="nama_event" value="{{ $event->nama_event }}" class="w-full px-4 py-2 border rounded-md" required>
             </div>
 
             <div class="mb-4">
-                <label for="dokumen_skkni" class="block text-gray-700">Dokumen SKKNI</label>
-                <input type="text" name="dokumen_skkni" id="dokumen_skkni" value="{{ $skema->dokumen_skkni }}" class="w-full px-4 py-2 border rounded-md" required>
+                <label for="tanggal_mulai_event" class="block text-gray-700">Tanggal Mulai Event</label>
+                <input type="date" name="tanggal_mulai_event" id="tanggal_mulai_event" value="{{ $event->tanggal_mulai_event }}" class="w-full px-4 py-2 border rounded-md" required>
             </div>
 
             <div class="mb-4">
-                <label for="daftar_id_uk" class="block font-medium text-gray-700">Unit Kompetensi</label>
-                <select name="daftar_id_uk_select" id="daftar_id_uk" class="w-full border border-gray-300 rounded p-2">
-                    <option value="">Pilih UK</option>
-                    @foreach($ukList as $uk)
-                        <option value="{{ $uk->id_uk }}" data-kode="{{ $uk->kode_uk }}" data-nama="{{ $uk->nama_uk }}" data-jenis-standar="{{ $uk->jenis_standar }}">
-                            {{ $uk->kode_uk }} - {{ $uk->nama_uk }}
-                        </option>
+                <label for="tanggal_berakhir_event" class="block text-gray-700">Tanggal Berakhir Event</label>
+                <input type="date" name="tanggal_berakhir_event" id="tanggal_berakhir_event" value="{{ $event->tanggal_berakhir_event }}" class="w-full px-4 py-2 border rounded-md" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="tipe_event" class="block text-gray-700">Tipe Event</label>
+                <input type="text" name="tipe_event" id="tipe_event" value="{{ $event->tipe_event }}" class="w-full px-4 py-2 border rounded-md" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="tuk" class="block text-gray-700">TUK</label>
+                <input type="text" name="tuk" id="tuk" value="{{ $event->tuk }}" class="w-full px-4 py-2 border rounded-md" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="daftar_id_skema" class="block font-medium text-gray-700">Daftar Skema</label>
+                <select name="daftar_id_skema_select" id="daftar_id_skema" class="w-full border border-gray-300 rounded p-2">
+                    <option value="">Pilih Skema</option>
+                    @foreach($skemaList as $skema)
+                        <option value="{{ $skema->nomor_skema }}" data-nama="{{ $skema->nama_skema }}">{{ $skema->nomor_skema }} - {{ $skema->nama_skema }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <input type="hidden" name="daftar_id_uk" id="daftar_id_uk_hidden" value="{{ json_encode($skema->daftar_id_uk) }}">
+            <input type="hidden" name="daftar_id_skema" id="daftar_id_skema_hidden">
 
             <div class="flex flex-wrap gap-2 mb-4">
-                <button type="button" id="tambahBtn" class="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600">Tambah</button>
+                <button type="button" id="tambahBtn" class="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600">Tambah Skema</button>
             </div>
-
 
             <table class="w-full border border-gray-200 text-sm mb-4">
                 <thead>
                     <tr class="bg-gray-100">
-                        <th class="border border-gray-300 p-2 text-left font-semibold">Kode UK</th>
-                        <th class="border border-gray-300 p-2 text-left font-semibold">Nama UK</th>
-                        <th class="border border-gray-300 p-2 text-left font-semibold">Jenis Standar</th>
+                        <th class="border border-gray-300 p-2 text-left font-semibold">Nomor Skema</th>
+                        <th class="border border-gray-300 p-2 text-left font-semibold">Nama Skema</th>
                         <th class="border border-gray-300 p-2 text-left font-semibold">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="ukTableBody">
-                    @foreach(json_decode($skema->daftar_id_uk, true) as $kodeUK)
+                <tbody id="skemaTableBody">
+                    @foreach(json_decode($event->daftar_id_skema, true) as $nomorSkema)
                         @php
-                            $uk = $ukList->firstWhere('kode_uk', $kodeUK);
+                            $skema = $skemaList->firstWhere('nomor_skema', $nomorSkema);
                         @endphp
-                        @if($uk)
+                        @if($skema)
                             <tr>
-                                <td class="border border-gray-300 p-2">{{ $uk->kode_uk }}</td>
-                                <td class="border border-gray-300 p-2">{{ $uk->nama_uk }}</td>
-                                <td class="border border-gray-300 p-2">{{ $uk->jenis_standar }}</td>
+                                <td class="border border-gray-300 p-2">{{ $skema->nomor_skema }}</td>
+                                <td class="border border-gray-300 p-2">{{ $skema->nama_skema }}</td>
                                 <td class="border border-gray-300 p-2">
                                     <button type="button" class="hapusBtn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
                                         <i class="fas fa-trash-alt"></i> Hapus
