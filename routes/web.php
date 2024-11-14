@@ -29,11 +29,25 @@ Route::put('/admin5/{id}/update', [AdminController::class, 'updateDataAsesor'])-
 Route::delete('/admin5/{id}', [AdminController::class, 'destroyDataAsesor'])->name('admin.asesor.delete');
 
 Route::get('/admin3', [AdminController::class, 'indexDataSkema'])->name('admin.skema.index');
-Route::get('/admin3/create', [AdminController::class, 'createDataSkema'])->name('admin.skema.create');
+Route::get('/admin3/create', [AdminController::class, 'createDataSkema'])->name('admin.skema.create'); //karena perlu data uk
 Route::post('/admin3/create', [AdminController::class, 'storeDataSkema'])->name('admin.skema.store');
 Route::get('/admin3/{id}/edit', [AdminController::class, 'editDataSkema'])->name('admin.skema.edit');
 Route::put('/admin3/{id}/update', [AdminController::class, 'updateDataSkema'])->name('admin.skema.update');
 Route::delete('/admin3/{id}', [AdminController::class, 'destroyDataSkema'])->name('admin.skema.delete');
+
+Route::get('/admin7', [AdminController::class, 'indexDataUk'])->name('admin.uk.index');
+Route::get('/admin7/create', [AdminController::class, 'createDataUk'])->name('admin.uk.create');
+Route::post('/admin7/create', [AdminController::class, 'storeDataUk'])->name('admin.uk.store');
+Route::get('/admin7/{id}/edit', [AdminController::class, 'editDataUk'])->name('admin.uk.edit');
+Route::put('/admin7/{id}/update', [AdminController::class, 'updateDataUk'])->name('admin.uk.update');
+Route::delete('/admin7/{id}', [AdminController::class, 'destroyDataUk'])->name('admin.uk.delete');
+
+Route::get('/admin2', [AdminController::class, 'indexDataEvent'])->name('admin.event.index');
+Route::get('/admin2/create', [AdminController::class, 'createDataEvent'])->name('admin.event.create'); //karena perlu data skema
+Route::post('/admin2/create', [AdminController::class, 'storeDataEvent'])->name('admin.event.store');
+Route::get('/admin2/{id}/edit', [AdminController::class, 'editDataEvent'])->name('admin.event.edit');
+Route::put('/admin2/{id}/update', [AdminController::class, 'updateDataEvent'])->name('admin.event.update');
+Route::delete('/admin2/{id}', [AdminController::class, 'destroyDataEvent'])->name('admin.event.delete');
 
 // nyoba by bell skema
 // Route::prefix('admin3')->name('admin.skema.')->group(function() {
@@ -57,18 +71,18 @@ Route::delete('/admin3/{id}', [AdminController::class, 'destroyDataSkema'])->nam
 // });
 
 // Unit Kompetensi
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/units', [AdminController::class, 'indexDataUnits'])->name('units.index');
-    Route::get('/units/create', [AdminController::class, 'createDataUnit'])->name('units.create');
-    Route::post('/units', [AdminController::class, 'storeDataUnit'])->name('units.store');
-});
+// Route::prefix('admin')->name('admin.')->group(function () {
+//     Route::get('/units', [AdminController::class, 'indexDataUnits'])->name('units.index');
+//     Route::get('/units/create', [AdminController::class, 'createDataUnit'])->name('units.create');
+//     Route::post('/units', [AdminController::class, 'storeDataUnit'])->name('units.store');
+// });
 
 
 // Events
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/events/create', [AdminController::class, 'create'])->name('events.create');
-    Route::post('/events', [AdminController::class, 'store'])->name('events.store');
-});
+// Route::prefix('admin')->name('admin.')->group(function () {
+//     Route::get('/events/create', [AdminController::class, 'create'])->name('events.create');
+//     Route::post('/events', [AdminController::class, 'store'])->name('events.store');
+// });
 
 
 
@@ -124,9 +138,9 @@ Route::get('/masuk', function () {
     return view('home/home-visitor/masuk');
 });
 
-Route::get('/admin', function () {
-    return view('home/home-admin/event2');
-});
+// Route::get('/admin', function () {
+//     return view('home/home-admin/event2');
+// });
 
 // VISITOR
 // Route::get('/register', function () {
@@ -262,9 +276,9 @@ Route::get('/frak5', function () {
 Route::get('/home-admin', function () {
     return view('home/home-admin/home');
 })->name('home-admin');
-Route::get('/admin2', function () {
-    return view('home/home-admin/event');
-});
+// Route::get('/admin2', function () {
+//     return view('home/home-admin/event');
+// });
 // Route::get('/admin3', function () {
     //     return view('home/home-admin/skema');
     // });

@@ -6,7 +6,7 @@
 <div class="min-h-screen bg-gray-100">
   <div class="container mx-auto p-4">
     <!-- Tombol Tambah Event -->
-    <a href="{{ route('admin.events.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
+    <a href="{{ route('admin.event.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
       Tambah Event
     </a>
     <!-- Modal -->

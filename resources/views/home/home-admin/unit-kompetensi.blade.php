@@ -9,7 +9,7 @@
 
             <!-- Tombol Tambah Unit Kompetensi -->
             <div class="mb-4">
-                <a href="{{ route('admin.units.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <a href="{{ route('admin.uk.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Tambah Unit Kompetensi
                 </a>
             </div>
@@ -24,26 +24,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Data Dummy Unit Kompetensi -->
+                    @foreach ($uk as $uk)
                     <tr>
-                        <td class="border px-4 py-2">UK001</td>
-                        <td class="border px-4 py-2">Unit Kompetensi 1</td>
+                        <td class="border px-4 py-2">{{ $uk->kode_uk }}</td>
+                        <td class="border px-4 py-2">{{ $uk->nama_uk }}</td>
                         <td class="border px-4 py-2">
-                            <a href="#" class="text-blue-500 hover:underline">Edit</a>
-                            |
-                            <a href="#" class="text-red-500 hover:underline">Hapus</a>
+                            <a href="{{ route('admin.uk.edit', $uk->id_uk) }}" class="text-blue-500 hover:underline">Edit</a>
+                            <form action="{{ route('admin.uk.delete', $uk->id_uk) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-500 hover:underline">Hapus</button>
+                            </form>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="border px-4 py-2">UK002</td>
-                        <td class="border px-4 py-2">Unit Kompetensi 2</td>
-                        <td class="border px-4 py-2">
-                            <a href="#" class="text-blue-500 hover:underline">Edit</a>
-                            |
-                            <a href="#" class="text-red-500 hover:underline">Hapus</a>
-                        </td>
-                    </tr>
-                    <!-- Tambahkan data unit kompetensi lainnya sesuai kebutuhan -->
+                    @endforeach
                 </tbody>
             </table>
         </div>

@@ -8,7 +8,7 @@
         <h2 class="text-2xl font-bold text-center mb-6">Formulir Penambahan Asesor</h2>
 
         <!-- Form Tambah Asesor -->
-        <form action="{{ route('admin.asesor.store') }}" method="POST">
+        <form id="asesor-form" action="{{ route('admin.asesor.store') }}" method="POST">
             @csrf
 
             <!-- Grid Container untuk dua kolom -->
@@ -17,7 +17,7 @@
                 <!-- Bagian 1: Data Pribadi -->
                 <div>
                     <h3 class="text-xl font-semibold mb-4">Bagian 1: Data Pribadi</h3>
-                    
+
                     <div class="mb-4">
                         <label for="kode-registrasi" class="block text-gray-700">Kode Registrasi:</label>
                         <input type="text" name="kode_registrasi" id="kode-registrasi" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: SKN-01" required>
@@ -79,6 +79,11 @@
                         <label for="pendidikan-terakhir" class="block text-gray-700">Pendidikan Terakhir:</label>
                         <input type="text" name="pendidikan_terakhir" id="pendidikan-terakhir" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: S1 Teknik Informatika">
                     </div>
+
+                    <div class="mb-4 mt-4">
+                        <label for="no-ktp" class="block text-gray-700">No KTP:</label>
+                        <input type="text" id="no-ktp" name="no_ktp" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="33113456782" required>
+                    </div>
                 </div>
 
                 <!-- Bagian 2: Informasi Institusi dan Keahlian -->
@@ -126,6 +131,22 @@
                             <input type="text" name="fax_institusi_asal" id="fax-institusi-asal" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: 0274-1234568">
                         </div>
                     </div>
+
+                    <div class="mb-4 mt-4">
+                        <label for="email-institusi-asal" class="block text-gray-700">Email Institusi Asal:</label>
+                        <input type="email" id="email-institusi-asal" name="email_institusi_asal" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: ugm@gmail">
+                    </div>
+
+                    <div class="mb-4 mt-4">
+                        <label for="no-lisensi" class="block text-gray-700">No Lisensi:</label>
+                        <input type="text" id="no-lisensi" name="no_lisensi" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh:SK/22/55">
+                    </div>
+
+                    <div class="mb-4 mt-4">
+                        <label for="masa-berlaku" class="block text-gray-700">Masa Berlaku:</label>
+                        <input type="date" id="masa-berlaku" name="masa_berlaku" class="w-full p-2 border-2 border-gray-500 rounded-md">
+                    </div>
+
                 </div>
             </div>
 

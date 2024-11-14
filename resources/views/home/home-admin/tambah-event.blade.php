@@ -6,41 +6,119 @@
 <div class="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-4 text-center">Formulir Penambahan Event</h2>
-    
+
     <!-- Form Tambah Event -->
-    <form action="{{ route('admin.events.store') }}" method="POST">
+    <form action="{{ route('admin.event.store') }}" method="POST">
       @csrf
       <div class="mb-4">
-        <label for="event-name" class="block text-gray-700">Nama Event:</label>
-        <input type="text" name="event_name" id="event-name" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: EVENT-098-1238" required>
+        <label for="nama_event" class="block text-gray-700">Nama Event:</label>
+        <input type="text" name="nama_event" id="nama_event" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: EVENT-098-1238" required>
       </div>
-      
+
       <div class="mb-4">
-        <label for="start-date" class="block text-gray-700">Tanggal Mulai Event:</label>
-        <input type="date" name="start_date" id="start-date" class="w-full p-2 border-2 border-gray-500 rounded-md" required>
+        <label for="tanggal_mulai_event" class="block text-gray-700">Tanggal Mulai Event:</label>
+        <input type="date" name="tanggal_mulai_event" id="tanggal_mulai_event" class="w-full p-2 border-2 border-gray-500 rounded-md" required>
       </div>
-      
+
       <div class="mb-4">
-        <label for="end-date" class="block text-gray-700">Tanggal Berakhir Event:</label>
-        <input type="date" name="end_date" id="end-date" class="w-full p-2 border-2 border-gray-500 rounded-md" required>
+        <label for="tanggal_berakhir_event" class="block text-gray-700">Tanggal Berakhir Event:</label>
+        <input type="date" name="tanggal_berakhir_event" id="tanggal_berakhir_event" class="w-full p-2 border-2 border-gray-500 rounded-md" required>
       </div>
-      
+
       <div class="mb-4">
-        <label for="event-type" class="block text-gray-700">Tipe Event:</label>
-        <input type="text" name="event_type" id="event-type" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: Offline/Online" required>
+        <label for="tipe_event" class="block text-gray-700">Tipe Event:</label>
+        <input type="text" name="tipe_event" id="tipe_event" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: Offline/Online" required>
       </div>
-      
+
       <div class="mb-4">
-        <label for="event-scheme" class="block text-gray-700">Nama Skema:</label>
-        <div id="schemes-list">
-          <input type="text" name="event_scheme[]" class="w-full p-2 border-2 border-gray-500 rounded-md mb-2" placeholder="Contoh: SKM-XXXX" required>
-        </div>
-        <button type="button" id="add-scheme" class="bg-blue-500 text-white p-2 rounded">Tambah Skema</button>
+        <label for="tuk" class="block text-gray-700">TUK:</label>
+        <input type="text" name="tuk" id="tuk" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: TILC" required>
       </div>
-      
-      <div class="flex justify-end">
+
+      <div class="mb-4">
+        <label for="daftar_id_skema" class="block font-medium text-gray-700">Daftar Skema</label>
+        <select name="daftar_id_skema_select" id="daftar_id_skema" class="w-full border border-gray-300 rounded p-2">
+            <option value="">Pilih Skema</option>
+            @foreach($skemaList as $skema)
+                <option value="{{ $skema->nomor_skema }}" data-nama="{{ $skema->nama_skema }}">{{ $skema->nomor_skema }} - {{ $skema->nama_skema }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <input type="hidden" name="daftar_id_skema" id="daftar_id_skema_hidden">
+
+    <div class="flex flex-wrap gap-2 mb-4">
+        <button type="button" id="tambahBtn" class="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600">Tambah Skema</button>
+    </div>
+
+    <table class="w-full border border-gray-200 text-sm mb-4">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="border border-gray-300 p-2 text-left font-semibold">Nomor Skema</th>
+                <th class="border border-gray-300 p-2 text-left font-semibold">Nama Skema</th>
+                <th class="border border-gray-300 p-2 text-left font-semibold">Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="skemaTableBody">
+        </tbody>
+    </table>
+
+    <script>
+        const daftarSkema = []; // Array untuk menyimpan daftar kode UK yang ditambahkan
+
+        document.getElementById('tambahBtn').addEventListener('click', function() {
+            const select = document.getElementById('daftar_id_skema');
+            const nomorSkema = select.value;
+            const namaSkema = select.options[select.selectedIndex].getAttribute('data-nama');
+
+            if (nomorSkema && namaSkema && !daftarSkema.includes(nomorSkema)) {
+                daftarSkema.push(nomorSkema); // Tambah kode UK ke daftar
+
+                // Update hidden input
+                document.getElementById('daftar_id_skema_hidden').value = JSON.stringify(daftarSkema);
+
+                // Buat baris baru di tabel
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td class="border border-gray-300 p-2">${nomorSkema}</td>
+                    <td class="border border-gray-300 p-2">${namaSkema}</td>
+                    <td class="border border-gray-300 p-2">
+                        <button type="button" class="hapusBtn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
+                            <i class="fas fa-trash-alt"></i> Hapus
+                        </button>
+                    </td>
+                `;
+
+                document.getElementById('skemaTableBody').appendChild(newRow);
+
+                // Clear dropdown
+                select.value = '';
+            } else {
+                alert("Pilih skema yang belum ditambahkan.");
+            }
+        });
+
+        // Event delegation for delete buttons
+        document.getElementById('skemaTableBody').addEventListener('click', function(e) {
+            if (e.target && e.target.classList.contains('hapusBtn')) {
+                const row = e.target.closest('tr');
+                const nomorSkema = row.cells[0].innerText;
+
+                // Hapus nomorSkema dari daftar
+                daftarSkema.splice(daftarSkema.indexOf(nomorSkema), 1);
+
+                // Update hidden input
+                document.getElementById('daftar_id_skema_hidden').value = JSON.stringify(daftarSkema);
+
+                // Hapus baris dari tabel
+                row.remove();
+            }
+        });
+    </script>
+
+    <div class="flex justify-end">
         <button type="submit" class="bg-green-500 text-white p-2 rounded">Simpan Event</button>
-      </div>
+    </div>
     </form>
   </div>
 </div>
@@ -53,7 +131,7 @@
     newSchemeInput.name = 'event_scheme[]';
     newSchemeInput.classList.add('w-full', 'p-2', 'border-2', 'border-gray-500', 'rounded-md', 'mb-2');
     newSchemeInput.placeholder = 'Contoh: SKM-XXXX';
-    
+
     document.getElementById('schemes-list').appendChild(newSchemeInput);
   });
 </script>

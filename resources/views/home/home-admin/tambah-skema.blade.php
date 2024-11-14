@@ -7,6 +7,17 @@
     <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Tambah Skema</h2>
 
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+
         <form action="{{ route('admin.skema.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
@@ -14,38 +25,37 @@
             {{-- <div class="mb-4">
                 <label for="id_skema" class="block font-medium text-gray-700">ID Skema</label>
                 <input type="text" name="id_skema" id="id_skema" class="w-full border border-gray-300 rounded p-2" required>
-            </div>
+            </div> --}}
 
             <div class="mb-4">
                 <label for="nomor_skema" class="block font-medium text-gray-700">Nomor Skema</label>
-                <input type="text" name="nomor_skema" id="nomor_skema" class="w-full border border-gray-500 rounded p-2" placeholder="NS-123" required>
+                <input type="text" name="nomor_skema" id="nomor_skema" class="w-full border border-gray-300 rounded p-2" required>
             </div>
 
             <div class="mb-4">
                 <label for="nama_skema" class="block font-medium text-gray-700">Nama Skema</label>
-                <input type="text" name="nama_skema" id="nama_skema" class="w-full border border-gray-500 rounded p-2" placeholder="Contoh Nama Skema" required>
+                <input type="text" name="nama_skema" id="nama_skema" class="w-full border border-gray-300 rounded p-2" required>
             </div>
 
             <div class="mb-4">
                 <label for="dokumen_skkni" class="block font-medium text-gray-700">Dokumen SKKNI</label>
-                <input type="file" name="dokumen_skkni" id="dokumen_skkni" class="w-full border border-gray-500 rounded p-2">
+                <input type="file" name="dokumen_skkni" id="dokumen_skkni" class="w-full border border-gray-300 rounded p-2">
             </div>
 
             <div class="mb-4">
                 <label for="daftar_id_uk" class="block font-medium text-gray-700">Daftar Unit Kompetensi</label>
-                <select name="daftar_id_uk[]" id="daftar_id_uk" class="w-full border border-gray-300 rounded p-2" multiple required>
-                    <option value="UK001">UK001 - Unit Kompetensi A</option>
-                    <option value="UK002">UK002 - Unit Kompetensi B</option>
-                    <option value="UK003">UK003 - Unit Kompetensi C</option>
-                    <option value="UK004">UK004 - Unit Kompetensi D</option>
-                    <option value="UK005">UK005 - Unit Kompetensi E</option>
+                <select name="daftar_id_uk_select" id="daftar_id_uk" class="w-full border border-gray-300 rounded p-2">
+                    <option value="">Pilih UK</option>
+                    @foreach($ukList as $uk)
+                        <option value="{{ $uk->kode_uk }}" data-nama="{{ $uk->nama_uk }}">{{ $uk->kode_uk }} - {{ $uk->nama_uk }}</option>
+                    @endforeach
                 </select>
             </div>
 
             <input type="hidden" name="daftar_id_uk" id="daftar_id_uk_hidden">
 
             <div class="flex flex-wrap gap-2 mb-4">
-                <button type="button" id="tambahBtn" class="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600">Tambah</button>
+                <button type="button" id="tambahBtn" class="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600">Tambah UK</button>
             </div>
 
             <table class="w-full border border-gray-200 text-sm mb-4">
@@ -116,7 +126,7 @@
 
             <div class="mb-4">
                 <label for="persyaratan_skema" class="block font-medium text-gray-700">Persyaratan Skema</label>
-                <textarea name="persyaratan_skema" id="persyaratan_skema" class="w-full border border-gray-500 rounded p-2" rows="3" placeholder="Masukkan persyaratan untuk skema"></textarea>
+                <textarea name="persyaratan_skema" id="persyaratan_skema" class="w-full border border-gray-300 rounded p-2" rows="3" placeholder="Masukkan persyaratan untuk skema"></textarea>
             </div>
 
             <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded font-semibold hover:bg-blue-600">Tambah Skema</button>
