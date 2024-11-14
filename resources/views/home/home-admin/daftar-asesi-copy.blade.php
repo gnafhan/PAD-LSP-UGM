@@ -63,8 +63,7 @@
     </div>
 
     <h2 class="text-xl font-bold mb-4">Assign Asesi ke Asesor</h2>
-    <!-- Tambahkan ID pada tabel untuk DataTables -->
-    <table id="assignTable" class="w-full bg-white rounded-md shadow-md mb-4">
+    <table class="w-full bg-white rounded-md shadow-md mb-4">
       <thead>
         <tr class="bg-gray-200">
           <th class="p-2">No</th>
@@ -76,7 +75,6 @@
       <tbody>
         @foreach(range(1, 10) as $j)
         @php
-          $names = ['Annisa', 'Budi', 'Citra', 'Dedi', 'Elisa', 'Fikri', 'Gina', 'Hadi', 'Irma', 'Joko'];
           $randomName = $names[array_rand($names)];
         @endphp
         <tr>
@@ -106,20 +104,9 @@
 </div>
 
 <script>
-  $(document).ready(function() {
-    // Inisialisasi DataTables dengan pengaturan pagination
-    $('#asesiTable').DataTable({
-      "paging": true,       // Mengaktifkan pagination
-      "pageLength": 5,      // Jumlah baris per halaman
-      "lengthChange": true  // Menampilkan opsi untuk mengubah jumlah baris
-    });
-
-    $('#assignTable').DataTable({
-      "paging": true,
-      "pageLength": 5,
-      "lengthChange": true
-    });
-  });
+  function showDetail() {
+    const detailSection = document.getElementById('detail-pengajuan');
+    detailSection.classList.toggle('hidden');
+  }
 </script>
-
 @endsection

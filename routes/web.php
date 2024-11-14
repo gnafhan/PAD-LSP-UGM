@@ -22,7 +22,7 @@ Route::delete('/admin5/{id}', [AdminController::class, 'destroyDataAsesor'])->na
 // nyoba by bell skema
 Route::prefix('admin3')->name('admin.skema.')->group(function() {
     // Rute untuk menampilkan daftar skema
-    Route::get('/', [AdminController::class, 'indexDataSkema'])->name('index');
+    Route::get('/index', [AdminController::class, 'indexDataSkema'])->name('index');
 
     // Rute untuk form tambah skema
     Route::get('/create', [AdminController::class, 'createDataSkema'])->name('create');
@@ -194,6 +194,10 @@ Route::get('/persetujuan', function () {
     return view('home/home-asesi/persetujuan');
 });
 
+Route::get('/persetujuan1', function () {
+    return view('home/home-visitor/persetujuan');
+});
+
 Route::get('/ak1', function () {
     return view('home/home-asesi/FRAK-01/frak01');
 });
@@ -266,9 +270,6 @@ Route::get('/admin6', function () {
     return view('home/home-admin/settings');
 });
 Route::get('/form', function () {
-    return view('home/home-admin/form-asesor');
-}); // untuk nambah asesor
-Route::get('/', function () {
     return view('home/home-admin/form-asesor');
 }); // untuk nambah asesor
 Route::get('/dp', function () {

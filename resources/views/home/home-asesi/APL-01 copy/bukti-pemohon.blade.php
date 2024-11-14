@@ -8,7 +8,7 @@
     <div class="w-3/4 bg-white rounded-lg shadow-lg p-6">
 
         <div class="flex flex-wrap gap-2">
-            <a href="/apl/2" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
+            <a href="/apl1/b2" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
             <div class="bg-green-500 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
             FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI
             </div>
