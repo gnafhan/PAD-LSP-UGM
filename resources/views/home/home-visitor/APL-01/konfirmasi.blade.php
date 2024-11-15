@@ -106,10 +106,5 @@
         <div class="flex justify-end">
             <a href="/home" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Konfirmasi</a>
         </div>
-        <!-- <div class="flex justify-end mt-6">
-            <!-- <form action="/home" method="POST">
-                @csrf
-                <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700">Konfirmasi</button>
-            </form> -->
-        </div> -->
+    </div>
 @endsection

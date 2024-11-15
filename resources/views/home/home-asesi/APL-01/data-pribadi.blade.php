@@ -56,7 +56,7 @@
                 </div>
 
             <!-- Form Card untuk Profil Peserta -->
-            <form action="{{ route('sertifikasi') }}" method="POST" class="border border-gray-300 rounded-lg p-4">
+        <form action="{{ route('sertifikasi') }}" method="POST" class="border border-gray-300 rounded-lg p-4" readonly disabled>
             @csrf
             <h2 class="text-lg font-semibold mb-4">Bagian 1 : Rincian Data Pemohon Sertifikasi</h2>
             <p class="text-sm mb-6">Pada bagian ini, cantumkan data pribadi, data pendidikan formal serta data pekerjaan anda pada saat ini.</p>
@@ -64,32 +64,32 @@
             <!-- Isi Form -->
             <div class="mb-4">
                 <label for="nama_user" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                <input type="text" id="nama_user" name="nama_user" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Belda Putri Pramono">
+                <input type="text" id="nama_user" name="nama_user" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Belda Putri Pramono" readonly disabled>
             </div>
 
             <div class="mb-4">
                 <label for="nik" class="block text-sm font-medium text-gray-700">NIK</label>
-                <input type="text" id="nik" name="nik" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="1234567890123456">
+                <input type="text" id="nik" name="nik" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="1234567890123456" readonly disabled>
             </div>
 
             <div class="mb-4">
                 <label for="nim" class="block text-sm font-medium text-gray-700">NIM</label>
-                <input type="text" id="nim" name="nim" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="123456789">
+                <input type="text" id="nim" name="nim" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="23/519666/SV/23155" readonly disabled>
             </div>
 
             <div class="mb-4">
                 <label for="kota_domisili" class="block text-sm font-medium text-gray-700">Kota Domisili</label>
-                <input type="text" id="kota_domisili" name="kota_domisili" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Yogyakarta">
+                <input type="text" id="kota_domisili" name="kota_domisili" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Yogyakarta" readonly disabled>
             </div>
 
             <div class="mb-4">
                 <label for="tempat_tanggal_lahir" class="block text-sm font-medium text-gray-700">Tempat dan Tanggal Lahir</label>
-                <input type="text" id="tempat_tanggal_lahir" name="tempat_tanggal_lahir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Yogyakarta, 01 Januari 2000">
+                <input type="text" id="tempat_tanggal_lahir" name="tempat_tanggal_lahir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Yogyakarta, 01 Januari 2000" readonly disabled>
             </div>
 
             <div class="mb-4">
                 <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                <select id="jenis_kelamin" name="jenis_kelamin" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
+                <select id="jenis_kelamin" name="jenis_kelamin" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm" readonly disabled>
                     <option value="pria">Pria</option>
                     <option value="wanita">Wanita</option>
                 </select>
@@ -97,22 +97,22 @@
 
             <div class="mb-4">
                 <label for="kebangsaan" class="block text-sm font-medium text-gray-700">Kebangsaan</label>
-                <input type="text" id="kebangsaan" name="kebangsaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Indonesia">
+                <input type="text" id="kebangsaan" name="kebangsaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Indonesia" readonly disabled>
             </div>
 
             <div class="mb-4">
                 <label for="alamat_rumah" class="block text-sm font-medium text-gray-700">Alamat Rumah</label>
-                <input type="text" id="alamat_rumah" name="alamat_rumah" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Jl. Merdeka No. 10, Yogyakarta">
+                <input type="text" id="alamat_rumah" name="alamat_rumah" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Jl. Merdeka No. 10, Yogyakarta" readonly disabled>
             </div>
 
             <div class="mb-4">
                 <label for="no_telp" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                <input type="text" id="no_telp" name="no_telp" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="081234567890">
+                <input type="text" id="no_telp" name="no_telp" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="081234567890" readonly disabled>
             </div>
 
             <div class="mb-4">
                 <label for="pendidikan_terakhir" class="block text-sm font-medium text-gray-700">Pendidikan Terakhir</label>
-                <input type="text" id="pendidikan_terakhir" name="pendidikan_terakhir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Sarjana Teknik Informatika">
+                <input type="text" id="pendidikan_terakhir" name="pendidikan_terakhir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Sarjana Teknik Informatika" readonly  disabled>
             </div>
 
             <!-- Button Kembali dan Selanjutnya -->

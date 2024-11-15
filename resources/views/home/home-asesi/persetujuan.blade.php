@@ -21,13 +21,13 @@
                 </ul>
                 <div class="mt-4">
                     <label class="block text-sm font-medium mb-1" for="signature-upload">Tanda Tangan Saya</label>
-                    <input type="file" id="signature-upload" name="signature" class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-2 focus:outline-none">
+                    <input type="file" id="signature-upload" name="signature" class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-2 focus:outline-none" readonly disabled>
                     <p class="mt-2 text-gray-700">Belda Putri Pramono</p>
                     <p class="text-gray-700">Tanggal: 20-10-2024</p>
                 </div>
             </div>
             <div class="flex justify-end items-center border-t p-2">
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600">Setuju</button>
+                <button type="submit" class="bg-green-300 text-white px-4 py-2 rounded mr-2 " disabled>Setuju</button>
                 <a href="/assesi" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Tutup</a>
             </div>
         </form>

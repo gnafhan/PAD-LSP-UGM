@@ -92,7 +92,7 @@
               <td colspan="8" class="border px-4 py-2">
                 <div class="flex flex-wrap space-x-2 md:space-x-3">
                   <a href="/persetujuan" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition my-2">Persetujuan</a>
-                  <a href="/apl/1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.01</a>
+                  <a href="/apl1/1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.01</a>
                   <a href="/apl2" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.02</a>
                   <a href="/ak1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK.01</a>
                   <a href="/ia2" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.IA.02 SOAL PRAKTEK/UPLOAD JAWABAN</a>

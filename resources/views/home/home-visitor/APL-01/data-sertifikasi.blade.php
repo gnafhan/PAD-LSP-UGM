@@ -75,8 +75,11 @@
 
                         <div class="mb-4">
                             <label for="skemaDropdown" class="block text-sm font-medium text-gray-700">Judul Skema Sertifikasi</label>
-                            <select id="skemaDropdown" name="skemaDropdown" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
+                            <select id="skemaDropdown" name="skemaDropdown" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                 <option value="">Pilih Skema</option>
+                                @foreach($skemaList as $skema)
+                                    <option value="{{ $skema->nama_skema }}">{{ $skema->nama_skema }}</option>
+                                @endforeach
                             </select>
                         </div>
 
