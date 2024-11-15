@@ -13,11 +13,28 @@ use Illuminate\Support\Facades\Storage;
 
 class PengajuanController extends Controller
 {
-    public function __construct()
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
+
+    public function savePersetujuan()
     {
-        $this->middleware('auth');
+        return redirect('/apl1/b1');
     }
 
+    public function saveDataPribadi(Request $request)
+    {
+        $dataPribadi = $request->only([
+            'nama_user', 'nik', 'nim', 'kota_domisili',
+            'tempat_tanggal_lahir', 'jenis_kelamin',
+            'kebangsaan', 'alamat_rumah', 'no_telp',
+            'pendidikan_terakhir'
+        ]);
+
+        session(['dataPribadi' => $dataPribadi]);
+        return response()->json(['message' => 'Data pribadi berhasil disimpan.']);
+    }
 
     public function showDataSertifikasi()
     {
@@ -53,18 +70,6 @@ class PengajuanController extends Controller
         }
     }
 
-    public function saveDataPribadi(Request $request)
-    {
-        $dataPribadi = $request->only([
-            'nama_user', 'nik', 'nim', 'kota_domisili',
-            'tempat_tanggal_lahir', 'jenis_kelamin',
-            'kebangsaan', 'alamat_rumah', 'no_telp',
-            'pendidikan_terakhir'
-        ]);
-
-        session(['dataPribadi' => $dataPribadi]);
-        return response()->json(['message' => 'Data pribadi berhasil disimpan.']);
-    }
 
     public function saveDataSertifikasi(Request $request)
     {
@@ -95,9 +100,14 @@ class PengajuanController extends Controller
 
             // dd($dataPribadi, $dataSertifikasi);
 
-            if (empty($dataPribadi) || empty($dataSertifikasi)) {
-                return redirect()->back()->with('errorSession', 'Data session dataPribadi atau dataSertifikasi tidak ditemukan.');
+            if (empty($dataPribadi) && empty($dataSertifikasi)) {
+                return redirect()->back()->with('errorSession', 'Data session dataPribadi dan dataSertifikasi tidak ditemukan.');
+            } elseif (empty($dataPribadi)) {
+                return redirect()->back()->with('errorSession', 'Data session dataPribadi tidak ditemukan.');
+            } elseif (empty($dataSertifikasi)) {
+                return redirect()->back()->with('errorSession', 'Data session dataSertifikasi tidak ditemukan.');
             }
+
 
             $data = array_merge($dataPribadi, $dataSertifikasi, $request->all());
 

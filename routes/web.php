@@ -108,22 +108,27 @@ Route::delete('/admin2/{id}', [AdminController::class, 'destroyDataEvent'])->nam
 
 
 // DAFTAR SKEMA IN VISITOR
-Route::get('/apl/1', function () {
-    return view('home/home-visitor/APL-01/data1');
+Route::get('/setuju', function () {
+    return view('home/home-visitor/persetujuan'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
 });
-Route::get('/apl/2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
+Route::post('/save/persetujuan', [PengajuanController::class, 'savePersetujuan'])->name('save.persetujuan');
 
+Route::get('/apl1/b1', function () {
+    return view('home/home-visitor/APL-01/data-pribadi');
+});
+Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
+
+Route::post('/apl1/b2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
 Route::get('/get-nomor-skema', [PengajuanController::class, 'getNomorSkema']);
 Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
-
-Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
 Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save.data.sertifikasi');
-Route::post('/apl/3', [PengajuanController::class, 'storePengajuan'])->name('save');
-Route::get('/apl/3', function () {
+
+Route::post('/save-data-pengajuan', [PengajuanController::class, 'storePengajuan'])->name('save');
+Route::get('/apl1/b3', function () {
     return view('home/home-visitor/APL-01/bukti-pemohon');
 })->name('bukti');
 
-Route::get('/apl/b4', function () {
+Route::get('/apl1/b4', function () {
     return view('home/home-visitor/APL-01/konfirmasi');
 })->name('konfirmasi');
 
@@ -193,21 +198,16 @@ Route::get('/assesi', function () {
 // HOME VISITOR SETELAH ASESI LOGIN
 
 // DAFTAR SKEMA
-Route::get('/setuju', function () {
-    return view('home/home-visitor/persetujuan'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
-});
-Route::get('/apl/1', function () {
-    return view('home/home-visitor/APL-01/data-pribadi'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
-});
-Route::get('/apl/2', function () {
-    return view('home/home-visitor/APL-01/data-sertifikasi'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
-});
-Route::get('/apl/3', function () {
-    return view('home/home-visitor/APL-01/bukti-pemohon'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
-});
-Route::get('/apl/4', function () {
-    return view('home/home-visitor/APL-01/konfirmasi'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
-});
+
+// Route::get('/apl/1', function () {
+//     return view('home/home-visitor/APL-01/data-pribadi'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
+// });
+// Route::get('/apl/3', function () {
+//     return view('home/home-visitor/APL-01/bukti-pemohon'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
+// });
+// Route::get('/apl/4', function () {
+//     return view('home/home-visitor/APL-01/konfirmasi'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
+// });
 
 // BAGIAN PILIH AKSI
 
@@ -318,7 +318,7 @@ Route::get('password/reset/{token}', [PasswordResetController::class, 'showReset
 Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.update'); // buat isi token pake post
 
 // //testing home-asesi
-Route::get('/home-asesi', [AsesiController::class, 'index'])->middleware('auth');
+Route::get('/home-asesi', [AsesiController::class, 'index']);
 
 
 

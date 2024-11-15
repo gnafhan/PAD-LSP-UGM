@@ -1,4 +1,4 @@
-@extends('home.home-asesi.layouts.layout-asesi')
+@extends('home.home-visitor.layouts.layout')
 
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
@@ -90,8 +90,8 @@
             <div class="mb-4">
                 <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
                 <select id="jenis_kelamin" name="jenis_kelamin" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
-                    <option value="pria">Pria</option>
-                    <option value="wanita">Wanita</option>
+                    <option value="Pria">Pria</option>
+                    <option value="Wanita">Wanita</option>
                 </select>
             </div>
 
@@ -117,7 +117,8 @@
 
             <!-- Button Kembali dan Selanjutnya -->
             <div class="flex justify-end">
-                <a href="/apl/2" type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>
+                {{-- <a href="/apl/2" type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a> --}}
+                <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</button>
             </div>
         </form>
 
@@ -146,7 +147,6 @@
                 no_telp: $('#no_telp').val(),
                 pendidikan_terakhir: $('#pendidikan_terakhir').val(),
             };
-
             $.ajax({
                 url: '/save-data-pribadi',
                 type: 'POST',

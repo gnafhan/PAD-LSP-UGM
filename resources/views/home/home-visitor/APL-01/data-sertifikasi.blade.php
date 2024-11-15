@@ -18,107 +18,110 @@
         <h2 class="text-lg font-semibold mb-4">FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI </h2>
     </div>
 
-                <!-- Progress Bar -->
-                <div class="w-full max-w-4xl mx-auto px-4">
-                    <div class="flex flex-col md:flex-row justify-start items-start mb-8">
-                        <!-- Step 1 -->
-                        <div class="flex items-center mb-4 md:mb-0 md:w-auto">
-                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">1</div>
-                            <p class="text-sm text-gray-800 ml-2">Rincian Data Pemohon Sertifikasi</p>
-                        </div>
-                        
-                        <!-- Garis Penghubung (dihide di tampilan kecil) -->
-                        <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
-                        
-                        <!-- Step 2 -->
-                        <div class="flex items-center mb-4 md:mb-0 md:w-auto">
-                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">2</div>
-                            <p class="text-sm text-gray-800 ml-2">Data Sertifikasi</p>
-                        </div>
-                        
-                        <!-- Garis Penghubung (dihide di tampilan kecil) -->
-                        <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
-                        
-                        <!-- Step 3 -->
-                        <div class="flex items-center mb-4 md:mb-0 md:w-auto">
-                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">3</div>
-                            <p class="text-sm text-gray-800 ml-2">Bukti Kelengkapan Pemohon</p>
-                        </div>
-                        
-                        <!-- Garis Penghubung (dihide di tampilan kecil) -->
-                        <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
-                        
-                        <!-- Step 4 -->
-                        <div class="flex items-center">
-                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>
-                            <p class="text-sm text-gray-800 ml-2">Konfirmasi Data Asesi</p>
-                        </div>
-                    </div>
+    <!-- Progress Bar -->
+    <div class="w-full max-w-4xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-start items-start mb-8">
+            <!-- Step 1 -->
+            <div class="flex items-center mb-4 md:mb-0 md:w-auto">
+                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">1</div>
+                <p class="text-sm text-gray-800 ml-2">Rincian Data Pemohon Sertifikasi</p>
+            </div>
+
+            <!-- Garis Penghubung (dihide di tampilan kecil) -->
+            <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
+
+            <!-- Step 2 -->
+            <div class="flex items-center mb-4 md:mb-0 md:w-auto">
+                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">2</div>
+                <p class="text-sm text-gray-800 ml-2">Data Sertifikasi</p>
+            </div>
+
+            <!-- Garis Penghubung (dihide di tampilan kecil) -->
+            <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
+
+            <!-- Step 3 -->
+            <div class="flex items-center mb-4 md:mb-0 md:w-auto">
+                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">3</div>
+                <p class="text-sm text-gray-800 ml-2">Bukti Kelengkapan Pemohon</p>
+            </div>
+
+            <!-- Garis Penghubung (dihide di tampilan kecil) -->
+            <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
+
+            <!-- Step 4 -->
+            <div class="flex items-center">
+                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>
+                <p class="text-sm text-gray-800 ml-2">Konfirmasi Data Asesi</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="rounded-lg p-4">
+        <h2 class="text-lg font-semibold mb-4">Bagian 2 : Data Sertifikasi</h2>
+        <p class="text-sm mb-6">Tuliskan Judul dan Nomor Skema Sertifikasi, Tujuan Assesmen serta Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi yang Anda ajukan untuk mendapatkan pengakuan sesuai dengan latar belakang pendidikan, pelatihan serta pengalaman kerja yang Anda miliki.</p>
+
+        <form id="sertifikasiForm" method="POST" action="{{ route('save.data.sertifikasi') }}">
+            @csrf
+            <div class="border border-gray-300 rounded-lg p-4 mb-6">
+                <div class="mb-4">
+                    <label for="skema_sertifikasi" class="block text-sm font-medium text-gray-700">Skema Sertifikasi</label>
+                    <select id="skema_sertifikasi" name="skema_sertifikasi" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
+                        <option value="kkni">KKNI</option>
+                        <option value="okupasi">Okupasi</option>
+                        <option value="klaster">Klaster</option>
+                    </select>
                 </div>
 
-                <div class="rounded-lg p-4">
-                    <h2 class="text-lg font-semibold mb-4">Bagian 2 : Data Sertifikasi</h2>
-                    <p class="text-sm mb-6">Tuliskan Judul dan Nomor Skema Sertifikasi, Tujuan Assesmen serta Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi yang Anda ajukan untuk mendapatkan pengakuan sesuai dengan latar belakang pendidikan, pelatihan serta pengalaman kerja yang Anda miliki.</p>
-
-                    <form id="sertifikasiForm" method="POST" action="{{ route('save.data.sertifikasi') }}">
-                    @csrf
-                    <!-- Certification Details -->
-                    <div class="border border-gray-300 rounded-lg p-4 mb-6">
-                        <div class="mb-4">
-                            <label for="skema_sertifikasi" class="block text-sm font-medium text-gray-700">Skema Sertifikasi</label>
-                            <select id="skema_sertifikasi" name="skema_sertifikasi" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
-                                <option value="kkni">KKNI</option>
-                                <option value="okupasi">Okupasi</option>
-                                <option value="klaster">Klaster</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="skemaDropdown" class="block text-sm font-medium text-gray-700">Judul Skema Sertifikasi</label>
-                            <select id="skemaDropdown" name="skemaDropdown" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
-                                <option value="">Pilih Skema</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="nomorSkemaInput" class="block text-sm font-medium text-gray-700">Nomor Skema Sertifikasi</label>
-                            <input type="text" id="nomorSkemaInput" name="nomorSkemaInput" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm" value="" placeholder="SKKNI-0102">
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="tujuan_asesmen" class="block text-sm font-medium text-gray-700">Tujuan Assesmen</label>
-                            <select id="tujuan_asesmen" name="tujuan_asesmen" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
-                                <option value="sertifikasi">Sertifikasi</option>
-                                <option value="pkt">Pengakuan Kompetensi Terkini '(PKT)'</option>
-                                <option value="rpl">Rekognisi Pembelajaran Lampau '(RPL)'</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Competency Table -->
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold mb-4">Daftar Unit Kompetensi</h3>
-                        <table class="w-full border-collapse border border-gray-300 text-sm">
-                            <thead>
-                                <tr class="bg-gray-200">
-                                    <th class="border border-gray-300 p-2">No.</th>
-                                    <th class="border border-gray-300 p-2">Kode Unit</th>
-                                    <th class="border border-gray-300 p-2">Judul Unit</th>
-                                    <th class="border border-gray-300 p-2">Jenis Standar (Standar Khusus/Standar Internasional/SKKNI)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ukTableBody">
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Button Kembali dan Selanjutnya -->
-                    <div class="flex justify-end">
-                        <a href="/apl/3" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a>
-                    </div>
-                    </form>
+                <div class="mb-4">
+                    <label for="skemaDropdown" class="block text-sm font-medium text-gray-700">Judul Skema Sertifikasi</label>
+                    <select id="skemaDropdown" name="skemaDropdown" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
+                        <option value="">Pilih Skema</option>
+                        @foreach($skemaList as $skema)
+                            <option value="{{ $skema->nama_skema }}">{{ $skema->nama_skema }}</option>
+                        @endforeach
+                    </select>
                 </div>
+
+                <div class="mb-4">
+                    <label for="nomorSkemaInput" class="block text-sm font-medium text-gray-700">Nomor Skema Sertifikasi</label>
+                    <input type="text" id="nomorSkemaInput" name="nomorSkemaInput" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm" value="" placeholder="SKKNI-0102">
+                </div>
+
+                <div class="mb-4">
+                    <label for="tujuan_asesmen" class="block text-sm font-medium text-gray-700">Tujuan Assesmen</label>
+                    <select id="tujuan_asesmen" name="tujuan_asesmen" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
+                        <option value="sertifikasi">Sertifikasi</option>
+                        <option value="pkt">Pengakuan Kompetensi Terkini '(PKT)'</option>
+                        <option value="rpl">Rekognisi Pembelajaran Lampau '(RPL)'</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Competency Table -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-4">Daftar Unit Kompetensi</h3>
+                <table class="w-full border-collapse border border-gray-300 text-sm">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="border border-gray-300 p-2">No.</th>
+                            <th class="border border-gray-300 p-2">Kode Unit</th>
+                            <th class="border border-gray-300 p-2">Judul Unit</th>
+                            <th class="border border-gray-300 p-2">Jenis Standar (Standar Khusus/Standar Internasional/SKKNI)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ukTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Button Kembali dan Selanjutnya -->
+            <div class="flex justify-end">
+                {{-- <a href="/apl/3" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a> --}}
+                <button type="submit" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</button>
+            </div>
+        </form>
+    </div>
 </div>
 </div>
 @endsection
