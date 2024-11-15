@@ -3,14 +3,15 @@
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gray-100">
-<div class="container mx-auto p-4">
-    <div class="mb-5">
+<div class="min-h-screen bg-gray-100 p-4">
+    <div class="container mx-auto p-4">
+    <div class="mb-4">
     <!-- Tombol Tambah Skema -->
       <a href="{{ route('admin.skema.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
         Tambah Skema
       </a>
     </div>
+
     <!-- Form Tambah Skema -->
     <div id="schemeModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
       <div class="bg-white rounded-md p-6 w-1/2">
@@ -71,11 +72,11 @@
                 <td class="p-2">
                     {{-- <button class="bg-yellow-500 text-white p-1 rounded">Edit</button>
                     <button class="bg-red-500 text-white p-1 rounded">Hapus</button> --}}
-                    <a href="{{ route('admin.skema.edit', $skema->id_skema) }}" class="bg-yellow-500 text-white p-1 rounded">Edit</a>
+                    <a href="{{ route('admin.skema.edit', $skema->id_skema) }}" class="bg-blue-500 text-white p-1 rounded">Edit</a>
                     <form action="{{ route('admin.skema.delete', $skema->id_skema) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="bg-yellow-500 text-white p-1 rounded">Hapus</button>
+                        <button type="submit" class="bg-red-500 text-white p-1 rounded">Hapus</button>
                     </form>
                 </td>
             </tr>

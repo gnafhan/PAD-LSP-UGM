@@ -3,15 +3,17 @@
 @section('title', 'Event Management - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gray-100">
-    <div class="container mx-auto px-6 py-8">
+<div class="min-h-screen bg-gray-100 p-4">
+    <div class="container mx-auto p-4">
         <div class="mb-8">
             <!-- Tombol Tambah Event -->
+             <div class="mb-4">
             <a href="{{ route('admin.event.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
                 Tambah Event
             </a>
+            </div>
 
-            <!-- Form Event Modal -->
+            <!-- Form Event -->
             {{-- <div id="eventModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
                 <div class="bg-white rounded-md p-6 w-full max-w-lg mx-4">
                     <h2 class="text-xl font-bold mb-4">Tambah Event</h2>
@@ -79,16 +81,16 @@
                                 <a href="/admin5" class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded">Asesor</a>
                             </td>
                             <td class="p-2">
-                                <a href="/btn-asesi" class="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">Asesi</a>
+                                <a href="/btn-asesi" class="bg-gray-500 hover:bg-gray-600 text-white p-1 rounded">Asesi</a>
                             </td>
                             <td class="p-2">
-                                <a href="{{ route('admin.event.edit', $event->id_event) }}" class="bg-yellow-500 text-white p-1 rounded">Edit</a>
+                                <a href="{{ route('admin.event.edit', $event->id_event) }}" class="bg-blue-500 text-white p-1 rounded">Edit</a>
                             </td>
                             <td class="p-2">
                                 <form action="{{ route('admin.event.delete', $event->id_event) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="bg-yellow-500 text-white p-1 rounded">Hapus</button>
+                                    <button type="submit" class="bg-red-500 text-white p-1 rounded">Hapus</button>
                                 </form>
                             </td>
                         </tr>

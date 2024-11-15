@@ -5,11 +5,13 @@
 @section('content')
 <div class="min-h-screen bg-gray-100 p-4">
     <div class="container mx-auto p-4">
-        <h2 class="text-2xl font-bold mb-6 text-center">Daftar Asesor</h2>
+        
 
         <div class="mb-4 flex justify-start">
-            <a href="/form" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200">Tambah Asesor</a>
+            <a href="/form" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-200">Tambah Asesor</a>
         </div>
+
+        <h2 class="text-xl font-bold mb-6">Daftar Asesor</h2>
 
         <table class="min-w-full bg-white rounded-md shadow-md">
             <thead>

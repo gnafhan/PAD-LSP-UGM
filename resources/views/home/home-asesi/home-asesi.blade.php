@@ -25,7 +25,7 @@
                     <tbody>
                         <tr class="hover:bg-gray-100 transition duration-150">
                             <td class="border border-gray-300 px-4 py-2 font-medium">ID Peserta</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ $user->id_asesi }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ $user->id_user }}</td>
                         </tr>
                         <tr class="hover:bg-gray-100 transition duration-150">
                             <td class="border border-gray-300 px-4 py-2 font-medium">Email</td>

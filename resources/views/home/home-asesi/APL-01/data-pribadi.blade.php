@@ -6,13 +6,15 @@
     <div class="min-h-screen bg-gray-100 flex items-center justify-center">
         <div class="w-3/4 bg-white rounded-lg shadow-lg p-6">
 
-            <div class="flex flex-wrap gap-2">
-                <a href="/assesi" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
-                <div class="bg-green-500 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
-                    FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI
-                </div>
+        <div class="flex flex-wrap gap-2 items-center">
+            <a href="/assesi" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
+                Kembali
+            </a>
+            <div class="bg-green-500 text-white px-2 py-1 rounded text-xs sm:text-sm md:text-base lg:text-lg text-center w-full md:w-auto">
+                FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI
             </div>
 
+        </div>
             <div class="flex flex-wrap gap-3 mt-5">
                 <h2 class="text-lg font-semibold mb-4">FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI</h2>
             </div>

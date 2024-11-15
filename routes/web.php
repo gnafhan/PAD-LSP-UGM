@@ -29,7 +29,7 @@ Route::get('/profile', function () {
     return view('home/home-visitor/profile');
 });
 Route::get('/skema', function () {
-    return view('home/skema');
+    return view('home/home-visitor/skema');
 });
 
 // HOME  ASESI SETELAH MELAKUKAN REGISTER
