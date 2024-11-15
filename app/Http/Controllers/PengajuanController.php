@@ -22,7 +22,7 @@ class PengajuanController extends Controller
     public function showDataSertifikasi()
     {
         $skemaList = Skema::all();
-        return view('home.home-asesi.APL-01.data-sertifikasi', ['skemaList' => $skemaList,]);
+        return view('home.home-visitor.APL-01.data-sertifikasi', ['skemaList' => $skemaList,]);
     }
 
     public function getNomorSkema(Request $request)

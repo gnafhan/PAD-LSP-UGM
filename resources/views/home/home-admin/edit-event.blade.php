@@ -42,7 +42,7 @@
                 <select name="daftar_id_skema_select" id="daftar_id_skema" class="w-full border border-gray-300 rounded p-2">
                     <option value="">Pilih Skema</option>
                     @foreach($skemaList as $skema)
-                        <option value="{{ $skema->nomor_skema }}" data-nama="{{ $skema->nama_skema }}">{{ $skema->nomor_skema }} - {{ $skema->nama_skema }}</option>
+                        <option value="{{ $skema->id_skema }}" data-nomor="{{ $skema->nomor_skema }}" data-nama="{{ $skema->nama_skema }}">{{ $skema->nomor_skema }} - {{ $skema->nama_skema }}</option>
                     @endforeach
                 </select>
             </div>
@@ -89,61 +89,58 @@
 </div>
 <script>
     // Ambil data unit kompetensi dan daftar_id_uk dari JSON yang dikirim oleh controller
-    const unitKompetensiList = {!! $unitKompetensiJson !!};
-    const daftarIdUk = JSON.parse('{!! $daftarIdUkJson !!}'); // Parse JSON dari PHP
+    const skemaList = {!! $skemaJson !!};
+    const daftarIdSkema = JSON.parse('{!! $daftarIdSkemaJson !!}'); // Parse JSON dari PHP
 
     // Fungsi untuk mengisi tabel dengan data Unit Kompetensi yang sudah ada
-    function isiTabelUK() {
-        const ukTableBody = document.getElementById('ukTableBody');
-        ukTableBody.innerHTML = ''; // Hapus isi tabel saat ini
+    function isiTabelSkema() {
+        const skemaTableBody = document.getElementById('skemaTableBody');
+        skemaTableBody.innerHTML = ''; // Hapus isi tabel saat ini
 
         // Iterasi setiap id_uk yang ada di daftarIdUk
-        daftarIdUk.forEach(idUk => {
+        daftarIdSkema.forEach(idSkema => {
             // Cari unit kompetensi yang sesuai berdasarkan id_uk
-            const uk = unitKompetensiList.find(uk => uk.id_uk === idUk);
+            const skema = skemaList.find(skema => skema.id_skema === idSkema);
 
-            if (uk) {
+            if (skema) {
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-                    <td class="border border-gray-300 p-2">${uk.kode_uk}</td>
-                    <td class="border border-gray-300 p-2">${uk.nama_uk}</td>
-                    <td class="border border-gray-300 p-2">${uk.jenis_standar}</td>
+                    <td class="border border-gray-300 p-2">${skema.nomor_skema}</td>
+                    <td class="border border-gray-300 p-2">${skema.nama_skema}</td>
                     <td class="border border-gray-300 p-2">
                         <button type="button" class="hapusBtn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
                             <i class="fas fa-trash-alt"></i> Hapus
                         </button>
                     </td>
                 `;
-                ukTableBody.appendChild(newRow);
+                skemaTableBody.appendChild(newRow);
             }
         });
 
-        document.getElementById('daftar_id_uk_hidden').value = JSON.stringify(daftarIdUk);
+        document.getElementById('daftar_id_skema_hidden').value = JSON.stringify(daftarIdSkema);
     }
 
     // Panggil fungsi untuk inisialisasi tabel saat halaman di-load
-    document.addEventListener('DOMContentLoaded', isiTabelUK);
+    document.addEventListener('DOMContentLoaded', isiTabelSkema);
 
     // Tambahkan unit kompetensi baru
     document.getElementById('tambahBtn').addEventListener('click', function() {
-        const select = document.getElementById('daftar_id_uk');
-        const idUK = select.value;
-        const kodeUK = select.options[select.selectedIndex].getAttribute('data-kode');
-        const namaUK = select.options[select.selectedIndex].getAttribute('data-nama');
-        const jenisStandar = select.options[select.selectedIndex].getAttribute('data-jenis-standar');
+        const select = document.getElementById('daftar_id_skema');
+        const idSkema = select.value;
+        const nomorSkema = select.options[select.selectedIndex].getAttribute('data-nomor');
+        const namaSkema = select.options[select.selectedIndex].getAttribute('data-nama');
 
-        if (idUK && namaUK && !daftarIdUk.includes(idUK)) {
-            daftarIdUk.push(idUK);
+        if (idSkema && namaSkema && !daftarIdSkema.includes(idSkema)) {
+            daftarIdSkema.push(idSkema);
 
             // Perbarui input hidden
-            document.getElementById('daftar_id_uk_hidden').value = JSON.stringify(daftarIdUk);
+            document.getElementById('daftar_id_skema_hidden').value = JSON.stringify(daftarIdSkema);
 
             const newRow = document.createElement('tr');
-            newRow.setAttribute('data-id', idUK);
+            newRow.setAttribute('data-id', idSkema);
             newRow.innerHTML = `
-                <td class="border border-gray-300 p-2">${kodeUK}</td>
-                <td class="border border-gray-300 p-2">${namaUK}</td>
-                <td class="border border-gray-300 p-2">${jenisStandar}</td>
+                <td class="border border-gray-300 p-2">${nomorSkema}</td>
+                <td class="border border-gray-300 p-2">${namaSkema}</td>
                 <td class="border border-gray-300 p-2">
                     <button type="button" class="hapusBtn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
                         <i class="fas fa-trash-alt"></i> Hapus
@@ -151,25 +148,25 @@
                 </td>
             `;
 
-            document.getElementById('ukTableBody').appendChild(newRow);
+            document.getElementById('skemaTableBody').appendChild(newRow);
             select.value = '';
         } else {
-            alert("Pilih unit kompetensi yang belum ditambahkan.");
+            alert("Pilih skema yang belum ditambahkan.");
         }
     });
 
-    // Hapus unit kompetensi dari tabel
-    document.getElementById('ukTableBody').addEventListener('click', function(e) {
+    // Hapus skema dari tabel
+    document.getElementById('skemaTableBody').addEventListener('click', function(e) {
         if (e.target && e.target.classList.contains('hapusBtn')) {
             const row = e.target.closest('tr');
             // const kodeUK = row.cells[0].innerText;
-            const idUK = row.getAttribute('data-id');
+            const idSkema = row.getAttribute('data-id');
 
             // Hapus kode UK dari daftar
-            daftarIdUk.splice(daftarIdUk.indexOf(idUK), 1);
+            daftarIdSkema.splice(daftarIdSkema.indexOf(idSkema), 1);
 
             // Perbarui input hidden
-            document.getElementById('daftar_id_uk_hidden').value = JSON.stringify(daftarIdUk);
+            document.getElementById('daftar_id_skema_hidden').value = JSON.stringify(daftarIdSkema);
 
             // Hapus baris dari tabel
             row.remove();
