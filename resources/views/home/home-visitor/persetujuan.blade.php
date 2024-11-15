@@ -8,7 +8,7 @@
         <div class="border-b px-4 py-2">
             <h2 class="text-lg font-bold">Persetujuan Peraturan Proses Assessment</h2>
         </div>
-        <form action="/submit-assessment-agreement" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('save.persetujuan') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="p-4">
                 <p class="text-sm text-gray-600">SKM0317/00010/2/2019/14-Junior Web Developer</p>
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="flex justify-end items-center border-t p-2">
-                <a href="/apl/1" type="submit" class="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600">Setuju</a>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600">Setuju</button>
                 <a href="/assesi" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Tutup</a>
             </div>
         </form>

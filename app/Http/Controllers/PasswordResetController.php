@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\ResetPasswordMail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class PasswordResetController extends Controller
@@ -79,11 +81,11 @@ class PasswordResetController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
-            $user->update(['password' => $request->password]);
+            $user->update(['password' => Hash::make($request->password)]);
 
             DB::table('password_resets')->where('email', $request->email)->delete();
 
-            return redirect('/loginasesi')->with('message', 'Password anda berhasil diubah!');
+            return redirect('/login')->with('message', 'Password anda berhasil diubah!');
         }
 
         return back()->withErrors(['email' => 'Pengguna tidak ditemukan.']);
