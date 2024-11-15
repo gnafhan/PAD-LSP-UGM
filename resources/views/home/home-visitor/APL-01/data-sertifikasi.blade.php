@@ -82,7 +82,7 @@
 
                         <div class="mb-4">
                             <label for="nomorSkemaInput" class="block text-sm font-medium text-gray-700">Nomor Skema Sertifikasi</label>
-                            <input type="text" id="nomorSkemaInput" name="nomorSkemaInput" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm" value="" readonly>
+                            <input type="text" id="nomorSkemaInput" name="nomorSkemaInput" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm" value="" placeholder="SKKNI-0102">
                         </div>
 
                         <div class="mb-4">

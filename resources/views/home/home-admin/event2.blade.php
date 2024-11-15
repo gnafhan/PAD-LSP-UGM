@@ -76,10 +76,10 @@
                                 @endforeach
                             </td>
                             <td class="p-2">
-                                <a href="/admin5" class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded">Button Asesor</a>
+                                <a href="/admin5" class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded">Asesor</a>
                             </td>
                             <td class="p-2">
-                                <a href="/admin4" class="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">Button Asesi</a>
+                                <a href="/btn-asesi" class="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">Asesi</a>
                             </td>
                             <td class="p-2">
                                 <a href="{{ route('admin.event.edit', $event->id_event) }}" class="bg-yellow-500 text-white p-1 rounded">Edit</a>

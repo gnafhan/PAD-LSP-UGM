@@ -219,6 +219,10 @@ Route::get('/persetujuan', function () {
     return view('home/home-asesi/persetujuan');
 });
 
+Route::get('/persetujuan1', function () {
+    return view('home/home-visitor/persetujuan');
+});
+
 Route::get('/ak1', function () {
     return view('home/home-asesi/FRAK-01/frak01');
 });
@@ -275,6 +279,12 @@ Route::get('/frak5', function () {
 Route::get('/home-admin', function () {
     return view('home/home-admin/home');
 })->name('home-admin');
+Route::get('/btn-asesi', function () {
+    return view('home/home-admin/button-asesi');
+});
+Route::get('/assign-asesor', function () {
+    return view('home/home-admin/assign-asesor');
+});
 // Route::get('/admin2', function () {
 //     return view('home/home-admin/event');
 // });
@@ -293,17 +303,12 @@ Route::get('/admin6', function () {
 Route::get('/form', function () {
     return view('home/home-admin/form-asesor');
 }); // untuk nambah asesor
-Route::get('/', function () {
-    return view('home/home-admin/form-asesor');
-}); // untuk nambah asesor
 Route::get('/dp', function () {
     return view('home/home-admin/detail-pengajuan');
 }); // untuk nambah asesor
 Route::get('/frak1', function () {
     return view('home/home-asesor/frak01');
 }); // untuk nambah asesor
-
-
 
 
 //testing forget password

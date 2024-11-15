@@ -56,7 +56,7 @@
                     </div>
                 </div>
 
-<div class="border border-gray-300 rounded-lg p-4">
+    <div class="border border-gray-300 rounded-lg p-4">
         <h2 class="text-lg font-semibold mb-4">Bagian 4 : Konfirmasi Data Asesi</h2>
         <p class="text-sm mb-6">Pada bagian ini, terdapat informasi mengenai status Assesi</p>
 

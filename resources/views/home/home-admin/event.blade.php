@@ -65,10 +65,10 @@
           <td class="p-2">Offline</td>
           <td class="p-2">SKM-II</td>
           <td class="p-2">
-            <a href="/admin5" class="bg-yellow-500 text-white p-1 rounded">Button Asesor</a>
+            <a href="/admin5" class="bg-yellow-500 text-white p-1 rounded">Asesor</a>
           </td>
           <td class="p-2">
-            <a href="/admin4" class="bg-blue-500 text-white p-1 rounded">Button Asesi</a>
+            <a href="/btn-asesi" class="bg-blue-500 text-white p-1 rounded">Asesi</a>
           </td>
         </tr>
         <!-- Tambahkan baris lain sesuai kebutuhan -->

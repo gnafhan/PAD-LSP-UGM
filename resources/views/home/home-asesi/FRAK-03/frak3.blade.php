@@ -81,6 +81,105 @@
                             </td>
                             <td class="border border-gray-300 p-2"></td>
                         </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 text-center">2</td>
+                            <td class="border border-gray-300 p-2">Saya mendapatkan informasi yang jelas tentang kriteria kompetensi yang diujikan</td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-ya-2" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-tidak-2" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 text-center">3</td>
+                            <td class="border border-gray-300 p-2">Sertifikasi kompetensi yang dilakukan sesuai dengan standar yang ditetapkan oleh lembaga sertifikasi</td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-ya-3" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-tidak-3" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 text-center">4</td>
+                            <td class="border border-gray-300 p-2">Proses asesmen dilakukan secara objektif dan independen</td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-ya-4" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-tidak-4" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 text-center">5</td>
+                            <td class="border border-gray-300 p-2">Penyampaian hasil asesmen dilakukan dengan jelas dan transparan</td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-ya-5" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-tidak-5" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 text-center">6</td>
+                            <td class="border border-gray-300 p-2">Saya memahami langkah-langkah yang harus dilakukan setelah mendapatkan hasil asesmen</td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-ya-6" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-tidak-6" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 text-center">7</td>
+                            <td class="border border-gray-300 p-2">Saya diberikan kesempatan untuk melakukan klarifikasi apabila ada ketidakjelasan dalam hasil asesmen</td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-ya-7" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-tidak-7" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 text-center">8</td>
+                            <td class="border border-gray-300 p-2">Proses asesmen dilakukan sesuai dengan jadwal yang telah ditentukan sebelumnya</td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-ya-8" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-tidak-8" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 text-center">9</td>
+                            <td class="border border-gray-300 p-2">Saya merasa nyaman dengan fasilitas yang disediakan selama proses asesmen</td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-ya-9" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-tidak-9" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2"></td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 p-2 text-center">10</td>
+                            <td class="border border-gray-300 p-2">Saya mendapatkan informasi yang cukup mengenai sertifikat yang akan diterbitkan setelah asesmen</td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-ya-10" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2 text-center">
+                                <input type="checkbox" id="hasil-tidak-10" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </td>
+                            <td class="border border-gray-300 p-2"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

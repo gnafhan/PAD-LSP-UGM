@@ -7,7 +7,7 @@
 <div class="w-3/4 bg-white rounded-lg shadow-lg p-6">
 
 <div class="flex flex-wrap gap-2">
-            <a href="/apl/3" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
+            <a href="/apl1/b3" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">Kembali</a>
             <div class="bg-green-500 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
             FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI
             </div>
@@ -95,7 +95,7 @@
         <div class="flex justify-end mt-6">
             <form action="/konfirmasi" method="POST">
                 @csrf
-                <a href="/assesi" type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700">Konfirmasi</a>
+                <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700">Konfirmasi</button>
             </form>
         </div>
 @endsection
