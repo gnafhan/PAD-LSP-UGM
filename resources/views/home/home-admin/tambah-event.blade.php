@@ -64,7 +64,7 @@
     </table>
 
     <script>
-        const daftarSkema = []; // Array untuk menyimpan daftar kode UK yang ditambahkan
+        const daftarSkema = []; // Array untuk menyimpan daftar skema yang ditambahkan
 
         document.getElementById('tambahBtn').addEventListener('click', function() {
             const select = document.getElementById('daftar_id_skema');
@@ -72,7 +72,7 @@
             const namaSkema = select.options[select.selectedIndex].getAttribute('data-nama');
 
             if (nomorSkema && namaSkema && !daftarSkema.includes(nomorSkema)) {
-                daftarSkema.push(nomorSkema); // Tambah kode UK ke daftar
+                daftarSkema.push(nomorSkema); // Tambah nomor skema ke daftar
 
                 // Update hidden input
                 document.getElementById('daftar_id_skema_hidden').value = JSON.stringify(daftarSkema);

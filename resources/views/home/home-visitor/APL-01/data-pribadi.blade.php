@@ -25,28 +25,28 @@
                             <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">1</div>
                             <p class="text-sm text-gray-800 ml-2">Rincian Data Pemohon Sertifikasi</p>
                         </div>
-                        
+
                         <!-- Garis Penghubung (dihide di tampilan kecil) -->
                         <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
-                        
+
                         <!-- Step 2 -->
                         <div class="flex items-center mb-4 md:mb-0 md:w-auto">
                             <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">2</div>
                             <p class="text-sm text-gray-800 ml-2">Data Sertifikasi</p>
                         </div>
-                        
+
                         <!-- Garis Penghubung (dihide di tampilan kecil) -->
                         <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
-                        
+
                         <!-- Step 3 -->
                         <div class="flex items-center mb-4 md:mb-0 md:w-auto">
                             <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">3</div>
                             <p class="text-sm text-gray-800 ml-2">Bukti Kelengkapan Pemohon</p>
                         </div>
-                        
+
                         <!-- Garis Penghubung (dihide di tampilan kecil) -->
                         <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
-                        
+
                         <!-- Step 4 -->
                         <div class="flex items-center">
                             <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>

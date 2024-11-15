@@ -86,24 +86,23 @@ Route::delete('/admin2/{id}', [AdminController::class, 'destroyDataEvent'])->nam
 
 
 
-Route::get('/apl1/b1', function () {
-    return view('home/home-asesi/APL-01/data-pribadi');
-});
-Route::get('/apl1/b2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
+// Route::get('/apl1/b1', function () {
+//     return view('home/home-asesi/APL-01/data-pribadi');
+// });
+// Route::get('/apl1/b2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
+// Route::get('/get-nomor-skema', [PengajuanController::class, 'getNomorSkema']);
+// Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
 
-Route::get('/get-nomor-skema', [PengajuanController::class, 'getNomorSkema']);
-Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
+// Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
+// Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save.data.sertifikasi');
+// Route::post('/apl1/b3', [PengajuanController::class, 'storePengajuan'])->name('save');
+// Route::get('/apl1/b3', function () {
+//     return view('home/home-asesi/APL-01/bukti-pemohon');
+// })->name('bukti');
 
-Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
-Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save.data.sertifikasi');
-Route::post('/apl1/b3', [PengajuanController::class, 'storePengajuan'])->name('save');
-Route::get('/apl1/b3', function () {
-    return view('home/home-asesi/APL-01/bukti-pemohon');
-})->name('bukti');
-
-Route::get('/apl1/b4', function () {
-    return view('home/home-asesi/APL-01/konfirmasi');
-})->name('konfirmasi');
+// Route::get('/apl1/b4', function () {
+//     return view('home/home-asesi/APL-01/konfirmasi');
+// })->name('konfirmasi');
 
 //batesnya sampe sini
 

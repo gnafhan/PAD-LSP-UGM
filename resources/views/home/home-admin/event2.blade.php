@@ -12,7 +12,7 @@
             </a>
 
             <!-- Form Event Modal -->
-            <div id="eventModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+            {{-- <div id="eventModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
                 <div class="bg-white rounded-md p-6 w-full max-w-lg mx-4">
                     <h2 class="text-xl font-bold mb-4">Tambah Event</h2>
                     <form>
@@ -46,7 +46,7 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Daftar Event -->
         <h2 class="text-xl font-bold mb-4">Daftar Event</h2>
@@ -60,6 +60,8 @@
                         <th class="p-2">Skema</th>
                         <th class="p-2">Asesor</th>
                         <th class="p-2">Aksi</th>
+                        <th class="p-2">Edit</th>
+                        <th class="p-2">Hapus</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,6 +80,16 @@
                             </td>
                             <td class="p-2">
                                 <a href="/admin4" class="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded">Button Asesi</a>
+                            </td>
+                            <td class="p-2">
+                                <a href="{{ route('admin.event.edit', $event->id_event) }}" class="bg-yellow-500 text-white p-1 rounded">Edit</a>
+                            </td>
+                            <td class="p-2">
+                                <form action="{{ route('admin.event.delete', $event->id_event) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-yellow-500 text-white p-1 rounded">Hapus</button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach

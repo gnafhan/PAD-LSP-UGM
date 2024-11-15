@@ -235,8 +235,6 @@ class AdminController extends Controller
         return redirect()->route('admin.uk.index')->with('success', 'Data unit kompetensi berhasil dihapus.');
     }
 
-
-
     public function indexDataEvent()
     {
         $event = Event::with('skema')->get();
@@ -245,34 +243,37 @@ class AdminController extends Controller
 
     public function editDataEvent($id)
     {
-        $skema = Skema::with('unitKompetensi')->findOrFail($id);
-        $ukList = Uk::all();
-        // Kirim data unit kompetensi dalam format JSON
-        $unitKompetensiJson = json_encode($skema->unitKompetensi);
-        $daftarIdUkJson = $skema->daftar_id_uk; // Ambil data daftar_id_uk langsung dari skema
+        $event = Event::with('skema')->findOrFail($id);
+        $skemaList = Skema::all();
+        // Kirim data skema dalam format JSON
+        $skemaJson = json_encode($event->skema);
+        $daftarIdSkemaJson = $event->daftar_id_skema; // Ambil data daftar_id_skema langsung dari skema
 
-        return view('home.home-admin.edit-skema', [
-            'skema' => $skema,
-            'unitKompetensiJson' => $unitKompetensiJson,
-            'daftarIdUkJson' => $daftarIdUkJson,
-            'ukList' => $ukList
+        return view('home.home-admin.edit-event', [
+            'event' => $event,
+            'skemaJson' => $skemaJson,
+            'daftarIdSkemaJson' => $daftarIdSkemaJson,
+            'skemaList' => $skemaList
         ]);
     }
 
     public function updateDataEvent(Request $request, $id)
     {
-        $skema = Skema::findOrFail($id);
+        $event = Event::findOrFail($id);
 
         $validatedData = $request->validate([
-            'nama_skema' => 'required|string|max:100',
-            'dokumen_skkni' => 'required|string|max:2048',
+            'nama_event' => 'required|string|max:100',
+            'tanggal_mulai_event' => 'required|date',
+            'tanggal_berakhir_event' => 'required|date',
+            'tuk' => 'required|string|max:100',
+            'tipe_event' => 'required|string|max:50',
         ]);
 
-        $validatedData['daftar_id_uk'] = $request->input('daftar_id_uk');
+        $validatedData['daftar_id_skema'] = $request->input('daftar_id_skema');
 
-        $skema->update($validatedData);
+        $event->update($validatedData);
 
-        return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil diperbarui');
+        return redirect()->route('admin.event.index')->with('success', 'Event berhasil diperbarui');
     }
 
     public function createDataEvent()
@@ -315,10 +316,10 @@ class AdminController extends Controller
 
     public function destroyDataEvent($id)
     {
-        $Skema = Skema::findOrFail($id);
-        $Skema->delete();
+        $Event = Event::findOrFail($id);
+        $Event->delete();
 
-        return redirect()->route('admin.event.index')->with('success', 'Data skema berhasil dihapus.');
+        return redirect()->route('admin.event.index')->with('success', 'Data event berhasil dihapus.');
     }
 
 
