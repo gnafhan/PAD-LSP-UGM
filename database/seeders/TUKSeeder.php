@@ -18,14 +18,14 @@ class TUKSeeder extends Seeder
                 'kode_tuk' => 'T.239000.12',
                 'nama_tuk' => 'TILC',
                 'alamat' => 'Sekip Utara, Blimbingsari, Sleman',
-                'id_penanggung_jawab' => null,
+                'id_penanggung_jawab' => 'PENANGGUNG_JAWAB1',
                 'no_lisensi_skkn' => 'S/456/234',
             ],
             [
                 'kode_tuk' => 'T.539300.12',
                 'nama_tuk' => 'DTEDI',
                 'alamat' => 'Sekip Barat, Sendowo, Sleman',
-                'id_penanggung_jawab' => null,
+                'id_penanggung_jawab' => 'PENANGGUNG_JAWAB2',
                 'no_lisensi_skkn' => 'S/123/234',
             ],
         ];

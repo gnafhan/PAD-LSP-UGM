@@ -44,8 +44,8 @@ class Skema extends Model
 
         static::creating(function ($model) {
             $lastId = self::max('id_skema');
-            $number = $lastId ? intval(substr($lastId, 3)) + 1 : 1;
-            $model->id_skema = 'SKM' . $number;
+            $number = $lastId ? intval(substr($lastId, 5)) + 1 : 1;
+            $model->id_skema = 'SKEMA' . str_pad($number, 1, '0', STR_PAD_LEFT);
         });
     }
 }

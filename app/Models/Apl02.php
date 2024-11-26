@@ -20,9 +20,19 @@ class Apl02 extends Model
         'id_uk',
     ];
 
-    // Relasi ke model UK
     public function uk()
     {
-        return $this->belongsTo(UK::class, 'id_uk');
+        return $this->belongsTo(UK::class, 'id_uk', 'id_uk');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $lastId = self::max('id_apl02');
+            $number = $lastId ? intval(substr($lastId, 6)) + 1 : 1;
+            $model->id_apl02 = 'APL02_' . str_pad($number, 1, '0', STR_PAD_LEFT);
+        });
     }
 }

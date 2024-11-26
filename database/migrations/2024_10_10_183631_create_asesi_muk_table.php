@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('id_asesiMUK', 20)->primary();
             $table->string('id_asesi', 20);
             $table->string('id_muk', 20);
-            $table->binary('file_jawabanMUK');
+            $table->longText('file_jawabanMUK');
             $table->string('id_asesor', 20);
             $table->string('id_ujian', 20);
             $table->timestamps();

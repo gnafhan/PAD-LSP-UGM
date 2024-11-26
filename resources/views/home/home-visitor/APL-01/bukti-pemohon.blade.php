@@ -73,6 +73,28 @@
         </div>
     @endif
 
+    {{-- @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            <strong>Terjadi kesalahan!</strong>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif --}}
+
+    @if ($errors->any())
+        <div class="bg-red-500 text-white p-3 rounded mb-4">
+            <strong>Terjadi kesalahan:</strong>
+            <ul class="mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
 
     <!-- Judul Form -->
     <form method="POST" action="{{ route('save') }}" enctype="multipart/form-data">
@@ -107,28 +129,28 @@
                         <td class="border border-gray-300 px-4 py-2 text-center">1</td>
                         <td class="border border-gray-300 px-4 py-2">Siswa Jenjang SMK / Sederajat Semester Akhir</td>
                         <td class="border border-gray-300 px-4 py-2">
-                            <input id="bukti_jenjang_siswa" name="bukti_jenjang_siswa" type="file" class="block w-full text-sm border-gray-300 rounded-md">
+                            <input id="bukti_jenjang_siswa" name="bukti_jenjang_siswa" type="file" value="{{ old('bukti_jenjang_siswa') }}" class="block w-full text-sm border-gray-300 rounded-md">
                         </td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 px-4 py-2 text-center">2</td>
                         <td class="border border-gray-300 px-4 py-2">Transkrip Nilai / Sertifikat pelatihan di bidang Skema</td>
                         <td class="border border-gray-300 px-4 py-2">
-                            <input id="bukti_transkrip" name="bukti_transkrip" type="file" class="block w-full text-sm border-gray-300 rounded-md">
+                            <input id="bukti_transkrip" name="bukti_transkrip" type="file" value="{{ old('bukti_transkrip') }}" class="block w-full text-sm border-gray-300 rounded-md">
                         </td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 px-4 py-2 text-center">2</td>
                         <td class="border border-gray-300 px-4 py-2">Surat Pengalaman Kerja</td>
                         <td class="border border-gray-300 px-4 py-2">
-                            <input id="bukti_pengalaman_kerja" name="bukti_pengalaman_kerja" type="file" class="block w-full text-sm border-gray-300 rounded-md">
+                            <input id="bukti_pengalaman_kerja" name="bukti_pengalaman_kerja" type="file" value="{{ old('bukti_pengalaman_kerja') }}" class="block w-full text-sm border-gray-300 rounded-md">
                         </td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 px-4 py-2 text-center">2</td>
                         <td class="border border-gray-300 px-4 py-2">Surat Keterangan PKL/Magang</td>
                         <td class="border border-gray-300 px-4 py-2">
-                            <input  id="bukti_magang" name="bukti_magang" type="file" class="block w-full text-sm border-gray-300 rounded-md">
+                            <input  id="bukti_magang" name="bukti_magang" type="file" value="{{ old('bukti_magang') }}" class="block w-full text-sm border-gray-300 rounded-md">
                         </td>
                     </tr>
                 </tbody>
@@ -149,14 +171,14 @@
                         <td class="border border-gray-300 px-4 py-2 text-center">1</td>
                         <td class="border border-gray-300 px-4 py-2">KTP</td>
                         <td class="border border-gray-300 px-4 py-2">
-                            <input id="bukti_ktp" name="bukti_ktp" type="file" class="block w-full text-sm border-gray-300 rounded-md">
+                            <input id="bukti_ktp" name="bukti_ktp" type="file" value="{{ old('bukti_ktp') }}" class="block w-full text-sm border-gray-300 rounded-md">
                         </td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 px-4 py-2 text-center">2</td>
                         <td class="border border-gray-300 px-4 py-2">Foto 3x4</td>
                         <td class="border border-gray-300 px-4 py-2">
-                            <input id="bukti_foto" name="bukti_foto" type="file" class="block w-full text-sm border-gray-300 rounded-md">
+                            <input id="bukti_foto" name="bukti_foto" type="file" value="{{ old('bukti_foto') }}" class="block w-full text-sm border-gray-300 rounded-md">
                         </td>
                     </tr>
                 </tbody>

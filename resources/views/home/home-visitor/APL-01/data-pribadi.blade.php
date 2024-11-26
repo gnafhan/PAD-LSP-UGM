@@ -16,7 +16,7 @@
             <div class="flex flex-wrap gap-3 mt-5">
                 <h2 class="text-lg font-semibold mb-4">FR.APL-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI</h2>
             </div>
-            <div id="message" class="text-center mt-4"></div>
+
             <!-- Progress Bar -->
                 <div class="w-full max-w-4xl mx-auto px-4">
                     <div class="flex flex-col md:flex-row justify-start items-start mb-8">
@@ -55,6 +55,8 @@
                     </div>
                 </div>
 
+            <div id="message" class="text-center mt-4"></div>
+
             <!-- Form Card untuk Profil Peserta -->
             <form action="{{ route('sertifikasi') }}" method="POST" class="rounded-lg p-4">
             @csrf
@@ -64,27 +66,27 @@
             <!-- Isi Form -->
             <div class="mb-4">
                 <label for="nama_user" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                <input type="text" id="nama_user" name="nama_user" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Belda Putri Pramono">
+                <input type="text" id="nama_user" name="nama_user" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('nama_user') }}" placeholder="Belda Putri Pramono">
             </div>
 
             <div class="mb-4">
                 <label for="nik" class="block text-sm font-medium text-gray-700">NIK</label>
-                <input type="text" id="nik" name="nik" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="1234567890123456">
+                <input type="text" id="nik" name="nik" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('nik') }}" placeholder="1234567890123456">
             </div>
 
             <div class="mb-4">
                 <label for="nim" class="block text-sm font-medium text-gray-700">NIM</label>
-                <input type="text" id="nim" name="nim" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="123456789">
+                <input type="text" id="nim" name="nim" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('nim') }}" placeholder="123456789">
             </div>
 
             <div class="mb-4">
                 <label for="kota_domisili" class="block text-sm font-medium text-gray-700">Kota Domisili</label>
-                <input type="text" id="kota_domisili" name="kota_domisili" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Yogyakarta">
+                <input type="text" id="kota_domisili" name="kota_domisili" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('kota_domisili') }}" placeholder="Yogyakarta">
             </div>
 
             <div class="mb-4">
                 <label for="tempat_tanggal_lahir" class="block text-sm font-medium text-gray-700">Tempat dan Tanggal Lahir</label>
-                <input type="text" id="tempat_tanggal_lahir" name="tempat_tanggal_lahir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Yogyakarta, 01 Januari 2000">
+                <input type="text" id="tempat_tanggal_lahir" name="tempat_tanggal_lahir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('tempat_tanggal_lahir') }}" placeholder="Yogyakarta, 01 Januari 2000">
             </div>
 
             <div class="mb-4">
@@ -97,28 +99,28 @@
 
             <div class="mb-4">
                 <label for="kebangsaan" class="block text-sm font-medium text-gray-700">Kebangsaan</label>
-                <input type="text" id="kebangsaan" name="kebangsaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Indonesia">
+                <input type="text" id="kebangsaan" name="kebangsaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('kebangsaan') }}" placeholder="Indonesia">
             </div>
 
             <div class="mb-4">
                 <label for="alamat_rumah" class="block text-sm font-medium text-gray-700">Alamat Rumah</label>
-                <input type="text" id="alamat_rumah" name="alamat_rumah" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Jl. Merdeka No. 10, Yogyakarta">
+                <input type="text" id="alamat_rumah" name="alamat_rumah" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('alamat_rumah') }}" placeholder="Jl. Merdeka No. 10, Yogyakarta">
             </div>
 
             <div class="mb-4">
                 <label for="no_telp" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                <input type="text" id="no_telp" name="no_telp" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="081234567890">
+                <input type="text" id="no_telp" name="no_telp" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('no_telp') }}" placeholder="081234567890">
             </div>
 
             <div class="mb-4">
                 <label for="pendidikan_terakhir" class="block text-sm font-medium text-gray-700">Pendidikan Terakhir</label>
-                <input type="text" id="pendidikan_terakhir" name="pendidikan_terakhir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="" placeholder="Sarjana Teknik Informatika">
+                <input type="text" id="pendidikan_terakhir" name="pendidikan_terakhir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('pendidikan_terakhir') }}" placeholder="Sarjana Teknik Informatika">
             </div>
 
             <!-- Button Kembali dan Selanjutnya -->
             <div class="flex justify-end">
                 {{-- <a href="/apl/2" type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a> --}}
-                <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</button>
+                <button type="submit" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</button>
             </div>
         </form>
 
@@ -156,8 +158,22 @@
                     window.location.href = "{{ route('sertifikasi') }}";
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error menyimpan data pribadi:', error);
-                    $('#message').html('<p class="text-red-500">Gagal menyimpan data. Silakan coba lagi.</p>');
+                    if (xhr.status === 422) {
+                        // Jika ada error validasi, tampilkan pesan error yang sesuai
+                        const errors = xhr.responseJSON.errors;
+                        let errorMessage = '<ul class="text-red-500">';
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                errorMessage += `<li>${errors[key][0]}</li>`;
+                            }
+                        }
+                        errorMessage += '</ul>';
+                        $('#message').html(errorMessage);
+                    } else {
+                        // Error lainnya
+                        console.error('Error menyimpan data pribadi:', error);
+                        $('#message').html('<p class="text-red-500">Gagal menyimpan data. Silakan coba lagi.</p>');
+                    }
                 }
             });
         }

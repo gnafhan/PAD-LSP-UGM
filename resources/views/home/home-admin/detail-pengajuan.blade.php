@@ -11,48 +11,48 @@
         <!-- Bagian 1: Rincian Data Pemohon Sertifikasi -->
         <div class="mb-8">
             <h2 class="text-xl font-semibold mb-4">Bagian 1: Rincian Data Pemohon Sertifikasi</h2>
-            
+
             <!-- Data Pribadi -->
             <h3 class="text-lg font-semibold mb-2">a. Data Pribadi</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-gray-700">Nama Lengkap</label>
-                    <input type="text" value="Annisa Putri" class="w-full p-2 border rounded-md" />
+                    <input type="text" value="{{ $asesiPengajuan->nama_user }}" class="w-full p-2 border rounded-md" />
                 </div>
                 <div>
                     <label class="block text-gray-700">No. KTP/NIK/Paspor</label>
-                    <input type="text" value="1234567890123456" class="w-full p-2 border rounded-md" />
+                    <input type="text" value="{{ $asesiPengajuan->nik }}" class="w-full p-2 border rounded-md" />
                 </div>
                 <div>
                     <label class="block text-gray-700">Tempat / Tgl. Lahir</label>
-                    <input type="text" value="Yogyakarta, 12/12/1998" class="w-full p-2 border rounded-md" />
+                    <input type="text" value="{{ $asesiPengajuan->tempat_tanggal_lahir }}" class="w-full p-2 border rounded-md" />
                 </div>
                 <div>
                     <label class="block text-gray-700">Jenis Kelamin</label>
-                    <input type="text" value="Perempuan" class="w-full p-2 border rounded-md" />
+                    <input type="text" value="{{ $asesiPengajuan->jenis_kelamin }}" class="w-full p-2 border rounded-md" />
                 </div>
                 <div>
                     <label class="block text-gray-700">Kebangsaan</label>
-                    <input type="text" value="Indonesia" class="w-full p-2 border rounded-md" />
+                    <input type="text" value="{{ $asesiPengajuan->kebangsaan }}" class="w-full p-2 border rounded-md" />
                 </div>
                 <div>
                     <label class="block text-gray-700">Alamat Rumah</label>
-                    <input type="text" value="Jl. Malioboro No. 1, Yogyakarta" class="w-full p-2 border rounded-md" />
+                    <input type="text" value="{{ $asesiPengajuan->alamat_rumah }}" class="w-full p-2 border rounded-md" />
                 </div>
-                <div>
+                {{-- <div>
                     <label class="block text-gray-700">Kode Pos</label>
-                    <input type="text" value="55281" class="w-full p-2 border rounded-md" />
-                </div>
+                    <input type="text" value="{{  }}" class="w-full p-2 border rounded-md" />
+                </div> --}}
                 <div>
                     <label class="block text-gray-700">No. Telepon / E-mail</label>
-                    <input type="text" value="08123456789 / annisa@gmail.com" class="w-full p-2 border rounded-md" />
+                    <input type="text" value="{{ $asesiPengajuan->no_telp }}" class="w-full p-2 border rounded-md" />
                 </div>
-                <div>
+                {{-- <div>
                     <label class="block text-gray-700">Kualifikasi Pendidikan</label>
                     <input type="text" value="S1 Teknik Informatika" class="w-full p-2 border rounded-md" />
-                </div>
+                </div> --}}
             </div>
-            
+
             <!-- Data Pekerjaan Sekarang -->
             <h3 class="text-lg font-semibold mt-6 mb-2">b. Data Pekerjaan Sekarang</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -84,27 +84,22 @@
             <h2 class="text-xl font-semibold mb-4">Bagian 2: Data Sertifikasi</h2>
             <div class="mb-4">
                 <label class="block text-gray-700">Skema Sertifikasi</label>
-                <input type="text" value="KKNI Level II - Junior Programmer" class="w-full p-2 border rounded-md" />
+                <input type="text" value="{{ $asesiPengajuan->nama_skema }}" class="w-full p-2 border rounded-md" />
             </div>
             <div class="mb-4">
                 <label class="block text-gray-700">Nomor</label>
-                <input type="text" value="JP-123456" class="w-full p-2 border rounded-md" />
+                <input type="text" value="{{ $asesiPengajuan->nomor_skema }}" class="w-full p-2 border rounded-md" />
             </div>
             <div class="mb-4">
                 <label class="block text-gray-700">Tujuan Asesmen</label>
-                <select class="w-full p-2 border rounded-md">
-                    <option>Sertifikasi</option>
-                    <option>Sertifikasi Ulang</option>
-                    <option>Pengakuan Kompetensi Terkini (PKT)</option>
-                    <option>Rekognisi Pembelajaran Lampau</option>
-                </select>
+                <input type="text" value="{{ $asesiPengajuan->tujuan_asesmen }}" class="w-full p-2 border rounded-md" />
             </div>
-            <div class="mb-4">
+            {{-- <div class="mb-4">
                 <label class="block text-gray-700">Daftar Unit Kompetensi</label>
                 <textarea class="w-full p-2 border rounded-md" rows="4">1. JP001 - Menerapkan Dasar Pemrograman
 2. JP002 - Mengembangkan Aplikasi Sederhana
 3. JP003 - Menguji Aplikasi</textarea>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Bagian 3: Bukti Kelengkapan Pemohon -->
@@ -180,7 +175,7 @@
             <!-- Pemohon -->
             <div>
                 <h3 class="text-sm font-bold">Pemohon **)</h3>
-                <p class="mt-2">Nama: Belda Putri Pramono</p>
+                <p class="mt-2">{{ $asesiPengajuan->nama_user }}</p>
                 <div class="flex items-center space-x-2 mt-2">
                     <input type="checkbox" id="approve-pemohon" class="h-4 w-4 text-blue-600 border-gray-300 rounded" checked disabled>
                     <label for="approve-pemohon" class="text-sm">Dengan ini saya menyetujui permohonan</label>

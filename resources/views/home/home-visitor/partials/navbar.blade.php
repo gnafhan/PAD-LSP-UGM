@@ -15,7 +15,7 @@
             <a href="/home" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Home
             </a>
-            <a href="/setuju" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="{{route('persetujuan') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Daftar Sertifikasi</a>
 
         </nav>
@@ -26,7 +26,7 @@
         <a href="/home" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Home
         </a>
-        <a href="/setuju" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+        <a href="{{route('persetujuan') }}" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Daftar Sertifikasi
         </a>
 

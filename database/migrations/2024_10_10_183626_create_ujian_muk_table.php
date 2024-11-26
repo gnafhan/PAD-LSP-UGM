@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('status_ujian', 10);
             $table->integer('nilai_kompetensi')->default(0);
             $table->string('id_tuk', 20);
-            $table->dateTime('jam_mulai');
-            $table->dateTime('jam_selesai');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
             $table->string('id_muk', 20);
             $table->string('tipe_ujian', 10);
             $table->timestamps();

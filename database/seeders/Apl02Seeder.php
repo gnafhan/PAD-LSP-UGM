@@ -11,13 +11,23 @@ class Apl02Seeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
-        foreach (range(1, 10) as $index) {
-            Apl02::create([
-                'id_apl02' => 'APL' . str_pad($index, 3, '0', STR_PAD_LEFT),
-                'id_uk' => 'UK' . str_pad(fake()->numberBetween(1, 10), 3, '0', STR_PAD_LEFT),
-            ]);
+        $data = [
+            [
+                'id_uk' => 'UK1',
+            ],
+            [
+                'id_uk' => 'UK2',
+            ],
+            [
+                'id_uk' => 'UK3',
+            ],
+
+        ];
+
+        foreach ($data as $item) {
+            Apl02::create($item);
         }
     }
 }

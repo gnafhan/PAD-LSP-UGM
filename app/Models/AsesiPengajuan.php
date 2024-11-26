@@ -55,7 +55,7 @@ class AsesiPengajuan extends Model
         static::creating(function ($model) {
             $lastId = self::max('id_pengajuan');
             $number = $lastId ? intval(substr($lastId, 9)) + 1 : 1;
-            $model->id_pengajuan = 'PENGAJUAN' . str_pad($number, 6, '0', STR_PAD_LEFT);
+            $model->id_pengajuan = 'PENGAJUAN' . str_pad($number, 1, '0', STR_PAD_LEFT);
         });
     }
 }

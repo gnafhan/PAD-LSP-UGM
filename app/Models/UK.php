@@ -22,13 +22,11 @@ class UK extends Model
         'jenis_standar',
     ];
 
-    // Relasi ke model UkBidang
     public function bidang()
     {
-        return $this->belongsTo(UkBidang::class, 'id_bidang');
+        return $this->belongsTo(UkBidang::class, 'id_bidang', 'id_bidang');
     }
 
-    // Event untuk mengatur id_uk saat creating
     protected static function boot()
     {
         parent::boot();
@@ -36,7 +34,7 @@ class UK extends Model
         static::creating(function ($model) {
             $lastId = self::max('id_uk');
             $number = $lastId ? intval(substr($lastId, 2)) + 1 : 1;
-            $model->id_uk = 'UK' . $number;
+            $model->id_uk = 'UK' . str_pad($number, 1, '0', STR_PAD_LEFT);
         });
     }
 }

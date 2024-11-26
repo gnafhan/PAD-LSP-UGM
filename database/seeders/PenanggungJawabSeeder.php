@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\UKBidang;
+use App\Models\PenanggungJawab;
 
-class UKBidangSeeder extends Seeder
+class PenanggungJawabSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,19 +15,17 @@ class UKBidangSeeder extends Seeder
     {
         $data = [
             [
-                'nama_bidang' => 'Sosial',
+                'nama_penanggung_jawab' => 'Hirukawa',
+                'status_penanggung_jawab' => 'Aktif',
             ],
             [
-                'nama_bidang' => 'Teknologi',
+                'nama_penanggung_jawab' => 'Hodai',
+                'status_penanggung_jawab' => 'Aktif',
             ],
-            [
-                'nama_bidang' => 'Data',
-            ],
-
         ];
 
         foreach ($data as $item) {
-            UKBidang::create($item);
+            PenanggungJawab::create($item);
         }
     }
 }

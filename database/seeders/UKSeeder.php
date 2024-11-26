@@ -22,7 +22,7 @@ class UKSeeder extends Seeder
             ],
             [
                 'kode_uk' => 'J.620100.013.07',
-                'nama_uk' => 'Menulis Kode dengan Kaidah yang baik',
+                'nama_uk' => 'Menulis kode dengan kaidah yang baik',
                 'id_bidang' => null,
                 'jenis_standar' => 'SKKNI',
             ],
@@ -31,6 +31,18 @@ class UKSeeder extends Seeder
                 'nama_uk' => 'Mengimplementasikan pemrograman kotlin',
                 'id_bidang' => null,
                 'jenis_standar' => 'SKKNI',
+            ],
+            [
+                'kode_uk' => 'J.450100.027.02',
+                'nama_uk' => 'Melakukan visualisasi data',
+                'id_bidang' => null,
+                'jenis_standar' => 'Nasional',
+            ],
+            [
+                'kode_uk' => 'J.6289700.027.02',
+                'nama_uk' => 'Membuat contoh model machine learning',
+                'id_bidang' => null,
+                'jenis_standar' => 'Internasional',
             ],
 
         ];

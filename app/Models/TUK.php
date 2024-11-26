@@ -23,7 +23,7 @@ class Tuk extends Model
         'no_lisensi_skkn',
     ];
 
-    // public $timestamps = true;
+    public $timestamps = true;
 
     public function penanggungJawab()
     {
@@ -37,7 +37,7 @@ class Tuk extends Model
         static::creating(function ($model) {
             $lastId = self::max('id_tuk');
             $number = $lastId ? intval(substr($lastId, 3)) + 1 : 1;
-            $model->id_tuk = 'TUK' . $number;
+            $model->id_tuk = 'TUK' . str_pad($number, 1, '0', STR_PAD_LEFT);
         });
     }
 }

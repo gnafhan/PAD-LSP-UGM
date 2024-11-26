@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('id_uk', 20);
             $table->longText('kriteria_uk');
             $table->boolean('jawaban_kriteria')->default(false);
-            $table->binary('file_bukti');
+            $table->json('file_bukti')->nullable();
             $table->timestamps();
 
             $table->foreign('id_asesi')->references('id_asesi')->on('asesi')->onDelete('cascade');

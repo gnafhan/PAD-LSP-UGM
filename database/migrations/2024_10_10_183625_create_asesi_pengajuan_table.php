@@ -25,11 +25,10 @@ return new class extends Migration
             $table->string('alamat_rumah', 200);
             $table->string('no_telp', 20);
             $table->string('pendidikan_terakhir', 100);
-            $table->string('skema_sertifikasi', 10);
-            $table->string('nama_skema', 100);
-            $table->string('nomor_skema', 100);
+            $table->string('skema_sertifikasi', 50);
+            $table->string('nama_skema', 100); //skemaDropdown
+            $table->string('nomor_skema', 100); //nomorSkemaInput
             $table->string('tujuan_asesmen', 100);
-            // $table->dateTime('tgl_lahir');
             $table->string('sumber_anggaran', 50)->nullable();
             $table->string('email', 200);
             $table->json('file_persyaratan_dasar_pemohon');

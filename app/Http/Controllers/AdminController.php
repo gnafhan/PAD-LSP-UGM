@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asesor;
+use App\Models\AsesiPengajuan;
 use App\Models\Skema;
 use App\Models\Uk;
 use App\Models\Tuk;
@@ -322,5 +323,18 @@ class AdminController extends Controller
         return redirect()->route('admin.event.index')->with('success', 'Data event berhasil dihapus.');
     }
 
+    public function indexDataAsesi()
+    {
+        $asesiPengajuan = AsesiPengajuan::all();
+        return view('home.home-admin.daftar-asesi', compact('asesiPengajuan'));
+    }
+
+    public function detailDataAsesi($id)
+    {
+        $asesiPengajuan = AsesiPengajuan::findOrFail($id);
+        return view('home.home-admin.detail-pengajuan', compact('asesiPengajuan'));
+    }
+
+    
 
 }

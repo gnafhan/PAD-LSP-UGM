@@ -17,18 +17,15 @@ class LoginRegisterController extends Controller
         // $this->middleware('asesor');
     }
 
-    public function store(Request $request) {
-
+    public function store(Request $request)
+    {
         $request->validate([
             'email' => 'required|email|max:250|unique:users',
             'no_hp' => 'required|string|max:20|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
 
-        $userId = 'USER' . Str::random(6);
-
         User::create([
-            'id_user' => $userId,
             'email' => $request->email,
             'no_hp' => $request->no_hp,
             'password' => Hash::make($request->password),
@@ -37,6 +34,7 @@ class LoginRegisterController extends Controller
 
         return redirect()->route('login')->with('success', 'Registration successful! Please login.');
     }
+
 
      public function authenticate(Request $request) {
         $credentials = $request->validate([

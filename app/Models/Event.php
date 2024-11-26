@@ -46,7 +46,7 @@ class Event extends Model
         static::creating(function ($model) {
             $lastId = self::max('id_event');
             $number = $lastId ? intval(substr($lastId, 5)) + 1 : 1;
-            $model->id_event = 'EVENT' . $number;
+            $model->id_event = 'EVENT' . str_pad($number, 1, '0', STR_PAD_LEFT);
         });
     }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('id_asesi', 20);
             $table->string('id_asesiUK', 20);
             $table->string('id_apl02', 20);
-            $table->binary('file_portofolio');
+            $table->json('file_portofolio');
             $table->timestamps();
 
             $table->foreign('id_asesi')->references('id_asesi')->on('asesi')->onDelete('cascade');

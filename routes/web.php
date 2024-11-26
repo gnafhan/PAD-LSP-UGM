@@ -45,29 +45,29 @@ Route::get('/home', function () {
     return view('home/home-visitor/home');
 })->name('home');
 
-//ALUR DAFTAR SKEMA IN VISITOR 
-Route::get('/persetujuan1', function () {
-    return view('home/home-visitor/persetujuan');
-});
+//ALUR DAFTAR SKEMA IN VISITOR
+// Route::get('/persetujuan1', function () {
+//     return view('home/home-visitor/persetujuan');
+// });
 
-Route::get('/apl/1', function () {
-    return view('home/home-visitor/APL-01/data-pribadi');
-});
-Route::get('/apl/2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
+// Route::get('/apl/1', function () {
+//     return view('home/home-visitor/APL-01/data-pribadi');
+// });
+// Route::get('/apl/2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
 
-Route::get('/get-nomor-skema', [PengajuanController::class, 'getNomorSkema']);
-Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
+// Route::get('/get-nomor-skema', [PengajuanController::class, 'getNomorSkema']);
+// Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
 
-Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
-Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save.data.sertifikasi');
-Route::post('/apl/3', [PengajuanController::class, 'storePengajuan'])->name('save');
-Route::get('/apl/3', function () {
-    return view('home/home-visitor/APL-01/bukti-pemohon');
-})->name('bukti');
+// Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
+// Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save.data.sertifikasi');
+// Route::post('/apl/3', [PengajuanController::class, 'storePengajuan'])->name('save');
+// Route::get('/apl/3', function () {
+//     return view('home/home-visitor/APL-01/bukti-pemohon');
+// })->name('bukti');
 
-Route::get('/apl/4', function () {
-    return view('home/home-visitor/APL-01/konfirmasi');
-})->name('konfirmasi');
+// Route::get('/apl/4', function () {
+//     return view('home/home-visitor/APL-01/konfirmasi');
+// })->name('konfirmasi');
 
 // HOME VISITOR SETELAH ASESI LOGIN
 
@@ -118,6 +118,8 @@ Route::get('/admin2/{id}/edit', [AdminController::class, 'editDataEvent'])->name
 Route::put('/admin2/{id}/update', [AdminController::class, 'updateDataEvent'])->name('admin.event.update');
 Route::delete('/admin2/{id}', [AdminController::class, 'destroyDataEvent'])->name('admin.event.delete');
 
+Route::get('/admin4', [AdminController::class, 'indexDataAsesi'])->name('admin.asesi.index');
+Route::get('/admin4/{id}/edit', [AdminController::class, 'detailDataAsesi'])->name('admin.detail.asesi');
 
 // HOME - ASESI
 Route::get('/home-asesi', function () {
@@ -130,10 +132,10 @@ Route::get('/assesi', function () {
 
 // ALUR FR.APL-01
 Route::get('/apl1/1', function () {
-    return view('home/home-asesi/APL-01/data-pribadi'); 
+    return view('home/home-asesi/APL-01/data-pribadi');
 });
 Route::get('/apl1/2', function () {
-    return view('home/home-asesi/APL-01/data-sertifikasi'); 
+    return view('home/home-asesi/APL-01/data-sertifikasi');
 });
 Route::get('/apl1/3', function () {
     return view('home/home-asesi/APL-01/bukti-pemohon'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
@@ -199,22 +201,22 @@ Route::get('/btn-asesi', function () {
 Route::get('/assign-asesor', function () {
     return view('home/home-admin/assign-asesor');
 });
-Route::get('/admin4', function () {
-    return view('home/home-admin/daftar-asesi');
-});
+// Route::get('/admin4', function () {
+//     return view('home/home-admin/daftar-asesi');
+// });
 
 Route::get('/admin6', function () {
     return view('home/home-admin/settings');
 });
 Route::get('/form', function () {
     return view('home/home-admin/form-asesor');
-}); 
+});
 Route::get('/dp', function () {
     return view('home/home-admin/detail-pengajuan');
-}); 
+});
 Route::get('/frak1', function () {
     return view('home/home-asesor/frak01');
-}); 
+});
 
 //testing forget password
 Route::get('password/reset', [PasswordResetController::class, 'showResetForm'])->name('password.request');
@@ -289,17 +291,19 @@ Route::get('/home-asesi', [AsesiController::class, 'index'])->middleware('auth')
 
 
 // DAFTAR SKEMA IN VISITOR
-Route::get('/setuju', function () {
-    return view('home/home-visitor/persetujuan'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
-});
-Route::post('/save/persetujuan', [PengajuanController::class, 'savePersetujuan'])->name('save.persetujuan');
+Route::get('/persetujuan/ttd', [PengajuanController::class, 'indexPersetujuan'])->name('persetujuan');
+Route::post('/save-data-persetujuan', [PengajuanController::class, 'saveDataPersetujuan'])->name('save.persetujuan');
 
 Route::get('/apl1/b1', function () {
     return view('home/home-visitor/APL-01/data-pribadi');
-});
+})->name('pribadi');
 Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
 
-Route::post('/apl1/b2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
+Route::get('/apl1/b2', function () {
+    return view('home/home-visitor/APL-01/data-sertifikasi');
+});
+
+Route::get('/apl1/b2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
 Route::get('/get-nomor-skema', [PengajuanController::class, 'getNomorSkema']);
 Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
 Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save.data.sertifikasi');
@@ -379,13 +383,13 @@ Route::get('/aksi', function () {
     return view('home/home-asesi/pilih-aksi');
 });
 
-Route::get('/persetujuan', function () {
-    return view('home/home-asesi/persetujuan');
-});
+// Route::get('/persetujuan', function () {
+//     return view('home/home-asesi/persetujuan');
+// });
 
-Route::get('/persetujuan1', function () {
-    return view('home/home-visitor/persetujuan');
-});
+// Route::get('/persetujuan1', function () {
+//     return view('home/home-visitor/persetujuan');
+// });
 
 Route::get('/ak1', function () {
     return view('home/home-asesi/FRAK-01/frak01');

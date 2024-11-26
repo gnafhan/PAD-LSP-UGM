@@ -60,15 +60,17 @@
         <h2 class="text-lg font-semibold mb-4">Bagian 2 : Data Sertifikasi</h2>
         <p class="text-sm mb-6">Tuliskan Judul dan Nomor Skema Sertifikasi, Tujuan Assesmen serta Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi yang Anda ajukan untuk mendapatkan pengakuan sesuai dengan latar belakang pendidikan, pelatihan serta pengalaman kerja yang Anda miliki.</p>
 
+        <div id="message" class="text-center mt-4"></div>
+
         <form id="sertifikasiForm" method="POST" action="{{ route('save.data.sertifikasi') }}">
             @csrf
             <div class="border border-gray-300 rounded-lg p-4 mb-6">
                 <div class="mb-4">
                     <label for="skema_sertifikasi" class="block text-sm font-medium text-gray-700">Skema Sertifikasi</label>
                     <select id="skema_sertifikasi" name="skema_sertifikasi" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
-                        <option value="kkni">KKNI</option>
-                        <option value="okupasi">Okupasi</option>
-                        <option value="klaster">Klaster</option>
+                        <option value="KKNI">KKNI</option>
+                        <option value="Okupasi">Okupasi</option>
+                        <option value="Klaster">Klaster</option>
                     </select>
                 </div>
 
@@ -84,16 +86,16 @@
 
                 <div class="mb-4">
                     <label for="nomorSkemaInput" class="block text-sm font-medium text-gray-700">Nomor Skema Sertifikasi</label>
-                    <input type="text" id="nomorSkemaInput" name="nomorSkemaInput" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm" value="" placeholder="SKKNI-0102">
+                    <input type="text" id="nomorSkemaInput" name="nomorSkemaInput" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm" value="" placeholder="SKKNI-0102" readonly>
                 </div>
 
                 <div class="mb-4">
                     <label for="tujuan_asesmen" class="block text-sm font-medium text-gray-700">Tujuan Assesmen</label>
                     <select id="tujuan_asesmen" name="tujuan_asesmen" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
-                        <option value="sertifikasi">Sertifikasi</option>
-                        <option value="pkt">Pengakuan Kompetensi Terkini '(PKT)'</option>
-                        <option value="rpl">Rekognisi Pembelajaran Lampau '(RPL)'</option>
-                        <option value="lainnya">Lainnya</option>
+                        <option value="Sertifikasi">Sertifikasi</option>
+                        <option value="Pkt">Pengakuan Kompetensi Terkini '(PKT)'</option>
+                        <option value="Rpl">Rekognisi Pembelajaran Lampau '(RPL)'</option>
+                        <option value="Lainnya">Lainnya</option>
                     </select>
                 </div>
             </div>
@@ -183,7 +185,22 @@
                     window.location.href = "{{ route('bukti') }}";
                 },
                 error: function(xhr, status, error) {
-                    console.error('Terjadi kesalahan:', error);
+                    if (xhr.status === 422) {
+                        // Jika ada error validasi, tampilkan pesan error yang sesuai
+                        const errors = xhr.responseJSON.errors;
+                        let errorMessage = '<ul class="text-red-500">';
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                errorMessage += `<li>${errors[key][0]}</li>`;
+                            }
+                        }
+                        errorMessage += '</ul>';
+                        $('#message').html(errorMessage);
+                    } else {
+                        // Error lainnya
+                        console.error('Error menyimpan data pribadi:', error);
+                        $('#message').html('<p class="text-red-500">Gagal menyimpan data. Silakan coba lagi.</p>');
+                    }
                 }
             });
 

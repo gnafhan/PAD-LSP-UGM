@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('muk', function (Blueprint $table) {
             $table->string('id_muk', 20)->primary();
-            $table->binary('file_muk');
+            $table->string('nama_muk', 100);
+            $table->longText('file_muk');
             $table->timestamps();
         });
     }

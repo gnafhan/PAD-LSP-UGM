@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('kebangsaan', 30);
             $table->string('no_lisensi', 30);
             $table->dateTime('masa_berlaku');
-            $table->string('institusi_asal', 20);
+            $table->string('institusi_asal', 100);
             $table->string('no_telp_institusi_asal', 20);
             $table->string('fax_institusi_asal', 20);
             $table->string('email_institusi_asal', 100);

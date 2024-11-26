@@ -5,7 +5,7 @@
 @section('content')
 <div class="min-h-screen bg-gray-100 p-4">
     <div class="container mx-auto p-4">
-        
+
 
         <div class="mb-4 flex justify-start">
             <a href="/form" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-200">Tambah Asesor</a>
@@ -29,7 +29,7 @@
                         <td class="py-3 px-4 border-b">{{ $asesor->kode_registrasi }}</td>
                         <td class="py-3 px-4 border-b">{{ $asesor->nama_asesor }}</td>
                         <td class="py-3 px-4 border-b">{{ $asesor->no_sertifikat }}</td>
-                        <td class="py-3 px-4 border-b">{{ $asesor->email_asesor }}</td>
+                        <td class="py-3 px-4 border-b">{{ $asesor->email }}</td>
                         <td class="py-3 px-4 border-b">
                             <a href="{{ route('admin.asesor.edit', $asesor->id_asesor) }}" class="text-blue-500 hover:underline">Edit</a>
                             <form action="{{ route('admin.asesor.delete', $asesor->id_asesor) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
