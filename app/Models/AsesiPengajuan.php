@@ -34,15 +34,13 @@ class AsesiPengajuan extends Model
         'tujuan_asesmen',
         'sumber_anggaran',
         'email',
-        'file_persyaratan_dasar_pemohon',
-        'file_administratif',
+        'file_kelengkapan_pemohon',
         'ttd_pemohon',
         'status_rekomendasi'
     ];
 
     protected $casts = [
-        'file_persyaratan_dasar_pemohon' => 'array',
-        'file_administratif' => 'array',
+        'file_kelengkapan_pemohon' => 'array',
         'ttd_pemohon' => 'string',
     ];
 
