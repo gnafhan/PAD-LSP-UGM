@@ -14,7 +14,7 @@
         <i class="fas fa-key"></i>
         <span>Ganti Password</span>
       </a>
-      <a href="/home-asesi" class="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 transition flex items-center space-x-2">
+      <a href="/panduan" class="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 transition flex items-center space-x-2">
         <i class="fas fa-info-circle"></i>
         <span>Petunjuk</span>
       </a>

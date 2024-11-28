@@ -121,6 +121,14 @@ Route::delete('/admin2/{id}', [AdminController::class, 'destroyDataEvent'])->nam
 Route::get('/admin4', [AdminController::class, 'indexDataAsesi'])->name('admin.asesi.index');
 Route::get('/admin4/{id}/edit', [AdminController::class, 'detailDataAsesi'])->name('admin.detail.asesi');
 
+Route::get('/pengguna', function () {
+    return view('home/home-admin/pengguna');
+});
+
+Route::get('/tambah-pengguna', function () {
+    return view('home/home-admin/tambah-pengguna');
+});
+
 // HOME - ASESI
 Route::get('/home-asesi', function () {
     return view('home/home-asesi/home-asesi');

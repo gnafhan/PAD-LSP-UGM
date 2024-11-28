@@ -62,9 +62,9 @@
       <thead>
         <tr class="bg-gray-200">
           <th class="p-2">No</th>
+          <th class="p-2">Ceklist</th>
           <th class="p-2">Nama Calon Asesi</th>
           <th class="p-2">Asal Prodi</th>
-          <th class="p-2">Ceklist</th>
         </tr>
       </thead>
       <tbody>
@@ -75,11 +75,11 @@
         @endphp
         <tr>
           <td class="p-2 text-center">{{ $j }}</td>
-          <td class="p-2">{{ $randomName }}</td>
-          <td class="p-2">TRPL</td>
           <td class="p-2 text-center">
             <input type="checkbox" class="form-checkbox">
           </td>
+          <td class="p-2">{{ $randomName }}</td>
+          <td class="p-2">TRPL</td>
         </tr>
         @endforeach
       </tbody>
