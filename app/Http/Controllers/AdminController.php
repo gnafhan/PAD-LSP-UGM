@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Asesor;
 use App\Models\AsesiPengajuan;
+use App\Models\Asesi;
 use App\Models\Skema;
 use App\Models\Uk;
 use App\Models\Tuk;
@@ -335,6 +336,38 @@ class AdminController extends Controller
         return view('home.home-admin.detail-pengajuan', compact('asesiPengajuan'));
     }
 
-    
+    public function approveAsesi($id_pengajuan)
+    {
+        $asesiPengajuan = AsesiPengajuan::find($id_pengajuan);
+
+        if(!$asesiPengajuan) {
+            return redirect()->back()->with('error', 'Data asesi pengajuan tidak ditemukan');
+        }
+
+        //Memindahkan data ke tabel Asesi
+        Asesi::create([
+            'nama_asesi' => $asesiPengajuan->nama_user,
+            'tempat_tanggal_lahir' => $asesiPengajuan->tempat_tanggal_lahir,
+            'jenis_kelamin' => $asesiPengajuan->jenis_kelamin,
+            'kebangsaan' => $asesiPengajuan->kebangsaan,
+            'alamat_rumah' => $asesiPengajuan->alamat_rumah,
+            'kota_domisili' => $asesiPengajuan->kota_domisili,
+            'no_telp' => $asesiPengajuan->no_telp,
+            'email' => $asesiPengajuan->email,
+            'nim' => $asesiPengajuan->nim,
+            'id_user' => $asesiPengajuan->id_user,
+            'id_skema' => $asesiPengajuan->id_skema,
+            'file_kelengkapan_pemohon' => $asesiPengajuan->file_kelengkapan_pemohon,
+            'ttd_pemohon' => $asesiPengajuan->ttd_pemohon,
+        ]);
+
+        $asesiPengajuan->update(['status_rekomendasi' => 'Diterima']);
+
+        return redirect()->route('admin.asesi.index')->with('success', 'Pengajuan asesi telah disetujui');
+    }
+
+
+
+
 
 }

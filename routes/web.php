@@ -120,6 +120,7 @@ Route::delete('/admin2/{id}', [AdminController::class, 'destroyDataEvent'])->nam
 
 Route::get('/admin4', [AdminController::class, 'indexDataAsesi'])->name('admin.asesi.index');
 Route::get('/admin4/{id}/edit', [AdminController::class, 'detailDataAsesi'])->name('admin.detail.asesi');
+Route::post('/admin4/approve-asesi/{id_pengajuan}', [AdminController::class, 'approveAsesi'])->name('admin.approve.asesi');
 
 Route::get('/pengguna', function () {
     return view('home/home-admin/pengguna');

@@ -302,13 +302,11 @@ class PengajuanController extends Controller
                 'tujuan_asesmen' => $data['tujuan_asesmen'],
                 'sumber_anggaran' => null,
                 'email' => $user->email,
-                'file_persyaratan_dasar_pemohon' => json_encode(array_values(array_filter([
+                'file_kelengkapan_pemohon' => json_encode(array_values(array_filter([
                     $buktiPemohonPaths['bukti_jenjang_siswa'],
                     $buktiPemohonPaths['bukti_transkrip'],
                     $buktiPemohonPaths['bukti_pengalaman_kerja'],
-                    $buktiPemohonPaths['bukti_magang']
-                ]))),
-                'file_administratif' => json_encode(array_values(array_filter([
+                    $buktiPemohonPaths['bukti_magang'],
                     $buktiPemohonPaths['bukti_ktp'],
                     $buktiPemohonPaths['bukti_foto']
                 ]))),

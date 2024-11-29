@@ -5,6 +5,20 @@
 @section('content')
 <div class="min-h-screen bg-gray-100">
   <div class="container mx-auto p-4">
+
+    @if(session('success'))
+        <div class="bg-green-100 text-green-700 p-2 rounded mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-red-100 text-red-700 p-2 rounded mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+
+
     <h2 class="text-4xl font-bold mb-4 text-center">Daftar Asesi</h2>
     <table id="asesiTable" class="w-full bg-white rounded-md shadow-md mb-4">
       <thead>
@@ -24,7 +38,6 @@
           <td class="p-2">{{ $asesi->nama_event }}</td>
           <td class="p-2">{{ $asesi->nama_skema }}</td>
           <td class="p-2">
-            {{-- <a href="/dp" class="bg-blue-500 text-white p-1 rounded text-center">Detail Pengajuan</a> --}}
             <a href="{{ route('admin.detail.asesi', $asesi->id_pengajuan) }}" class="bg-blue-500 text-white p-1 rounded text-center">Detail Pengajuan</a>
           </td>
         </tr>

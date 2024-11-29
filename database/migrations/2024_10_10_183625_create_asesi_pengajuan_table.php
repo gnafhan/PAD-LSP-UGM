@@ -31,8 +31,7 @@ return new class extends Migration
             $table->string('tujuan_asesmen', 100);
             $table->string('sumber_anggaran', 50)->nullable();
             $table->string('email', 200);
-            $table->json('file_persyaratan_dasar_pemohon');
-            $table->json('file_administratif');
+            $table->json('file_kelengkapan_pemohon');
             $table->longText('ttd_pemohon');
             $table->string('status_rekomendasi', 20);
             $table->timestamps();

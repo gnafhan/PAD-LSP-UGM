@@ -9,6 +9,8 @@
         <h1 class="text-2xl font-bold text-center mb-6">FR.APL.01 Permohonan Sertifikasi Kompetensi</h1>
 
         <!-- Bagian 1: Rincian Data Pemohon Sertifikasi -->
+        <form action="{{ route('admin.approve.asesi', $asesiPengajuan->id_pengajuan) }}" method="POST">
+        @csrf
         <div class="mb-8">
             <h2 class="text-xl font-semibold mb-4">Bagian 1: Rincian Data Pemohon Sertifikasi</h2>
 
@@ -199,6 +201,7 @@
         <div class="flex justify-end mt-6">
                 <button class="bg-green-500 text-white px-4 py-2 rounded-md">Submit</button>
         </div>
+        </form>
     </div>
   </div>
 </div>
