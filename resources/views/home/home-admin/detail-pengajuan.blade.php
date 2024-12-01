@@ -182,7 +182,7 @@
                     <input type="checkbox" id="approve-pemohon" class="h-4 w-4 text-blue-600 border-gray-300 rounded" checked disabled>
                     <label for="approve-pemohon" class="text-sm">Dengan ini saya menyetujui permohonan</label>
                 </div>
-                <p class="mt-2">TTD: <img src="signature.png" alt="Signature" class="h-6 inline"></p>
+                <p class="mt-2">TTD: <img src="{{ asset('images/signature.jpg') }}" alt="Signature" class="h-6 inline"></p>
                 <p>Tgl: 20-10-2024</p>
             </div>
 
@@ -194,12 +194,12 @@
                     <input type="checkbox" id="approve-admin" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
                     <label for="approve-admin" class="text-sm">TTD Admin</label>
                 </div>
-                <p class="mt-2">TTD: <img src="admin-signature.png" alt="Admin Signature" class="h-6 inline"></p>
+                <p class="mt-2">TTD: <img src="{{ asset('images/admin-signature.jpg') }}" alt="Admin Signature" class="h-6 inline"></p>
                 <p>Tgl: 20-10-2024</p>
             </div>
         </div>
-        <div class="mt-6">
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md">Setujui</button>
+        <div class="flex justify-end mt-6">
+                <button class="bg-green-500 text-white px-4 py-2 rounded-md">Submit</button>
         </div>
         </form>
     </div>

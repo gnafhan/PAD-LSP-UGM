@@ -122,6 +122,14 @@ Route::get('/admin4', [AdminController::class, 'indexDataAsesi'])->name('admin.a
 Route::get('/admin4/{id}/edit', [AdminController::class, 'detailDataAsesi'])->name('admin.detail.asesi');
 Route::post('/admin4/approve-asesi/{id_pengajuan}', [AdminController::class, 'approveAsesi'])->name('admin.approve.asesi');
 
+Route::get('/pengguna', function () {
+    return view('home/home-admin/pengguna');
+});
+
+Route::get('/tambah-pengguna', function () {
+    return view('home/home-admin/tambah-pengguna');
+});
+
 // HOME - ASESI
 Route::get('/home-asesi', function () {
     return view('home/home-asesi/home-asesi');
