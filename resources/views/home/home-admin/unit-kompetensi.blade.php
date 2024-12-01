@@ -44,6 +44,7 @@
                 <tr class="bg-gray-200">
                     <th class="p-2">Kode UK</th>
                     <th class="p-2">Nama UK</th>
+                    <th class="p-2">Elemen UK</th>
                     <th class="p-2">Aksi</th>
                 </tr>
             </thead>
@@ -52,6 +53,7 @@
                 <tr>
                     <td class="p-2">{{ $uk->kode_uk }}</td>
                     <td class="p-2">{{ $uk->nama_uk }}</td>
+                    <td class="p-2">{{ $uk->elemen_uk }}</td>
                     <td class="p-2">
                         <a href="{{ route('admin.uk.edit', $uk->id_uk) }}" class="bg-blue-500 text-white p-1 rounded">Edit</a>
                         <form action="{{ route('admin.uk.delete', $uk->id_uk) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">

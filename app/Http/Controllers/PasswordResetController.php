@@ -11,6 +11,7 @@ use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\PasswordResets;
 
 class PasswordResetController extends Controller
 {
@@ -34,9 +35,9 @@ class PasswordResetController extends Controller
         // $user->token = $token;
         // $user->save();
 
-        //tokennya jd dimasukin tabel forget pass
-        DB::table('password_resets')->insert([
+        PasswordResets::create([
             'email' => $request->email,
+            'id_user' => auth()->user()->id_user,
             'token' => $token,
             'created_at' => now(),
         ]);
@@ -59,15 +60,13 @@ class PasswordResetController extends Controller
 
     public function resetPassword(Request $request)
     {
-        // Validasi input dari user
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|confirmed|min:6',
             'token' => 'required'
         ]);
 
-        // Cek token dan email di database
-        $passwordReset = DB::table('password_resets')->where([
+        $passwordReset = PasswordResets::where([
             ['token', $request->token],
             ['email', $request->email],
         ])->first();
@@ -83,7 +82,7 @@ class PasswordResetController extends Controller
         if ($user) {
             $user->update(['password' => Hash::make($request->password)]);
 
-            DB::table('password_resets')->where('email', $request->email)->delete();
+            PasswordResets::where('email', $request->email)->delete();
 
             return redirect('/login')->with('message', 'Password anda berhasil diubah!');
         }

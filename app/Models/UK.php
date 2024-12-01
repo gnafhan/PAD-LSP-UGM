@@ -18,6 +18,7 @@ class UK extends Model
         'id_uk',
         'kode_uk',
         'nama_uk',
+        'elemen_uk',
         'id_bidang',
         'jenis_standar',
     ];

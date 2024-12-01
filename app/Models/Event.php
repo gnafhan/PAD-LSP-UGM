@@ -21,23 +21,23 @@ class Event extends Model
         'tanggal_berakhir_event',
         'tuk',
         'tipe_event',
-        'daftar_id_skema',
+        // 'daftar_id_skema',
     ];
 
-    protected $casts = [
-        'daftar_id_skema' => 'array',
-    ];
+    // protected $casts = [
+    //     'daftar_id_skema' => 'array',
+    // ];
 
-    public function skema()
+    public function skemas()
     {
-        return $this->hasMany(Skema::class, 'id_skema', 'daftar_id_skema');
+        return $this->belongsToMany(Skema::class, 'event_skema', 'id_event', 'id_skema');
     }
 
-    public function getSkemaAttribute()
-    {
-        $idArray = is_array($this->daftar_id_skema) ? $this->daftar_id_skema : json_decode($this->daftar_id_skema, true);
-        return Skema::whereIn('id_skema', $idArray ?? [])->get();
-    }
+    // public function getSkemaAttribute()
+    // {
+    //     $idArray = is_array($this->daftar_id_skema) ? $this->daftar_id_skema : json_decode($this->daftar_id_skema, true);
+    //     return Skema::whereIn('id_skema', $idArray ?? [])->get();
+    // }
 
     protected static function boot()
     {

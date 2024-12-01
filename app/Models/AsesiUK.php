@@ -18,8 +18,8 @@ class AsesiUK extends Model
         'id_asesiUK',
         'id_asesi',
         'id_uk',
-        'kriteria_uk',
-        'jawaban_kriteria',
+        'elemen_uk',
+        'jawaban_elemen_uk',
         'file_bukti',
     ];
 

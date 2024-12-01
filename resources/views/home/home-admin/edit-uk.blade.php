@@ -18,8 +18,13 @@
             </div>
 
             <div class="mb-4">
-                <label for="nama_uk" class="block text-gray-700">Nama Asesor</label>
+                <label for="nama_uk" class="block text-gray-700">Nama UK</label>
                 <input type="text" name="nama_uk" id="nama_uk" value="{{ $uk->nama_uk }}" class="w-full px-4 py-2 border rounded-md" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="elemen_uk" class="block text-gray-700">Elemen UK</label>
+                <input type="text" name="elemen_uk" id="elemen_uk" value="{{ $uk->elemen_uk }}" class="w-full px-4 py-2 border rounded-md" required>
             </div>
 
             <div class="mb-4">

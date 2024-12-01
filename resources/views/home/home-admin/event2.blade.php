@@ -73,7 +73,7 @@
                             <td class="p-2">{{ $event->tuk }}</td>
                             <td class="p-2">{{ $event->tipe_event }}</td>
                             <td class="p-2">
-                                @foreach ($event->skema as $skema)
+                                @foreach ($event->skemas as $skema)
                                     {{ $skema->nomor_skema }}: {{ $skema->nama_skema }}<br>
                                 @endforeach
                             </td>
