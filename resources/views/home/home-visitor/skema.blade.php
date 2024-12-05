@@ -19,72 +19,67 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Skema 1 -->
+                @foreach($skemaData as $index => $skema)
                 <tr>
-                    <td class="p-2 align-top">1</td>
+                    <td class="p-2 align-top">{{ $index + 1 }}</td>
                     <td class="p-2 text-start align-top">
-                        SKM/0317/00010/2/2019/22 - Programmer <br>
+                        {{ $skema->nomor_skema }} - {{ $skema->nama_skema }} <br>
                         <a href="#" class="bg-blue-500 text-white p-1 rounded">Dokumen SKKNI</a>
                     </td>
                     <td class="p-2 text-start">
                         <!-- Tombol Unit Kompetensi -->
-                        <button onclick="toggleContent('unit1')" class="bg-blue-600 text-white p-2 rounded mb-2">Unit Kompetensi</button>
+                        <button onclick="toggleContent('unit{{ $index }}')" class="bg-blue-600 text-white p-2 rounded mb-2">Unit Kompetensi</button>
                         <!-- Konten Unit Kompetensi dengan tabel dummy -->
-                        <div id="unit1" class="hidden mt-2 p-4 bg-gray-50 rounded-md">
+                        <div id="unit{{ $index }}" class="hidden mt-2 p-4 bg-gray-50 rounded-md">
                             <table class="w-full">
                                 <thead>
                                     <tr class="bg-gray-200">
                                         <th class="p-2 text-left">No.</th>
                                         <th class="p-2 text-left">Unit Kompetensi</th>
-                                        <th class="p-2 text-left">Deskripsi</th>
+                                        {{-- <th class="p-2 text-left">Deskripsi</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($skema->unitKompetensi as $ukIndex => $unit)
                                     <tr>
-                                        <td class="p-2 text-center">1</td>
-                                        <td class="p-2">Analisis Sistem Informasi</td>
-                                        <td class="p-2">Memahami dan menganalisis kebutuhan sistem informasi.</td>
+                                        <td class="p-2 text-center">{{ $ukIndex + 1 }}</td>
+                                        <td class="p-2">{{ $unit->nama_uk }}</td>
+                                        {{-- <td class="p-2">Memahami dan menganalisis kebutuhan sistem informasi.</td> --}}
                                     </tr>
-                                    <tr>
-                                        <td class="p-2 text-center">2</td>
-                                        <td class="p-2">Pemrograman Web</td>
-                                        <td class="p-2">Mengembangkan aplikasi web menggunakan teknologi modern.</td>
-                                    </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Tombol Persyaratan Dasar Peserta -->
-                        <button onclick="toggleContent('requirement1')" class="bg-blue-600 text-white p-2 rounded mb-2 mt-4">Persyaratan Dasar Peserta</button>
+                        <button onclick="toggleContent('requirement{{ $index }}')" class="bg-blue-600 text-white p-2 rounded mb-2 mt-4">Persyaratan Dasar Peserta</button>
                         <!-- Konten Persyaratan Dasar Peserta dengan tabel dummy -->
-                        <div id="requirement1" class="hidden mt-2 p-4 bg-gray-50 rounded-md">
+                        <div id="requirement{{ $index }}" class="hidden mt-2 p-4 bg-gray-50 rounded-md">
                             <table class="w-full">
                                 <thead>
                                     <tr class="bg-gray-200">
                                         <th class="p-2 text-left">No.</th>
                                         <th class="p-2 text-left">Persyaratan</th>
-                                        <th class="p-2 text-left">Deskripsi</th>
+                                        {{-- <th class="p-2 text-left">Deskripsi</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($skema->parsed_persyaratan as $reqIndex => $persyaratan)
                                     <tr>
-                                        <td class="p-2 text-center">1</td>
-                                        <td class="p-2">Lulusan SMA/SMK</td>
-                                        <td class="p-2">Minimal lulusan SMA atau SMK dengan nilai memadai.</td>
+                                        <td class="p-2 text-center">{{ $reqIndex + 1 }}</td>
+                                        <td class="p-2">{{ $persyaratan }}</td>
+                                        {{-- <td class="p-2">Minimal lulusan SMA atau SMK dengan nilai memadai.</td> --}}
                                     </tr>
-                                    <tr>
-                                        <td class="p-2 text-center">2</td>
-                                        <td class="p-2">Pengalaman Kerja</td>
-                                        <td class="p-2">Memiliki pengalaman kerja minimal 1 tahun di bidang terkait.</td>
-                                    </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </td>
                 </tr>
-                
+                @endforeach
+
                 <!-- Tambahkan baris lain untuk skema lainnya -->
-                
+
             </tbody>
         </table>
     </div>

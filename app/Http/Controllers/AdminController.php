@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
+    public function index()
+    {
+        $events = Event::all()->count();
+        $asesi = Asesi::all()->count();
+        $skema = Skema::all()->count();
+        $asesor = Asesor::all()->count();
+        return view('home.home-admin.home', compact('events', 'asesi', 'skema', 'asesor'));
+    }
 
     public function indexDataAsesor()
     {

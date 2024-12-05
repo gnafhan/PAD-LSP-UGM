@@ -18,10 +18,23 @@ class PengajuanController extends Controller
     //     $this->middleware('auth');
     // }
 
-    public function indexPersetujuan() {
+    public function indexPersetujuan()
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
+        }
+
+        $idUser = auth()->user()->id_user;
+        $exists = AsesiPengajuan::where('id_user', $idUser)->exists();
+
+        if ($exists) {
+            return redirect()->route('konfirmasi');
+        }
+
         $data = @auth()->user()->email;
         return view('home.home-visitor.persetujuan', compact('data'));
     }
+
 
 
     public function saveDataPersetujuan(Request $request)
@@ -42,10 +55,16 @@ class PengajuanController extends Controller
                 'signature.max' => 'Ukuran file tanda tangan tidak boleh lebih dari 2048.',
             ]);
 
-            // Simpan file yang diunggah di direktori 'public/signatures'
-            $signatureFile = $request->file('signature');
-            $ttd_pemohon = $signatureFile->store('signatures');
+            // Dapatkan user ID dari user yang sedang login
+            $user = auth()->user();
+            $userId = $user->id_user;
 
+            // Simpan file yang diunggah di direktori 'public/signatures' dengan format nama yang diinginkan
+            $signatureFile = $request->file('signature');
+            $fileName = 'ttd_' . $userId . '.' . $signatureFile->getClientOriginalExtension();
+            $ttd_pemohon = $signatureFile->storeAs('signatures', $fileName);
+
+            // Simpan path file ke dalam session
             session()->put('dataPersetujuan', ['ttd_pemohon' => $ttd_pemohon]);
 
             return response()->json(['message' => 'Data berhasil disimpan'], 200);
@@ -59,6 +78,7 @@ class PengajuanController extends Controller
             return response()->json(['error' => 'Terjadi kesalahan saat menyimpan data'], 500);
         }
     }
+
 
 
     public function saveDataPribadi(Request $request)
@@ -252,42 +272,42 @@ class PengajuanController extends Controller
             // dd($data);
 
             $validatedData = $request->validate([
-                'bukti_jenjang_siswa' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-                'bukti_transkrip' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-                'bukti_pengalaman_kerja' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-                'bukti_magang' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-                'bukti_ktp' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-                'bukti_foto' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+                'bukti_jenjang_siswa' => 'required|file|mimes:pdf|max:5120',
+                'bukti_transkrip' => 'required|file|mimes:pdf|max:5120',
+                'bukti_pengalaman_kerja' => 'required|file|mimes:pdf|max:5120',
+                'bukti_magang' => 'required|file|mimes:pdf|max:5120',
+                'bukti_ktp' => 'required|file|mimes:pdf|max:5120',
+                'bukti_foto' => 'required|file|mimes:pdf|max:5120',
             ], [
                 'bukti_jenjang_siswa.required' => 'Bukti jenjang siswa wajib diisi.',
-                'bukti_jenjang_siswa.file' => 'Bukti jenjang siswa harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_jenjang_siswa.mimes' => 'Bukti jenjang siswa harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_jenjang_siswa.max' => 'Ukuran file bukti jenjang siswa tidak boleh lebih dari 2048.',
+                'bukti_jenjang_siswa.file' => 'Bukti jenjang siswa harus berupa file pdf.',
+                'bukti_jenjang_siswa.mimes' => 'Bukti jenjang siswa harus berupa file pdf.',
+                'bukti_jenjang_siswa.max' => 'Ukuran file bukti jenjang siswa tidak boleh lebih dari 5 MB.',
 
                 'bukti_transkrip.required' => 'Bukti transkrip nilai wajib diisi.',
-                'bukti_transkrip.file' => 'Bukti transkrip nilai harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_transkrip.mimes' => 'Bukti transkrip nilai harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_transkrip.max' => 'Ukuran file bukti transkrip nilai tidak boleh lebih dari 2048.',
+                'bukti_transkrip.file' => 'Bukti transkrip nilai harus berupa file pdf.',
+                'bukti_transkrip.mimes' => 'Bukti transkrip nilai harus berupa file pdf.',
+                'bukti_transkrip.max' => 'Ukuran file bukti transkrip nilai tidak boleh lebih dari 5 MB.',
 
                 'bukti_pengalaman_kerja.required' => 'Bukti surat pengalaman kerja wajib diisi.',
-                'bukti_pengalaman_kerja.file' => 'Bukti transkrip nilai harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_pengalaman_kerja.mimes' => 'Bukti transkrip nilai harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_pengalaman_kerja.max' => 'Ukuran file bukti pengalaman kerja tidak boleh lebih dari 2048.',
+                'bukti_pengalaman_kerja.file' => 'Bukti transkrip nilai harus berupa file pdf.',
+                'bukti_pengalaman_kerja.mimes' => 'Bukti transkrip nilai harus berupa file pdf.',
+                'bukti_pengalaman_kerja.max' => 'Ukuran file bukti pengalaman kerja tidak boleh lebih dari 5 MB.',
 
                 'bukti_magang.required' => 'Bukti surat PKL/Magang wajib diisi.',
-                'bukti_magang.file' => 'Bukti magang harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_magang.mimes' => 'Bukti magang harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_magang.max' => 'Ukuran file bukti surat PKL/Magang tidak boleh lebih dari 2048.',
+                'bukti_magang.file' => 'Bukti magang harus berupa file pdf.',
+                'bukti_magang.mimes' => 'Bukti magang harus berupa file pdf.',
+                'bukti_magang.max' => 'Ukuran file bukti surat PKL/Magang tidak boleh lebih dari 5 MB.',
 
                 'bukti_ktp.required' => 'Bukti KTP wajib diisi.',
-                'bukti_ktp.file' => 'Bukti KTP harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_ktp.mimes' => 'Bukti KTP harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_ktp.max' => 'Ukuran file bukti KTP tidak boleh lebih dari 2048.',
+                'bukti_ktp.file' => 'Bukti KTP harus berupa file pdf.',
+                'bukti_ktp.mimes' => 'Bukti KTP harus berupa file pdf.',
+                'bukti_ktp.max' => 'Ukuran file bukti KTP tidak boleh lebih dari 5 MB.',
 
                 'bukti_foto.required' => 'Bukti foto 3x4 wajib diisi.',
-                'bukti_foto.file' => 'Bukti foto 3x4 harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_foto.mimes' => 'Bukti foto 3x4 harus berupa file pdf, jpg, jpeg, atau png.',
-                'bukti_foto.max' => 'Ukuran file bukti foto 3x4 tidak boleh lebih dari 2048.',
+                'bukti_foto.file' => 'Bukti foto 3x4 harus berupa file pdf.',
+                'bukti_foto.mimes' => 'Bukti foto 3x4 harus berupa file pdf.',
+                'bukti_foto.max' => 'Ukuran file bukti foto 3x4 tidak boleh lebih dari 5 MB.',
             ]);
 
             // dd($validatedData);
@@ -297,13 +317,32 @@ class PengajuanController extends Controller
             // dd($skema);
 
             $buktiPemohonPaths = [
-                'bukti_jenjang_siswa' => $request->file('bukti_jenjang_siswa') ? $request->file('bukti_jenjang_siswa')->store('uploads/bukti_pemohon/jenjang_siswa') : null,
-                'bukti_transkrip' => $request->file('bukti_transkrip') ? $request->file('bukti_transkrip')->store('uploads/bukti_pemohon/transkrip') : null,
-                'bukti_pengalaman_kerja' => $request->file('bukti_pengalaman_kerja') ? $request->file('bukti_pengalaman_kerja')->store('uploads/bukti_pemohon/pengalaman_kerja') : null,
-                'bukti_magang' => $request->file('bukti_magang') ? $request->file('bukti_magang')->store('uploads/bukti_pemohon/magang') : null,
-                'bukti_ktp' => $request->file('bukti_ktp') ? $request->file('bukti_ktp')->store('uploads/bukti_pemohon/ktp') : null,
-                'bukti_foto' => $request->file('bukti_foto') ? $request->file('bukti_foto')->store('uploads/bukti_pemohon/foto') : null,
+                'bukti_jenjang_siswa' => $request->file('bukti_jenjang_siswa') ? $request->file('bukti_jenjang_siswa')->storeAs(
+                    'uploads/bukti_pemohon/jenjang_siswa',
+                    'bukti_jenjang_siswa_' . $user->id_user . '.' . $request->file('bukti_jenjang_siswa')->getClientOriginalExtension()
+                ) : null,
+                'bukti_transkrip' => $request->file('bukti_transkrip') ? $request->file('bukti_transkrip')->storeAs(
+                    'uploads/bukti_pemohon/transkrip',
+                    'bukti_transkrip_' . $user->id_user . '.' . $request->file('bukti_transkrip')->getClientOriginalExtension()
+                ) : null,
+                'bukti_pengalaman_kerja' => $request->file('bukti_pengalaman_kerja') ? $request->file('bukti_pengalaman_kerja')->storeAs(
+                    'uploads/bukti_pemohon/pengalaman_kerja',
+                    'bukti_pengalaman_kerja_' . $user->id_user . '.' . $request->file('bukti_pengalaman_kerja')->getClientOriginalExtension()
+                ) : null,
+                'bukti_magang' => $request->file('bukti_magang') ? $request->file('bukti_magang')->storeAs(
+                    'uploads/bukti_pemohon/magang',
+                    'bukti_magang_' . $user->id_user . '.' . $request->file('bukti_magang')->getClientOriginalExtension()
+                ) : null,
+                'bukti_ktp' => $request->file('bukti_ktp') ? $request->file('bukti_ktp')->storeAs(
+                    'uploads/bukti_pemohon/ktp',
+                    'bukti_ktp_' . $user->id_user . '.' . $request->file('bukti_ktp')->getClientOriginalExtension()
+                ) : null,
+                'bukti_foto' => $request->file('bukti_foto') ? $request->file('bukti_foto')->storeAs(
+                    'uploads/bukti_pemohon/foto',
+                    'bukti_foto_' . $user->id_user . '.' . $request->file('bukti_foto')->getClientOriginalExtension()
+                ) : null,
             ];
+
 
             // dd($buktiPemohonPaths);
 

@@ -17,7 +17,7 @@
             <a href="/admin2">
                 <div class="bg-white p-4 rounded-md shadow-md hover:shadow-lg transition duration-300 m-4">
                     <h2 class="text-lg font-semibold mb-2">Total Events</h2>
-                    <p class="text-4xl font-bold text-blue-500">25</p>
+                    <p class="text-4xl font-bold text-blue-500">{{ $events }}</p>
                     <p class="text-gray-500 mt-1">Active events currently available</p>
                 </div>
             </a>
@@ -26,7 +26,7 @@
             <a href="/admin3">
                 <div class="bg-white p-4 rounded-md shadow-md hover:shadow-lg transition duration-300 m-4">
                     <h2 class="text-lg font-semibold mb-2">Total Skema</h2>
-                    <p class="text-4xl font-bold text-green-500">12</p>
+                    <p class="text-4xl font-bold text-green-500">{{ $skema }}</p>
                     <p class="text-gray-500 mt-1">Available certification schemes</p>
                 </div>
             </a>
@@ -35,7 +35,7 @@
             <a href="/btn-asesi">
                 <div class="bg-white p-4 rounded-md shadow-md hover:shadow-lg transition duration-300 m-4">
                     <h2 class="text-lg font-semibold mb-2">Total Asesi</h2>
-                    <p class="text-4xl font-bold text-orange-500">350</p>
+                    <p class="text-4xl font-bold text-orange-500">{{ $asesi }}</p>
                     <p class="text-gray-500 mt-1">Registered candidates</p>
                 </div>
             </a>
@@ -44,7 +44,7 @@
             <a href="/admin5">
                 <div class="bg-white p-4 rounded-md shadow-md hover:shadow-lg transition duration-300 m-4">
                     <h2 class="text-lg font-semibold mb-2">Total Asesor</h2>
-                    <p class="text-4xl font-bold text-red-500">20</p>
+                    <p class="text-4xl font-bold text-red-500">{{ $asesor }}</p>
                     <p class="text-gray-500 mt-1">Registered assessors</p>
                 </div>
             </a>
