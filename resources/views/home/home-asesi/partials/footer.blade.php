@@ -43,7 +43,7 @@
                 <i class="fab fa-facebook text-2xl"></i>
             </a>
             <a href="https://twitter.com/UGMYogyakarta/" target="_blank" class="hover:text-gray-400">
-                <i class="fab fa-twitter text-2xl"></i>
+                <i class="fab fa-x text-2xl"></i>
             </a>
             <a href="https://id.linkedin.com/school/universitas-gadjah-mada-ugm-/" target="_blank" class="hover:text-gray-400">
                 <i class="fab fa-linkedin text-2xl"></i>

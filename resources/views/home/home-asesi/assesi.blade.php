@@ -34,7 +34,7 @@
               <th class="border px-4 py-2">Jenis Event</th>
               <th class="border px-4 py-2">Nomor Peserta</th>
               <th class="border px-4 py-2">Skema</th>
-              <th class="border px-4 py-2">Assessor</th>
+              <th class="border px-4 py-2">Asesor</th>
               <th class="border px-4 py-2">Hasil</th>
             </tr>
           </thead>
@@ -46,7 +46,7 @@
               <td class="border px-4 py-2">Online</td>
               <td class="border px-4 py-2">A12345</td>
               <td class="border px-4 py-2">Web Developer</td>
-              <td class="border px-4 py-2">Dr. Assessor</td>
+              <td class="border px-4 py-2">Teguh Prihayanto</td>
               <td class="border px-4 py-2">Lulus</td>
             </tr>
             <tr>
@@ -70,7 +70,7 @@
               <th class="border px-4 py-2">Jenis Event</th>
               <th class="border px-4 py-2">Nomor Peserta</th>
               <th class="border px-4 py-2">Skema</th>
-              <th class="border px-4 py-2">Assessor</th>
+              <th class="border px-4 py-2">Asesor</th>
               <th class="border px-4 py-2">Aksi</th>
             </tr>
           </thead>

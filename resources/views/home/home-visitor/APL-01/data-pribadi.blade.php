@@ -22,29 +22,42 @@
                 </div>
 
                 <!-- Progress Bar -->
-                <div class="w-full max-w-4xl mx-auto px-4">
-                    <div class="flex flex-col md:flex-row justify-start items-start mb-8">
-                        <div class="flex items-center mb-4 md:mb-0 md:w-auto">
-                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">1</div>
-                            <p class="text-sm text-gray-800 ml-2">Rincian Data Pemohon Sertifikasi</p>
-                        </div>
-                        <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
-                        <div class="flex items-center mb-4 md:mb-0 md:w-auto">
-                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">2</div>
-                            <p class="text-sm text-gray-800 ml-2">Data Sertifikasi</p>
-                        </div>
-                        <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
-                        <div class="flex items-center mb-4 md:mb-0 md:w-auto">
-                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">3</div>
-                            <p class="text-sm text-gray-800 ml-2">Bukti Kelengkapan Pemohon</p>
-                        </div>
-                        <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
-                        <div class="flex items-center">
-                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>
-                            <p class="text-sm text-gray-800 ml-2">Konfirmasi Data Asesi</p>
+                    <div class="w-full max-w-4xl mx-auto px-4">
+                        <div class="flex flex-col md:flex-row justify-start items-start mb-8">
+                            <!-- Step 1 -->
+                            <div class="flex items-center mb-4 md:mb-0 md:w-auto">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-white">1</div>
+                                <p class="text-sm text-gray-800 ml-2">Rincian Data Pemohon Sertifikasi</p>
+                            </div>
+
+                            <!-- Garis Penghubung (dihide di tampilan kecil) -->
+                            <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
+
+                            <!-- Step 2 -->
+                            <div class="flex items-center mb-4 md:mb-0 md:w-auto">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">2</div>
+                                <p class="text-sm text-gray-800 ml-2">Data Sertifikasi</p>
+                            </div>
+
+                            <!-- Garis Penghubung (dihide di tampilan kecil) -->
+                            <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
+
+                            <!-- Step 3 -->
+                            <div class="flex items-center mb-4 md:mb-0 md:w-auto">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">3</div>
+                                <p class="text-sm text-gray-800 ml-2">Bukti Kelengkapan Pemohon</p>
+                            </div>
+
+                            <!-- Garis Penghubung (dihide di tampilan kecil) -->
+                            <div class="hidden md:block flex-1 h-0.5 bg-gray-300 mx-2"></div>
+
+                            <!-- Step 4 -->
+                            <div class="flex items-center">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 text-white">4</div>
+                                <p class="text-sm text-gray-800 ml-2">Konfirmasi Data Asesi</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
                 <div id="message" class="text-center mt-4"></div>
 
@@ -54,7 +67,7 @@
                 <h2 class="text-lg font-semibold mb-4">Bagian 1 : Rincian Data Pemohon Sertifikasi</h2>
                 <p class="text-sm mb-6">Pada bagian ini, cantumkan data pribadi, data pendidikan formal serta data pekerjaan anda pada saat ini.</p>
 
-                <!-- Data Pribadi -->
+                Isi Form
                 <div class="mb-4">
                     <label for="nama_user" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
                     <input type="text" id="nama_user" name="nama_user" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('nama_user') }}" placeholder="Belda Putri Pramono">
@@ -108,16 +121,14 @@
                     <input type="text" id="pendidikan_terakhir" name="pendidikan_terakhir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('pendidikan_terakhir') }}" placeholder="Sarjana Teknik Informatika">
                 </div>
 
-                <!-- Bagian Data Pekerjaan Sekarang -->
-                <h3 class="text-lg font-semibold mb-4">Bagian 2: Data Pekerjaan Sekarang</h3>
-                <div class="mb-4">
-                    <label for="status_pekerjaan" class="block text-sm font-medium text-gray-700">Status Pekerjaan</label>
-                    <select id="status_pekerjaan" name="status_pekerjaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
-                        <option value="Bekerja">Bekerja</option>
-                        <option value="Tidak Bekerja">Tidak Bekerja</option>
-                    </select>
+                <!-- Button Kembali dan Selanjutnya -->
+                <div class="flex justify-end">
+                    {{-- <a href="/apl/2" type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a> --}}
+                    <button type="submit" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</button>
                 </div>
+            </form>
 
+<<<<<<< HEAD
                 <div class="mb-4">
                     <label for="nama_perusahaan" class="block text-sm font-medium text-gray-700">Nama Perusahaan</label>
                     <input type="text" id="nama_perusahaan" name="nama_perusahaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('nama_perusahaan') }}" placeholder="PT. Tech Innovators">
@@ -144,6 +155,8 @@
                 </div>
 
                 </form>
+=======
+>>>>>>> 892fa13 (commit)
             </div>
         </div>
     </div>
@@ -170,6 +183,7 @@
                 alamat_rumah: $('#alamat_rumah').val(),
                 no_telp: $('#no_telp').val(),
                 pendidikan_terakhir: $('#pendidikan_terakhir').val(),
+<<<<<<< HEAD
                 status_pekerjaan: $('#status_pekerjaan').val(),
                 nama_perusahaan: $('#nama_perusahaan').val(),
                 jabatan: $('#jabatan').val(),
@@ -178,11 +192,20 @@
             };
             $.ajax({
                 url: '/user/apl1/save-data-pribadi',
+=======
+            };
+            $.ajax({
+                url: '/save-data-pribadi',
+>>>>>>> 892fa13 (commit)
                 type: 'POST',
                 data: dataPribadi,
                 success: function(response) {
                     console.log('Data pribadi tersimpan sementara:', response);
+<<<<<<< HEAD
                     window.location.href = "{{ route('user.apl1.sertifikasi') }}";
+=======
+                    window.location.href = "{{ route('sertifikasi') }}";
+>>>>>>> 892fa13 (commit)
                 },
                 error: function(xhr, status, error) {
                     if (xhr.status === 422) {

@@ -25,6 +25,7 @@
                 <div class="mt-4">
                     <label class="block text-sm font-medium mb-1" for="signature">Tanda Tangan Saya</label>
                     <input type="file" id="signature" name="signature" class="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-2 focus:outline-none">
+                    <p class="text-xs text-gray-500 mt-1">Unggah file dalam format PNG, JPG, atau JPEG.</p>
                     <p class="mt-2 text-gray-700">{{ $data }}</p>
                     <p class="text-gray-700">Tanggal: 20-10-2024</p>
                 </div>

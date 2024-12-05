@@ -11,7 +11,6 @@
             @csrf
             @method('PUT')
 
-
             <div class="mb-4">
                 <label for="kode_registrasi" class="block text-gray-700">Kode Registrasi</label>
                 <input type="text" name="kode_registrasi" id="kode_registrasi" value="{{ $asesor->kode_registrasi }}" class="w-full px-4 py-2 border rounded-md" required>
@@ -31,6 +30,16 @@
                 <label for="email" class="block text-gray-700">Email</label>
                 <input type="email" name="email" id="email" value="{{ $asesor->email }}" class="w-full px-4 py-2 border rounded-md" required>
             </div>
+
+            <div class="mb-4 mt-4">
+                        <label for="masa-berlaku" class="block text-gray-700">Masa Berlaku:</label>
+                        <input type="date" id="masa-berlaku" name="masa_berlaku" value="{{ $asesor->masa_berlaku }}" class="w-full p-2 border-2 border-gray-500 rounded-md">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="status-asesor" class="block text-gray-700">Status Asesor:</label>
+                        <input type="text" name="status_asesor" id="status-asesor" value="{{ $asesor->status_asesor }}" class="w-full p-2 border-2 border-gray-500 rounded-md" placeholder="Contoh: Aktif" required>
+                    </div>
 
             <div class="flex justify-end">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200">Update</button>
