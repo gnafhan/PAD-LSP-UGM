@@ -15,14 +15,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UKBidangSeeder::class,
             UKSeeder::class,
-            Apl02Seeder::class,
             SkemaSeeder::class,
             EventSeeder::class,
             UsersSeeder::class,
+            AsesorSeeder::class,
             AsesisSeeder::class,
             PenanggungJawabSeeder::class,
             TUKSeeder::class,
-            AsesorSeeder::class,
             MUKSeeder::class,
             AsesiPengajuanSeeder::class,
             UjianMUKSeeder::class,
@@ -30,6 +29,7 @@ class DatabaseSeeder extends Seeder
             AsesiMUKSeeder::class,
             JadwalMUKSeeder::class,
             AsesiApl02Seeder::class,
+            EventSkemaSeeder::class,
         ]);
     }
 }

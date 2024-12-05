@@ -121,13 +121,42 @@
                     <input type="text" id="pendidikan_terakhir" name="pendidikan_terakhir" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('pendidikan_terakhir') }}" placeholder="Sarjana Teknik Informatika">
                 </div>
 
-                <!-- Button Kembali dan Selanjutnya -->
-                <div class="flex justify-end">
-                    {{-- <a href="/apl/2" type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</a> --}}
-                    <button type="submit" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Selanjutnya</button>
+                <!-- Bagian Data Pekerjaan Sekarang -->
+                <h3 class="text-lg font-semibold mb-4">Bagian 2: Data Pekerjaan Sekarang</h3>
+                <div class="mb-4">
+                    <label for="status_pekerjaan" class="block text-sm font-medium text-gray-700">Status Pekerjaan</label>
+                    <select id="status_pekerjaan" name="status_pekerjaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm">
+                        <option value="Bekerja">Bekerja</option>
+                        <option value="Tidak Bekerja">Tidak Bekerja</option>
+                    </select>
                 </div>
-            </form>
 
+                <div class="mb-4">
+                    <label for="nama_perusahaan" class="block text-sm font-medium text-gray-700">Nama Perusahaan</label>
+                    <input type="text" id="nama_perusahaan" name="nama_perusahaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('nama_perusahaan') }}" placeholder="PT. Tech Innovators">
+                </div>
+
+                <div class="mb-4">
+                    <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan</label>
+                    <input type="text" id="jabatan" name="jabatan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('jabatan') }}" placeholder="Software Engineer">
+                </div>
+
+                <div class="mb-4">
+                    <label for="alamat_perusahaan" class="block text-sm font-medium text-gray-700">Alamat Perusahaan</label>
+                    <input type="text" id="alamat_perusahaan" name="alamat_perusahaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('alamat_perusahaan') }}" placeholder="Jl. Teknologi No. 20, Jakarta">
+                </div>
+
+                <div class="mb-4">
+                    <label for="no_telp_perusahaan" class="block text-sm font-medium text-gray-700">Nomor Telepon Perusahaan</label>
+                    <input type="text" id="no_telp_perusahaan" name="no_telp_perusahaan" class="mt-1 block w-full rounded-md border border-gray-400 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" value="{{ old('no_telp_perusahaan') }}" placeholder="0211234567">
+                </div>
+
+                <!-- Tombol Submit -->
+                <div class="mt-6 text-right">
+                    <button type="submit" id="btn-selanjutnya" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">Kirim</button>
+                </div>
+
+                </form>
             </div>
         </div>
     </div>
@@ -154,6 +183,11 @@
                 alamat_rumah: $('#alamat_rumah').val(),
                 no_telp: $('#no_telp').val(),
                 pendidikan_terakhir: $('#pendidikan_terakhir').val(),
+                status_pekerjaan: $('#status_pekerjaan').val(),
+                nama_perusahaan: $('#nama_perusahaan').val(),
+                jabatan: $('#jabatan').val(),
+                alamat_perusahaan: $('#alamat_perusahaan').val(),
+                no_telp_perusahaan: $('#no_telp_perusahaan').val(),
             };
             $.ajax({
                 url: '/save-data-pribadi',

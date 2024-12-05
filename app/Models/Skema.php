@@ -27,6 +27,11 @@ class Skema extends Model
         'daftar_id_uk' => 'array',
     ];
 
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'event_skema', 'id_skema', 'id_event');
+    }
+
     public function unitKompetensi()
     {
         return $this->hasMany(Uk::class, 'id_uk', 'daftar_id_uk');

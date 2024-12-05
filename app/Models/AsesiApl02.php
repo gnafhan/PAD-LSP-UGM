@@ -17,8 +17,7 @@ class AsesiApl02 extends Model
     protected $fillable = [
         'id_asesiAPL02',
         'id_asesi',
-        'id_asesiUK',
-        'id_apl02',
+        'daftar_id_asesiUK',
         'file_portofolio',
     ];
 
@@ -31,16 +30,6 @@ class AsesiApl02 extends Model
     public function asesi()
     {
         return $this->belongsTo(Asesi::class, 'id_asesi', 'id_asesi');
-    }
-
-    public function asesiUK()
-    {
-        return $this->belongsTo(AsesiUK::class, 'id_asesiUK', 'id_asesiUK');
-    }
-
-    public function apl02()
-    {
-        return $this->belongsTo(Apl02::class, 'id_apl02', 'id_apl02');
     }
 
     protected static function boot()

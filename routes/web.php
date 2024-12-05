@@ -239,6 +239,8 @@ Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])
 
 // //testing home-asesi
 Route::get('/home-asesi', [AsesiController::class, 'index'])->middleware('auth');
+// //testing home-asesi
+// Route::get('/home-asesi', [AsesiController::class, 'index']);
 
 
 
@@ -467,8 +469,7 @@ Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEma
 Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.update'); // buat isi token pake post
 
-// //testing home-asesi
-Route::get('/home-asesi', [AsesiController::class, 'index']);
+
 
 
 

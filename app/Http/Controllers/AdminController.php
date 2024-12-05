@@ -50,6 +50,7 @@ class AdminController extends Controller
             'fax_institusi_asal' => 'nullable|string|max:20',
             'email_institusi_asal' => 'nullable|email|max:255',
         ]);
+        $validatedData['foto_asesor'] = $validatedData['foto_asesor'] ?? 'budi.jpg';
 
         Asesor::create($validatedData);
         return redirect()->route('admin.asesor.index')->with('success', 'Asesor berhasil ditambahkan');
@@ -60,7 +61,6 @@ class AdminController extends Controller
         $asesor = Asesor::findOrFail($id);
         return view('home.home-admin.edit-asesor', compact('asesor'));
     }
-
 
     public function updateDataAsesor(Request $request, $id)
     {
@@ -81,7 +81,6 @@ class AdminController extends Controller
         return redirect()->route('admin.asesor.index')->with('success', 'Data asesor berhasil diperbarui.');
     }
 
-
     public function destroyDataAsesor($id)
     {
         $asesor = Asesor::findOrFail($id);
@@ -89,8 +88,6 @@ class AdminController extends Controller
 
         return redirect()->route('admin.asesor.index')->with('success', 'Data asesor berhasil dihapus.');
     }
-
-
 
     public function indexDataSkema()
     {
@@ -200,6 +197,7 @@ class AdminController extends Controller
         $validatedData = $request->validate([
             'kode_uk' => 'required|string|max:100|unique:uk',
             'nama_uk' => 'required|string|max:100',
+            'elemen_uk' => 'required|string',
             'id_bidang' => 'nullable|string|max:20',
             'jenis_standar' => 'required|string|max:50'
         ]);
@@ -221,6 +219,7 @@ class AdminController extends Controller
         $validatedData = $request->validate([
             'kode_uk' => 'required|string|max:100',
             'nama_uk' => 'required|string|max:100',
+            'elemen_uk' => 'required|string',
             'id_bidang' => 'nullable|string|max:20',
             'jenis_standar' => 'required|string|max:50'
         ]);
@@ -239,25 +238,55 @@ class AdminController extends Controller
 
     public function indexDataEvent()
     {
-        $event = Event::with('skema')->get();
+        $event = Event::with('skemas')->get();
         return view('home.home-admin.event2', compact('event'));
     }
 
+    // public function editDataEvent($id)
+    // {
+    //     $event = Event::with('skemas')->findOrFail($id);
+    //     $skemaList = Skema::all();
+
+    //     $skemaJson = json_encode($event->skema);
+    //     $daftarIdSkemaJson = $event->daftar_id_skema;
+
+    //     return view('home.home-admin.edit-event', [
+    //         'event' => $event,
+    //         'skemaJson' => $skemaJson,
+    //         'daftarIdSkemaJson' => $daftarIdSkemaJson,
+    //         'skemaList' => $skemaList
+    //     ]);
+    // }
+
     public function editDataEvent($id)
     {
-        $event = Event::with('skema')->findOrFail($id);
-        $skemaList = Skema::all();
-        // Kirim data skema dalam format JSON
-        $skemaJson = json_encode($event->skema);
-        $daftarIdSkemaJson = $event->daftar_id_skema; // Ambil data daftar_id_skema langsung dari skema
+        $event = Event::with('skemas')->findOrFail($id); // Load relasi skemas dari tabel pivot
+        $skemaList = Skema::all(); // Daftar semua skema
 
         return view('home.home-admin.edit-event', [
             'event' => $event,
-            'skemaJson' => $skemaJson,
-            'daftarIdSkemaJson' => $daftarIdSkemaJson,
-            'skemaList' => $skemaList
+            'skemaList' => $skemaList,
         ]);
     }
+
+    // public function updateDataEvent(Request $request, $id)
+    // {
+    //     $event = Event::findOrFail($id);
+
+    //     $validatedData = $request->validate([
+    //         'nama_event' => 'required|string|max:100',
+    //         'tanggal_mulai_event' => 'required|date',
+    //         'tanggal_berakhir_event' => 'required|date',
+    //         'tuk' => 'required|string|max:100',
+    //         'tipe_event' => 'required|string|max:50',
+    //     ]);
+
+    //     $validatedData['daftar_id_skema'] = $request->input('daftar_id_skema');
+
+    //     $event->update($validatedData);
+
+    //     return redirect()->route('admin.event.index')->with('success', 'Event berhasil diperbarui');
+    // }
 
     public function updateDataEvent(Request $request, $id)
     {
@@ -271,9 +300,11 @@ class AdminController extends Controller
             'tipe_event' => 'required|string|max:50',
         ]);
 
-        $validatedData['daftar_id_skema'] = $request->input('daftar_id_skema');
-
         $event->update($validatedData);
+
+        // Update tabel pivot
+        $skemaIds = array_filter(explode(',', $request->input('daftar_id_skema', '')));
+        $event->skemas()->sync($skemaIds);
 
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil diperbarui');
     }
@@ -284,37 +315,85 @@ class AdminController extends Controller
         return view('home.home-admin.tambah-event', ['skemaList' => $skemaList,]);
     }
 
+    // public function storeDataEvent(Request $request)
+    // {
+    //     $nomorSkemas = json_decode($request->daftar_id_skema, true);
+    //     $idSkemas = [];
+
+    //     foreach ($nomorSkemas as $nomorSkema) {
+    //         // Temukan id_skema berdasarkan nomor_skema
+    //         $skema = Skema::where('nomor_skema', $nomorSkema)->first();
+
+    //         if ($skema) {
+    //             $idSkemas[] = $skema->id_skema; // Masukkan id_skema yang ditemukan ke dalam array
+    //         } else {
+    //             return redirect()->back()->withErrors(['nomor_skema' => "Nomor Skema $nomorSkema tidak ditemukan."]);
+    //         }
+    //     }
+
+    //     $validatedData = $request->validate([
+    //         'nama_event' => 'required|string|max:100',
+    //         'tanggal_mulai_event' => 'required|date',
+    //         'tanggal_berakhir_event' => 'required|date',
+    //         'tuk' => 'required|string|max:100',
+    //         'tipe_event' => 'required|string|max:50',
+    //     ]);
+
+    //     $validatedData['daftar_id_skema'] = json_encode($idSkemas);
+
+    //     Event::create($validatedData);
+
+    //     return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan');
+    // }
+
     public function storeDataEvent(Request $request)
     {
+        try {
 
-        $nomorSkemas = json_decode($request->daftar_id_skema, true);
-        $idSkemas = [];
-
-        foreach ($nomorSkemas as $nomorSkema) {
-            // Temukan id_skema berdasarkan nomor_skema
-            $skema = Skema::where('nomor_skema', $nomorSkema)->first();
-
-            if ($skema) {
-                $idSkemas[] = $skema->id_skema; // Masukkan id_skema yang ditemukan ke dalam array
-            } else {
-                return redirect()->back()->withErrors(['nomor_skema' => "Nomor Skema $nomorSkema tidak ditemukan."]);
+            if ($request->has('daftar_id_skema')) {
+                $request->merge([
+                    'daftar_id_skema' => json_decode($request->input('daftar_id_skema'), true)
+                ]);
             }
+
+            $validatedData = $request->validate([
+                'nama_event' => 'required|string|max:100',
+                'tanggal_mulai_event' => 'required|date',
+                'tanggal_berakhir_event' => 'required|date|after_or_equal:tanggal_mulai_event',
+                'tuk' => 'required|string|max:100',
+                'tipe_event' => 'required|string|max:50',
+                'daftar_id_skema' => 'required|array|min:1',
+            ]);
+
+            // Simpan event
+            $event = Event::create([
+                'nama_event' => $validatedData['nama_event'],
+                'tanggal_mulai_event' => $validatedData['tanggal_mulai_event'],
+                'tanggal_berakhir_event' => $validatedData['tanggal_berakhir_event'],
+                'tuk' => $validatedData['tuk'],
+                'tipe_event' => $validatedData['tipe_event'],
+            ]);
+
+            // Ambil ID skema dari nomor skema
+            $nomorSkemas = $request->input('daftar_id_skema');
+            $idSkemas = Skema::whereIn('nomor_skema', $nomorSkemas)->pluck('id_skema');
+
+            // Hubungkan event dengan skema
+            $event->skemas()->attach($idSkemas);
+
+            return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan');
+        } catch (\Exception $e) {
+            // Log error untuk debugging
+            Log::error('Error saat menambahkan event: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'exception' => $e,
+            ]);
+
+            return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan. Silakan coba lagi.']);
         }
-
-        $validatedData = $request->validate([
-            'nama_event' => 'required|string|max:100',
-            'tanggal_mulai_event' => 'required|date',
-            'tanggal_berakhir_event' => 'required|date',
-            'tuk' => 'required|string|max:100',
-            'tipe_event' => 'required|string|max:50',
-        ]);
-
-        $validatedData['daftar_id_skema'] = json_encode($idSkemas);
-
-        Event::create($validatedData);
-
-        return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan');
     }
+
+
 
     public function destroyDataEvent($id)
     {

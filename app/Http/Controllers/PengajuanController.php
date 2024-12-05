@@ -35,10 +35,10 @@ class PengajuanController extends Controller
 
             // Jika ada file, lanjutkan validasi tipe file dan ukuran
             $validatedData = $request->validate([
-                'signature' => 'file|mimes:pdf,jpg,jpeg,png|max:2048',
+                'signature' => 'file|mimes:jpg,jpeg,png|max:2048',
             ], [
-                'signature.file' => 'Tanda tangan harus berupa file pdf, jpg, jpeg, atau png.',
-                'signature.mimes' => 'Tanda tangan harus berupa file pdf, jpg, jpeg, atau png.',
+                'signature.file' => 'Tanda tangan harus berupa file jpg, jpeg, atau png.',
+                'signature.mimes' => 'Tanda tangan harus berupa file jpg, jpeg, atau png.',
                 'signature.max' => 'Ukuran file tanda tangan tidak boleh lebih dari 2048.',
             ]);
 
@@ -74,6 +74,11 @@ class PengajuanController extends Controller
             'alamat_rumah' => 'required|string|max:200',
             'no_telp' => 'required|string|max:20',
             'pendidikan_terakhir' => 'required|string|max:100',
+            'status_pekerjaan' => 'required|string|max:20',
+            'nama_perusahaan' => 'required|string|max:100',
+            'jabatan' => 'required|string|max:100',
+            'alamat_perusahaan' => 'required|string',
+            'no_telp_perusahaan' => 'required|string|max:20',
         ], [
             'nama_user.required' => 'Nama lengkap wajib diisi.',
             'nama_user.string' => 'Nama lengkap harus berupa teks.',
@@ -114,6 +119,25 @@ class PengajuanController extends Controller
             'pendidikan_terakhir.required' => 'Pendidikan terakhir wajib diisi.',
             'pendidikan_terakhir.string' => 'Pendidikan terakhir harus berupa teks.',
             'pendidikan_terakhir.max' => 'Pendidikan terakhir tidak boleh lebih dari 100 karakter.',
+
+            'status_pekerjaan.required' => 'Status pekerjaan wajib diisi.',
+            'status_pekerjaan.string' => 'Status pekerjaan harus berupa teks.',
+            'status_pekerjaan.max' => 'Status pekerjaan tidak boleh lebih dari 20 karakter.',
+
+            'nama_perusahaan.required' => 'Nama perusahaan wajib diisi.',
+            'nama_perusahaan.string' => 'Nama perusahaan harus berupa teks.',
+            'nama_perusahaan.max' => 'Nama perusahaan tidak boleh lebih dari 100 karakter.',
+
+            'jabatan.required' => 'Jabatan wajib diisi.',
+            'jabatan.string' => 'Jabatan harus berupa teks.',
+            'jabatan.max' => 'Jabatan tidak boleh lebih dari 100 karakter.',
+
+            'alamat_perusahaan.required' => 'Alamat perusahaan wajib diisi.',
+            'alamat_perusahaan.string' => 'Alamat perusahaan harus berupa teks.',
+
+            'no_telp_perusahaan.required' => 'Nomor telepon perusahaan wajib diisi.',
+            'no_telp_perusahaan.string' => 'Nomor telepon perusahaan harus berupa teks.',
+            'no_telp_perusahaan.max' => 'Nomor telepon perusahaan tidak boleh lebih dari 20 karakter.',
         ]);
 
         try {
@@ -312,6 +336,11 @@ class PengajuanController extends Controller
                 ]))),
                 'ttd_pemohon' => $data['ttd_pemohon'],
                 'status_rekomendasi' => 'N/A',
+                'status_pekerjaan' => $data['status_pekerjaan'],
+                'nama_perusahaan' => $data['nama_perusahaan'],
+                'jabatan' => $data['jabatan'],
+                'alamat_perusahaan' => $data['alamat_perusahaan'],
+                'no_telp_perusahaan' => $data['no_telp_perusahaan'],
             ]));
 
             return redirect()->route('konfirmasi')->with('success', 'Data berhasil disimpan.');

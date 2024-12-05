@@ -15,8 +15,8 @@ return new class extends Migration
             $table->string('id_asesiUK', 20)->primary();
             $table->string('id_asesi', 20);
             $table->string('id_uk', 20);
-            $table->longText('kriteria_uk');
-            $table->boolean('jawaban_kriteria')->default(false);
+            $table->longText('elemen_uk');
+            $table->longText('jawaban_elemen_uk');
             $table->json('file_bukti')->nullable();
             $table->timestamps();
 

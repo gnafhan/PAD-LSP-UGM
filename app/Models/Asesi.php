@@ -31,6 +31,11 @@ class Asesi extends Model
         'id_skema',
         'file_kelengkapan_pemohon',
         'ttd_pemohon',
+        'status_pekerjaan',
+        'nama_perusahaan',
+        'jabatan',
+        'alamat_perusahaan',
+        'no_telp_perusahaan'
     ];
 
     protected $casts = [

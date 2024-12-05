@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('id_uk', 20)->primary();
             $table->string('kode_uk', 100);
             $table->string('nama_uk', 100);
+            $table->longText('elemen_uk');
             $table->string('id_bidang', 20)->nullable();
             $table->string('jenis_standar', 50);
             $table->timestamps();

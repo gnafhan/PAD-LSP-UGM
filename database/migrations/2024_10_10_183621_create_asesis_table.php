@@ -26,12 +26,19 @@ return new class extends Migration
             $table->string('id_user', 20);
             $table->longText('file_sertifikat')->nullable();
             $table->string('id_skema', 20);
+            $table->string('id_asesor', 20)->nullable();
             $table->json('file_kelengkapan_pemohon');
             $table->longText('ttd_pemohon');
+            $table->string('status_pekerjaan', 20);
+            $table->string('nama_perusahaan', 100)->nullable();
+            $table->string('jabatan', 100)->nullable();
+            $table->longText('alamat_perusahaan')->nullable();
+            $table->string('no_telp_perusahaan', 20)->nullable();
             $table->timestamps();
 
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
             $table->foreign('id_skema')->references('id_skema')->on('skema')->onDelete('restrict');
+            $table->foreign('id_asesor')->references('id_asesor')->on('asesor')->onDelete('restrict');
         });
     }
 

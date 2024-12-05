@@ -27,6 +27,11 @@
             </div>
 
             <div class="mb-4">
+                <label for="elemen_uk" class="block font-medium text-gray-700">Elemen Unit Kompetensi</label>
+                <input type="text" name="elemen_uk" id="elemen_uk" class="w-full border-2 border-gray-500 rounded p-2" placeholder="Mengidentifikasi coding sederhana" required>
+            </div>
+
+            <div class="mb-4">
                 <label for="id_bidang" class="block font-medium text-gray-700">ID Bidang</label>
                 <input type="text" name="id_bidang" id="id_bidang" class="w-full border-2 border-gray-500 rounded p-2" placeholder="Contoh: B01">
             </div>

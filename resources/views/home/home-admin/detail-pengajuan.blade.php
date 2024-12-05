@@ -59,24 +59,28 @@
             <h3 class="text-lg font-semibold mt-6 mb-2">b. Data Pekerjaan Sekarang</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
+                    <label class="block text-gray-700">Status Pekerjaan</label>
+                    <input type="text" value="{{ $asesiPengajuan->status_pekerjaan }}" class="w-full p-2 border rounded-md" />
+                </div>
+                <div>
                     <label class="block text-gray-700">Nama Institusi / Perusahaan</label>
-                    <input type="text" value="PT Teknologi Indonesia" class="w-full p-2 border rounded-md" />
+                    <input type="text" value="{{ $asesiPengajuan->nama_perusahaan }}" class="w-full p-2 border rounded-md" />
                 </div>
                 <div>
                     <label class="block text-gray-700">Jabatan</label>
-                    <input type="text" value="Software Developer" class="w-full p-2 border rounded-md" />
+                    <input type="text" value="{{ $asesiPengajuan->jabatan }}" class="w-full p-2 border rounded-md" />
                 </div>
                 <div>
-                    <label class="block text-gray-700">Alamat Kantor</label>
-                    <input type="text" value="Jl. Sudirman No. 10, Jakarta" class="w-full p-2 border rounded-md" />
+                    <label class="block text-gray-700">Alamat Perusahaan</label>
+                    <input type="text" value="{{ $asesiPengajuan->alamat_perusahaan }}" class="w-full p-2 border rounded-md" />
                 </div>
-                <div>
+                {{-- <div>
                     <label class="block text-gray-700">Kode Pos</label>
                     <input type="text" value="10220" class="w-full p-2 border rounded-md" />
-                </div>
+                </div> --}}
                 <div>
-                    <label class="block text-gray-700">No. Telp/Fax/E-mail</label>
-                    <input type="text" value="02112345678 / info@teknologi.com" class="w-full p-2 border rounded-md" />
+                    <label class="block text-gray-700">Nomor Telepon Perusahaan</label>
+                    <input type="text" value="{{ $asesiPengajuan->no_telp_perusahaan }}" class="w-full p-2 border rounded-md" />
                 </div>
             </div>
         </div>
@@ -199,7 +203,7 @@
             </div>
         </div>
         <div class="flex justify-end mt-6">
-                <button class="bg-green-500 text-white px-4 py-2 rounded-md">Submit</button>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md">Submit</button>
         </div>
         </form>
     </div>

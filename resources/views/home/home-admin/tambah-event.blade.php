@@ -7,6 +7,17 @@
     <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-4 text-center">Formulir Penambahan Event</h2>
 
+    @if ($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <strong>Periksa input Anda:</strong>
+            <ul class="mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Form Tambah Event -->
     <form action="{{ route('admin.event.store') }}" method="POST">
       @csrf
@@ -37,7 +48,7 @@
 
       <div class="mb-4">
         <label for="daftar_id_skema" class="block font-medium text-gray-700">Daftar Skema</label>
-        <select name="daftar_id_skema_select" id="daftar_id_skema" class="w-full border border-gray-300 rounded p-2">
+        <select name="daftar_id_skema[]" id="daftar_id_skema" class="w-full border border-gray-300 rounded p-2">
             <option value="">Pilih Skema</option>
             @foreach($skemaList as $skema)
                 <option value="{{ $skema->nomor_skema }}" data-nama="{{ $skema->nama_skema }}">{{ $skema->nomor_skema }} - {{ $skema->nama_skema }}</option>

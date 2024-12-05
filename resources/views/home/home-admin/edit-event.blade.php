@@ -39,7 +39,7 @@
 
             <div class="mb-4">
                 <label for="daftar_id_skema" class="block font-medium text-gray-700">Daftar Skema</label>
-                <select name="daftar_id_skema_select" id="daftar_id_skema" class="w-full border border-gray-300 rounded p-2">
+                <select id="skemaSelect" class="w-full border border-gray-300 rounded p-2">
                     <option value="">Pilih Skema</option>
                     @foreach($skemaList as $skema)
                         <option value="{{ $skema->id_skema }}" data-nomor="{{ $skema->nomor_skema }}" data-nama="{{ $skema->nama_skema }}">{{ $skema->nomor_skema }} - {{ $skema->nama_skema }}</option>
@@ -47,7 +47,7 @@
                 </select>
             </div>
 
-            <input type="hidden" name="daftar_id_skema" id="daftar_id_skema_hidden">
+            {{-- <input type="hidden" name="daftar_id_skema" id="daftar_id_skema_hidden"> --}}
 
             <div class="flex flex-wrap gap-2 mb-4">
                 <button type="button" id="tambahBtn" class="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600">Tambah Skema</button>
@@ -62,24 +62,21 @@
                     </tr>
                 </thead>
                 <tbody id="skemaTableBody">
-                    @foreach(json_decode($event->daftar_id_skema, true) as $nomorSkema)
-                        @php
-                            $skema = $skemaList->firstWhere('nomor_skema', $nomorSkema);
-                        @endphp
-                        @if($skema)
-                            <tr>
-                                <td class="border border-gray-300 p-2">{{ $skema->nomor_skema }}</td>
-                                <td class="border border-gray-300 p-2">{{ $skema->nama_skema }}</td>
-                                <td class="border border-gray-300 p-2">
-                                    <button type="button" class="hapusBtn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
-                                        <i class="fas fa-trash-alt"></i> Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                        @endif
+                    @foreach($event->skemas as $skema)
+                        <tr data-id="{{ $skema->id_skema }}">
+                            <td class="border border-gray-300 p-2">{{ $skema->nomor_skema }}</td>
+                            <td class="border border-gray-300 p-2">{{ $skema->nama_skema }}</td>
+                            <td class="border border-gray-300 p-2">
+                                <button type="button" class="hapusBtn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
+                                    <i class="fas fa-trash-alt"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
+
+            <input type="hidden" name="daftar_id_skema" id="daftarIdSkemaHidden" value="{{ $event->skemas->pluck('id_skema')->implode(',') }}">
 
             <div class="flex justify-end">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200">Update</button>
@@ -88,88 +85,51 @@
     </div>
 </div>
 <script>
-    // Ambil data unit kompetensi dan daftar_id_uk dari JSON yang dikirim oleh controller
-    const skemaList = {!! $skemaJson !!};
-    const daftarIdSkema = JSON.parse('{!! $daftarIdSkemaJson !!}'); // Parse JSON dari PHP
-
-    // Fungsi untuk mengisi tabel dengan data Unit Kompetensi yang sudah ada
-    function isiTabelSkema() {
-        const skemaTableBody = document.getElementById('skemaTableBody');
-        skemaTableBody.innerHTML = ''; // Hapus isi tabel saat ini
-
-        // Iterasi setiap id_uk yang ada di daftarIdUk
-        daftarIdSkema.forEach(idSkema => {
-            // Cari unit kompetensi yang sesuai berdasarkan id_uk
-            const skema = skemaList.find(skema => skema.id_skema === idSkema);
-
-            if (skema) {
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td class="border border-gray-300 p-2">${skema.nomor_skema}</td>
-                    <td class="border border-gray-300 p-2">${skema.nama_skema}</td>
-                    <td class="border border-gray-300 p-2">
-                        <button type="button" class="hapusBtn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
-                            <i class="fas fa-trash-alt"></i> Hapus
-                        </button>
-                    </td>
-                `;
-                skemaTableBody.appendChild(newRow);
-            }
-        });
-
-        document.getElementById('daftar_id_skema_hidden').value = JSON.stringify(daftarIdSkema);
-    }
-
-    // Panggil fungsi untuk inisialisasi tabel saat halaman di-load
-    document.addEventListener('DOMContentLoaded', isiTabelSkema);
-
-    // Tambahkan unit kompetensi baru
     document.getElementById('tambahBtn').addEventListener('click', function() {
-        const select = document.getElementById('daftar_id_skema');
+        const select = document.getElementById('skemaSelect');
         const idSkema = select.value;
-        const nomorSkema = select.options[select.selectedIndex].getAttribute('data-nomor');
-        const namaSkema = select.options[select.selectedIndex].getAttribute('data-nama');
+        const nomorSkema = select.options[select.selectedIndex]?.getAttribute('data-nomor');
+        const namaSkema = select.options[select.selectedIndex]?.getAttribute('data-nama');
+        const tableBody = document.getElementById('skemaTableBody');
+        const hiddenInput = document.getElementById('daftarIdSkemaHidden');
 
-        if (idSkema && namaSkema && !daftarIdSkema.includes(idSkema)) {
-            daftarIdSkema.push(idSkema);
-
-            // Perbarui input hidden
-            document.getElementById('daftar_id_skema_hidden').value = JSON.stringify(daftarIdSkema);
-
-            const newRow = document.createElement('tr');
-            newRow.setAttribute('data-id', idSkema);
-            newRow.innerHTML = `
-                <td class="border border-gray-300 p-2">${nomorSkema}</td>
-                <td class="border border-gray-300 p-2">${namaSkema}</td>
-                <td class="border border-gray-300 p-2">
-                    <button type="button" class="hapusBtn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
-                        <i class="fas fa-trash-alt"></i> Hapus
-                    </button>
-                </td>
-            `;
-
-            document.getElementById('skemaTableBody').appendChild(newRow);
-            select.value = '';
-        } else {
-            alert("Pilih skema yang belum ditambahkan.");
+        if (!idSkema || !nomorSkema || !namaSkema) {
+            alert('Pilih skema terlebih dahulu.');
+            return;
         }
+
+        if ([...tableBody.querySelectorAll('tr')].some(row => row.dataset.id === idSkema)) {
+            alert('Skema sudah ada di tabel.');
+            return;
+        }
+
+        const newRow = document.createElement('tr');
+        newRow.setAttribute('data-id', idSkema);
+        newRow.innerHTML = `
+            <td class="border border-gray-300 p-2">${nomorSkema}</td>
+            <td class="border border-gray-300 p-2">${namaSkema}</td>
+            <td class="border border-gray-300 p-2">
+                <button type="button" class="hapusBtn bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
+                    <i class="fas fa-trash-alt"></i> Hapus
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(newRow);
+
+        const daftarId = hiddenInput.value ? hiddenInput.value.split(',') : [];
+        daftarId.push(idSkema);
+        hiddenInput.value = daftarId.join(',');
     });
 
-    // Hapus skema dari tabel
     document.getElementById('skemaTableBody').addEventListener('click', function(e) {
-        if (e.target && e.target.classList.contains('hapusBtn')) {
+        if (e.target.classList.contains('hapusBtn')) {
             const row = e.target.closest('tr');
-            // const kodeUK = row.cells[0].innerText;
-            const idSkema = row.getAttribute('data-id');
-
-            // Hapus kode UK dari daftar
-            daftarIdSkema.splice(daftarIdSkema.indexOf(idSkema), 1);
-
-            // Perbarui input hidden
-            document.getElementById('daftar_id_skema_hidden').value = JSON.stringify(daftarIdSkema);
-
-            // Hapus baris dari tabel
+            const idSkema = row.dataset.id;
             row.remove();
+
+            const hiddenInput = document.getElementById('daftarIdSkemaHidden');
+            const daftarId = hiddenInput.value.split(',').filter(id => id !== idSkema);
+            hiddenInput.value = daftarId.join(',');
         }
     });
 </script>

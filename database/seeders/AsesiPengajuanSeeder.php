@@ -36,6 +36,11 @@ class AsesiPengajuanSeeder extends Seeder
                 'file_kelengkapan_pemohon' => json_encode(['/bukti_pemohon/surat_ijazah.pdf', '/bukti_pemohon/surat_magang.pdf', '/bukti_pemohon/foto_ktp.png', '/bukti_pemohon/foto_3x4.png']),
                 'ttd_pemohon' => 'ttd_annisa.png',
                 'status_rekomendasi' => 'N/A',
+                'status_pekerjaan' => 'Tidak bekerja',
+                'nama_perusahaan' => 'PT. Tech Indo',
+                'jabatan' => 'SE',
+                'alamat_perusahaan' => 'Jalan Mangga Dua, Jakarta Selatan',
+                'no_telp_perusahaan' => null,
             ],
         ];
 

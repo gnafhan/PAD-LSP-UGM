@@ -18,10 +18,9 @@ return new class extends Migration
             $table->dateTime('tanggal_berakhir_event');
             $table->string('tuk', 100);
             $table->string('tipe_event', 50);
-            $table->json('daftar_id_skema');
+            // $table->json('daftar_id_skema');
             $table->timestamps();
         });
-
     }
 
     /**

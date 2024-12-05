@@ -36,7 +36,12 @@ class AsesiPengajuan extends Model
         'email',
         'file_kelengkapan_pemohon',
         'ttd_pemohon',
-        'status_rekomendasi'
+        'status_rekomendasi',
+        'status_pekerjaan',
+        'nama_perusahaan',
+        'jabatan',
+        'alamat_perusahaan',
+        'no_telp_perusahaan'
     ];
 
     protected $casts = [
