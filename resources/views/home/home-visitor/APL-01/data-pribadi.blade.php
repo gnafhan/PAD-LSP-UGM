@@ -140,7 +140,7 @@
 
                 <!-- Tombol Submit -->
                 <div class="mt-6 text-right">
-                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">Kirim</button>
+                    <button type="submit" id="btn-selanjutnya" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">Kirim</button>
                 </div>
 
                 </form>
@@ -148,4 +148,65 @@
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        });
+        // AJAX untuk menyimpan data sementara
+        function saveDataPribadi() {
+            const dataPribadi = {
+                _token: '{{ csrf_token() }}',
+                nama_user: $('#nama_user').val(),
+                nik: $('#nik').val(),
+                nim: $('#nim').val(),
+                kota_domisili: $('#kota_domisili').val(),
+                tempat_tanggal_lahir: $('#tempat_tanggal_lahir').val(),
+                jenis_kelamin: $('#jenis_kelamin').val(),
+                kebangsaan: $('#kebangsaan').val(),
+                alamat_rumah: $('#alamat_rumah').val(),
+                no_telp: $('#no_telp').val(),
+                pendidikan_terakhir: $('#pendidikan_terakhir').val(),
+                status_pekerjaan: $('#status_pekerjaan').val(),
+                nama_perusahaan: $('#nama_perusahaan').val(),
+                jabatan: $('#jabatan').val(),
+                alamat_perusahaan: $('#alamat_perusahaan').val(),
+                no_telp_perusahaan: $('#no_telp_perusahaan').val(),
+            };
+            $.ajax({
+                url: '/save-data-pribadi',
+                type: 'POST',
+                data: dataPribadi,
+                success: function(response) {
+                    console.log('Data pribadi tersimpan sementara:', response);
+                    window.location.href = "{{ route('sertifikasi') }}";
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status === 422) {
+                        // Jika ada error validasi, tampilkan pesan error yang sesuai
+                        const errors = xhr.responseJSON.errors;
+                        let errorMessage = '<ul class="text-red-500">';
+                        for (const key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                errorMessage += `<li>${errors[key][0]}</li>`;
+                            }
+                        }
+                        errorMessage += '</ul>';
+                        $('#message').html(errorMessage);
+                    } else {
+                        // Error lainnya
+                        console.error('Error menyimpan data pribadi:', error);
+                        $('#message').html('<p class="text-red-500">Gagal menyimpan data. Silakan coba lagi.</p>');
+                    }
+                }
+            });
+        }
+        $('#btn-selanjutnya').on('click', function(event) {
+            event.preventDefault();
+            saveDataPribadi();
+        });
+    </script>
 @endsection

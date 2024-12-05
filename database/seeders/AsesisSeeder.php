@@ -31,6 +31,11 @@ class AsesisSeeder extends Seeder
                 'id_asesor' => 'ASESOR1',
                 'file_kelengkapan_pemohon' => json_encode(['ktp_robin.png', 'foto_robin.png']),
                 'ttd_pemohon' => 'ttd_robin.png',
+                'status_pekerjaan' => 'Tidak bekerja',
+                'nama_perusahaan' => 'PT. Tech Indo',
+                'jabatan' => 'SE',
+                'alamat_perusahaan' => 'Jalan Mangga Dua, Jakarta Selatan',
+                'no_telp_perusahaan' => null,
             ],
             [
                 'nama_asesi' => 'Sakura Yamamoto',
@@ -49,6 +54,11 @@ class AsesisSeeder extends Seeder
                 'id_asesor' => 'ASESOR1',
                 'file_kelengkapan_pemohon' => json_encode(['ktp_sakura.png', 'foto_sakura.png']),
                 'ttd_pemohon' => 'ttd_sakura.png',
+                'status_pekerjaan' => 'Tidak bekerja',
+                'nama_perusahaan' => 'PT. Tech Indo',
+                'jabatan' => 'SE',
+                'alamat_perusahaan' => 'Jalan Mangga Dua, Jakarta Selatan',
+                'no_telp_perusahaan' => null,
             ],
             [
                 'nama_asesi' => 'Hiro Tanaka',
@@ -67,6 +77,11 @@ class AsesisSeeder extends Seeder
                 'id_asesor' => 'ASESOR2',
                 'file_kelengkapan_pemohon' => json_encode(['ktp_hiro.png', 'foto_hiro.png']),
                 'ttd_pemohon' => 'ttd_hiro.png',
+                'status_pekerjaan' => 'Tidak bekerja',
+                'nama_perusahaan' => 'PT. Tech Indo',
+                'jabatan' => 'SE',
+                'alamat_perusahaan' => 'Jalan Mangga Dua, Jakarta Selatan',
+                'no_telp_perusahaan' => null,
             ],
         ];
 
