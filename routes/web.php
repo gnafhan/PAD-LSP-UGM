@@ -6,6 +6,7 @@ use App\Http\Controllers\AsesiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginRegisterController;
+use App\Http\Controllers\HomeController;
 
 // LANDING PAGE HOME
 Route::get('/', function () {
@@ -28,9 +29,11 @@ Route::get('/panduan', function () {
 Route::get('/profile', function () {
     return view('home/home-visitor/profile');
 });
-Route::get('/skema', function () {
-    return view('home/home-visitor/skema');
-});
+// Route::get('/skema', function () {
+//     return view('home/home-visitor/skema');
+// });
+
+Route::get('/skema', [HomeController::class, 'index'])->name('skema');
 
 // HOME  ASESI SETELAH MELAKUKAN REGISTER
 Route::get('/register', function () {
@@ -201,9 +204,11 @@ Route::get('/frak5', function () {
 });
 
 // HOME - ADMIN
-Route::get('/home-admin', function () {
-    return view('home/home-admin/home');
-})->name('home-admin');
+// Route::get('/home-admin', function () {
+//     return view('home/home-admin/home');
+// })->name('home-admin');
+
+Route::get('/home-admin', [AdminController::class, 'index'])->name('home-admin');
 Route::get('/btn-asesi', function () {
     return view('home/home-admin/button-asesi');
 });

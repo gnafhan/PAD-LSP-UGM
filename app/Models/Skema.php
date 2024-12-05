@@ -19,7 +19,7 @@ class Skema extends Model
         'nomor_skema',
         'nama_skema',
         'dokumen_skkni',
-        'daftar_id_uk',
+        'daftar_id_uk', //json
         'persyaratan_skema',
     ];
 
