@@ -8,7 +8,7 @@
         <div class="absolute inset-0 bg-black opacity-50"></div>
         <img src="{{ asset('images/bg.jpg') }}" alt="Campus Background" class="w-full h-96 object-cover">
         <div class="absolute inset-0 flex items-center justify-center">
-            <h1 class="text-white text-4xl font-bold text-center">LEMBAGA SERTIFIKASI PROFESI <br> UNIVERSITAS GADJAH MADA</h1>
+            <h1 class="text-white text-5xl font-bold text-center">LEMBAGA SERTIFIKASI PROFESI <br> UNIVERSITAS GADJAH MADA</h1>
         </div>
     </section>
 

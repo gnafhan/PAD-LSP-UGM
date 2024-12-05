@@ -121,6 +121,7 @@
                     </div>
                     <table class="w-full border-collapse">
                         <thead>
+                            <p class="text-xs text-gray-500 mt-1 mb-2">Unggah semua file dalam bentuk PDF.</p>
                             <tr class="bg-gray-100">
                                 <th class="border border-gray-300 px-4 py-2">NO</th>
                                 <th class="border border-gray-300 px-4 py-2">Bukti Dasar</th>
@@ -163,6 +164,7 @@
                     <h2 class="text-lg font-semibold mb-4 text-left mt-4">3.2 Bukti Administratif</h2>
                     <table class="w-full border-collapse">
                         <thead>
+                            <p class="text-xs text-gray-500 mt-1 mb-2">Unggah semua file dalam bentuk PDF.</p>
                             <tr class="bg-gray-100">
                                 <th class="border border-gray-300 px-4 py-2">NO</th>
                                 <th class="border border-gray-300 px-4 py-2">Bukti Administratif</th>

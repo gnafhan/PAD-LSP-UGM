@@ -153,6 +153,10 @@ Route::get('/apl1/4', function () {
     return view('home/home-asesi/APL-01/konfirmasi'); //tampilan asesi skema yg pernah diikuti dan sdg diikuti
 });
 
+// Bagian 1 APL-01 yang sudah ada data pekerjaan sekarang
+Route::get('/apl1/bg1', function () {
+    return view('home/home-visitor/APL-01/bagian1');
+});
 // BAGIAN PILIH AKSI HOME -ASESI
 
 Route::get('/aksi', function () {

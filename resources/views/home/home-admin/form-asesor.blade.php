@@ -146,6 +146,7 @@
                         <label for="masa-berlaku" class="block text-gray-700">Masa Berlaku:</label>
                         <input type="date" id="masa-berlaku" name="masa_berlaku" class="w-full p-2 border-2 border-gray-500 rounded-md">
                     </div>
+                    
 
                 </div>
             </div>
