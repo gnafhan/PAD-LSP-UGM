@@ -34,7 +34,7 @@ class Skema extends Model
 
     public function unitKompetensi()
     {
-        return $this->hasMany(Uk::class, 'id_uk', 'daftar_id_uk');
+        return $this->hasMany(UK::class, 'id_uk', 'daftar_id_uk');
     }
 
     public function getUnitKompetensiAttribute()
