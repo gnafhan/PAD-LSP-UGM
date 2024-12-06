@@ -14,7 +14,7 @@
             <div id="message" class="mt-4"></div>
 
             <div class="p-4">
-                <p class="text-sm text-gray-600">SKM0317/00010/2/2019/14-Junior Web Developer</p>
+                {{-- <p class="text-sm text-gray-600">SKM0317/00010/2/2019/14-Junior Web Developer</p> --}}
                 <h3 class="text-center font-bold mt-4 mb-2">SURAT PERNYATAAN ASESI DALAM MENGIKUTI PROSES ASESMEN</h3>
                 <ul class="text-sm text-gray-700 space-y-2">
                     <li>1. Bahwa selama mengikuti proses asesmen ini, saya akan mengikuti semua tahapan proses asesmen mulai dari pengisian form pendaftaran, form asesmen mandiri, form Persetujuan Asesmen & Kerahasiaan, form yang berkaitan dengan metode asesmen (soal praktek, soal tertulis, soal lisan), form keputusan asesmen, dan form umpan balik.</li>

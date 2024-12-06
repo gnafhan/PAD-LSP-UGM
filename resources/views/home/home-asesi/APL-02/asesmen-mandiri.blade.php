@@ -34,27 +34,27 @@
                             </tr>
                             <tr>
                                 <td class="border border-gray-300 p-2 font-semibold">Judul Skema Sertifikasi</td>
-                                <td class="border border-gray-300 p-2">Junior Web Developer</td>
+                                <td class="border border-gray-300 p-2">{{ $asesi->skema->nama_skema ?? 'Tidak ditemukan' }}</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-300 p-2 font-semibold">Nomor Skema Sertifikasi</td>
-                                <td class="border border-gray-300 p-2">SKM/0317/00010/2/2019/14</td>
+                                <td class="border border-gray-300 p-2">{{ $asesi->skema->nomor_skema ?? 'Tidak ditemukan' }}</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-300 p-2 font-semibold">TUK</td>
-                                <td class="border border-gray-300 p-2">VOKASI UGM</td>
+                                <td class="border border-gray-300 p-2">{{ $event->tuk ?? 'Tidak ditemukan' }}</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-300 p-2 font-semibold">Nama Asesor</td>
-                                <td class="border border-gray-300 p-2">Imam Fahrurrozi</td>
+                                <td class="border border-gray-300 p-2">{{ $asesi->asesor->nama_asesor ?? 'Tidak ditemukan' }}</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-300 p-2 font-semibold">Nama Peserta</td>
-                                <td class="border border-gray-300 p-2">Ahmad Fatha Mumtaza</td>
+                                <td class="border border-gray-300 p-2">{{ $asesi->nama_asesi ?? 'Tidak ditemukan' }}</td>
                             </tr>
                             <tr>
                                 <td class="border border-gray-300 p-2 font-semibold">Hari/Tanggal</td>
-                                <td class="border border-gray-300 p-2">10 November 2024</td>
+                                <td class="border border-gray-300 p-2">{{ $today->translatedFormat('l, d F Y') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -73,9 +73,11 @@
                         <div class="p-4 mb-4 flex flex-col gap-4">
                             <h2 class="text-lg font-semibold">Bukti Kompetensi</h2>
                             <div class="flex flex-wrap gap-2 mb-4">
-                                <button class="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600">Tambah</button>
+                                <button id="tambahBukti" class="bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 mb-4">
+                                    Tambah Bukti
+                                </button>
                             </div>
-                            <table class="w-full border border-gray-200 text-sm mb-4">
+                            <table id="tabelBukti" class="w-full border border-gray-200 text-sm mb-4">
                                 <thead>
                                     <tr class="bg-gray-100">
                                         <th class="border border-gray-300 p-2 text-left font-semibold">Bukti Portfolio yang relevan</th>
@@ -84,71 +86,90 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="border border-gray-300 p-2 text-blue-600">
-                                            <a href="#" class="hover:underline">apl2_6714627cc248a.pdf</a>
-                                        </td>
-                                        <td class="border border-gray-300 p-2">Portofolio Ahmad Fatha Mumtaza</td>
-                                        <td class="border border-gray-300 p-2">
-                                            <button class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
-                                                <i class="fas fa-trash-alt"></i> Hapus
-                                            </button>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
 
                             <!-- Unit Kompetensi -->
                             <h2 class="text-lg font-semibold mb-4">Unit Kompetensi</h2>
-                            <table class="w-full border-collapse border border-gray-300 text-sm">
+
+                            @foreach($unitKompetensi as $uk)
+                            <table class="w-full border-collapse border border-gray-300 text-sm mb-4">
                                 <tr>
                                     <td class="border border-gray-300 p-2 font-semibold w-1/4">Kode Unit</td>
-                                    <td class="border border-gray-300 p-2">J.620100.005.02</td>
+                                    <td class="border border-gray-300 p-2">{{ $uk->kode_uk }}</td>
                                 </tr>
                                 <tr>
                                     <td class="border border-gray-300 p-2 font-semibold">Judul Unit</td>
-                                    <td class="border border-gray-300 p-2">Mengimplementasikan User Interface</td>
+                                    <td class="border border-gray-300 p-2">{{ $uk->nama_uk }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2" class="border border-gray-300 p-2 font-semibold text-center">Dapatkah saya ...?</td>
+                                    <td colspan="2" class="border border-gray-300 p-2 font-semibold text-left">Elemen Unit Kompetensi</td>
                                 </tr>
-
+                                <!-- Menampilkan elemen_uk langsung tanpa foreach -->
                                 <tr class="bg-gray-100">
-                                    <th class="border border-gray-300 p-2 text-left">Element</th>
-                                    <th class="border border-gray-300 p-2 text-center">Penilaian</th>
-                                    <th class="border border-gray-300 p-2 text-left">Bukti-Bukti Kompetensi</th>
-                                </tr>
+                                    <td class="border border-gray-300 p-2">
+                                        <div class="font-semibold">
+                                            <!-- Memecah elemen_uk berdasarkan tanda titik koma -->
+                                            @php
+                                                $elemenArray = explode(';', $uk->elemen_uk);
+                                            @endphp
 
-                                <tr>
-                                    <td class="border border-gray-300 p-2" rowspan="4">
-                                        <div class="font-semibold">Mengidentifikasi rancangan user interface</div>
-                                        <div class="text-gray-700">Kriteria untuk kerja:</div>
-                                        <ul class="list-disc ml-4 text-gray-700">
-                                            <li>1.1 Mengidentifikasi rancangan user interface sesuai kebutuhan.</li>
-                                            <li>1.2 Mengidentifikasi Komponen user interface dialog sesuai konteks rancangan proses</li>
-                                            <li>1.3 Menjelaskan Urutan dari akses komponen user interface dialog</li>
-                                            <li>1.4 Mengembangkan Simulasi (mock-up) dari aplikasi yang akan dibuat</li>
-                                        </ul>
+                                            <!-- Menampilkan setiap elemen sebagai item list -->
+                                            <ul class="list-disc ml-4">
+                                                @foreach($elemenArray as $elemen)
+                                                    <li>{{ $elemen }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
                                     </td>
                                     <td class="border border-gray-300 p-2 text-center">
-                                        <input type="checkbox" checked disabled class="h-4 w-4 text-blue-500" />
-                                    </td>
-                                    <td class="border border-gray-300 p-2">
-                                        <a href="#" class="text-blue-600 hover:underline">1. Portofolio Ahmad Fatha Mumtaza</a>
+                                        <input type="checkbox" class="h-4 w-4 text-blue-500" />
                                     </td>
                                 </tr>
                             </table>
-                            
+                        @endforeach
+
                         </div>
-                        
+
                     </div>
-                    
+
                 </div>
                 <div class="flex justify-end mt-4">
-                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">SAVE</button>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">SAVE</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('#tambahBukti').on('click', function() {
+            const tbody = $('#tabelBukti tbody');
+            const row = $('<tr>');
+
+            row.html(`
+                <td class="border border-gray-300 p-2">
+                    <input type="file" name="bukti_portofolio[]" class="w-full border border-gray-300 p-1" />
+                </td>
+                <td class="border border-gray-300 p-2">
+                    <input type="text" name="keterangan[]" placeholder="Masukkan keterangan" class="w-full border border-gray-300 p-1" />
+                </td>
+                <td class="border border-gray-300 p-2">
+                    <button type="button" class="hapusBukti bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600">
+                        Hapus
+                    </button>
+                </td>
+            `);
+
+            tbody.append(row);
+
+            // Tambahkan event listener untuk tombol hapus
+            row.find('.hapusBukti').on('click', function() {
+                row.remove();
+            });
+        });
+    });
+</script>
 @endsection

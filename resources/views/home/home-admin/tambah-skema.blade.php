@@ -21,12 +21,6 @@
         <form action="{{ route('admin.skema.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            {{-- ku komen dulu karena udah otomatis kegenerate --}}
-            {{-- <div class="mb-4">
-                <label for="id_skema" class="block font-medium text-gray-700">ID Skema</label>
-                <input type="text" name="id_skema" id="id_skema" class="w-full border border-gray-300 rounded p-2" required>
-            </div> --}}
-
             <div class="mb-4">
                 <label for="nomor_skema" class="block font-medium text-gray-700">Nomor Skema</label>
                 <input type="text" name="nomor_skema" id="nomor_skema" class="w-full border border-gray-300 rounded p-2" required>

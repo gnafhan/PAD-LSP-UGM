@@ -54,7 +54,6 @@
             <th class="p-2">Nama Skema</th>
             <th class="p-2">Dokumen SKKNI</th>
             <th class="p-2">Unit Kompetensi</th>
-            {{-- <th class="p-2">Gambar Skema</th> --}}
             <th class="p-2">Aksi</th>
             </tr>
         </thead>
@@ -62,16 +61,21 @@
         @foreach($skema as $skema)
             <tr>
                 <td class="p-2">{{ $skema->nama_skema }}</td>
-                <td class="p-2">{{ $skema->dokumen_skkni }}</a></td>
+                <td class="p-2">
+                    @if($skema->dokumen_skkni)
+                        <a href="{{ asset('storage/' . $skema->dokumen_skkni) }}" target="_blank" class="text-blue-500 underline">
+                            Dokumen SKKNI {{ $skema->nama_skema }}
+                        </a>
+                    @else
+                        <span class="text-gray-500">Tidak ada dokumen</span>
+                    @endif
+                </td>
                 <td class="p-2">
                     @foreach($skema->unitKompetensi as $uk)
                         {{ $uk->id_uk }}: {{ $uk->nama_uk }}<br>
                     @endforeach
                 </td>
-                {{-- <td class="p-2"><img src="#" alt="Gambar Skema" class="h-12 w-12"></td> --}}
                 <td class="p-2">
-                    {{-- <button class="bg-yellow-500 text-white p-1 rounded">Edit</button>
-                    <button class="bg-red-500 text-white p-1 rounded">Hapus</button> --}}
                     <a href="{{ route('admin.skema.edit', $skema->id_skema) }}" class="bg-blue-500 text-white p-1 rounded">Edit</a>
                     <form action="{{ route('admin.skema.delete', $skema->id_skema) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                         @csrf

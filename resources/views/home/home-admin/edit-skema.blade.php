@@ -7,7 +7,7 @@
     <div class="container mx-auto p-4">
         <h2 class="text-2xl font-bold mb-6 text-center">Edit Skema</h2>
 
-        <form action="{{ route('admin.skema.update', $skema->id_skema) }}" method="POST" class="bg-white p-6 rounded-md shadow-md">
+        <form action="{{ route('admin.skema.update', $skema->id_skema) }}" method="POST" class="bg-white p-6 rounded-md shadow-md" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -19,7 +19,15 @@
 
             <div class="mb-4">
                 <label for="dokumen_skkni" class="block text-gray-700">Dokumen SKKNI</label>
-                <input type="text" name="dokumen_skkni" id="dokumen_skkni" value="{{ $skema->dokumen_skkni }}" class="w-full px-4 py-2 border rounded-md" required>
+                <input type="file" name="dokumen_skkni" id="dokumen_skkni" class="w-full px-4 py-2 border rounded-md">
+                <p class="text-sm text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti file.</p>
+                @if($skema->dokumen_skkni)
+                    <p class="text-sm mt-2">
+                        File saat ini: <a href="{{ asset('storage/' . $skema->dokumen_skkni) }}" target="_blank" class="text-blue-500 underline">
+                            {{ basename($skema->dokumen_skkni) }}
+                        </a>
+                    </p>
+                @endif
             </div>
 
             <div class="mb-4">

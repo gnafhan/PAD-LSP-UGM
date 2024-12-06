@@ -19,7 +19,7 @@ class AsesiUKSeeder extends Seeder
                 'id_uk' => 'UK1',
                 'elemen_uk' => 'Memahami dasar-dasar keselamatan kerja',
                 'jawaban_elemen_uk' => 'true; false; true; true',
-                'file_bukti' => json_encode(['sertifikat_keselamatan.pdf', 'surat_pernyataan.pdf']),
+                'file_bukti' => json_encode(['sertifikat_keselamatan.pdf', 'surat_pernyataan.pdf']), //nullable, jadi untuk sementara ini buat agar menjadi null dulu
             ],
             [
                 'id_asesi' => 'ASESI2',

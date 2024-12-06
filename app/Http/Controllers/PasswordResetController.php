@@ -17,7 +17,7 @@ class PasswordResetController extends Controller
 {
     public function showResetForm()
     {
-        return view('auth.password.forget-password');  // form buat masukin email abis klik forget password
+        return view('auth.password.forget-password');
     }
 
     public function sendResetLinkEmail(Request $request)
@@ -30,10 +30,7 @@ class PasswordResetController extends Controller
             return back()->withErrors(['email' => 'Email tidak ditemukan.']);
         }
 
-        // sementara aku bikin tokennya random dulu
         $token = rand(100000, 999999);
-        // $user->token = $token;
-        // $user->save();
 
         PasswordResets::create([
             'email' => $request->email,
@@ -42,8 +39,6 @@ class PasswordResetController extends Controller
             'created_at' => now(),
         ]);
 
-        //ngirim email forget pass
-        // Mail::to($user->email)->send(new ResetPasswordMail($token));
 
         Mail::send('auth.password.email', ['token' => $token], function ($message) use ($user) {
             $message->to($user->email);
@@ -55,7 +50,7 @@ class PasswordResetController extends Controller
 
     public function showResetPasswordForm($token)
     {
-        return view('auth.password.reset-password', ['token' => $token]);  //form reset password abis isi token, pass baru
+        return view('auth.password.reset-password', ['token' => $token]);
     }
 
     public function resetPassword(Request $request)
@@ -76,7 +71,7 @@ class PasswordResetController extends Controller
             return back()->withErrors(['email' => 'Token atau email anda tidak valid.']);
         }
 
-        // Ambil pengguna berdasarkan email
+        // Ambil user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
