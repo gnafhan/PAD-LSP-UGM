@@ -30,9 +30,6 @@
             <a href="/login" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Login
             </a>
-            <a href="{{ route('home-admin') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
-                Home Admin
-            </a>
         </nav>
     </div>
 
