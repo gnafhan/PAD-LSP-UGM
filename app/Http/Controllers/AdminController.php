@@ -11,6 +11,7 @@ use App\Models\Tuk;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -247,24 +248,19 @@ class AdminController extends Controller
     public function indexDataEvent()
     {
         $event = Event::with('skemas')->get();
-        return view('home.home-admin.event2', compact('event'));
+        $today = Carbon::now()->toDateString();
+
+        // Ambil data asesi yang memiliki id_asesor dan event aktif
+        $asesis = Asesi::with(['skema.events', 'asesor'])
+            ->whereNotNull('id_asesor') // Hanya yang memiliki id_asesor
+            ->whereHas('skema.events', function ($query) use ($today) {
+                $query->whereDate('tanggal_mulai_event', '<=', $today)
+                    ->whereDate('tanggal_berakhir_event', '>=', $today);
+            })
+            ->get();
+
+        return view('home.home-admin.event2', compact('event', 'asesis'));
     }
-
-    // public function editDataEvent($id)
-    // {
-    //     $event = Event::with('skemas')->findOrFail($id);
-    //     $skemaList = Skema::all();
-
-    //     $skemaJson = json_encode($event->skema);
-    //     $daftarIdSkemaJson = $event->daftar_id_skema;
-
-    //     return view('home.home-admin.edit-event', [
-    //         'event' => $event,
-    //         'skemaJson' => $skemaJson,
-    //         'daftarIdSkemaJson' => $daftarIdSkemaJson,
-    //         'skemaList' => $skemaList
-    //     ]);
-    // }
 
     public function editDataEvent($id)
     {
@@ -276,25 +272,6 @@ class AdminController extends Controller
             'skemaList' => $skemaList,
         ]);
     }
-
-    // public function updateDataEvent(Request $request, $id)
-    // {
-    //     $event = Event::findOrFail($id);
-
-    //     $validatedData = $request->validate([
-    //         'nama_event' => 'required|string|max:100',
-    //         'tanggal_mulai_event' => 'required|date',
-    //         'tanggal_berakhir_event' => 'required|date',
-    //         'tuk' => 'required|string|max:100',
-    //         'tipe_event' => 'required|string|max:50',
-    //     ]);
-
-    //     $validatedData['daftar_id_skema'] = $request->input('daftar_id_skema');
-
-    //     $event->update($validatedData);
-
-    //     return redirect()->route('admin.event.index')->with('success', 'Event berhasil diperbarui');
-    // }
 
     public function updateDataEvent(Request $request, $id)
     {
@@ -322,37 +299,6 @@ class AdminController extends Controller
         $skemaList = Skema::all();
         return view('home.home-admin.tambah-event', ['skemaList' => $skemaList,]);
     }
-
-    // public function storeDataEvent(Request $request)
-    // {
-    //     $nomorSkemas = json_decode($request->daftar_id_skema, true);
-    //     $idSkemas = [];
-
-    //     foreach ($nomorSkemas as $nomorSkema) {
-    //         // Temukan id_skema berdasarkan nomor_skema
-    //         $skema = Skema::where('nomor_skema', $nomorSkema)->first();
-
-    //         if ($skema) {
-    //             $idSkemas[] = $skema->id_skema; // Masukkan id_skema yang ditemukan ke dalam array
-    //         } else {
-    //             return redirect()->back()->withErrors(['nomor_skema' => "Nomor Skema $nomorSkema tidak ditemukan."]);
-    //         }
-    //     }
-
-    //     $validatedData = $request->validate([
-    //         'nama_event' => 'required|string|max:100',
-    //         'tanggal_mulai_event' => 'required|date',
-    //         'tanggal_berakhir_event' => 'required|date',
-    //         'tuk' => 'required|string|max:100',
-    //         'tipe_event' => 'required|string|max:50',
-    //     ]);
-
-    //     $validatedData['daftar_id_skema'] = json_encode($idSkemas);
-
-    //     Event::create($validatedData);
-
-    //     return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan');
-    // }
 
     public function storeDataEvent(Request $request)
     {
@@ -401,8 +347,6 @@ class AdminController extends Controller
         }
     }
 
-
-
     public function destroyDataEvent($id)
     {
         $Event = Event::findOrFail($id);
@@ -413,15 +357,29 @@ class AdminController extends Controller
 
     public function indexDataAsesi()
     {
-        $asesiPengajuan = AsesiPengajuan::all();
-        return view('home.home-admin.daftar-asesi', compact('asesiPengajuan'));
+        $asesiPengajuan = AsesiPengajuan::where('status_rekomendasi', 'N/A')->get();
+        $asesi = Asesi::where('id_asesor', null)->get();
+        $asesors = Asesor::all();
+        return view('home.home-admin.daftar-asesi', compact('asesiPengajuan', 'asesi', 'asesors'));
     }
 
     public function detailDataAsesi($id)
     {
         $asesiPengajuan = AsesiPengajuan::findOrFail($id);
-        return view('home.home-admin.detail-pengajuan', compact('asesiPengajuan'));
+        $id_user = $asesiPengajuan->id_user;
+
+        $buktiKelengkapan = [
+            'ijazah' => asset('storage/uploads/bukti_pemohon/jenjang_siswa/bukti_jenjang_siswa_' . $id_user . '.pdf'),
+            'rapor' => asset('storage/uploads/bukti_pemohon/transkrip/bukti_transkrip_' . $id_user . '.pdf'),
+            'pengalaman_kerja' => asset('storage/uploads/bukti_pemohon/pengalaman_kerja/bukti_pengalaman_kerja_' . $id_user . '.pdf'),
+            'magang' => asset('storage/uploads/bukti_pemohon/magang/bukti_magang_' . $id_user . '.pdf'),
+            'ktp' => asset('storage/uploads/bukti_pemohon/ktp/bukti_ktp_' . $id_user . '.pdf'),
+            'foto' => asset('storage/uploads/bukti_pemohon/foto/bukti_foto_' . $id_user . '.pdf')
+        ];
+
+        return view('home.home-admin.detail-pengajuan', compact('asesiPengajuan', 'buktiKelengkapan'));
     }
+
 
     public function approveAsesi($id_pengajuan)
     {
@@ -446,6 +404,11 @@ class AdminController extends Controller
             'id_skema' => $asesiPengajuan->id_skema,
             'file_kelengkapan_pemohon' => $asesiPengajuan->file_kelengkapan_pemohon,
             'ttd_pemohon' => $asesiPengajuan->ttd_pemohon,
+            'status_pekerjaan' => $asesiPengajuan->status_pekerjaan,
+            'nama_perusahaan' => $asesiPengajuan->nama_perusahaan,
+            'jabatan' => $asesiPengajuan->jabatan,
+            'alamat_perusahaan' => $asesiPengajuan->alamat_perusahaan,
+            'no_telp_perusahaan' => $asesiPengajuan->no_telp_perusahaan,
         ]);
 
         $asesiPengajuan->update(['status_rekomendasi' => 'Diterima']);
@@ -453,6 +416,23 @@ class AdminController extends Controller
         return redirect()->route('admin.asesi.index')->with('success', 'Pengajuan asesi telah disetujui');
     }
 
+
+    public function assignAsesor(Request $request)
+    {
+        $request->validate([
+            'id_asesor' => 'required|exists:asesor,id_asesor',
+            'assign_asesi' => 'required|array|min:1',
+            'assign_asesi.*' => 'exists:asesi,id_asesi',
+        ]);
+
+        $asesorId = $request->input('id_asesor');
+        $asesiIds = $request->input('assign_asesi');
+
+        // Update ID Asesor pada data asesi yang dipilih
+        Asesi::whereIn('id_asesi', $asesiIds)->update(['id_asesor' => $asesorId]);
+
+        return redirect()->back()->with('success-assign', 'Asesi berhasil diassign ke asesor.');
+    }
 
 
 

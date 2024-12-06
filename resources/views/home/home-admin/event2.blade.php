@@ -56,7 +56,8 @@
             <table class="w-full bg-white rounded-md shadow-md">
                 <thead>
                     <tr class="bg-gray-200">
-                        <th class="p-2">Tgl Event</th>
+                        <th class="p-2">Tanggal Mulai Event</th>
+                        <th class="p-2">Tanggal Berakhir Event</th>
                         <th class="p-2">TUK</th>
                         <th class="p-2">Tipe Event</th>
                         <th class="p-2">Skema</th>
@@ -67,13 +68,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($event as $event)
+                    @foreach ($event as $item)
                         <tr>
-                            <td class="p-2 text-center">{{ $event->tanggal_mulai_event }}</td>
-                            <td class="p-2">{{ $event->tuk }}</td>
-                            <td class="p-2">{{ $event->tipe_event }}</td>
+                            <td class="p-2 text-center">{{ $item->tanggal_mulai_event }}</td>
+                            <td class="p-2 text-center">{{ $item->tanggal_berakhir_event }}</td>
+                            <td class="p-2">{{ $item->tuk }}</td>
+                            <td class="p-2">{{ $item->tipe_event }}</td>
                             <td class="p-2">
-                                @foreach ($event->skemas as $skema)
+                                @foreach ($item->skemas as $skema)
                                     {{ $skema->nomor_skema }}: {{ $skema->nama_skema }}<br>
                                 @endforeach
                             </td>
@@ -84,10 +86,10 @@
                                 <a href="/btn-asesi" class="bg-gray-500 hover:bg-gray-600 text-white p-1 rounded">Asesi</a>
                             </td>
                             <td class="p-2">
-                                <a href="{{ route('admin.event.edit', $event->id_event) }}" class="bg-blue-500 text-white p-1 rounded">Edit</a>
+                                <a href="{{ route('admin.event.edit', $item->id_event) }}" class="bg-blue-500 text-white p-1 rounded">Edit</a>
                             </td>
                             <td class="p-2">
-                                <form action="{{ route('admin.event.delete', $event->id_event) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                <form action="{{ route('admin.event.delete', $item->id_event) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="bg-red-500 text-white p-1 rounded">Hapus</button>
@@ -107,25 +109,34 @@
                     <thead>
                         <tr class="bg-gray-200">
                             <th class="border px-4 py-2">Tanggal</th>
-                            <th class="border px-4 py-2">Jenis Event</th>
+                            <th class="border px-4 py-2">Nama Event</th>
                             <th class="border px-4 py-2">Nama Skema</th>
                             <th class="border px-4 py-2">Nama Asesi</th>
+                            <th class="border px-4 py-2">Nama Asesor</th>
                             <th class="border px-4 py-2">Keterangan</th>
                             <th class="border px-4 py-2">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="border px-4 py-2">2024-05-15</td>
-                            <td class="border px-4 py-2">Data Scientist</td>
-                            <td class="border px-4 py-2">Data Scientist Certification</td>
-                            <td class="border px-4 py-2">Dr. Assessor B</td>
-                            <td class="border px-4 py-2">Jadwal Anda dengan Asesor pada 13 November 2024 dengan komunikasi melalui email. Nama Asesor : Wandi Prakoso. Email : wandi123@gmail.com</td>
-                            <td class="border px-4 py-2">
-                                <button onclick="toggleActions('aksi2')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition">Pilih</button>
-                            </td>
-                        </tr>
-                        <!-- Baris untuk tombol pilih aksi -->
+                        @forelse ($asesis as $asesi)
+                            @foreach ($asesi->skema->events as $event)
+                                <tr>
+                                    <td>{{ $event->tanggal_mulai_event }} - {{ $event->tanggal_berakhir_event }}</td>
+                                    <td>{{ $event->nama_event }}</td>
+                                    <td>{{ $asesi->skema->nama_skema }}</td>
+                                    <td>{{ $asesi->nama_asesi }}</td>
+                                    <td>{{ $asesi->asesor->nama_asesor }}</td>
+                                    <td class="border px-4 py-2">Jadwal Anda dengan Asesor belum ditentukan. <br> Nama Asesor : {{ $asesi->asesor->nama_asesor }}. Email : {{ $asesi->asesor->email }}</td>
+                                    <td class="border px-4 py-2">
+                                        <button onclick="toggleActions('aksi2')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition">Pilih</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="6" class="border px-4 py-2 text-center">Tidak ada event aktif.</td>
+                            </tr>
+                        @endforelse
                         <tr id="aksi2" class="hidden">
                             <td colspan="6" class="border px-4 py-2">
                                 <a href="/dp" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL-01</a>

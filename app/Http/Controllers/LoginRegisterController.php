@@ -10,13 +10,6 @@ use Illuminate\Support\Str;
 
 class LoginRegisterController extends Controller
 {
-
-    public function __construct() {
-        // $this->middleware('user');
-        // $this->middleware('admin');
-        // $this->middleware('asesor');
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -44,7 +37,18 @@ class LoginRegisterController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('home')->with('success', 'You have been logged in!');
+            // Cek level user setelah login
+            $user = Auth::user();
+            switch ($user->level) {
+                case 'admin':
+                    return redirect()->route('home-admin')->with('success', 'Welcome, Admin!');
+                case 'asesor':
+                    return redirect()->route('home-asesor')->with('success', 'Welcome, Asesor!');
+                case 'asesi':
+                    return redirect()->route('home-asesi')->with('success', 'Welcome, Asesi!');
+                default:
+                    return redirect()->route('home')->with('success', 'Welcome, User!');
+            }
         }
 
         return back()->withErrors([

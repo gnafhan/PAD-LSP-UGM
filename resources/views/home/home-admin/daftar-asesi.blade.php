@@ -21,28 +21,34 @@
 
     <h2 class="text-4xl font-bold mb-4 text-center">Daftar Asesi</h2>
     <table id="asesiTable" class="w-full bg-white rounded-md shadow-md mb-4">
-      <thead>
-        <tr class="bg-gray-200">
-          <th class="p-2">Nama Calon Asesi</th>
-          <th class="p-2">Tanggal Daftar</th>
-          <th class="p-2">Event</th>
-          <th class="p-2">Skema</th>
-          <th class="p-2">Pengajuan</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach($asesiPengajuan as $asesi)
-        <tr>
-          <td class="p-2">{{ $asesi->nama_user }}</td>
-          <td class="p-2">{{ $asesi->created_at }}</td>
-          <td class="p-2">{{ $asesi->nama_event }}</td>
-          <td class="p-2">{{ $asesi->nama_skema }}</td>
-          <td class="p-2">
-            <a href="{{ route('admin.detail.asesi', $asesi->id_pengajuan) }}" class="bg-blue-500 text-white p-1 rounded text-center">Detail Pengajuan</a>
-          </td>
-        </tr>
-        @endforeach
-      </tbody>
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="p-2">Nama Calon Asesi</th>
+                <th class="p-2">Tanggal Daftar</th>
+                <th class="p-2">Event</th>
+                <th class="p-2">Skema</th>
+                <th class="p-2">Pengajuan</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if($asesiPengajuan->isEmpty())
+                <tr>
+                    <td colspan="5" class="p-2 text-center text-gray-500">Tidak ada data pengajuan calon asesi yang tersedia</td>
+                </tr>
+            @else
+                @foreach($asesiPengajuan as $asesi_pengajuan)
+                    <tr>
+                        <td class="p-2">{{ $asesi_pengajuan->nama_user }}</td>
+                        <td class="p-2">{{ $asesi_pengajuan->created_at }}</td>
+                        <td class="p-2">{{ $asesi_pengajuan->nama_event }}</td>
+                        <td class="p-2">{{ $asesi_pengajuan->nama_skema }}</td>
+                        <td class="p-2">
+                            <a href="{{ route('admin.detail.asesi', $asesi_pengajuan->id_pengajuan) }}" class="bg-blue-500 text-white p-1 rounded text-center">Detail Pengajuan</a>
+                        </td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
     </table>
 
     <!-- Pagination Manual -->
@@ -69,48 +75,63 @@
       <button class="bg-green-500 text-white mt-4 p-2 rounded">Setujui</button>
     </div>
 
-    <h2 class="text-xl font-bold mb-4">Assign Asesi ke Asesor</h2>
-    <!-- Tambahkan ID pada tabel untuk DataTables -->
-    <table id="assignTable" class="w-full bg-white rounded-md shadow-md mb-4">
-      <thead>
-        <tr class="bg-gray-200">
-          <th class="p-2">No</th>
-          <th class="p-2">Ceklist</th>
-          <th class="p-2">Nama Calon Asesi</th>
-          <th class="p-2">Asal Prodi</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach(range(1, 10) as $j)
-        @php
-          $names = ['Annisa', 'Budi', 'Citra', 'Dedi', 'Elisa', 'Fikri', 'Gina', 'Hadi', 'Irma', 'Joko'];
-          $randomName = $names[array_rand($names)];
-        @endphp
-        <tr>
-          <td class="p-2 text-center">{{ $j }}</td>
-          <td class="p-2 text-center">
-            <input type="checkbox" class="form-checkbox">
-          </td>
-          <td class="p-2">{{ $randomName }}</td>
-          <td class="p-2">TRPL</td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
+    @if(session('success-assign'))
+        <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
+            {{ session('success') }}
+        </div>
+    @endif
 
-    <!-- Dropdown Asesor di bawah tabel -->
-    <div class="mb-4">
-      <label for="asesor" class="block mb-2 font-semibold">Pilih Asesor:</label>
-      <select id="asesor" class="w-full p-2 border rounded-md">
-        <option>Asesor 1</option>
-        <option>Asesor 2</option>
-        <option>Asesor 3</option>
-      </select>
-    </div>
 
-    <button class="bg-green-500 text-white mt-4 p-2 rounded">Save</button>
-  </div>
-</div>
+    <form action="{{ route('assign.asesor') }}" method="POST">
+        @csrf
+        <h2 class="text-xl font-bold mb-4">Assign Asesi ke Asesor</h2>
+        <table id="assignTable" class="w-full bg-white rounded-md shadow-md mb-4">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="p-2">No</th>
+                    <th class="p-2">Ceklist</th>
+                    <th class="p-2">Nama Asesi</th>
+                    <th class="p-2">NIM</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if($asesi->isEmpty())
+                    <tr>
+                        <td colspan="4" class="p-2 text-center text-gray-500">Tidak ada data asesi yang tersedia</td>
+                    </tr>
+                @else
+                    @foreach($asesi as $data)
+                        <tr>
+                            <td class="p-2 text-center">{{ $loop->iteration }}</td>
+                            <td class="p-2 text-center">
+                                @if($data && $data->id_asesi)
+                                    <input type="checkbox" class="form-checkbox" name="assign_asesi[]" value="{{ $data->id_asesi }}">
+                                @else
+                                    <input type="checkbox" class="form-checkbox" disabled>
+                                @endif
+                            </td>
+                            <td class="p-2">{{ $data->nama_asesi ?? 'Nama Asesi tidak tersedia' }}</td>
+                            <td class="p-2">{{ $data->nim ?? 'NIM tidak tersedia' }}</td>
+                        </tr>
+                    @endforeach
+                @endif
+            </tbody>
+        </table>
+
+        <!-- Dropdown Asesor -->
+        <div class="mb-4">
+            <label for="asesor" class="block mb-2 font-semibold">Pilih Asesor:</label>
+            <select id="asesor" name="id_asesor" class="w-full p-2 border rounded-md">
+                <option value="">Pilih Asesor</option>
+                @foreach($asesors as $asesor)
+                    <option value="{{ $asesor->id_asesor }}">{{ $asesor->nama_asesor }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit" class="bg-green-500 text-white mt-4 p-2 rounded">Save</button>
+    </form>
+
 
 <script>
   $(document).ready(function() {
