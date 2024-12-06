@@ -106,7 +106,7 @@ class AdminController extends Controller
     public function editDataSkema($id)
     {
         $skema = Skema::with('unitKompetensi')->findOrFail($id);
-        $ukList = Uk::all();
+        $ukList = UK::all();
         // Kirim data unit kompetensi dalam format JSON
         $unitKompetensiJson = json_encode($skema->unitKompetensi);
         $daftarIdUkJson = $skema->daftar_id_uk; // Ambil data daftar_id_uk langsung dari skema
@@ -137,7 +137,7 @@ class AdminController extends Controller
 
     public function createDataSkema()
     {
-        $ukList = Uk::all();
+        $ukList = UK::all();
         return view('home.home-admin.tambah-skema', ['ukList' => $ukList,]);
     }
 
@@ -149,7 +149,7 @@ class AdminController extends Controller
 
         foreach ($kodeUKs as $kodeUK) {
             // Temukan id_uk berdasarkan kode_uk
-            $uk = Uk::where('kode_uk', $kodeUK)->first();
+            $uk = UK::where('kode_uk', $kodeUK)->first();
 
             if ($uk) {
                 $idUKs[] = $uk->id_uk; // Masukkan id_uk yang ditemukan ke dalam array
@@ -191,7 +191,7 @@ class AdminController extends Controller
 
     public function indexDataUk()
     {
-        $uk = Uk::all();
+        $uk = UK::all();
         return view('home.home-admin.unit-kompetensi', compact('uk'));
     }
 
@@ -210,19 +210,19 @@ class AdminController extends Controller
             'jenis_standar' => 'required|string|max:50'
         ]);
 
-        Uk::create($validatedData);
+        UK::create($validatedData);
         return redirect()->route('admin.uk.index')->with('success', 'Unit Kompetensi berhasil ditambahkan');
     }
 
     public function editDataUk($id)
     {
-        $uk = Uk::findOrFail($id);
+        $uk = UK::findOrFail($id);
         return view('home.home-admin.edit-uk', compact('uk'));
     }
 
     public function updateDataUk(Request $request, $id)
     {
-        $uk = Uk::findOrFail($id);
+        $uk = UK::findOrFail($id);
 
         $validatedData = $request->validate([
             'kode_uk' => 'required|string|max:100',
@@ -238,7 +238,7 @@ class AdminController extends Controller
 
     public function destroyDataUk($id)
     {
-        $uk = Uk::findOrFail($id);
+        $uk = UK::findOrFail($id);
         $uk->delete();
 
         return redirect()->route('admin.uk.index')->with('success', 'Data unit kompetensi berhasil dihapus.');
