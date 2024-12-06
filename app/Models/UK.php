@@ -25,7 +25,7 @@ class UK extends Model
 
     public function bidang()
     {
-        return $this->belongsTo(UkBidang::class, 'id_bidang', 'id_bidang');
+        return $this->belongsTo(UKBidang::class, 'id_bidang', 'id_bidang');
     }
 
     protected static function boot()
