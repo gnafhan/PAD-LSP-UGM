@@ -24,7 +24,7 @@ class ResetPasswordMail extends Mailable
 
     public function build()
     {
-        return $this->view('auth.password.email') //tampilan gmail reset password // tunggu belda
+        return $this->view('auth.password.email')
                     ->with(['token' => $this->token]);
     }
 

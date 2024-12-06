@@ -38,9 +38,9 @@ class AsesiPengajuanSeeder extends Seeder
                 'status_rekomendasi' => 'N/A',
                 'status_pekerjaan' => 'Tidak bekerja',
                 'nama_perusahaan' => 'PT. Tech Indo',
-                'jabatan' => 'SE',
+                'jabatan' => 'Senior Software Engineer',
                 'alamat_perusahaan' => 'Jalan Mangga Dua, Jakarta Selatan',
-                'no_telp_perusahaan' => null,
+                'no_telp_perusahaan' => '0217539980',
             ],
         ];
 

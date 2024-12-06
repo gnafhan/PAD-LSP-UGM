@@ -172,7 +172,7 @@ class AdminController extends Controller
         $idUKs = [];
 
         foreach ($kodeUKs as $kodeUK) {
-            $uk = Uk::where('kode_uk', $kodeUK)->first();
+            $uk = UK::where('kode_uk', $kodeUK)->first();
 
             if ($uk) {
                 $idUKs[] = $uk->id_uk;

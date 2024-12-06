@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\Storage;
 
 class PengajuanController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
 
     public function indexPersetujuan()
     {
@@ -30,11 +26,9 @@ class PengajuanController extends Controller
         $asesiPengajuan = AsesiPengajuan::where('id_user', $idUser)->first();
 
         if ($asesiPengajuan) {
-            // Jika data ditemukan, arahkan ke halaman konfirmasi dengan data asesi_pengajuan
             return view('home.home-visitor.APL-01.konfirmasi', compact('asesiPengajuan'));
         }
 
-        // Jika data tidak ditemukan, tetap jalankan proses ke halaman persetujuan
         $data = auth()->user()->email;
         return view('home.home-visitor.persetujuan', compact('data'));
     }
@@ -43,13 +37,10 @@ class PengajuanController extends Controller
     public function saveDataPersetujuan(Request $request)
     {
         try {
-            // Pertama, lakukan pengecekan apakah file ada atau tidak
             if (!$request->hasFile('signature')) {
-                // Jika tidak ada file, kirim pesan error "Tanda tangan wajib diisi."
                 return response()->json(['errors' => ['signature' => ['Tanda tangan wajib diisi.']]], 422);
             }
 
-            // Jika ada file, lanjutkan validasi tipe file dan ukuran
             $validatedData = $request->validate([
                 'signature' => 'file|mimes:jpg,jpeg,png|max:2048',
             ], [
@@ -62,18 +53,15 @@ class PengajuanController extends Controller
             $user = auth()->user();
             $userId = $user->id_user;
 
-            // Simpan file yang diunggah di direktori 'public/signatures' dengan format nama yang diinginkan
             $signatureFile = $request->file('signature');
             $fileName = 'ttd_' . $userId . '.' . $signatureFile->getClientOriginalExtension();
             $ttd_pemohon = $signatureFile->storeAs('signatures', $fileName);
 
-            // Simpan path file ke dalam session
             session()->put('dataPersetujuan', ['ttd_pemohon' => $ttd_pemohon]);
 
             return response()->json(['message' => 'Data berhasil disimpan'], 200);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Jika terjadi kesalahan validasi, kirim respons JSON dengan status 422
             return response()->json(['errors' => $e->errors()], 422);
 
         } catch (\Exception $e) {
@@ -246,10 +234,7 @@ class PengajuanController extends Controller
 
     public function storePengajuan(Request $request)
     {
-        // dd(session()->all());
-
         $user = auth()->user();
-        // dd(auth()->user());
 
         try {
 
@@ -257,22 +242,7 @@ class PengajuanController extends Controller
             $dataPribadi = session()->get('dataPribadi');
             $dataSertifikasi = session()->get('dataSertifikasi');
 
-            // dd($dataPribadi, $dataSertifikasi);
-
-            // if ( empty($dataPersetujuan) && empty($dataPribadi) && empty($dataSertifikasi)) {
-            //     return redirect()->back()->with('errorSession', 'Data session dataPersetujuan dan dataPribadi dan dataSertifikasi tidak ditemukan.');
-            // } elseif (empty($dataPribadi)) {
-            //     return redirect()->back()->with('errorSession', 'Data session dataPribadi tidak ditemukan.');
-            // } elseif (empty($dataSertifikasi)) {
-            //     return redirect()->back()->with('errorSession', 'Data session dataSertifikasi tidak ditemukan.');
-            // } elseif (empty($dataPersetujuan)) {
-            //     return redirect()->back()->with('errorSession', 'Data session dataPersetujuan tidak ditemukan.');
-            // }
-
-
             $data = array_merge($dataPersetujuan, $dataPribadi, $dataSertifikasi, $request->all());
-
-            // dd($data);
 
             $validatedData = $request->validate([
                 'bukti_jenjang_siswa' => 'required|file|mimes:pdf|max:5120',
@@ -313,11 +283,7 @@ class PengajuanController extends Controller
                 'bukti_foto.max' => 'Ukuran file bukti foto 3x4 tidak boleh lebih dari 5 MB.',
             ]);
 
-            // dd($validatedData);
-
             $skema = Skema::where('nomor_skema', $data['nomorSkemaInput'])->firstOrFail();
-
-            // dd($skema);
 
             $buktiPemohonPaths = [
                 'bukti_jenjang_siswa' => $request->file('bukti_jenjang_siswa') ? $request->file('bukti_jenjang_siswa')->storeAs(
@@ -345,9 +311,6 @@ class PengajuanController extends Controller
                     'bukti_foto_' . $user->id_user . '.' . $request->file('bukti_foto')->getClientOriginalExtension()
                 ) : null,
             ];
-
-
-            // dd($buktiPemohonPaths);
 
             AsesiPengajuan::create(array_merge($validatedData, [
                 'id_user' => $user->id_user,
@@ -391,11 +354,8 @@ class PengajuanController extends Controller
             $asesiPengajuan = AsesiPengajuan::where('id_user', $idUser)->first();
 
             if ($asesiPengajuan) {
-                // Jika data ditemukan, arahkan ke halaman konfirmasi dengan data asesi_pengajuan
                 return view('home.home-visitor.APL-01.konfirmasi', compact('asesiPengajuan'));
             }
-
-            // return redirect()->route('konfirmasi')->with('success', 'Data berhasil disimpan.');
 
         }
 

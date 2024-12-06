@@ -32,10 +32,10 @@ class Asesor extends Model
         'pendidikan_terakhir',
         'keahlian',
         'tempat_lahir',
-        'tanggal_lahir', //datetime
+        'tanggal_lahir',
         'kebangsaan',
         'no_lisensi',
-        'masa_berlaku', //datetime
+        'masa_berlaku',
         'institusi_asal',
         'no_telp_institusi_asal',
         'fax_institusi_asal',
