@@ -9,6 +9,7 @@ use App\Models\Skema;
 use App\Models\UK;
 use App\Models\TUK;
 use App\Models\Event;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -32,7 +33,6 @@ class AdminController extends Controller
 
     public function storeDataAsesor(Request $request)
     {
-
         $validatedData = $request->validate([
             'kode_registrasi' => 'required|string|max:255',
             'nama_asesor' => 'required|string|max:255',
@@ -122,18 +122,40 @@ class AdminController extends Controller
 
     public function updateDataSkema(Request $request, $id)
     {
-        $skema = Skema::findOrFail($id);
+        try {
+            $skema = Skema::findOrFail($id);
 
-        $validatedData = $request->validate([
-            'nama_skema' => 'required|string|max:100',
-            'dokumen_skkni' => 'required|string|max:2048',
-        ]);
+            $validatedData = $request->validate([
+                'nama_skema' => 'required|string|max:100',
+                'dokumen_skkni' => 'nullable|file|mimes:pdf|max:2048',
+            ]);
 
-        $validatedData['daftar_id_uk'] = $request->input('daftar_id_uk');
+            $skema->nama_skema = $validatedData['nama_skema'];
 
-        $skema->update($validatedData);
+            if ($request->hasFile('dokumen_skkni')) {
+                $fileName = 'skkni_' . str_replace(' ', '_', $validatedData['nama_skema']) . '.' . $request->file('dokumen_skkni')->getClientOriginalExtension();
+                $filePath = $request->file('dokumen_skkni')->storeAs('public/skkni', $fileName);
+                $skema->dokumen_skkni = 'skkni/' . $fileName;
+            }
 
-        return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil diperbarui');
+            $skema->daftar_id_uk = $request->input('daftar_id_uk');
+
+            $skema->save();
+
+            return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil diperbarui');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation Error: ' . $e->getMessage());
+            return redirect()->back()->withErrors($e->validator)->withInput();
+
+        } catch (\Illuminate\Http\Exceptions\PostTooLargeException $e) {
+            \Log::error('File Too Large Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Ukuran file terlalu besar. Maksimal 2MB.')->withInput();
+
+        } catch (\Exception $e) {
+            \Log::error('Error updating skema: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui skema.')->withInput();
+        }
     }
 
     public function createDataSkema()
@@ -144,16 +166,14 @@ class AdminController extends Controller
 
     public function storeDataSkema(Request $request)
     {
-
         $kodeUKs = json_decode($request->daftar_id_uk, true);
         $idUKs = [];
 
         foreach ($kodeUKs as $kodeUK) {
-            // Temukan id_uk berdasarkan kode_uk
-            $uk = UK::where('kode_uk', $kodeUK)->first();
+            $uk = Uk::where('kode_uk', $kodeUK)->first();
 
             if ($uk) {
-                $idUKs[] = $uk->id_uk; // Masukkan id_uk yang ditemukan ke dalam array
+                $idUKs[] = $uk->id_uk;
             } else {
                 return redirect()->back()->withErrors(['kode_uk' => "Kode UK $kodeUK tidak ditemukan."]);
             }
@@ -166,20 +186,21 @@ class AdminController extends Controller
             'persyaratan_skema' => 'required|string',
         ]);
 
-
         $validatedData['daftar_id_uk'] = json_encode($idUKs);
 
         if ($request->hasFile('dokumen_skkni')) {
-            Log::info('File uploaded:', ['file' => $request->file('dokumen_skkni')]);
-            $validatedData['dokumen_skkni'] = $request->file('dokumen_skkni')->store('skkni', 'public');
+            $file = $request->file('dokumen_skkni');
+            $fileName = 'skkni_' . str_replace(' ', '_', $validatedData['nama_skema']) . '.' . $file->getClientOriginalExtension();
+
+            $validatedData['dokumen_skkni'] = $file->storeAs('skkni', $fileName, 'public');
         } else {
             Log::warning('No file uploaded.');
         }
 
         Skema::create($validatedData);
-
         return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil ditambahkan');
     }
+
 
     public function destroyDataSkema($id)
     {
@@ -265,7 +286,7 @@ class AdminController extends Controller
     public function editDataEvent($id)
     {
         $event = Event::with('skemas')->findOrFail($id); // Load relasi skemas dari tabel pivot
-        $skemaList = Skema::all(); // Daftar semua skema
+        $skemaList = Skema::all();
 
         return view('home.home-admin.edit-event', [
             'event' => $event,
@@ -319,7 +340,6 @@ class AdminController extends Controller
                 'daftar_id_skema' => 'required|array|min:1',
             ]);
 
-            // Simpan event
             $event = Event::create([
                 'nama_event' => $validatedData['nama_event'],
                 'tanggal_mulai_event' => $validatedData['tanggal_mulai_event'],
@@ -337,7 +357,6 @@ class AdminController extends Controller
 
             return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan');
         } catch (\Exception $e) {
-            // Log error untuk debugging
             Log::error('Error saat menambahkan event: ' . $e->getMessage(), [
                 'request' => $request->all(),
                 'exception' => $e,
@@ -412,6 +431,11 @@ class AdminController extends Controller
         ]);
 
         $asesiPengajuan->update(['status_rekomendasi' => 'Diterima']);
+
+        $user = $asesiPengajuan->id_user;
+
+        $userLevel = User::findOrFail($user);
+        $userLevel->update(['level' => 'asesi']);
 
         return redirect()->route('admin.asesi.index')->with('success', 'Pengajuan asesi telah disetujui');
     }

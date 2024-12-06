@@ -75,31 +75,36 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="border px-4 py-2">2024-05-15</td>
-              <td class="border px-4 py-2">Data Scientist Certification</td>
-              <td class="border px-4 py-2">TUK UGM 2</td>
-              <td class="border px-4 py-2">Offline</td>
-              <td class="border px-4 py-2">B67890</td>
-              <td class="border px-4 py-2">Data Scientist</td>
-              <td class="border px-4 py-2">Taufik Maulana Syarif</td>
-              <td class="border px-4 py-2">
-                <button onclick="toggleActions('aksi1')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition">Pilih</button>
-              </td>
-            </tr>
-            <!-- Baris untuk tombol pilih aksi -->
-            <tr id="aksi1" class="hidden">
-              <td colspan="8" class="border px-4 py-2">
-                <div class="flex flex-wrap space-x-2 md:space-x-3">
-                  <a href="/persetujuan" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition my-2">Persetujuan</a>
-                  <a href="/apl1/b1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.01</a>
-                  <a href="/apl2" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.02</a>
-                  <a href="/ak1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK.01</a>
-                  <a href="/ia2" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.IA.02 SOAL PRAKTEK/UPLOAD JAWABAN</a>
-                  <a href="/ak3" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK.03 Umpan Balik</a>
-                </div>
-              </td>
-            </tr>
+            @forelse ($eventData as $event)
+              <tr>
+                <td class="border px-4 py-2">{{ $event['tanggal'] }}</td>
+                <td class="border px-4 py-2">{{ $event['nama_event'] }}</td>
+                <td class="border px-4 py-2">{{ $event['tuk'] }}</td>
+                <td class="border px-4 py-2">{{ $event['jenis_event'] }}</td>
+                <td class="border px-4 py-2">{{ $event['nomor_peserta'] }}</td>
+                <td class="border px-4 py-2">{{ $event['skema'] }}</td>
+                <td class="border px-4 py-2">{{ $event['assessor'] }}</td>
+                <td class="border px-4 py-2">
+                  <button onclick="toggleActions('aksi{{ $loop->index }}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition">Pilih</button>
+                </td>
+              </tr>
+              <tr id="aksi{{ $loop->index }}" class="hidden">
+                <td colspan="8" class="border px-4 py-2">
+                  <div class="flex flex-wrap space-x-2 md:space-x-3">
+                    <a href="/persetujuan" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition my-2">Persetujuan</a>
+                    <a href="/apl1/b1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.01</a>
+                    <a href="{{ route('asesmen.mandiri') }}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.02</a>
+                    <a href="/ak1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK.01</a>
+                    <a href="/ia2" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.IA.02 SOAL PRAKTEK/UPLOAD JAWABAN</a>
+                    <a href="/ak3" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK.03 Umpan Balik</a>
+                  </div>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="8" class="border px-4 py-2 text-center">Tidak ada event sertifikasi yang sedang berlangsung.</td>
+              </tr>
+            @endforelse
           </tbody>
         </table>
       </div>

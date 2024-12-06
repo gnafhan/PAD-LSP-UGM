@@ -25,6 +25,7 @@ class AsesiApl02 extends Model
 
     protected $casts = [
         'file_portofolio' => 'array',
+        'daftar_id_asesiUK' => 'array',
     ];
 
     public function asesi()

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Event extends Model
 {
@@ -21,23 +22,24 @@ class Event extends Model
         'tanggal_berakhir_event',
         'tuk',
         'tipe_event',
-        // 'daftar_id_skema',
     ];
 
-    // protected $casts = [
-    //     'daftar_id_skema' => 'array',
-    // ];
+    protected $dates = ['tanggal_mulai_event', 'tanggal_berakhir_event'];
 
     public function skemas()
     {
         return $this->belongsToMany(Skema::class, 'event_skema', 'id_event', 'id_skema');
     }
 
-    // public function getSkemaAttribute()
-    // {
-    //     $idArray = is_array($this->daftar_id_skema) ? $this->daftar_id_skema : json_decode($this->daftar_id_skema, true);
-    //     return Skema::whereIn('id_skema', $idArray ?? [])->get();
-    // }
+    public function getTanggalMulaiEventAttribute($value)
+    {
+        return Carbon::parse($value);
+    }
+
+    public function getTanggalBerakhirEventAttribute($value)
+    {
+        return Carbon::parse($value);
+    }
 
     protected static function boot()
     {

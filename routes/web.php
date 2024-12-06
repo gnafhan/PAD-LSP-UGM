@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\AsesiController;
@@ -12,6 +12,11 @@ use App\Http\Controllers\HomeController;
 Route::get('/', function () {
     return view('home/home');
 });
+
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect()->route('login');
+})->name('logout');
 
 Route::get('/masuk', function () {
     return view('home/home-visitor/masuk');
@@ -45,7 +50,6 @@ Route::get('/home', function () {
     return view('home/home-visitor/home');
 })->name('home');
 
-//maap bel ini buat percobaanku hehe
 Route::post('admin/asesor', [AdminController::class, 'storeDataAsesor'])->name('admin.asesor.store');
 Route::get('/admin5', [AdminController::class, 'indexDataAsesor'])->name('admin.asesor.index');
 Route::get('/admin5/{id}/edit', [AdminController::class, 'editDataAsesor'])->name('admin.asesor.edit');
@@ -95,6 +99,8 @@ Route::get('/assesi', function () {
     return view('home/home-asesi/assesi');
 });
 
+Route::get('/apl2', [AsesiController::class, 'asesmenMandiri'])->name('asesmen.mandiri');
+
 // ALUR FR.APL-01
 Route::get('/apl1/1', function () {
     return view('home/home-asesi/APL-01/data-pribadi');
@@ -136,9 +142,6 @@ Route::get('/ia2', function () {
 });
 
 
-Route::get('/apl2', function () {
-    return view('home/home-asesi/APL-02/asesmen-mandiri');
-});
 
 // HOME - ASESOR
 Route::get('/home-asesor', function () {
@@ -189,6 +192,8 @@ Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])
 
 // //testing home-asesi
 Route::get('/home-asesi', [AsesiController::class, 'index'])->name('home-asesi');
+Route::get('/assesi', [AsesiController::class, 'indexAssesi'])->name('assesi');
+
 
 Route::get('/persetujuan/ttd', [PengajuanController::class, 'indexPersetujuan'])->name('persetujuan');
 Route::post('/save-data-persetujuan', [PengajuanController::class, 'saveDataPersetujuan'])->name('save.persetujuan');
@@ -227,9 +232,9 @@ Route::get('/masuk', function () {
 });
 
 
-Route::get('/assesi', function () {
-    return view('home/home-asesi/assesi');
-});
+// Route::get('/assesi', function () {
+//     return view('home/home-asesi/assesi');
+// });
 
 Route::get('/aksi', function () {
     return view('home/home-asesi/pilih-aksi');
@@ -251,9 +256,9 @@ Route::get('/jadwal-uji-kompetensi', function () {
     return view('home/home-asesi/APL-02/jadwal-uji-kompetensi');
 });
 
-Route::get('/apl2', function () {
-    return view('home/home-asesi/APL-02/asesmen-mandiri');
-});
+// Route::get('/apl2', function () {
+//     return view('home/home-asesi/APL-02/asesmen-mandiri');
+// });
 
 Route::get('/admin6', function () {
     return view('home/home-admin/settings');

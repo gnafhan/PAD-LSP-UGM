@@ -24,16 +24,20 @@
                     </thead>
                     <tbody>
                         <tr class="hover:bg-gray-100 transition duration-150">
-                            <td class="border border-gray-300 px-4 py-2 font-medium">ID Peserta</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ $user->id_user }}</td>
+                            <td class="border border-gray-300 px-4 py-2 font-medium">Nama Asesi</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ $asesi->nama_asesi }}</td>
                         </tr>
                         <tr class="hover:bg-gray-100 transition duration-150">
                             <td class="border border-gray-300 px-4 py-2 font-medium">Email</td>
-                            <td class="border border-gray-300 px-4 py-2">{{ $user->email }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ $asesi->email }}</td>
+                        </tr>
+                        <tr class="hover:bg-gray-100 transition duration-150">
+                            <td class="border border-gray-300 px-4 py-2 font-medium">NIM</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ $asesi->nim }}</td>
                         </tr>
                         <tr class="hover:bg-gray-100 transition duration-150">
                             <td class="border border-gray-300 px-4 py-2 font-medium">Skema Sertifikasi</td>
-                            <td class="border border-gray-300 px-4 py-2">Web Developer</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ $asesi->skema->nomor_skema }} - {{ $asesi->skema->nama_skema }}</td>
                         </tr>
                         <tr class="hover:bg-gray-100 transition duration-150">
                             <td class="border border-gray-300 px-4 py-2 font-medium">Status</td>
