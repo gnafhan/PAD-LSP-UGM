@@ -69,9 +69,15 @@
 
                 <p class="mb-4">Berdasarkan Ketentuan Persyaratan dasar pemohon maka pemohon:</p>
                 <div class="flex mb-4 space-x-2">
-                    <button class="bg-gray-300 text-black px-4 py-2 rounded">N/A</button>
-                    <button class="bg-green-500 text-white px-4 py-2 rounded">DITERIMA</button>
-                    <button class="bg-gray-300 text-white px-4 py-2 rounded">TIDAK DITERIMA</button>
+                    <button class="px-4 py-2 rounded {{ $asesiPengajuan->status_rekomendasi === 'N/A' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black' }}">
+                        N/A
+                    </button>
+                    <button class="px-4 py-2 rounded {{ $asesiPengajuan->status_rekomendasi === 'Diterima' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black' }}">
+                        DITERIMA
+                    </button>
+                    <button class="px-4 py-2 rounded {{ $asesiPengajuan->status_rekomendasi === 'Tidak diterima' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black' }}">
+                        TIDAK DITERIMA
+                    </button>
                 </div>
                 <p>sebagai peserta sertifikasi</p>
 
@@ -83,7 +89,7 @@
                 <div class="flex justify-between">
                     <div>
                         <h3 class="text-sm font-bold">Pemohon **)</h3>
-                        <p class="mt-2">Nama: Belda Putri Pramono</p>
+                        <p class="mt-2">Nama: {{ $asesiPengajuan->nama_user }}</p>
                         <div class="flex items-center space-x-2 mt-2">
                             <input type="checkbox" id="approve-pemohon" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
                             <label for="approve-pemohon" class="text-sm">Dengan ini saya menyetujui permohonan</label>
@@ -107,9 +113,28 @@
 
                 <!-- Confirmation and Actions -->
                 <div class="flex justify-end mt-4">
-                    <a href="/home" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Konfirmasi</a>
+                    {{-- <a href="/home" id="btn-selanjutnya" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">Konfirmasi</a> --}}
+                    <button
+                    id="btn-konfirmasi"
+                    class="font-semibold py-2 px-4 rounded-lg {{ $asesiPengajuan->status_rekomendasi === 'N/A' ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-700' }} text-white"
+                    {{ $asesiPengajuan->status_rekomendasi === 'N/A' ? 'disabled' : '' }} >
+                    Konfirmasi
+                </button>
                 </div>
             </div>
         </div>
     </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkbox = document.getElementById('approve-pemohon');
+        const button = document.getElementById('btn-konfirmasi');
+
+        button.addEventListener('click', function (e) {
+            if (!checkbox.checked) {
+                e.preventDefault();
+                alert('Anda harus menyetujui permohonan dengan mencentang checkbox terlebih dahulu.');
+            }
+        });
+    });
+</script>
 @endsection

@@ -25,16 +25,19 @@ class PengajuanController extends Controller
         }
 
         $idUser = auth()->user()->id_user;
-        $exists = AsesiPengajuan::where('id_user', $idUser)->exists();
 
-        if ($exists) {
-            return redirect()->route('konfirmasi');
+        // Ambil data dari tabel asesi_pengajuan berdasarkan id_user
+        $asesiPengajuan = AsesiPengajuan::where('id_user', $idUser)->first();
+
+        if ($asesiPengajuan) {
+            // Jika data ditemukan, arahkan ke halaman konfirmasi dengan data asesi_pengajuan
+            return view('home.home-visitor.APL-01.konfirmasi', compact('asesiPengajuan'));
         }
 
-        $data = @auth()->user()->email;
+        // Jika data tidak ditemukan, tetap jalankan proses ke halaman persetujuan
+        $data = auth()->user()->email;
         return view('home.home-visitor.persetujuan', compact('data'));
     }
-
 
 
     public function saveDataPersetujuan(Request $request)
@@ -382,7 +385,17 @@ class PengajuanController extends Controller
                 'no_telp_perusahaan' => $data['no_telp_perusahaan'],
             ]));
 
-            return redirect()->route('konfirmasi')->with('success', 'Data berhasil disimpan.');
+            $idUser = auth()->user()->id_user;
+
+            // Ambil data dari tabel asesi_pengajuan berdasarkan id_user
+            $asesiPengajuan = AsesiPengajuan::where('id_user', $idUser)->first();
+
+            if ($asesiPengajuan) {
+                // Jika data ditemukan, arahkan ke halaman konfirmasi dengan data asesi_pengajuan
+                return view('home.home-visitor.APL-01.konfirmasi', compact('asesiPengajuan'));
+            }
+
+            // return redirect()->route('konfirmasi')->with('success', 'Data berhasil disimpan.');
 
         }
 

@@ -43,6 +43,12 @@ class Skema extends Model
         return UK::whereIn('id_uk', $idArray ?? [])->get();
     }
 
+    public function eventSkemas()
+    {
+        return $this->hasMany(EventSkema::class, 'id_skema');
+    }
+
+
     protected static function boot()
     {
         parent::boot();

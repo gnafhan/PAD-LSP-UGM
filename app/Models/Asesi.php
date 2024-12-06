@@ -45,6 +45,17 @@ class Asesi extends Model
 
     public $timestamps = true;
 
+    public function skema()
+    {
+        return $this->belongsTo(Skema::class, 'id_skema');
+    }
+
+    public function asesor()
+    {
+        return $this->belongsTo(Asesor::class, 'id_asesor');
+    }
+
+
     protected static function boot()
     {
         parent::boot();

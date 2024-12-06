@@ -27,10 +27,10 @@
                 <input type="text" name="elemen_uk" id="elemen_uk" value="{{ $uk->elemen_uk }}" class="w-full px-4 py-2 border rounded-md" required>
             </div>
 
-            <div class="mb-4">
+            {{-- <div class="mb-4">
                 <label for="id_bidang" class="block text-gray-700">ID Bidang</label>
                 <input type="text" name="id_bidang" id="id_bidang" value="{{ $uk->id_bidang }}" class="w-full px-4 py-2 border rounded-md">
-            </div>
+            </div> --}}
 
             <div class="mb-4">
                 <label for="jenis_standar" class="block text-gray-700">No Sertifikat</label>

@@ -116,34 +116,38 @@
                     <tr>
                         <th class="p-2 border">No.</th>
                         <th class="p-2 border">Bukti Persyaratan Dasar</th>
-                        <th class="p-2 border">Ada</th>
-                        <th class="p-2 border">Tidak Ada</th>
+                        <th class="p-2 border">File PDF</th>
+                        {{-- <th class="p-2 border">Tidak Ada</th> --}}
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="p-2 border text-center">1</td>
                         <td class="p-2 border">Ijazah SMK/SMA sederajat</td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border">
+                            <embed src="{{ $buktiKelengkapan['ijazah'] }}" width="100%" height="200px" type="application/pdf">
+                        </td>
                     </tr>
                     <tr>
                         <td class="p-2 border text-center">2</td>
                         <td class="p-2 border">Rapor semester 1 - 5</td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border">
+                            <embed src="{{ $buktiKelengkapan['rapor'] }}" width="100%" height="200px" type="application/pdf">
+                        </td>
                     </tr>
                     <tr>
                         <td class="p-2 border text-center">3</td>
                         <td class="p-2 border">Surat Pengalaman Kerja</td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border">
+                            <embed src="{{ $buktiKelengkapan['pengalaman_kerja'] }}" width="100%" height="200px" type="application/pdf">
+                        </td>
                     </tr>
                     <tr>
-                        <td class="p-2 border text-center">3</td>
+                        <td class="p-2 border text-center">4</td>
                         <td class="p-2 border">Surat Keterangan PKL/Magang</td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border">
+                            <embed src="{{ $buktiKelengkapan['magang'] }}" width="100%" height="200px" type="application/pdf">
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -156,26 +160,29 @@
                     <tr>
                         <th class="p-2 border">No.</th>
                         <th class="p-2 border">Bukti Administratif</th>
-                        <th class="p-2 border">Ada</th>
-                        <th class="p-2 border">Tidak Ada</th>
+                        <th class="p-2 border">File PDF</th>
+                        {{-- <th class="p-2 border">Tidak Ada</th> --}}
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="p-2 border text-center">1</td>
                         <td class="p-2 border">KTP</td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border">
+                            <embed src="{{ $buktiKelengkapan['ktp'] }}" width="100%" height="200px" type="application/pdf">
+                        </td>
                     </tr>
                     <tr>
                         <td class="p-2 border text-center">2</td>
                         <td class="p-2 border">Foto 3x4</td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
-                        <td class="p-2 border text-center"><input type="checkbox" /></td>
+                        <td class="p-2 border">
+                            <embed src="{{ $buktiKelengkapan['foto'] }}" width="100%" height="200px" type="application/pdf">
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
 
         <div class="flex justify-between mt-8">
             <!-- Pemohon -->
