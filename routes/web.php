@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\HomeController;
 
+
 // LANDING PAGE HOME
 Route::get('/', function () {
     return view('home/home');
@@ -50,50 +51,120 @@ Route::get('/home', function () {
     return view('home/home-visitor/home');
 })->name('home');
 
-Route::post('admin/asesor', [AdminController::class, 'storeDataAsesor'])->name('admin.asesor.store');
-Route::get('/admin5', [AdminController::class, 'indexDataAsesor'])->name('admin.asesor.index');
-Route::get('/admin5/{id}/edit', [AdminController::class, 'editDataAsesor'])->name('admin.asesor.edit');
-Route::put('/admin5/{id}/update', [AdminController::class, 'updateDataAsesor'])->name('admin.asesor.update');
-Route::delete('/admin5/{id}', [AdminController::class, 'destroyDataAsesor'])->name('admin.asesor.delete');
 
-Route::get('/admin3', [AdminController::class, 'indexDataSkema'])->name('admin.skema.index');
-Route::get('/admin3/create', [AdminController::class, 'createDataSkema'])->name('admin.skema.create'); //karena perlu data uk
-Route::post('/admin3/create', [AdminController::class, 'storeDataSkema'])->name('admin.skema.store');
-Route::get('/admin3/{id}/edit', [AdminController::class, 'editDataSkema'])->name('admin.skema.edit');
-Route::put('/admin3/{id}/update', [AdminController::class, 'updateDataSkema'])->name('admin.skema.update');
-Route::delete('/admin3/{id}', [AdminController::class, 'destroyDataSkema'])->name('admin.skema.delete');
+//UJI COBA ADMIN
+Route::middleware(['role:admin'])->prefix('admin')->group(function () {
 
-Route::get('/admin7', [AdminController::class, 'indexDataUk'])->name('admin.uk.index');
-Route::get('/admin7/create', [AdminController::class, 'createDataUk'])->name('admin.uk.create');
-Route::post('/admin7/create', [AdminController::class, 'storeDataUk'])->name('admin.uk.store');
-Route::get('/admin7/{id}/edit', [AdminController::class, 'editDataUk'])->name('admin.uk.edit');
-Route::put('/admin7/{id}/update', [AdminController::class, 'updateDataUk'])->name('admin.uk.update');
-Route::delete('/admin7/{id}', [AdminController::class, 'destroyDataUk'])->name('admin.uk.delete');
+    // Dashboard Admin
+    Route::get('/home-admin', [AdminController::class, 'index'])->name('home-admin');
 
-Route::get('/admin2', [AdminController::class, 'indexDataEvent'])->name('admin.event.index');
-Route::get('/admin2/create', [AdminController::class, 'createDataEvent'])->name('admin.event.create'); //karena perlu data skema
-Route::post('/admin2/create', [AdminController::class, 'storeDataEvent'])->name('admin.event.store');
-Route::get('/admin2/{id}/edit', [AdminController::class, 'editDataEvent'])->name('admin.event.edit');
-Route::put('/admin2/{id}/update', [AdminController::class, 'updateDataEvent'])->name('admin.event.update');
-Route::delete('/admin2/{id}', [AdminController::class, 'destroyDataEvent'])->name('admin.event.delete');
+    // Manajemen Asesor
+    Route::prefix('asesor')->name('admin.asesor.')->group(function () {
+        Route::post('/', [AdminController::class, 'storeDataAsesor'])->name('store');
+        Route::get('/', [AdminController::class, 'indexDataAsesor'])->name('index');
+        Route::get('{id}/edit', [AdminController::class, 'editDataAsesor'])->name('edit');
+        Route::put('{id}/update', [AdminController::class, 'updateDataAsesor'])->name('update');
+        Route::delete('{id}', [AdminController::class, 'destroyDataAsesor'])->name('delete');
+    });
 
-Route::get('/admin4', [AdminController::class, 'indexDataAsesi'])->name('admin.asesi.index');
-Route::get('/admin4/{id}/edit', [AdminController::class, 'detailDataAsesi'])->name('admin.detail.asesi');
-Route::post('/admin4/approve-asesi/{id_pengajuan}', [AdminController::class, 'approveAsesi'])->name('admin.approve.asesi');
-Route::post('/assign-asesor', [AdminController::class, 'assignAsesor'])->name('assign.asesor');
+    // Manajemen Skema
+    Route::prefix('skema')->name('admin.skema.')->group(function () {
+        Route::get('/', [AdminController::class, 'indexDataSkema'])->name('index');
+        Route::get('create', [AdminController::class, 'createDataSkema'])->name('create');
+        Route::post('create', [AdminController::class, 'storeDataSkema'])->name('store');
+        Route::get('{id}/edit', [AdminController::class, 'editDataSkema'])->name('edit');
+        Route::put('{id}/update', [AdminController::class, 'updateDataSkema'])->name('update');
+        Route::delete('{id}', [AdminController::class, 'destroyDataSkema'])->name('delete');
+    });
 
-Route::get('/pengguna', function () {
-    return view('home/home-admin/pengguna');
+    // Manajemen Unit Kompetensi (UK)
+    Route::prefix('uk')->name('admin.uk.')->group(function () {
+        Route::get('/', [AdminController::class, 'indexDataUk'])->name('index');
+        Route::get('create', [AdminController::class, 'createDataUk'])->name('create');
+        Route::post('create', [AdminController::class, 'storeDataUk'])->name('store');
+        Route::get('{id}/edit', [AdminController::class, 'editDataUk'])->name('edit');
+        Route::put('{id}/update', [AdminController::class, 'updateDataUk'])->name('update');
+        Route::delete('{id}', [AdminController::class, 'destroyDataUk'])->name('delete');
+    });
+
+    // Manajemen Event
+    Route::prefix('event')->name('admin.event.')->group(function () {
+        Route::get('/', [AdminController::class, 'indexDataEvent'])->name('index');
+        Route::get('create', [AdminController::class, 'createDataEvent'])->name('create');
+        Route::post('create', [AdminController::class, 'storeDataEvent'])->name('store');
+        Route::get('{id}/edit', [AdminController::class, 'editDataEvent'])->name('edit');
+        Route::put('{id}/update', [AdminController::class, 'updateDataEvent'])->name('update');
+        Route::delete('{id}', [AdminController::class, 'destroyDataEvent'])->name('delete');
+    });
+
+    // Manajemen Asesi
+    Route::prefix('asesi')->name('admin.asesi.')->group(function () {
+        Route::get('/', [AdminController::class, 'indexDataAsesi'])->name('index');
+        Route::get('{id}/edit', [AdminController::class, 'detailDataAsesi'])->name('detail');
+        Route::post('approve/{id_pengajuan}', [AdminController::class, 'approveAsesi'])->name('approve');
+    });
+
+    // Manajemen Asesor untuk Asesi
+    Route::post('assign-asesor', [AdminController::class, 'assignAsesor'])->name('assign.asesor');
+
+    // Tampilan Pengguna
+    Route::get('/pengguna', function () {
+        return view('home.home-admin.pengguna');
+    });
+    Route::get('/tambah-pengguna', function () {
+        return view('home.home-admin.tambah-pengguna');
+    });
+    // Route::view('pengguna', 'home.home-admin.pengguna');
+    // Route::view('tambah-pengguna', 'home.home-admin.tambah-pengguna');
 });
 
-Route::get('/tambah-pengguna', function () {
-    return view('home/home-admin/tambah-pengguna');
-});
+
+// Route::post('admin/asesor', [AdminController::class, 'storeDataAsesor'])->name('admin.asesor.store');
+// Route::get('/admin5', [AdminController::class, 'indexDataAsesor'])->name('admin.asesor.index');
+// Route::get('/admin5/{id}/edit', [AdminController::class, 'editDataAsesor'])->name('admin.asesor.edit');
+// Route::put('/admin5/{id}/update', [AdminController::class, 'updateDataAsesor'])->name('admin.asesor.update');
+// Route::delete('/admin5/{id}', [AdminController::class, 'destroyDataAsesor'])->name('admin.asesor.delete');
+
+// Route::get('/admin3', [AdminController::class, 'indexDataSkema'])->name('admin.skema.index');
+// Route::get('/admin3/create', [AdminController::class, 'createDataSkema'])->name('admin.skema.create'); //karena perlu data uk
+// Route::post('/admin3/create', [AdminController::class, 'storeDataSkema'])->name('admin.skema.store');
+// Route::get('/admin3/{id}/edit', [AdminController::class, 'editDataSkema'])->name('admin.skema.edit');
+// Route::put('/admin3/{id}/update', [AdminController::class, 'updateDataSkema'])->name('admin.skema.update');
+// Route::delete('/admin3/{id}', [AdminController::class, 'destroyDataSkema'])->name('admin.skema.delete');
+
+// Route::get('/admin7', [AdminController::class, 'indexDataUk'])->name('admin.uk.index');
+// Route::get('/admin7/create', [AdminController::class, 'createDataUk'])->name('admin.uk.create');
+// Route::post('/admin7/create', [AdminController::class, 'storeDataUk'])->name('admin.uk.store');
+// Route::get('/admin7/{id}/edit', [AdminController::class, 'editDataUk'])->name('admin.uk.edit');
+// Route::put('/admin7/{id}/update', [AdminController::class, 'updateDataUk'])->name('admin.uk.update');
+// Route::delete('/admin7/{id}', [AdminController::class, 'destroyDataUk'])->name('admin.uk.delete');
+
+// Route::get('/admin2', [AdminController::class, 'indexDataEvent'])->name('admin.event.index');
+// Route::get('/admin2/create', [AdminController::class, 'createDataEvent'])->name('admin.event.create'); //karena perlu data skema
+// Route::post('/admin2/create', [AdminController::class, 'storeDataEvent'])->name('admin.event.store');
+// Route::get('/admin2/{id}/edit', [AdminController::class, 'editDataEvent'])->name('admin.event.edit');
+// Route::put('/admin2/{id}/update', [AdminController::class, 'updateDataEvent'])->name('admin.event.update');
+// Route::delete('/admin2/{id}', [AdminController::class, 'destroyDataEvent'])->name('admin.event.delete');
+
+// Route::get('/admin4', [AdminController::class, 'indexDataAsesi'])->name('admin.asesi.index');
+// Route::get('/admin4/{id}/edit', [AdminController::class, 'detailDataAsesi'])->name('admin.detail.asesi');
+// Route::post('/admin4/approve-asesi/{id_pengajuan}', [AdminController::class, 'approveAsesi'])->name('admin.approve.asesi');
+// Route::post('/assign-asesor', [AdminController::class, 'assignAsesor'])->name('assign.asesor');
+
+// Route::get('/pengguna', function () {
+//     return view('home/home-admin/pengguna');
+// });
+
+// Route::get('/tambah-pengguna', function () {
+//     return view('home/home-admin/tambah-pengguna');
+// });
+
 
 // HOME - ASESI
 // Route::get('/home-asesi', function () {
 //     return view('home/home-asesi/home-asesi');
 // });
+
 
 Route::get('/assesi', function () {
     return view('home/home-asesi/assesi');
@@ -156,7 +227,7 @@ Route::get('/frak5', function () {
     return view('home/home-asesor/FRAK-05/frak05');
 });
 
-Route::get('/home-admin', [AdminController::class, 'index'])->name('home-admin');
+
 Route::get('/btn-asesi', function () {
     return view('home/home-admin/button-asesi');
 });

@@ -80,7 +80,7 @@
                                 @endforeach
                             </td>
                             <td class="p-2">
-                                <a href="/admin5" class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded">Asesor</a>
+                                <a href="/admin/asesor/" class="bg-yellow-500 hover:bg-yellow-600 text-white p-1 rounded">Asesor</a>
                             </td>
                             <td class="p-2">
                                 <a href="/btn-asesi" class="bg-gray-500 hover:bg-gray-600 text-white p-1 rounded">Asesi</a>

@@ -25,7 +25,7 @@
             <tr class="bg-gray-200">
                 <th class="p-2">Nama Calon Asesi</th>
                 <th class="p-2">Tanggal Daftar</th>
-                <th class="p-2">Event</th>
+                {{-- <th class="p-2">Event</th> --}}
                 <th class="p-2">Skema</th>
                 <th class="p-2">Pengajuan</th>
             </tr>
@@ -40,10 +40,10 @@
                     <tr>
                         <td class="p-2">{{ $asesi_pengajuan->nama_user }}</td>
                         <td class="p-2">{{ $asesi_pengajuan->created_at }}</td>
-                        <td class="p-2">{{ $asesi_pengajuan->nama_event }}</td>
+                        {{-- <td class="p-2">{{ $asesi_pengajuan->nama_event }}</td> --}}
                         <td class="p-2">{{ $asesi_pengajuan->nama_skema }}</td>
                         <td class="p-2">
-                            <a href="{{ route('admin.detail.asesi', $asesi_pengajuan->id_pengajuan) }}" class="bg-blue-500 text-white p-1 rounded text-center">Detail Pengajuan</a>
+                            <a href="{{ route('admin.asesi.detail', $asesi_pengajuan->id_pengajuan) }}" class="bg-blue-500 text-white p-1 rounded text-center">Detail Pengajuan</a>
                         </td>
                     </tr>
                 @endforeach

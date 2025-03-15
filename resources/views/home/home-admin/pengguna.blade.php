@@ -6,7 +6,7 @@
 <div class="min-h-screen bg-gray-100 p-4">
     <div class="container mx-auto">
         <div class="mb-4">
-            <a href="/tambah-pengguna" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
+            <a href="/admin/tambah-pengguna" class="bg-green-500 text-white p-2 rounded hover:bg-green-600 mb-5">
             <i class="fas fa-user-plus mr-2"></i> Tambah Pengguna
             </a>
         </div>

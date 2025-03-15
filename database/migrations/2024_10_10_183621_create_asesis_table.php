@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('nim', 20);
             $table->string('id_user', 20);
             $table->longText('file_sertifikat')->nullable();
-            $table->string('id_skema', 20);
+            $table->string('id_skema', 20)->nullable();
             $table->string('id_asesor', 20)->nullable();
             $table->json('file_kelengkapan_pemohon');
             $table->longText('ttd_pemohon');
@@ -37,7 +37,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
-            $table->foreign('id_skema')->references('id_skema')->on('skema')->onDelete('restrict');
+            $table->foreign('id_skema')->references('id_skema')->on('skema')->onDelete('set null');
             $table->foreign('id_asesor')->references('id_asesor')->on('asesor')->onDelete('set null');
         });
     }

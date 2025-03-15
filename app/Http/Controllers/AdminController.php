@@ -13,11 +13,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     public function index()
     {
+
         $events = Event::all()->count();
         $asesi = Asesi::all()->count();
         $skema = Skema::all()->count();

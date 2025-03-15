@@ -49,7 +49,7 @@ class AsesiController extends Controller
                 'jenis_event' => $event->tipe_event,
                 'nomor_peserta' => $asesi->id_asesi,
                 'skema' => $skema ? $skema->nama_skema : 'Tidak ditemukan',
-                'assessor' => $asesor ? $asesor->nama_asesor : 'Tidak ditemukan',
+                'asesor' => $asesor ? $asesor->nama_asesor : 'Tidak ditemukan',
             ];
         });
 

@@ -16,7 +16,7 @@ class UsersSeeder extends Seeder
     {
         $data = [
             [
-                'email' => 'robin@email.com',
+                'email' => 'yeka@email.com',
                 'password' => Hash::make('123123'),
                 'no_hp' => '081234567890',
                 'level' => 'asesi',
@@ -34,12 +34,6 @@ class UsersSeeder extends Seeder
                 'level' => 'asesi',
             ],
             [
-                'email' => 'saijo@email.com',
-                'password' => Hash::make('456456'),
-                'no_hp' => '084567890123',
-                'level' => 'asesi',
-            ],
-            [
                 'email' => 'annisa@email.com',
                 'password' => Hash::make('123123'),
                 'no_hp' => '085678901234',
@@ -50,12 +44,6 @@ class UsersSeeder extends Seeder
                 'password' => Hash::make('123123'),
                 'no_hp' => '085678901234',
                 'level' => 'admin',
-            ],
-            [
-                'email' => 'yeka@email.com',
-                'password' => Hash::make('123123'),
-                'no_hp' => '085678901234',
-                'level' => 'asesi',
             ],
             [
                 'email' => 'lintang@email.com',
