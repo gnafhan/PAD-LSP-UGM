@@ -60,7 +60,7 @@
                     </div>
 
                 <!-- Form Card untuk Profil Peserta -->
-            <form action="{{ route('sertifikasi') }}" method="POST" class="border border-gray-300 rounded-lg p-4" readonly disabled>
+            <form class="border border-gray-300 rounded-lg p-4" readonly disabled>
                 @csrf
                 <h2 class="text-lg font-semibold mb-4">Bagian 1 : Rincian Data Pemohon Sertifikasi</h2>
                 <p class="text-sm mb-6">Pada bagian ini, cantumkan data pribadi, data pendidikan formal serta data pekerjaan anda pada saat ini.</p>

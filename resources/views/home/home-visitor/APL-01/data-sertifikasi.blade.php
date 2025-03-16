@@ -65,7 +65,7 @@
 
                 <div id="message" class="text-center mt-4"></div>
 
-                <form id="sertifikasiForm" method="POST" action="{{ route('save.data.sertifikasi') }}">
+                <form id="sertifikasiForm" method="POST" action="{{ route('user.apl1.save-data-sertifikasi') }}">
                     @csrf
                     <div class="border border-gray-300 rounded-lg p-4 mb-6">
                         <div class="mb-4">
@@ -145,14 +145,14 @@
                 console.log("Nama Skema:", namaSkema);
 
                 // AJAX untuk mendapatkan nomor skema dan tujuan asesmen berdasarkan nama skema
-                $.get('/get-nomor-skema', { nama_skema: namaSkema }, function(response) {
+                $.get('/user/apl1/get-nomor-skema', { nama_skema: namaSkema }, function(response) {
                     console.log(response);
                     $('#nomorSkemaInput').val(response.nomor_skema || '');
                     $('#tujuan_asesmen').val(response.tujuan_asesmen || 'sertifikasi');
                 });
 
                 // AJAX untuk mendapatkan daftar UK berdasarkan skema
-                $.get('/get-daftar-uk', { nama_skema: namaSkema }, function(response) {
+                $.get('/user/apl1/get-daftar-uk', { nama_skema: namaSkema }, function(response) {
                     console.log(response);
 
                     $('#ukTableBody').empty();
@@ -176,7 +176,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: "{{ route('save.data.sertifikasi') }}",
+                url: "{{ route('user.apl1.save-data-sertifikasi') }}",
                 data: JSON.stringify({
                     skema_sertifikasi: $('#skema_sertifikasi').val(),
                     skemaDropdown: $('#skemaDropdown').val(),
@@ -186,7 +186,7 @@
                 contentType: 'application/json',
                 success: function(response) {
                     console.log('Data sertifikasi berhasil disimpan:', response);
-                    window.location.href = "{{ route('bukti') }}";
+                    window.location.href = "{{ route('user.apl1.bukti') }}";
                 },
                 error: function(xhr, status, error) {
                     if (xhr.status === 422) {

@@ -5,16 +5,16 @@
 
         <!-- Navbar Links -->
         <div id="navbar" class="flex space-x-4">
-            <a href="/home-asesor" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="/asesor/home" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Home
             </a>
-            <a href="/asesor1" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="/asesor/dashboard" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Asesor
             </a>
             {{-- <a href="/logout" class="text-white font-semibold hover:bg-red-500 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Logout
             </a> --}}
-            <form action="{{ route('logout') }}" method="POST" class="inline">
+            <form action="{{ url('/asesor/logout') }}" method="POST" class="inline">
                 @csrf
                 <button type="submit" class="text-white font-semibold hover:bg-red-500 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                     Logout

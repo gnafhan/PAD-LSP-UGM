@@ -83,7 +83,7 @@
                 <td class="border px-4 py-2">{{ $event['jenis_event'] }}</td>
                 <td class="border px-4 py-2">{{ $event['nomor_peserta'] }}</td>
                 <td class="border px-4 py-2">{{ $event['skema'] }}</td>
-                <td class="border px-4 py-2">{{ $event['assessor'] }}</td>
+                <td class="border px-4 py-2">{{ $event['asesor'] }}</td>
                 <td class="border px-4 py-2">
                   <button onclick="toggleActions('aksi{{ $loop->index }}')" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition">Pilih</button>
                 </td>
@@ -91,12 +91,12 @@
               <tr id="aksi{{ $loop->index }}" class="hidden">
                 <td colspan="8" class="border px-4 py-2">
                   <div class="flex flex-wrap space-x-2 md:space-x-3">
-                    <a href="/persetujuan" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition my-2">Persetujuan</a>
-                    <a href="/apl1/b1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.01</a>
-                    <a href="{{ route('asesmen.mandiri') }}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.02</a>
-                    <a href="/ak1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK.01</a>
-                    <a href="/ia2" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.IA.02 SOAL PRAKTEK/UPLOAD JAWABAN</a>
-                    <a href="/ak3" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK.03 Umpan Balik</a>
+                    <a href="/asesi/persetujuan" class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition my-2">Persetujuan</a>
+                    <a href="{{ route('asesi.apl1-detail', auth()->user()->id_user) }}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.01</a>
+                    <a href="{{ route('asesi.asesmen.mandiri') }}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.APL.02</a>
+                    <a href="/asesi/fr/ak1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK.01</a>
+                    <a href="/asesi/fr/ia2" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.IA.02 SOAL PRAKTEK/UPLOAD JAWABAN</a>
+                    <a href="/asesi/fr/ak3" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK.03 Umpan Balik</a>
                   </div>
                 </td>
               </tr>

@@ -12,13 +12,13 @@
 
         <!-- Navbar Links -->
         <nav id="navbar" class="hidden lg:flex space-x-4">
-            <a href="/home-asesi" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="/asesi/home" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Home
             </a>
-            <a href="{{ route('assesi') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="{{ route('asesi.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Assesi
             </a>
-            <form action="{{ route('logout') }}" method="POST" class="inline">
+            <form action="{{ url('/asesi/logout') }}" method="POST" class="inline">
                 @csrf
                 <button type="submit" class="text-white font-semibold hover:bg-red-500 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                     Logout
@@ -35,7 +35,7 @@
         <a href="/assesi" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Assesi
         </a>
-        <form action="{{ route('logout') }}" method="POST" class="inline">
+        <form action="{{ url('/asesi/logout') }}" method="POST" class="inline">
             @csrf
             <button type="submit" class="block text-white font-semibold hover:bg-red-500 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Logout

@@ -20,9 +20,9 @@ class PengajuanController extends Controller
 
     public function indexPersetujuan()
     {
-        if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
-        }
+        // if (!auth()->check()) {
+        //     return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
+        // }
 
         $idUser = auth()->user()->id_user;
 

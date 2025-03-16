@@ -12,21 +12,26 @@
 
         <!-- Navbar Links -->
         <nav id="navbar" class="hidden lg:flex space-x-4">
-            <a href="/home" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="/user/home" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Home
             </a>
-            <a href="{{route('persetujuan') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            <a href="{{route('user.persetujuan.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Daftar Sertifikasi</a>
-
+            <form action="{{ url('user/logout') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="text-white font-semibold hover:bg-red-500 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+                    Logout
+                </button>
+            </form>
         </nav>
     </div>
 
     <!-- Mobile Menu -->
     <nav id="mobile-menu" class="lg:hidden bg-blue-300 mt-3 space-y-2 p-4 hidden">
-        <a href="/home" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+        <a href="/user/home" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Home
         </a>
-        <a href="{{route('persetujuan') }}" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+        <a href="{{route('user.persetujuan.index') }}" class="block text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Daftar Sertifikasi
         </a>
 

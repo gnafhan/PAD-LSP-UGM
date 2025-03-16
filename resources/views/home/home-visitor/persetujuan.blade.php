@@ -51,14 +51,14 @@
         formData.append('signature', fileInput);
 
         $.ajax({
-            url: '/save-data-persetujuan',
+            url: '/user/persetujuan/save',
             type: 'POST',
             data: formData,
             contentType: false,
             processData: false,
             success: function(response) {
                 console.log('Data persetujuan tersimpan sementara:', response);
-                window.location.href = "{{ route('pribadi') }}";
+                window.location.href = "{{ route('user.apl1.pribadi') }}";
             },
             error: function(xhr, status, error) {
                 console.error('Error menyimpan data persetujuan:', error);

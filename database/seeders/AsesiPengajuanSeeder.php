@@ -17,7 +17,7 @@ class AsesiPengajuanSeeder extends Seeder
             [
                 'id_user' => 'USER1',
                 'id_skema' => 'SKEMA1',
-                'nama_user' => 'Annisa Mutia Rahman',
+                'nama_user' => 'Yeka Nurfy',
                 'nik' => '332256609074562',
                 'nim' => '23/51678/SV/90874',
                 'kota_domisili' => 'Depok',
@@ -32,7 +32,7 @@ class AsesiPengajuanSeeder extends Seeder
                 'nomor_skema' => 'SKM/2323/987/09',
                 'tujuan_asesmen' => 'Sertifikasi',
                 'sumber_anggaran' => 'Beasiswa',
-                'email' => 'annisa@example.com',
+                'email' => 'yeka@email.com',
                 'file_kelengkapan_pemohon' => json_encode(['/bukti_pemohon/surat_ijazah.pdf', '/bukti_pemohon/surat_magang.pdf', '/bukti_pemohon/foto_ktp.png', '/bukti_pemohon/foto_3x4.png']),
                 'ttd_pemohon' => 'ttd_annisa.png',
                 'status_rekomendasi' => 'N/A',

@@ -49,7 +49,7 @@
                 <div id="message" class="text-center mt-4"></div>
 
                 <!-- Form Card untuk Profil Peserta -->
-                <form action="{{ route('sertifikasi') }}" method="POST" class="rounded-lg p-4">
+                <form action="{{ route('user.apl1.sertifikasi') }}" method="POST" class="rounded-lg p-4">
                 @csrf
                 <h2 class="text-lg font-semibold mb-4">Bagian 1 : Rincian Data Pemohon Sertifikasi</h2>
                 <p class="text-sm mb-6">Pada bagian ini, cantumkan data pribadi, data pendidikan formal serta data pekerjaan anda pada saat ini.</p>
@@ -177,12 +177,12 @@
                 no_telp_perusahaan: $('#no_telp_perusahaan').val(),
             };
             $.ajax({
-                url: '/save-data-pribadi',
+                url: '/user/apl1/save-data-pribadi',
                 type: 'POST',
                 data: dataPribadi,
                 success: function(response) {
                     console.log('Data pribadi tersimpan sementara:', response);
-                    window.location.href = "{{ route('sertifikasi') }}";
+                    window.location.href = "{{ route('user.apl1.sertifikasi') }}";
                 },
                 error: function(xhr, status, error) {
                     if (xhr.status === 422) {

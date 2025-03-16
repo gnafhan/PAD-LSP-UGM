@@ -100,7 +100,7 @@
 
 
             <!-- Judul Form -->
-            <form method="POST" action="{{ route('save') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('user.apl1.save') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="border border-gray-300 rounded-lg p-4">
                     <h2 class="text-lg font-semibold mb-4">Bagian 3 : Bukti Kelengkapan Pemohon</h2>

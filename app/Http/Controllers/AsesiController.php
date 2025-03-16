@@ -56,6 +56,31 @@ class AsesiController extends Controller
         return view('home.home-asesi.assesi', compact('eventData'));
     }
 
+    public function detailApl1($id)
+    {
+        // Cari pengajuan berdasarkan id_user yang diberikan
+        $asesiPengajuan = AsesiPengajuan::where('id_user', $id)->latest()->first();
+
+        // Jika tidak ditemukan, kembalikan error 404
+        if (!$asesiPengajuan) {
+            abort(404, 'Data pengajuan tidak ditemukan');
+        }
+
+        $id_user = $asesiPengajuan->id_user;
+
+        $buktiKelengkapan = [
+            'ijazah' => asset('storage/uploads/bukti_pemohon/jenjang_siswa/bukti_jenjang_siswa_' . $id_user . '.pdf'),
+            'rapor' => asset('storage/uploads/bukti_pemohon/transkrip/bukti_transkrip_' . $id_user . '.pdf'),
+            'pengalaman_kerja' => asset('storage/uploads/bukti_pemohon/pengalaman_kerja/bukti_pengalaman_kerja_' . $id_user . '.pdf'),
+            'magang' => asset('storage/uploads/bukti_pemohon/magang/bukti_magang_' . $id_user . '.pdf'),
+            'ktp' => asset('storage/uploads/bukti_pemohon/ktp/bukti_ktp_' . $id_user . '.pdf'),
+            'foto' => asset('storage/uploads/bukti_pemohon/foto/bukti_foto_' . $id_user . '.pdf')
+        ];
+
+        return view('home.home-asesi.APL-01.apl1-detail', compact('asesiPengajuan', 'buktiKelengkapan'));
+    }
+
+
     public function asesmenMandiri()
     {
         $user = Auth::user();

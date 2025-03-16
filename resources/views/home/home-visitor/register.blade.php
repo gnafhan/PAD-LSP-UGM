@@ -15,6 +15,17 @@
 
     <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">Register</h1>
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
     <!-- Register Form -->
     <form action="{{ route('register.store') }}" method="POST">
         @csrf
