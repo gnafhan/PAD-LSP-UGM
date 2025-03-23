@@ -37,6 +37,7 @@ return new class extends Migration
             $table->string('no_telp_institusi_asal', 20);
             $table->string('fax_institusi_asal', 20);
             $table->string('email_institusi_asal', 100);
+            $table->longText('file_sertifikat_asesor')->nullable();
             $table->timestamps();
         });
     }

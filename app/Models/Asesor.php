@@ -54,4 +54,13 @@ class Asesor extends Model
             $model->id_asesor = 'ASESOR' . str_pad($number, 1, '0', STR_PAD_LEFT);
         });
     }
+
+    /**
+     * Relasi One to Many: 
+     * Satu asesor memiliki banyak kompetensi teknis.
+    */
+    public function kompetensiTeknis()
+    {
+        return $this->hasMany(KompetensiTeknis::class, 'id_asesor', 'id_asesor');
+    }
 }
