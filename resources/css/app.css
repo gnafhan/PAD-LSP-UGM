@@ -1,10 +1,7 @@
-/* @tailwind base;
+@tailwind base;
 @tailwind components;
-@tailwind utilities; */
-/* resources/css/app.css */
-@font-face {
-    font-family: 'UGMFont';
-    src: url('/fonts/font-ugm.otf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}  
+@tailwind utilities;
+
+[x-cloak] {
+    display: none;
+}

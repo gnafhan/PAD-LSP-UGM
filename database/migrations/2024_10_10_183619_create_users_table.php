@@ -17,6 +17,8 @@ return new class extends Migration
             $table->longText('password');
             $table->string('no_hp', 20);
             $table->string('level', 10);
+            $table->string('gauth_id')->nullable(); // Tambahkan kolom gauth_id
+            $table->string('gauth_type')->nullable(); // Tambahkan kolom gauth_type
             $table->timestamps();
         });
     }
@@ -25,5 +27,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('users');
     }
-
 };

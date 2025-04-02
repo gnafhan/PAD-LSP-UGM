@@ -24,9 +24,6 @@
             <a href="{{ route('skema') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Sertifikasi
             </a>
-            <a href="/register" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
-                Daftar
-            </a>
             <a href="/login" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
                 Login
             </a>

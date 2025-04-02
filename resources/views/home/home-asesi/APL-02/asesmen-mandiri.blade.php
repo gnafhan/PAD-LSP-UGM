@@ -107,32 +107,41 @@
                                 </tr>
                                 <!-- Menampilkan elemen_uk langsung tanpa foreach -->
                                 <tr class="bg-gray-100">
-                                    <td class="border border-gray-300 p-2">
-                                        <div class="font-semibold">
-                                            <!-- Memecah elemen_uk berdasarkan tanda titik koma -->
-                                            @php
-                                                $elemenArray = explode(';', $uk->elemen_uk);
-                                            @endphp
-
-                                            <!-- Menampilkan setiap elemen sebagai item list -->
-                                            <ul class="list-disc ml-4">
-                                                @foreach($elemenArray as $elemen)
-                                                    <li>{{ $elemen }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td class="border border-gray-300 p-2 text-center">
-                                        <input type="checkbox" class="h-4 w-4 text-blue-500" />
+                                    <td class="border border-gray-300 p-2" colspan="2">
+                                        <!-- Tampilkan setiap elemen dengan checkbox masing-masing -->
+                                        <table class="w-full">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-left w-3/4 p-1">Elemen Kompetensi</th>
+                                                    <th class="text-center w-1/4 p-1">Kompeten</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($uk->elemen_uk as $index => $elemen)
+                                                <tr>
+                                                    <td class="p-1">
+                                                        <div class="flex">
+                                                            <span class="mr-2">{{ $index + 1 }}.</span>
+                                                            <span>{{ $elemen->nama_elemen }}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center p-1">
+                                                        <input type="checkbox" name="kompeten[{{ $uk->id_uk }}][{{ $elemen->id_elemen_uk }}]" class="h-4 w-4 text-blue-500" />
+                                                    </td>
+                                                </tr>
+                                                @empty
+                                                <tr>
+                                                    <td colspan="2" class="p-1 text-gray-500 italic">Tidak ada elemen yang tersedia</td>
+                                                </tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>
                         @endforeach
-
                         </div>
-
                     </div>
-
                 </div>
                 <div class="flex justify-end mt-4">
                     <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">SAVE</button>

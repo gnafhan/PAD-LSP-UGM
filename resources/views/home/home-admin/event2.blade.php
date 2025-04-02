@@ -13,43 +13,6 @@
             </a>
             </div>
 
-            <!-- Form Event -->
-            {{-- <div id="eventModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
-                <div class="bg-white rounded-md p-6 w-full max-w-lg mx-4">
-                    <h2 class="text-xl font-bold mb-4">Tambah Event</h2>
-                    <form>
-                        <div class="mb-4">
-                            <label for="event-name" class="block text-gray-700">Nama Event:</label>
-                            <input type="text" id="event-name" class="w-full p-2 border rounded-md" placeholder="EVENT-098-1238">
-                        </div>
-                        <div class="mb-4">
-                            <label for="start-date" class="block text-gray-700">Tanggal Mulai Event:</label>
-                            <input type="date" id="start-date" class="w-full p-2 border rounded-md">
-                        </div>
-                        <div class="mb-4">
-                            <label for="end-date" class="block text-gray-700">Tanggal Berakhir Event:</label>
-                            <input type="date" id="end-date" class="w-full p-2 border rounded-md">
-                        </div>
-                        <div class="mb-4">
-                            <label for="event-type" class="block text-gray-700">Tipe Event:</label>
-                            <input type="text" id="event-type" class="w-full p-2 border rounded-md">
-                        </div>
-                        <div class="mb-4">
-                            <label for="event-scheme" class="block text-gray-700">Nama Skema:</label>
-                            <div id="schemes-list">
-                                <input type="text" class="w-full p-2 border rounded-md mb-2" placeholder="SKM-XXXX">
-                            </div>
-                            <button type="button" class="bg-blue-500 text-white p-2 rounded">Tambah Skema</button>
-                        </div>
-                        <div class="flex justify-end">
-                            <button type="button" id="closeModalBtn" class="bg-red-500 text-white p-2 rounded mr-2">Batal</button>
-                            <button type="submit" class="bg-green-500 text-white p-2 rounded">Simpan Event</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> --}}
-
         <!-- Daftar Event -->
         <h2 class="text-xl font-bold mb-4">Daftar Event</h2>
         <div class="overflow-x-auto mb-8">

@@ -23,11 +23,35 @@ class MUK extends Model
     protected static function boot()
     {
         parent::boot();
-
+    
         static::creating(function ($model) {
-            $lastId = self::max('id_muk');
-            $number = $lastId ? intval(substr($lastId, 3)) + 1 : 1;
-            $model->id_muk = 'MUK' . str_pad($number, 1, '0', STR_PAD_LEFT);
+            // Menentukan prefix sesuai dengan nama model
+            // Misalnya: 'ASESI', 'ASESOR', 'SKEMA', dll
+            $prefix = 'MUK'; // Ganti dengan prefix yang sesuai untuk setiap model
+            
+            // Mendapatkan nama kolom ID berdasarkan $primaryKey dari model
+            $idColumn = 'id_muk';
+            
+            $tahun = date('Y');
+            $lastIdTahunIni = self::whereYear('created_at', $tahun)->max($idColumn);
+            
+            // Jika belum ada data tahun ini
+            if (!$lastIdTahunIni) {
+                $model->{$idColumn} = $prefix . $tahun . '00001';
+                return;
+            }
+            
+            // Extract nomor urut dari tahun yang sama
+            if (preg_match('/' . $prefix . $tahun . '(\d+)/', $lastIdTahunIni, $matches)) {
+                $number = (int)$matches[1];
+                $nextNumber = $number + 1;
+                
+                // Format dengan 5 digit
+                $model->{$idColumn} = $prefix . $tahun . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+            } else {
+                // Fallback jika tidak cocok
+                $model->{$idColumn} = $prefix . $tahun . '00001';
+            }
         });
     }
 }

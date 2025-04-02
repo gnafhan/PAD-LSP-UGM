@@ -22,15 +22,11 @@ class Asesor extends Model
         'no_hp',
         'email',
         'alamat',
-        'bidang',
         'status_asesor',
         'foto_asesor',
-        'gelar_depan',
-        'gelar_belakang',
         'no_ktp',
         'jenis_kelamin',
         'pendidikan_terakhir',
-        'keahlian',
         'tempat_lahir',
         'tanggal_lahir',
         'kebangsaan',
@@ -39,19 +35,44 @@ class Asesor extends Model
         'institusi_asal',
         'no_telp_institusi_asal',
         'fax_institusi_asal',
-        'email_institusi_asal'
+        'email_institusi_asal',
+        'daftar_bidang_kompetensi', //json
+        'file_sertifikat_asesor',
     ];
 
     protected $dates = ['tanggal_lahir', 'masa_berlaku'];
 
+    public function bidangKompetensi()
+    {
+        return $this->hasMany(BidangKompetensi::class, 'id_bidang_kompetensi', 'id_bidang_kompetensi');
+    }
+
     protected static function boot()
     {
         parent::boot();
-
+    
         static::creating(function ($model) {
-            $lastId = self::max('id_asesor');
-            $number = $lastId ? intval(substr($lastId, 6)) + 1 : 1;
-            $model->id_asesor = 'ASESOR' . str_pad($number, 1, '0', STR_PAD_LEFT);
+            $prefix = 'ASESOR';
+            $tahun = date('Y');
+            $lastIdTahunIni = self::whereYear('created_at', $tahun)->max('id_asesor');
+            
+            // Jika belum ada data tahun ini
+            if (!$lastIdTahunIni) {
+                $model->id_asesor = $prefix . $tahun . '00001';
+                return;
+            }
+            
+            // Extract nomor urut dari tahun yang sama
+            if (preg_match('/' . $prefix . $tahun . '(\d+)/', $lastIdTahunIni, $matches)) {
+                $number = (int)$matches[1];
+                $nextNumber = $number + 1;
+                
+                // Format dengan 5 digit
+                $model->id_asesor = $prefix . $tahun . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+            } else {
+                // Fallback jika tidak cocok
+                $model->id_asesor = $prefix . $tahun . '00001';
+            }
         });
     }
 
@@ -63,4 +84,5 @@ class Asesor extends Model
     {
         return $this->hasMany(KompetensiTeknis::class, 'id_asesor', 'id_asesor');
     }
+
 }

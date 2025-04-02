@@ -18,26 +18,23 @@ return new class extends Migration
             $table->string('no_sertifikat', 30);
             $table->string('no_hp', 20);
             $table->string('email', 100);
-            $table->longText('alamat');
-            $table->string('bidang', 100); //gausah po ya?
+            $table->longText('alamat')->nullable();
             $table->string('status_asesor', 10);
-            $table->longText('foto_asesor');
-            $table->string('gelar_depan', 60)->nullable();
-            $table->string('gelar_belakang', 60)->nullable();
+            $table->longText('foto_asesor')->nullable();
             $table->string('no_ktp', 20);
-            $table->string('jenis_kelamin', 10);
-            $table->string('pendidikan_terakhir', 30);
-            $table->string('keahlian', 100);
-            $table->string('tempat_lahir', 20);
-            $table->dateTime('tanggal_lahir');
-            $table->string('kebangsaan', 30);
-            $table->string('no_lisensi', 30);
+            $table->string('jenis_kelamin', 10)->nullable();
+            $table->string('pendidikan_terakhir', 30)->nullable();
+            $table->string('tempat_lahir', 20)->nullable();
+            $table->dateTime('tanggal_lahir')->nullable();
+            $table->string('kebangsaan', 30)->nullable();
+            $table->string('no_lisensi', 30)->nullable();
             $table->dateTime('masa_berlaku');
-            $table->string('institusi_asal', 100);
-            $table->string('no_telp_institusi_asal', 20);
-            $table->string('fax_institusi_asal', 20);
-            $table->string('email_institusi_asal', 100);
+            $table->string('institusi_asal', 100)->nullable();
+            $table->string('no_telp_institusi_asal', 20)->nullable();
+            $table->string('fax_institusi_asal', 20)->nullable();
+            $table->string('email_institusi_asal', 100)->nullable();
             $table->longText('file_sertifikat_asesor')->nullable();
+            $table->json('daftar_bidang_kompetensi')->nullable(); //json
             $table->timestamps();
         });
     }

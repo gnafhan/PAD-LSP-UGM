@@ -16,20 +16,31 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        // Pastikan user sudah login
+        // Log session information
+        \Log::info('Role Middleware Check', [
+            'authenticated' => Auth::check(),
+            'session_id' => $request->session()->getId(),
+            'cookies' => $request->cookies->all()
+        ]);
+        
         if (!Auth::check()) {
+            // Store intended URL before redirecting 
+            redirect()->setIntendedUrl($request->url());
+            
+            // Log the status for debugging
+            \Log::info('Auth check failed in middleware');
             return redirect('/login');
         }
-
-        // Ambil user yang sedang login
+    
         $user = Auth::user();
-
-
-        // Cek apakah user memiliki salah satu dari role yang diizinkan
+        
+        // Log the user for debugging
+        \Log::info('User in middleware', ['user' => $user, 'level' => $user->level]);
+        
         if (!in_array($user->level, $roles)) {
             return abort(403, 'Unauthorized');
         }
-
+    
         return $next($request);
     }
 }

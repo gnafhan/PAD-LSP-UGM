@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Asesi;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AsesisSeeder extends Seeder
 {
@@ -13,8 +15,26 @@ class AsesisSeeder extends Seeder
      */
     public function run(): void
     {
-        $data = [
+        // Disable foreign key checks to avoid constraints issues during seeding
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        
+        // Truncate the table first for clean seeding
+        DB::table('asesi')->truncate();
+        
+        // Get the users by email to fetch their auto-generated IDs
+        $yekaUser = User::where('email', 'yeka@email.com')->first();
+        $sakuraUser = User::where('email', 'sakura@email.com')->first();
+        $hiroUser = User::where('email', 'hiro@email.com')->first();
+        
+        // Check if users exist before proceeding
+        if (!$yekaUser || !$sakuraUser || !$hiroUser) {
+            throw new \Exception('Required users not found. Please run UsersSeeder first.');
+        }
+        
+        // Predefined asesi data
+        $predefinedAsesis = [
             [
+                'id_user' => $yekaUser->id_user,
                 'nama_asesi' => 'Yeka',
                 'tempat_tanggal_lahir' => 'Sapporo, 26 Juni 2005',
                 'jenis_kelamin' => 'Pria',
@@ -25,9 +45,8 @@ class AsesisSeeder extends Seeder
                 'no_telp_rumah' => null,
                 'email' => 'yeka@email.com',
                 'nim' => '23/76788/PA/22134',
-                'id_user' => 'USER1',
                 'file_sertifikat' => 'sertifikat_robin.pdf',
-                'id_skema' => 'SKEMA1',
+                'id_skema' => 'SKEMA0001',
                 'id_asesor' => 'ASESOR1',
                 'file_kelengkapan_pemohon' => json_encode(['ktp_robin.png', 'foto_robin.png']),
                 'ttd_pemohon' => 'ttd_robin.png',
@@ -38,6 +57,7 @@ class AsesisSeeder extends Seeder
                 'no_telp_perusahaan' => null,
             ],
             [
+                'id_user' => $sakuraUser->id_user,
                 'nama_asesi' => 'Sakura Yamamoto',
                 'tempat_tanggal_lahir' => 'Tokyo, 14 Februari 2002',
                 'jenis_kelamin' => 'Wanita',
@@ -48,9 +68,8 @@ class AsesisSeeder extends Seeder
                 'no_telp_rumah' => '0274123456',
                 'email' => 'sakura@email.com',
                 'nim' => '24/77889/PA/33156',
-                'id_user' => 'USER2',
                 'file_sertifikat' => 'sertifikat_sakura.pdf',
-                'id_skema' => 'SKEMA2',
+                'id_skema' => 'SKEMA0002',
                 'id_asesor' => 'ASESOR1',
                 'file_kelengkapan_pemohon' => json_encode(['ktp_sakura.png', 'foto_sakura.png']),
                 'ttd_pemohon' => 'ttd_sakura.png',
@@ -61,6 +80,7 @@ class AsesisSeeder extends Seeder
                 'no_telp_perusahaan' => null,
             ],
             [
+                'id_user' => $hiroUser->id_user,
                 'nama_asesi' => 'Hiro Tanaka',
                 'tempat_tanggal_lahir' => 'Osaka, 12 Maret 1999',
                 'jenis_kelamin' => 'Pria',
@@ -71,9 +91,8 @@ class AsesisSeeder extends Seeder
                 'no_telp_rumah' => null,
                 'email' => 'hiro@email.com',
                 'nim' => '22/66554/PA/11978',
-                'id_user' => 'USER3',
                 'file_sertifikat' => 'sertifikat_hiro.pdf',
-                'id_skema' => 'SKEMA3',
+                'id_skema' => 'SKEMA0003',
                 'id_asesor' => null,
                 'file_kelengkapan_pemohon' => json_encode(['ktp_hiro.png', 'foto_hiro.png']),
                 'ttd_pemohon' => 'ttd_hiro.png',
@@ -85,8 +104,12 @@ class AsesisSeeder extends Seeder
             ],
         ];
 
-        foreach ($data as $item) {
-            Asesi::create($item);
+        // Insert asesis using Asesi model to leverage auto-ID generation
+        foreach ($predefinedAsesis as $asesiData) {
+            Asesi::create($asesiData);
         }
+        
+        // Re-enable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 }

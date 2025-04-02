@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+class DebugAuthMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        Log::info('Debug Auth Middleware', [
+            'authenticated' => Auth::check(),
+            'session_id' => $request->session()->getId(),
+            'user' => Auth::user(),
+            'cookies' => $request->cookies->all()
+        ]);
+        
+        return $next($request);
+    }
+}

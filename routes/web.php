@@ -1,4 +1,7 @@
 <?php
+use App\Http\Controllers\Admin\AsesiPengajuanPageController;
+use App\Http\Controllers\Admin\SkemaPageController;
+use App\Http\Controllers\Admin\UnitKompetensiPageController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
@@ -7,7 +10,7 @@ use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\HomeController;
-
+use App\Http\Controllers\Admin\PenggunaPageController;
 
 //Level: user
 Route::middleware(['role:user'])->prefix('user')->group(function () {
@@ -60,33 +63,26 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
     // Dashboard Admin
     Route::get('/home-admin', [AdminController::class, 'index'])->name('home-admin');
 
-    // Manajemen Asesor
-    Route::prefix('asesor')->name('admin.asesor.')->group(function () {
-        Route::post('/', [AdminController::class, 'storeDataAsesor'])->name('store');
-        Route::get('/', [AdminController::class, 'indexDataAsesor'])->name('index');
-        Route::get('{id}/edit', [AdminController::class, 'editDataAsesor'])->name('edit');
-        Route::put('{id}/update', [AdminController::class, 'updateDataAsesor'])->name('update');
-        Route::delete('{id}', [AdminController::class, 'destroyDataAsesor'])->name('delete');
-    });
 
     // Manajemen Skema
     Route::prefix('skema')->name('admin.skema.')->group(function () {
-        Route::get('/', [AdminController::class, 'indexDataSkema'])->name('index');
-        Route::get('create', [AdminController::class, 'createDataSkema'])->name('create');
-        Route::post('create', [AdminController::class, 'storeDataSkema'])->name('store');
-        Route::get('{id}/edit', [AdminController::class, 'editDataSkema'])->name('edit');
-        Route::put('{id}/update', [AdminController::class, 'updateDataSkema'])->name('update');
-        Route::delete('{id}', [AdminController::class, 'destroyDataSkema'])->name('delete');
+        Route::get('/', [SkemaPageController::class, 'indexDataSkema'])->name('index');
+        Route::get('create', [SkemaPageController::class, 'createDataSkema'])->name('create');
+        Route::post('create', [SkemaPageController::class, 'storeDataSkema'])->name('store');
+        Route::get('{id}/edit', [SkemaPageController::class, 'editDataSkema'])->name('edit');
+        Route::put('{id}/update', [SkemaPageController::class, 'updateDataSkema'])->name('update');
+        Route::delete('{id}', [SkemaPageController::class, 'destroyDataSkema'])->name('delete');
     });
 
     // Manajemen Unit Kompetensi (UK)
     Route::prefix('uk')->name('admin.uk.')->group(function () {
-        Route::get('/', [AdminController::class, 'indexDataUk'])->name('index');
-        Route::get('create', [AdminController::class, 'createDataUk'])->name('create');
-        Route::post('create', [AdminController::class, 'storeDataUk'])->name('store');
-        Route::get('{id}/edit', [AdminController::class, 'editDataUk'])->name('edit');
-        Route::put('{id}/update', [AdminController::class, 'updateDataUk'])->name('update');
-        Route::delete('{id}', [AdminController::class, 'destroyDataUk'])->name('delete');
+        Route::get('/', [UnitKompetensiPageController::class, 'indexDataUk'])->name('index');
+        Route::get('create', [UnitKompetensiPageController::class, 'createDataUk'])->name('create');
+        Route::get('getUK', [UnitKompetensiPageController::class, 'getUK'])->name('getUK');
+        Route::post('create', [UnitKompetensiPageController::class, 'storeDataUk'])->name('store');
+        Route::get('{id}/edit', [UnitKompetensiPageController::class, 'editDataUk'])->name('edit');
+        Route::put('{id}/update', [UnitKompetensiPageController::class, 'updateDataUk'])->name('update');
+        Route::delete('{id}', [UnitKompetensiPageController::class, 'destroyDataUk'])->name('delete');
     });
 
     // Manajemen Event
@@ -101,21 +97,44 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
 
     // Manajemen Asesi
     Route::prefix('asesi')->name('admin.asesi.')->group(function () {
-        Route::get('/', [AdminController::class, 'indexDataAsesi'])->name('index');
-        Route::get('{id}/edit', [AdminController::class, 'detailDataAsesi'])->name('detail');
-        Route::post('approve/{id_pengajuan}', [AdminController::class, 'approveAsesi'])->name('approve');
+        Route::get('/', [AsesiPengajuanPageController::class, 'indexDataAsesi'])->name('index');
+        Route::get('{id}/edit', [AsesiPengajuanPageController::class, 'detailDataAsesi'])->name('detail');
+        Route::post('approve/{id_pengajuan}', [AsesiPengajuanPageController::class, 'approveAsesi'])->name('approve');
+        // Get asesor berdasarkan bidang kompetensi
     });
-
     // Manajemen Asesor untuk Asesi
-    Route::post('assign-asesor', [AdminController::class, 'assignAsesor'])->name('assign.asesor');
+    Route::post('assign-asesor', [AsesiPengajuanPageController::class, 'assignAsesor'])->name('assign.asesor');
+    Route::get('get-asesor-by-bidang/{id_bidang}', [AsesiPengajuanPageController::class, 'getAsesorByBidang'])->name('get.asesor.by.bidang');
+    Route::get('get-asesor-by-bidang/all', [AsesiPengajuanPageController::class, 'getAllAsesor'])->name('get.all.asesor');
 
-    // Tampilan yg tidak ada backend
-    Route::get('/pengguna', function () {
-        return view('home.home-admin.pengguna');
+
+    // Manajemen Users
+    Route::prefix('pengguna')->name('admin.pengguna.')->group(function () {
+        Route::get('/', [PenggunaPageController::class, 'index'])->name('index');
+        Route::get('tambah-pengguna', [PenggunaPageController::class, 'create'])->name('create');
+
+        // Asesor
+
+        Route::put('/pengguna/update-asesor-status', [PenggunaPageController::class, 'updateAsesorStatus'])->name('update-asesor-status');
+        Route::post('create', [PenggunaPageController::class, 'store'])->name('store');
+        Route::delete('{id}', [PenggunaPageController::class, 'destroy'])->name('delete');
+        Route::get('get-sertifikat/{id}', [PenggunaPageController::class, 'getSertifikat'])->name('get-sertifikat');
+        Route::get('/detailAsesor/{id}', [PenggunaPageController::class, 'detail'])->name('detail');
+        Route::get('kompetensiAsesor/{id}', [PenggunaPageController::class, 'kompetensi'])->name('kompetensi');
+        Route::post('kompetensiAsesor/{id}/sertifikat', [PenggunaPageController::class, 'storeSertifikat'])->name('store-sertifikat');
+        Route::delete('kompetensiAsesor/{id}/sertifikat/{sertifikatId}', [PenggunaPageController::class, 'deleteSertifikat'])->name('delete-sertifikat');
+        Route::get('/editAsesor{id}', [PenggunaPageController::class, 'editAsesor'])->name('edit');
+
+        // Admin
+        // Update admin route
+        Route::put('/{id}/updateAdmin', [PenggunaPageController::class, 'updateAdmin'])->name('updateAdmin');
+        // Delete admin route
+        Route::delete('/{id}/deleteAdmin', [PenggunaPageController::class, 'deleteAdmin'])->name('deleteAdmin');    
     });
-    Route::get('/tambah-pengguna', function () {
-        return view('home.home-admin.tambah-pengguna');
-    });
+
+
+
+ 
     Route::get('/btn-asesi', function () {
         return view('home/home-admin/button-asesi');
     });
@@ -213,12 +232,22 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('home/home-visitor/login');
 })->name('login');
-Route::post('/login', [LoginRegisterController::class, 'authenticate'])->name('login.post');
 
-Route::get('/register', function () {
+// Page autentikasi
+Route::get('/dev/login', function () {
+    return view('home/home-visitor/dev-login');
+})->name('dev-login');
+Route::post('/dev/login', [LoginRegisterController::class, 'authenticate'])->name('login.post');
+
+Route::get('/dev/register', function () {
     return view('home/home-visitor/register');
-})->name('register');
-Route::post('/register', [LoginRegisterController::class, 'store'])->name('register.store');
+})->name('dev-register');
+Route::post('/dev/register', [LoginRegisterController::class, 'store'])->name('register.store');
+
+
+// Login with Google
+Route::get('oauth/google', [\App\Http\Controllers\OauthController::class, 'redirectToProvider'])->name('oauth.google');  
+Route::get('oauth/google/callback', [\App\Http\Controllers\OauthController::class, 'handleProviderCallback'])->name('oauth.google.callback');
 
 // Page reset password
 Route::get('/reset-password', function () {

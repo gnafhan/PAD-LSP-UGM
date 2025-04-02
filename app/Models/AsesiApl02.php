@@ -36,11 +36,28 @@ class AsesiApl02 extends Model
     protected static function boot()
     {
         parent::boot();
-
+    
         static::creating(function ($model) {
-            $lastId = self::max('id_asesiAPL02');
-            $number = $lastId ? intval(substr($lastId, 12)) + 1 : 1;
-            $model->id_asesiAPL02 = 'ASESI_APL02_' . str_pad($number, 1, '0', STR_PAD_LEFT);
+            $tahun = date('Y');
+            $lastIdTahunIni = self::whereYear('created_at', $tahun)->max('id_asesiAPL02');
+            
+            // Jika belum ada data tahun ini
+            if (!$lastIdTahunIni) {
+                $model->id_asesiAPL02 = 'ASESIAPL2_' . $tahun . '_00001';
+                return;
+            }
+            
+            // Extract nomor urut dari tahun yang sama
+            if (preg_match('/ASESIAPL2_' . $tahun . '_(\d+)/', $lastIdTahunIni, $matches)) {
+                $number = (int)$matches[1];
+                $nextNumber = $number + 1;
+                
+                // Format dengan 5 digit
+                $model->id_asesiAPL02 = 'ASESIAPL2_' . $tahun . '_' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+            } else {
+                // Fallback jika tidak cocok
+                $model->id_asesiAPL02 = 'ASESIAPL2_' . $tahun . '_00001';
+            }
         });
     }
 }
