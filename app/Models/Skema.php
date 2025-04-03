@@ -59,6 +59,11 @@ class Skema extends Model
         return $this->hasMany(EventSkema::class, 'id_skema');
     }
 
+    public function rencanaAsesmen()
+    {
+        return $this->hasMany(RencanaAsesmen::class, 'id_skema', 'id_skema');
+    }
+
     protected static function boot()
     {
         parent::boot();

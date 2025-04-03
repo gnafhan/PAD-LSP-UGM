@@ -37,6 +37,16 @@ class UK extends Model
         return $this->elemen_uk()->count();
     }
 
+    public function skema()
+    {
+        return $this->belongsToMany(Skema::class, 'skema', 'daftar_id_uk', 'id_skema');
+    }
+
+    public function rencana_asesmen()
+    {
+        return $this->hasMany(RencanaAsesmen::class, 'id_uk', 'id_uk');
+    }
+
     protected static function boot()
     {
         parent::boot();

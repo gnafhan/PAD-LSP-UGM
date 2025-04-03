@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\PenggunaPageController;
+use App\Http\Controllers\Admin\RencanaAsesmenController;
 
 //Level: user
 Route::middleware(['role:user'])->prefix('user')->group(function () {
@@ -83,6 +84,15 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::get('{id}/edit', [UnitKompetensiPageController::class, 'editDataUk'])->name('edit');
         Route::put('{id}/update', [UnitKompetensiPageController::class, 'updateDataUk'])->name('update');
         Route::delete('{id}', [UnitKompetensiPageController::class, 'destroyDataUk'])->name('delete');
+    });
+
+    // Manajemen Rencana Asesmen
+    Route::prefix('skema/{id_skema}/rencana-asesmen')->name('admin.skema.rencana-asesmen.')->group(function () {
+        Route::get('/', [RencanaAsesmenController::class, 'index'])->name('index');
+        Route::get('/uk/{id_uk}', [RencanaAsesmenController::class, 'getByUK'])->name('getByUK');
+        Route::post('/store', [RencanaAsesmenController::class, 'store'])->name('store');
+        Route::post('/generate/{id_uk}', [RencanaAsesmenController::class, 'generateFromElemen'])->name('generate');
+        Route::delete('/{id_rencana_asesmen}', [RencanaAsesmenController::class, 'destroy'])->name('destroy');
     });
 
     // Manajemen Event

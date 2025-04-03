@@ -213,29 +213,25 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="bg-purple-50 rounded-lg p-4 border border-purple-100">
-                    <div class="flex items-center">
-                        <div class="p-3 rounded-full bg-purple-500 bg-opacity-10">
-                            <svg class="h-6 w-6 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="text-sm font-medium text-purple-800">Total Unit Kompetensi yang Digunakan</h4>
-                            <p class="mt-1 text-xl font-semibold text-purple-900">
-                              @php
-                                  $totalUK = 0;
-                                  foreach($skema as $item) {
-                                      $totalUK += $item->getCountDaftarIdUkAttribute();
-                                  }
-                              @endphp
-                              {{ $totalUK }}
-                          </p>
-                        </div>
+
+                <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-100">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-indigo-500 bg-opacity-10">
+                        <svg class="h-6 w-6 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h4 class="text-sm font-medium text-indigo-800">Skema dengan Rencana Asesmen Lengkap</h4>
+                        <p class="mt-1 text-l font-semibold text-indigo-900">
+                            {{ $skema->where('has_complete_info', true)->count() }} dari {{ $skema->total() }} Skema
+                        </p>
                     </div>
                 </div>
+                </div>
             </div>
+
+
         </div>
 
         <!-- Main Content -->
@@ -268,6 +264,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor & Nama Skema</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen SKKNI</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kompetensi</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> Kelengkapan Rencana Asesmen</th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
@@ -314,8 +311,32 @@
                                         </div>
                                     </div>
                                 </td>
+                                <!-- Tambahkan kode ini di bawah kolom "Unit Kompetensi" pada tabel Skema -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if($item->has_complete_info)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                            </svg>
+                                            Rencana Asesmen Lengkap
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                            </svg>
+                                            Rencana Asesmen Belum Lengkap
+                                        </span>
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end space-x-2">
+                                        <a href="{{ route('admin.skema.rencana-asesmen.index', $item->id_skema) }}" class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 rounded-md text-white transition-all">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                            </svg>
+                                            Rencana Asesmen
+                                        </a>
                                         <a href="{{ route('admin.skema.edit', $item->id_skema) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white transition-all">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -357,25 +378,25 @@
             <!-- Modal Konfirmasi Hapus -->
             <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden overflow-y-auto">
                 <div class="flex items-center justify-center min-h-screen p-4">
-                    <div class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all">
+                    <div class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all scale-95 opacity-0">
                         <div class="p-6">
-                            <div class="flex items-center justify-center">
-                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
                                     <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                     </svg>
                                 </div>
-                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                    <h3 class="text-lg leading-6 font-medium text-gray-900">Hapus Skema</h3>
+                                <div class="ml-4">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900">Hapus Rencana Asesmen</h3>
                                     <div class="mt-2">
                                         <p class="text-sm text-gray-500">
-                                            Apakah Anda yakin ingin menghapus skema ini? Tindakan ini tidak dapat dibatalkan.
+                                            Apakah Anda yakin ingin menghapus rencana asesmen ini? Tindakan ini tidak dapat dibatalkan.
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                            <div class="mt-5 sm:flex sm:flex-row-reverse">
                                 <form id="deleteForm" method="POST" action="" class="inline">
                                     @csrf
                                     @method('DELETE')
@@ -407,13 +428,26 @@
 @endsection
 @section('scripts')
 <script>
+// Modal functions
 function openDeleteModal(deleteUrl) {
-    document.getElementById('deleteModal').classList.remove('hidden');
     document.getElementById('deleteForm').action = deleteUrl;
+    document.getElementById('deleteModal').classList.remove('hidden');
+    // Add animation
+    setTimeout(() => {
+        document.getElementById('deleteModal').querySelector('.transform').classList.add('scale-100');
+        document.getElementById('deleteModal').querySelector('.transform').classList.remove('scale-95', 'opacity-0');
+    }, 50);
 }
 
 function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.add('hidden');
+    // Add animation
+    document.getElementById('deleteModal').querySelector('.transform').classList.add('scale-95', 'opacity-0');
+    document.getElementById('deleteModal').querySelector('.transform').classList.remove('scale-100');
+    
+    // Hide modal after animation completes
+    setTimeout(() => {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }, 300);
 }
 
 // Close modal when clicking outside
