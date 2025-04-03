@@ -146,7 +146,7 @@
                             @error('dokumen_skkni')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @else
-                                <p class="mt-1 text-sm text-gray-500">Format file: PDF, ukuran maksimal: 5MB</p>
+                                <p class="mt-1 text-sm text-gray-500">Format file: PDF</p>
                                 @if($skema->dokumen_skkni)
                                 <div class="mt-2 flex items-center text-sm">
                                     <svg class="h-5 w-5 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

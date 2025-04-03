@@ -59,7 +59,7 @@ class SkemaPageController extends Controller
 
             $validatedData = $request->validate([
                 'nama_skema' => 'required|string|max:100',
-                'dokumen_skkni' => 'nullable|file|mimes:pdf|max:2048',
+                'dokumen_skkni' => 'nullable|file|mimes:pdf',
             ]);
 
             $skema->nama_skema = $validatedData['nama_skema'];
@@ -115,7 +115,7 @@ class SkemaPageController extends Controller
         $validatedData = $request->validate([
             'nomor_skema' => 'required|string|max:100',
             'nama_skema' => 'required|string|max:100',
-            'dokumen_skkni' => 'required|file|mimes:pdf|max:2048',
+            'dokumen_skkni' => 'required|file|mimes:pdf',
             'persyaratan_skema' => 'required|string',
         ]);
 

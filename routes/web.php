@@ -102,10 +102,11 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::post('approve/{id_pengajuan}', [AsesiPengajuanPageController::class, 'approveAsesi'])->name('approve');
         // Get asesor berdasarkan bidang kompetensi
     });
-    // Manajemen Asesor untuk Asesi
+
+    // Manajemen Asesor untuk Asesi untuk fitur dependent dropdown list
     Route::post('assign-asesor', [AsesiPengajuanPageController::class, 'assignAsesor'])->name('assign.asesor');
     Route::get('get-asesor-by-bidang/{id_bidang}', [AsesiPengajuanPageController::class, 'getAsesorByBidang'])->name('get.asesor.by.bidang');
-    Route::get('get-asesor-by-bidang/all', [AsesiPengajuanPageController::class, 'getAllAsesor'])->name('get.all.asesor');
+    Route::get('get-all-asesor', [AsesiPengajuanPageController::class, 'getAllAsesor'])->name('get.all.asesor');
 
 
     // Manajemen Users

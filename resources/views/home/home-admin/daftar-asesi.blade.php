@@ -281,8 +281,10 @@
             asesorSelect.innerHTML = '<option value="">Error loading data</option>';
           });
       } else {
+        asesorSelect.innerHTML = '<option value="">Loading...</option>';
+
         // Jika tidak ada bidang yang dipilih, tampilkan semua asesor
-        fetch('/admin/get-asesor-by-bidang/all')
+        fetch('/admin/get-all-asesor')
           .then(response => response.json())
           .then(data => {
             asesorSelect.innerHTML = '<option value="">Pilih Asesor</option>';

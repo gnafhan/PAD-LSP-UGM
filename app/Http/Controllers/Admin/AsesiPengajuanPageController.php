@@ -43,12 +43,10 @@ class AsesiPengajuanPageController extends Controller
         return response()->json($asesors);
     }
 
-    // Di AsesiPengajuanPageController.php
     public function getAllAsesor()
     {
         $asesors = Asesor::where('status_asesor', 'Aktif')
                     ->get(['id_asesor', 'nama_asesor']);
-                    
         return response()->json($asesors);
     }
 

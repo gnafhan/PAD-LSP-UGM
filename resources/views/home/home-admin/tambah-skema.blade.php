@@ -143,7 +143,7 @@
                             @error('dokumen_skkni')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @else
-                                <p class="mt-1 text-sm text-gray-500">Format file: PDF, ukuran maksimal: 5MB</p>
+                                <p class="mt-1 text-sm text-gray-500">Format file: PDF</p>
                             @enderror
                         </div>
 
