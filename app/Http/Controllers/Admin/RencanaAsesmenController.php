@@ -114,7 +114,6 @@ class RencanaAsesmenController extends Controller
     {
         $uk = UK::with('elemen_uk')->findOrFail($id_uk);
         $elemenUK = $uk->elemen_uk;
-        $skema = Skema::findOrFail($id_skema);
         
         if ($elemenUK->isEmpty()) {
             return redirect()->route('admin.skema.rencana-asesmen.index', ['id_skema' => $id_skema, 'id_uk' => $id_uk])
@@ -144,9 +143,8 @@ class RencanaAsesmenController extends Controller
                 }
             }
             
-            // Update skema has_complete_info menjadi true setelah berhasil generate
-            $skema->has_complete_info = true;
-            $skema->save();
+            // Update skema completion status using helper method
+            $this->updateSkemaCompletionStatus($id_skema);
             
             DB::commit();
             
@@ -170,19 +168,42 @@ class RencanaAsesmenController extends Controller
     public function destroy($id_skema, $id_rencana_asesmen)
     {
         $rencanaAsesmen = RencanaAsesmen::findOrFail($id_rencana_asesmen);
+        $id_uk = $rencanaAsesmen->id_uk;
         $rencanaAsesmen->delete();
         
-        // Cek apakah masih ada rencana asesmen untuk skema ini
-        $remainingCount = RencanaAsesmen::where('id_skema', $id_skema)->count();
+        // Update skema completion status using helper method
+        $this->updateSkemaCompletionStatus($id_skema);
         
-        // Jika tidak ada lagi, update has_complete_info menjadi false
-        if ($remainingCount == 0) {
-            $skema = Skema::findOrFail($id_skema);
-            $skema->has_complete_info = false;
-            $skema->save();
+        return redirect()->route('admin.skema.rencana-asesmen.index', ['id_skema' => $id_skema, 'id_uk' => $id_uk])
+            ->with('success', 'Rencana asesmen berhasil dihapus');
+    }
+
+    /**
+     * Helper method to check and update skema's completion status
+     * based on the rencana asesmen data for all its UKs.
+     */
+    private function updateSkemaCompletionStatus($id_skema)
+    {
+        $skema = Skema::with('unitKompetensi')->findOrFail($id_skema);
+        $isComplete = true;
+        
+        foreach ($skema->unitKompetensi as $uk) {
+            $elemenCount = ElemenUK::where('id_uk', $uk->id_uk)->count();
+            $rencanaCount = RencanaAsesmen::where('id_uk', $uk->id_uk)
+                ->where('id_skema', $id_skema)
+                ->count();
+            
+            // Jika ada UK yang belum memiliki rencana asesmen untuk semua elemennya
+            if ($elemenCount > $rencanaCount) {
+                $isComplete = false;
+                break;
+            }
         }
         
-        return redirect()->route('admin.skema.rencana-asesmen.index', ['id_skema' => $id_skema, 'id_uk' => $rencanaAsesmen->id_uk])
-            ->with('success', 'Rencana asesmen berhasil dihapus');
+        // Update skema status
+        $skema->has_complete_info = $isComplete;
+        $skema->save();
+        
+        return $isComplete;
     }
 }
