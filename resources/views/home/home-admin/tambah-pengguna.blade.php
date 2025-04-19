@@ -103,8 +103,8 @@
                 </div>
                 @endif
 
-                <form action="{{ route('admin.pengguna.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
+                <form action="{{ old('user_type') == 'admin' ? route('admin.pengguna.admin.store') : route('admin.pengguna.asesor.store') }}" 
+                method="POST" id="userForm" enctype="multipart/form-data">                    @csrf
                     <div class="space-y-6">
                         <!-- Jenis Pengguna -->
                         <div>
@@ -133,7 +133,7 @@
                             
                             <!-- Email Field (Umum) -->
                             <div class="mb-4">
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Universitas Gadjah Mada (contoh: johndoe@ugm.mail.ac.id) <span class="text-red-500">*</span></label>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Universitas Gadjah Mada (contoh: johndoe@mail.ugm.ac.id) <span class="text-red-500">*</span></label>
                                 <input type="email" name="email" id="email" 
                                        class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-500 @enderror" 
                                        placeholder="Email pengguna" required value="{{ old('email') }}">
@@ -332,14 +332,19 @@
 
 @section('scripts')
 <script>
+// Tambahkan ke dalam script yang sudah ada
     function toggleUserFields() {
         const userType = document.getElementById('user_type').value;
         const adminFields = document.getElementById('admin_fields');
         const asesorFields = document.getElementById('asesor_fields');
+        const form = document.getElementById('userForm');
         
         if (userType === 'admin') {
             adminFields.classList.remove('hidden');
             asesorFields.classList.add('hidden');
+            
+            // Ubah action form ke route admin
+            form.action = "{{ route('admin.pengguna.admin.store') }}";
             
             // Disable asesor fields validation
             document.getElementById('nama_asesor').required = false;
@@ -347,6 +352,9 @@
         } else if (userType === 'asesor') {
             adminFields.classList.add('hidden');
             asesorFields.classList.remove('hidden');
+            
+            // Ubah action form ke route asesor
+            form.action = "{{ route('admin.pengguna.asesor.store') }}";
             
             // Enable asesor fields validation
             document.getElementById('nama_asesor').required = true;

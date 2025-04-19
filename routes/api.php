@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\User\API_AsesorController;
+use App\Http\Controllers\Api\DataUser\DataAsesorController;
 use App\Http\Controllers\Api\Kompetensi\KompetensiTeknisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,8 +26,8 @@ Route::middleware('api_key')->group(function () {
     Route::prefix('/v1/asesor')->group(function () {
 
         // UPDATE dan READ Biodata Asesor
-        Route::put('/biodata/{id}', [API_AsesorController::class, 'update_biodata']);
-        Route::get('/biodata/{id}', [API_AsesorController::class, 'show_biodata']);
+        Route::put('/biodata/{id}', [DataAsesorController::class, 'update_biodata']);
+        Route::get('/biodata/{id}', [DataAsesorController::class, 'show_biodata']);
 
         // GET Kompetensi Teknis asesor
         Route::get('/kompetensi_teknis/{id}', [KompetensiTeknisController::class, 'index']);
@@ -38,12 +38,6 @@ Route::middleware('api_key')->group(function () {
 Route::middleware('api_key')->group(function () {
     Route::prefix('/v1/admin')->group(function () {
         
-        // POST Kompetensi Teknis Asesor
-        Route::get('/kompetensi_teknis/show_asesor/', [API_AsesorController::class, 'show_asesor']);
-        Route::post('/kompetensi_teknis/', [KompetensiTeknisController::class, 'store']);
-
-        // GET Daftar Kompetensi Teknis Asesor 
-        // Route::post('/kompetensi_teknis/', [KompetensiTeknisController::class, 'store']);
 
     });
 });

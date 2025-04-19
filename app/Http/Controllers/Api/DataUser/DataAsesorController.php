@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api\User;
+namespace App\Http\Controllers\Api\DataUser;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Asesor;
 use Illuminate\Support\Facades\Storage;
+use App\Models\TandaTanganAsesor;
+use Illuminate\Support\Facades\DB;
 
 
-class API_AsesorController extends Controller
+
+class DataAsesorController extends Controller
 {
 
     /**
@@ -62,27 +65,12 @@ class API_AsesorController extends Controller
             'no_telp_institusi_asal'    => 'required|string|max:20',
             'fax_institusi_asal'        => 'required|string|max:20',
             'email_institusi_asal'      => 'required|email|max:255',
+            'tanda_tangan'              => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
-            'nama_asesor.required'            => 'Nama Asesor harus diisi',
-            'no_sertifikat.required'          => 'Nomor Sertifikat harus diisi',
-            'no_hp.required'                  => 'Nomor HP harus diisi',
-            'email.required'                  => 'Email harus diisi',
-            'alamat.required'                 => 'Alamat harus diisi',
-            'bidang.required'                 => 'Bidang harus diisi',
-            'gelar_depan.required'            => 'Gelar Depan harus diisi',
-            'gelar_belakang.required'         => 'Gelar Belakang harus diisi',
-            'no_ktp.required'                 => 'Nomor KTP harus diisi',
-            'jenis_kelamin.required'          => 'Jenis Kelamin harus diisi',
-            'pendidikan_terakhir.required'    => 'Pendidikan Terakhir harus diisi',
-            'keahlian.required'               => 'Keahlian harus diisi',
-            'tempat_lahir.required'           => 'Tempat Lahir harus diisi',
-            'tanggal_lahir.required'          => 'Tanggal Lahir harus diisi',
-            'kebangsaan.required'             => 'Kebangsaan harus diisi',
-            'no_lisensi.required'             => 'Nomor Lisensi harus diisi',
-            'institusi_asal.required'         => 'Institusi Asal harus diisi',
-            'no_telp_institusi_asal.required' => 'Nomor Telepon Institusi Asal harus diisi',
-            'fax_institusi_asal.required'     => 'Fax Institusi Asal harus diisi',
-            'email_institusi_asal.required'   => 'Email Institusi Asal harus diisi',
+            // ...existing validation messages...
+            'tanda_tangan.image'        => 'File tanda tangan harus berupa gambar',
+            'tanda_tangan.mimes'        => 'Format tanda tangan harus jpeg, png, jpg, atau gif',
+            'tanda_tangan.max'          => 'Ukuran tanda tangan maksimal 2MB',
         ]);
 
         // Jika validasi gagal, kembalikan error response dengan status code 422
@@ -127,30 +115,58 @@ class API_AsesorController extends Controller
             'email_institusi_asal'      => $request->email_institusi_asal,
         ];
 
-        // Proses penyimpanan file gambar jika ada
-        if ($request->hasFile('foto_asesor')) {
-            // Jika data Asesor sudah memiliki foto, hapus file lama terlebih dahulu
-            if (!empty($asesor->foto_asesor)) {
-                $oldPath = 'data_asesor/' . $asesor->foto_asesor;
-                if (Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->delete($oldPath);
-                }
-            }
-            // Simpan file baru dan update path-nya
-            $file = $request->file('foto_asesor');
-            $path = $file->store('data_asesor', 'public');
-            $data['foto_asesor'] = basename($path);
-        }
-
-        // Simpan update ke database dengan error handling
+        // Simpan update ke database dengan error handling dan transaction
+        DB::beginTransaction();
         try {
+            // Proses penyimpanan file foto jika ada
+            if ($request->hasFile('foto_asesor')) {
+                // Jika data Asesor sudah memiliki foto, hapus file lama terlebih dahulu
+                if (!empty($asesor->foto_asesor)) {
+                    $oldPath = 'data_asesor/' . $asesor->foto_asesor;
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+                // Simpan file baru dan update path-nya
+                $file = $request->file('foto_asesor');
+                $path = $file->store('data_asesor', 'public');
+                $data['foto_asesor'] = basename($path);
+            }
+
+            // Update data asesor
             $asesor->update($data);
+
+            // Proses tanda tangan jika ada
+            if ($request->hasFile('tanda_tangan')) {
+                // Nonaktifkan tanda tangan aktif yang ada
+                TandaTanganAsesor::where('id_asesor', $id)
+                    ->whereNull('valid_until')
+                    ->update(['valid_until' => now()]);
+
+                // Simpan tanda tangan baru
+                $fileTandaTangan = $request->file('tanda_tangan');
+                $pathTandaTangan = $fileTandaTangan->store('tanda_tangan', 'public');
+                
+                TandaTanganAsesor::create([
+                    'id_asesor' => $id,
+                    'file_tanda_tangan' => basename($pathTandaTangan),
+                    'valid_from' => now(),
+                ]);
+            }
+
+            DB::commit();
+            
+            // Load asesor dengan tanda tangan aktif
+            $asesor->refresh();
+            $asesor->load('tandaTanganAktif');
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Data Asesor berhasil diupdate',
-                'data'    => $asesor->refresh() // refresh untuk mendapatkan data terbaru
+                'data'    => $asesor
             ], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat mengupdate data',
@@ -161,13 +177,19 @@ class API_AsesorController extends Controller
 
     public function show_biodata(string $id)
     {
-        // Cari data Asesor berdasarkan ID
-        $asesor = Asesor::find($id);
+        // Cari data Asesor berdasarkan ID dengan tanda tangan aktif
+        $asesor = Asesor::with('tandaTanganAktif')->find($id);
         if (!$asesor) {
             return response()->json([
                 'success' => false,
                 'message' => 'Data Asesor tidak ditemukan'
             ], 404);
+        }
+        
+        // Tambahkan URL untuk tanda tangan aktif jika ada
+        if ($asesor->tandaTanganAktif->isNotEmpty()) {
+            $tandaTangan = $asesor->tandaTanganAktif->first();
+            $tandaTangan->file_url = asset('storage/tanda_tangan/' . $tandaTangan->file_tanda_tangan);
         }
         
         // Jika data ditemukan, kembalikan response dengan data Asesor
@@ -176,5 +198,5 @@ class API_AsesorController extends Controller
             'message' => 'Data Asesor ditemukan',
             'data'    => $asesor
         ], 200);
-    }   
+    }
 }

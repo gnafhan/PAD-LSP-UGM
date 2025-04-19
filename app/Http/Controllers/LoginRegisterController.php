@@ -13,7 +13,6 @@ class LoginRegisterController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
             'email' => [
                 'required',
                 'email',
@@ -37,7 +36,6 @@ class LoginRegisterController extends Controller
         }
     
         User::create([
-            'name' => $request->name,
             'email' => $request->email,
             'no_hp' => $request->no_hp,
             'password' => Hash::make($request->password),

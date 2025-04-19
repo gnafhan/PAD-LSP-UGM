@@ -25,6 +25,9 @@ class KompetensiTeknis extends Model
 
     public $timestamps = true;
 
+    protected $dates = ['masa_berlaku'];
+
+
     /**
      * Relasi Many to One: 
      * Banyak kompetensi_teknis dimiliki oleh satu asesor.

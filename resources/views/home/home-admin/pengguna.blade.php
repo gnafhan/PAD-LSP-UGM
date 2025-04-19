@@ -621,7 +621,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end space-x-2">
                                         <!-- Tombol Lihat Detail -->
-                                        <a href="{{ route('admin.pengguna.detail', $asesor->id_asesor) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white transition-all">
+                                        <a href="{{ route('admin.pengguna.asesor.show', $asesor->id_asesor) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white transition-all">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -630,7 +630,7 @@
                                         </a>
 
                                         <!-- Tombol Edit -->
-                                        <a href="{{ route('admin.pengguna.edit', $asesor->id_asesor) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white transition-all">
+                                        <a href="{{ route('admin.pengguna.asesor.edit', $asesor->id_asesor) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white transition-all">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
@@ -638,7 +638,7 @@
                                         </a>
 
                                         <!-- Tombol Kompetensi Teknis -->
-                                        <a href="{{ route('admin.pengguna.kompetensi', $asesor->id_asesor) }}" class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 rounded-md text-white transition-all">
+                                        <a href="{{ route('admin.pengguna.kompetensi.index', $asesor->id_asesor) }}" class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 rounded-md text-white transition-all">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
@@ -774,7 +774,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Fungsi untuk modal edit admin
-// Fungsi untuk modal edit admin
 function openEditModal(adminId, email, noHp) {
     console.log('Opening edit modal for:', adminId);
     
@@ -783,7 +782,7 @@ function openEditModal(adminId, email, noHp) {
     document.getElementById('edit_no_hp').value = noHp;
     
     // Set form action URL dengan format yang benar
-    document.getElementById('editAdminForm').action = `/admin/pengguna/${adminId}/updateAdmin`;
+    document.getElementById('editAdminForm').action = "{{ url('/admin/pengguna/admin') }}/" + adminId + "/update";
     
     // Tampilkan modal
     const modal = document.getElementById('editAdminModal');
@@ -803,7 +802,6 @@ function closeEditModal() {
     }
 }
 // Fungsi untuk modal delete admin yang sudah diperbaiki
-// Fungsi untuk modal delete admin
 function openDeleteModal(adminId) {
     console.log('Opening delete modal for:', adminId);
     
@@ -811,7 +809,7 @@ function openDeleteModal(adminId) {
     document.getElementById('delete_admin_id').value = adminId;
     
     // Set form action URL dengan format URL yang benar
-    document.getElementById('deleteForm').action = `/admin/pengguna/${adminId}/deleteAdmin`;
+    document.getElementById('deleteForm').action = "{{ url('/admin/pengguna/admin') }}/" + adminId;
     
     // Tampilkan modal
     const modal = document.getElementById('deleteModal');

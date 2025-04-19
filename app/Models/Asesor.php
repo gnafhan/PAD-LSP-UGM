@@ -85,4 +85,35 @@ class Asesor extends Model
         return $this->hasMany(KompetensiTeknis::class, 'id_asesor', 'id_asesor');
     }
 
+        /**
+     * Relasi One to Many: 
+     * Satu asesor memiliki banyak tanda tangan (dengan history).
+    */
+    public function tandaTangan()
+    {
+        return $this->hasMany(TandaTanganAsesor::class, 'id_asesor', 'id_asesor');
+    }
+    
+    /**
+     * Mendapatkan tanda tangan asesor yang aktif saat ini
+     */
+    public function tandaTanganAktif()
+    {
+        return $this->hasMany(TandaTanganAsesor::class, 'id_asesor', 'id_asesor')
+            ->where('valid_until', null);
+    }
+    
+    /**
+     * Mendapatkan tanda tangan asesor yang valid pada waktu tertentu
+     */
+    public function getTandaTanganPadaWaktu($timestamp)
+    {
+        return $this->hasMany(TandaTanganAsesor::class, 'id_asesor', 'id_asesor')
+            ->where('valid_from', '<=', $timestamp)
+            ->where(function($query) use ($timestamp) {
+                $query->where('valid_until', '>=', $timestamp)
+                      ->orWhereNull('valid_until');
+            })
+            ->first();
+    }
 }
