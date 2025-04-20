@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Skema;
+use Illuminate\Database\Seeder;
 use App\Models\UK;
 
 class SkemaSeeder extends Seeder
@@ -21,7 +20,7 @@ class SkemaSeeder extends Seeder
         $UK4 = UK::where('kode_uk', 'J.450100.027.02')->first();
         $UK5 = UK::where('kode_uk', 'J.6289700.027.02')->first();
         $data = [
-            
+
             [
                 'nomor_skema' => 'SKM/0317/00010/2/2019/22',
                 'nama_skema' => 'Programmer',

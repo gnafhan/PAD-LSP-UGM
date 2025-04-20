@@ -1,7 +1,7 @@
-<header class="bg-blue-300 p-3 shadow-lg">
+<header class="bg-blue-300 shadow-lg px-16 py-5">
     <div class="container mx-auto flex justify-between items-center">
         <!-- Logo -->
-        <img src="{{ asset('images/logo.png') }}" alt="LSP UGM Logo" class="w-16 h-16 ml-4">
+        {{-- <img src="{{ asset('images/logo.png') }}" alt="LSP UGM Logo" class="w-16 h-16 ml-4"> --}}
 
         <!-- Mobile Menu Button -->
         <button id="menu-button" class="block lg:hidden text-white focus:outline-none">

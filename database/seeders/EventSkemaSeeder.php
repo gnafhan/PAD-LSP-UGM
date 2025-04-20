@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\EventSkema;
@@ -18,19 +17,19 @@ class EventSkemaSeeder extends Seeder
     {
         // Disable foreign key checks to avoid constraints issues
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        
+
         // Truncate the table first for clean seeding
         DB::table('event_skema')->truncate();
-        
+
         // Get references to existing records
         $events = Event::take(2)->get();
         $skemas = Skema::take(3)->get();
-        
+
         // Check if required data exists
         if ($events->count() < 2 || $skemas->count() < 3) {
             throw new \Exception('Required data (events, skemas) not found. Please run their respective seeders first.');
         }
-        
+
         // Create data with dynamic references
         $data = [
             [
@@ -51,7 +50,7 @@ class EventSkemaSeeder extends Seeder
         foreach ($data as $item) {
             EventSkema::create($item);
         }
-        
+
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }

@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\UK;
+use Illuminate\Database\Seeder;
 
 class UKSeeder extends Seeder
 {

@@ -30,25 +30,25 @@ class AdminController extends Controller
         $asesi = Asesi::all()->count();
         $skema = Skema::all()->count();
         $asesor = Asesor::all()->count();
-        
+
         // Get skema statistics per period-year
         $skemaStats = PeriodeAsesmen::getSkemaStats();
-        
+
         // ASESI CHART DATA
         $asesiSkemaData = PeriodeAsesmen::getAsesiSkemaDistributionData();
         $asesiYearData = PeriodeAsesmen::getAsesiYearTrendData();
         $asesiPeriodData = PeriodeAsesmen::getAsesiPeriodTrendData();
-        
+
         // SKEMA CHART DATA
         $skemaPopularityData = PeriodeAsesmen::getSkemaPopularityData();
         $skemaYearData = PeriodeAsesmen::getSkemaYearTrendData();
         $skemaPeriodData = PeriodeAsesmen::getSkemaPeriodTrendData();
-        
+
         return view('home.home-admin.home', compact(
-            'events', 
-            'asesi', 
-            'skema', 
-            'asesor', 
+            'events',
+            'asesi',
+            'skema',
+            'asesor',
             'skemaStats',
             'asesiSkemaData',
             'asesiYearData',
@@ -112,7 +112,8 @@ class AdminController extends Controller
     public function createDataEvent()
     {
         $skemaList = Skema::all();
-        return view('home.home-admin.tambah-event', ['skemaList' => $skemaList,]);
+
+        return view('home.home-admin.tambah-event', ['skemaList' => $skemaList]);
     }
 
     public function storeDataEvent(Request $request)
@@ -121,7 +122,7 @@ class AdminController extends Controller
 
             if ($request->has('daftar_id_skema')) {
                 $request->merge([
-                    'daftar_id_skema' => json_decode($request->input('daftar_id_skema'), true)
+                    'daftar_id_skema' => json_decode($request->input('daftar_id_skema'), true),
                 ]);
             }
 
@@ -151,7 +152,7 @@ class AdminController extends Controller
 
             return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan');
         } catch (\Exception $e) {
-            Log::error('Error saat menambahkan event: ' . $e->getMessage(), [
+            Log::error('Error saat menambahkan event: '.$e->getMessage(), [
                 'request' => $request->all(),
                 'exception' => $e,
             ]);

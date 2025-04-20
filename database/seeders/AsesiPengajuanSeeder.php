@@ -18,27 +18,27 @@ class AsesiPengajuanSeeder extends Seeder
     {
         // Disable foreign key checks to avoid constraints issues
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        
+
         // Truncate the table first for clean seeding
         DB::table('asesi_pengajuan')->truncate();
-        
+
         // Create faker instance for generating realistic data
         $faker = Faker::create('id_ID');
-        
+
         // Get users by email to fetch their auto-generated IDs
         $yekaUser = User::where('email', 'yeka@email.com')->first();
         $sakuraUser = User::where('email', 'sakura@email.com')->first();
-        
+
         // Get skemas by name to fetch their auto-generated IDs
         $skemaProgrammer = Skema::where('nama_skema', 'Programmer')->first();
         $skemaBackend = Skema::where('nama_skema', 'Backend Developer')->first();
         $skemaDataScience = Skema::where('nama_skema', 'Data Science')->first();
-        
+
         // Check if users and skemas exist before proceeding
         if (!$yekaUser || !$sakuraUser || !$skemaProgrammer || !$skemaBackend || !$skemaDataScience) {
             throw new \Exception('Required users or skemas not found. Please run UsersSeeder and SkemaSeeder first.');
         }
-        
+
         // Create data with dynamic IDs
         $data = [
             [
@@ -105,49 +105,49 @@ class AsesiPengajuanSeeder extends Seeder
             $skemaBackend,
             $skemaDataScience
         ];
-        
+
         $pendidikan = ['SMA/SMK', 'D3', 'S1', 'S2'];
         $status_pekerjaan = ['Bekerja', 'Tidak bekerja', 'Freelance'];
         $tujuan = ['Sertifikasi', 'Peningkatan Kompetensi', 'Persyaratan Kerja'];
         $sumber = ['Mandiri', 'Beasiswa', 'Perusahaan', 'Kampus'];
-        
+
         // Get additional users beyond the first two
         $additionalUsers = User::where('level', 'asesi')
             ->whereNotIn('email', ['yeka@email.com', 'sakura@email.com', 'hiro@email.com'])
             ->take(10)
             ->get();
-            
+
         $i = 0;
         foreach($additionalUsers as $user) {
             // Determine which skema to use, ensuring even distribution
             $skemaIndex = $i % 3;
             $skemaObj = $skemaObjects[$skemaIndex];
-            
+
             // Random gender
             $gender = $faker->randomElement(['Pria', 'Wanita']);
             $firstName = $gender === 'Pria' ? $faker->firstNameMale : $faker->firstNameFemale;
             $lastName = $faker->lastName;
             $fullName = $firstName . ' ' . $lastName;
-            
+
             // Generate a realistic birth date and place
             $birthDate = $faker->dateTimeBetween('-30 years', '-20 years')->format('d-m-Y');
             $birthPlace = $faker->city;
             $birthInfo = $birthPlace . ', ' . $birthDate;
-            
+
             // Generate NIM with realistic format for UGM
             $year = rand(19, 23);
             $faculty = rand(10000, 99999);
             $nim = $year . '/' . $faculty . '/SV/' . rand(10000, 99999);
-            
+
             // Randomly decide if this person is working
             $isWorking = $faker->randomElement($status_pekerjaan);
-            
+
             // Company details (only filled if working)
             $companyName = $isWorking === 'Bekerja' ? 'PT. ' . $faker->company : null;
             $jobTitle = $isWorking === 'Bekerja' ? $faker->jobTitle : null;
             $companyAddress = $isWorking === 'Bekerja' ? $faker->address : null;
             $companyPhone = $isWorking === 'Bekerja' ? $faker->phoneNumber : null;
-            
+
             $data[] = [
                 'id_user' => $user->id_user,
                 'id_skema' => $skemaObj->id_skema,
@@ -168,7 +168,7 @@ class AsesiPengajuanSeeder extends Seeder
                 'sumber_anggaran' => $faker->randomElement($sumber),
                 'email' => $user->email,
                 'file_kelengkapan_pemohon' => json_encode([
-                    '/bukti_pemohon/ijazah_' . $i . '.pdf', 
+                    '/bukti_pemohon/ijazah_' . $i . '.pdf',
                     '/bukti_pemohon/ktp_' . $i . '.png',
                     '/bukti_pemohon/foto_' . $i . '.jpg'
                 ]),
@@ -187,7 +187,7 @@ class AsesiPengajuanSeeder extends Seeder
         foreach ($data as $item) {
             AsesiPengajuan::create($item);
         }
-        
+
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }

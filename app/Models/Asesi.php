@@ -10,8 +10,11 @@ class Asesi extends Model
     use HasFactory;
 
     protected $table = 'asesi';
+
     protected $primaryKey = 'id_asesi';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -56,26 +59,25 @@ class Asesi extends Model
         return $this->belongsTo(Asesor::class, 'id_asesor');
     }
 
-
     protected static function boot()
     {
         parent::boot();
-    
+
         static::creating(function ($model) {
             $tahun = date('Y');
             $lastIdTahunIni = self::whereYear('created_at', $tahun)->max('id_asesi');
-            
+
             // Jika belum ada data tahun ini
             if (!$lastIdTahunIni) {
                 $model->id_asesi = 'ASESI' . $tahun . '00001';
                 return;
             }
-            
+
             // Extract nomor urut dari tahun yang sama
             if (preg_match('/ASESI' . $tahun . '(\d+)/', $lastIdTahunIni, $matches)) {
                 $number = (int)$matches[1];
                 $nextNumber = $number + 1;
-                
+
                 // Format dengan 5 digit
                 $model->id_asesi = 'ASESI' . $tahun . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
             } else {

@@ -18,7 +18,7 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     protected $primaryKey = 'id_user';
-    public $incrementing = false; 
+    public $incrementing = false;
     protected $keyType = 'string';
 
     /**
@@ -69,22 +69,22 @@ class User extends Authenticatable
     protected static function boot()
     {
         parent::boot();
-    
+
         static::creating(function ($model) {
             $tahun = date('Y');
             $lastIdTahunIni = self::whereYear('created_at', $tahun)->max('id_user');
-            
+
             // Jika belum ada data tahun ini
             if (!$lastIdTahunIni) {
                 $model->id_user = 'USER' . $tahun . '00001';
                 return;
             }
-            
+
             // Extract nomor urut dari tahun yang sama
             if (preg_match('/USER' . $tahun . '(\d+)/', $lastIdTahunIni, $matches)) {
                 $number = (int)$matches[1];
                 $nextNumber = $number + 1;
-                
+
                 // Format dengan 5 digit
                 $model->id_user = 'USER' . $tahun . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
             } else {

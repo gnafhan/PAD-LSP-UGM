@@ -13,7 +13,6 @@ class LoginRegisterController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
             'email' => [
                 'required',
                 'email',
@@ -33,11 +32,10 @@ class LoginRegisterController extends Controller
         ]);
 
         if ($request->level == null) {
-            $request->level = 'user'; // Set default level to 'user' if not provided 
+            $request->level = 'user'; // Set default level to 'user' if not provided
         }
-    
+
         User::create([
-            'name' => $request->name,
             'email' => $request->email,
             'no_hp' => $request->no_hp,
             'password' => Hash::make($request->password),
@@ -45,7 +43,7 @@ class LoginRegisterController extends Controller
             'nik' => $request->nik,
             'alamat' => $request->alamat,
         ]);
-    
+
         return redirect()->route('admin.pengguna.index')->with('success', 'Pengguna baru berhasil ditambahkan!');
     }
 

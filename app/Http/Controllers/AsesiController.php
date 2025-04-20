@@ -84,29 +84,29 @@ class AsesiController extends Controller
     public function asesmenMandiri()
     {
         $user = Auth::user();
-    
+
         $asesi = Asesi::with(['skema', 'asesor'])
             ->where('id_user', $user->id_user)
             ->first();
-    
+
         if (!$asesi) {
             return redirect()->back()->with('error', 'Data Asesi tidak ditemukan.');
         }
-    
+
         // Ambil data unit kompetensi (UK) dari daftar_id_uk pada skema
         $id_skema = $asesi->id_skema;
         $daftar_id_uk = json_decode($asesi->skema->daftar_id_uk, true);
-    
+
         // Perbaikan: Eager loading relasi elemenUK untuk mengambil elemen-elemen terkait
         $unitKompetensi = UK::with('elemen_uk')
             ->whereIn('id_uk', $daftar_id_uk)
             ->get();
-    
+
         $today = now();
         $event = Event::whereDate('tanggal_mulai_event', '<=', $today)
             ->whereDate('tanggal_berakhir_event', '>=', $today)
             ->first();
-    
+
         return view('home.home-asesi.APL-02.asesmen-mandiri', compact('asesi', 'event', 'today', 'unitKompetensi'));
     }
 

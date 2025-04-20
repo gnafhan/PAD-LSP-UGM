@@ -1,19 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\AsesiPengajuan;
 use App\Models\Skema;
 use App\Models\UK;
-use App\Models\Users;
-use App\Models\AsesiPengajuan;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Log;
 
 class PengajuanController extends Controller
 {
-
     public function indexPersetujuan()
     {
         // if (!auth()->check()) {
@@ -30,14 +26,14 @@ class PengajuanController extends Controller
         }
 
         $data = auth()->user()->email;
+
         return view('home.home-visitor.persetujuan', compact('data'));
     }
-
 
     public function saveDataPersetujuan(Request $request)
     {
         try {
-            if (!$request->hasFile('signature')) {
+            if (! $request->hasFile('signature')) {
                 return response()->json(['errors' => ['signature' => ['Tanda tangan wajib diisi.']]], 422);
             }
 
@@ -54,7 +50,7 @@ class PengajuanController extends Controller
             $userId = $user->id_user;
 
             $signatureFile = $request->file('signature');
-            $fileName = 'ttd_' . $userId . '.' . $signatureFile->getClientOriginalExtension();
+            $fileName = 'ttd_'.$userId.'.'.$signatureFile->getClientOriginalExtension();
             $ttd_pemohon = $signatureFile->storeAs('signatures', $fileName);
 
             session()->put('dataPersetujuan', ['ttd_pemohon' => $ttd_pemohon]);
@@ -65,12 +61,11 @@ class PengajuanController extends Controller
             return response()->json(['errors' => $e->errors()], 422);
 
         } catch (\Exception $e) {
-            Log::error('Error menyimpan tanda tangan: '. $e->getMessage());
+            Log::error('Error menyimpan tanda tangan: '.$e->getMessage());
+
             return response()->json(['error' => 'Terjadi kesalahan saat menyimpan data'], 500);
         }
     }
-
-
 
     public function saveDataPribadi(Request $request)
     {
@@ -153,10 +148,12 @@ class PengajuanController extends Controller
 
         try {
             session()->put('dataPribadi', $request->all());
+
             return response()->json(['message' => 'Data berhasil disimpan'], 200);
 
         } catch (\Exception $e) {
-            Log::error('Error menyimpan data pribadi: '. $e->getMessage());
+            Log::error('Error menyimpan data pribadi: '.$e->getMessage());
+
             return response()->json(['error' => 'Terjadi kesalahan saat menyimpan data'], 500);
         }
     }
@@ -164,12 +161,13 @@ class PengajuanController extends Controller
     public function showDataSertifikasi()
     {
         $skemaList = Skema::all();
+
         return view('home.home-visitor.APL-01.data-sertifikasi', ['skemaList' => $skemaList]);
     }
 
     public function getNomorSkema(Request $request)
     {
-        Log::info('Received nama_skema: ' . $request->input('nama_skema'));
+        Log::info('Received nama_skema: '.$request->input('nama_skema'));
         $namaSkema = $request->query('nama_skema');
         $skema = Skema::where('nama_skema', $namaSkema)->first();
 
@@ -194,7 +192,6 @@ class PengajuanController extends Controller
             return response()->json(['ukList' => []]);
         }
     }
-
 
     public function saveDataSertifikasi(Request $request)
     {
@@ -223,14 +220,15 @@ class PengajuanController extends Controller
 
         try {
             session()->put('dataSertifikasi', $request->all());
+
             return response()->json(['message' => 'Data berhasil disimpan'], 200);
 
         } catch (\Exception $e) {
             Log::error($e);
+
             return response()->json(['error' => 'Terjadi kesalahan saat menyimpan data'], 500);
         }
     }
-
 
     public function storePengajuan(Request $request)
     {
@@ -288,27 +286,27 @@ class PengajuanController extends Controller
             $buktiPemohonPaths = [
                 'bukti_jenjang_siswa' => $request->file('bukti_jenjang_siswa') ? $request->file('bukti_jenjang_siswa')->storeAs(
                     'uploads/bukti_pemohon/jenjang_siswa',
-                    'bukti_jenjang_siswa_' . $user->id_user . '.' . $request->file('bukti_jenjang_siswa')->getClientOriginalExtension()
+                    'bukti_jenjang_siswa_'.$user->id_user.'.'.$request->file('bukti_jenjang_siswa')->getClientOriginalExtension()
                 ) : null,
                 'bukti_transkrip' => $request->file('bukti_transkrip') ? $request->file('bukti_transkrip')->storeAs(
                     'uploads/bukti_pemohon/transkrip',
-                    'bukti_transkrip_' . $user->id_user . '.' . $request->file('bukti_transkrip')->getClientOriginalExtension()
+                    'bukti_transkrip_'.$user->id_user.'.'.$request->file('bukti_transkrip')->getClientOriginalExtension()
                 ) : null,
                 'bukti_pengalaman_kerja' => $request->file('bukti_pengalaman_kerja') ? $request->file('bukti_pengalaman_kerja')->storeAs(
                     'uploads/bukti_pemohon/pengalaman_kerja',
-                    'bukti_pengalaman_kerja_' . $user->id_user . '.' . $request->file('bukti_pengalaman_kerja')->getClientOriginalExtension()
+                    'bukti_pengalaman_kerja_'.$user->id_user.'.'.$request->file('bukti_pengalaman_kerja')->getClientOriginalExtension()
                 ) : null,
                 'bukti_magang' => $request->file('bukti_magang') ? $request->file('bukti_magang')->storeAs(
                     'uploads/bukti_pemohon/magang',
-                    'bukti_magang_' . $user->id_user . '.' . $request->file('bukti_magang')->getClientOriginalExtension()
+                    'bukti_magang_'.$user->id_user.'.'.$request->file('bukti_magang')->getClientOriginalExtension()
                 ) : null,
                 'bukti_ktp' => $request->file('bukti_ktp') ? $request->file('bukti_ktp')->storeAs(
                     'uploads/bukti_pemohon/ktp',
-                    'bukti_ktp_' . $user->id_user . '.' . $request->file('bukti_ktp')->getClientOriginalExtension()
+                    'bukti_ktp_'.$user->id_user.'.'.$request->file('bukti_ktp')->getClientOriginalExtension()
                 ) : null,
                 'bukti_foto' => $request->file('bukti_foto') ? $request->file('bukti_foto')->storeAs(
                     'uploads/bukti_pemohon/foto',
-                    'bukti_foto_' . $user->id_user . '.' . $request->file('bukti_foto')->getClientOriginalExtension()
+                    'bukti_foto_'.$user->id_user.'.'.$request->file('bukti_foto')->getClientOriginalExtension()
                 ) : null,
             ];
 
@@ -337,7 +335,7 @@ class PengajuanController extends Controller
                     $buktiPemohonPaths['bukti_pengalaman_kerja'],
                     $buktiPemohonPaths['bukti_magang'],
                     $buktiPemohonPaths['bukti_ktp'],
-                    $buktiPemohonPaths['bukti_foto']
+                    $buktiPemohonPaths['bukti_foto'],
                 ]))),
                 'ttd_pemohon' => $data['ttd_pemohon'],
                 'status_rekomendasi' => 'N/A',
@@ -357,14 +355,11 @@ class PengajuanController extends Controller
                 return view('home.home-visitor.APL-01.konfirmasi', compact('asesiPengajuan'));
             }
 
-        }
+        } catch (\Exception $e) {
+            Log::error('Error menyimpan pengajuan: '.$e->getMessage());
 
-        catch (\Exception $e) {
-            Log::error('Error menyimpan pengajuan: '. $e->getMessage());
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
 
     }
-
-
 }

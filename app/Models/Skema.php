@@ -11,8 +11,11 @@ class Skema extends Model
     use HasFactory;
 
     protected $table = 'skema';
+
     protected $primaryKey = 'id_skema';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -51,6 +54,7 @@ class Skema extends Model
     public function getUnitKompetensiAttribute()
     {
         $idArray = is_array($this->daftar_id_uk) ? $this->daftar_id_uk : json_decode($this->daftar_id_uk, true);
+
         return UK::whereIn('id_uk', $idArray ?? [])->get();
     }
 
@@ -67,23 +71,23 @@ class Skema extends Model
     protected static function boot()
     {
         parent::boot();
-    
+
         static::creating(function ($model) {
             $prefix = 'SKEMA';
             $tahun = date('Y');
             $lastIdTahunIni = self::whereYear('created_at', $tahun)->max('id_skema');
-            
+
             // Jika belum ada data tahun ini
             if (!$lastIdTahunIni) {
                 $model->id_skema = $prefix . $tahun . '00001';
                 return;
             }
-            
+
             // Extract nomor urut dari tahun yang sama
             if (preg_match('/' . $prefix . $tahun . '(\d+)/', $lastIdTahunIni, $matches)) {
                 $number = (int)$matches[1];
                 $nextNumber = $number + 1;
-                
+
                 // Format dengan 5 digit
                 $model->id_skema = $prefix . $tahun . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
             } else {

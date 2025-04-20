@@ -2,16 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use App\Mail\ResetPasswordMail;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Models\PasswordResets;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class PasswordResetController extends Controller
 {
@@ -26,7 +21,7 @@ class PasswordResetController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return back()->withErrors(['email' => 'Email tidak ditemukan.']);
         }
 
@@ -38,7 +33,6 @@ class PasswordResetController extends Controller
             'token' => $token,
             'created_at' => now(),
         ]);
-
 
         Mail::send('auth.password.email', ['token' => $token], function ($message) use ($user) {
             $message->to($user->email);
@@ -58,7 +52,7 @@ class PasswordResetController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|confirmed|min:6',
-            'token' => 'required'
+            'token' => 'required',
         ]);
 
         $passwordReset = PasswordResets::where([
@@ -67,7 +61,7 @@ class PasswordResetController extends Controller
         ])->first();
 
         // Jika token atau email tidak valid
-        if (!$passwordReset) {
+        if (! $passwordReset) {
             return back()->withErrors(['email' => 'Token atau email anda tidak valid.']);
         }
 
@@ -84,5 +78,4 @@ class PasswordResetController extends Controller
 
         return back()->withErrors(['email' => 'Pengguna tidak ditemukan.']);
     }
-
 }

@@ -3,7 +3,7 @@
 @section('title', 'Register - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-gray-100 flex items-center justify-center py-36 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
 
     <!-- Logo Section -->

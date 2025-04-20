@@ -17,14 +17,14 @@ class AsesiApl02Seeder extends Seeder
     {
         // Disable foreign key checks to avoid constraints issues
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        
+
         // Truncate the table first for clean seeding
         DB::table('asesi_apl02')->truncate();
 
         $yekaUser = Asesi::where('email', 'yeka@email.com')->first();
         $sakuraUser = Asesi::where('email', 'sakura@email.com')->first();
         $hiroUser = Asesi::where('email', 'hiro@email.com')->first();
-        
+
         $seedData = [
             [
                 'id_asesi' => $yekaUser->id_asesi,
@@ -47,7 +47,7 @@ class AsesiApl02Seeder extends Seeder
         foreach ($seedData as $data) {
             AsesiApl02::create($data);
         }
-        
+
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }

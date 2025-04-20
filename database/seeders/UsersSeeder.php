@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class UsersSeeder extends Seeder
 {
@@ -16,10 +16,10 @@ class UsersSeeder extends Seeder
     {
         // Disable foreign key checks to avoid constraints issues during seeding
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        
+
         // Truncate the table first for clean seeding
         DB::table('users')->truncate();
-        
+
         // Predefined users with specific details
         $predefinedUsers = [
             [
@@ -79,7 +79,7 @@ class UsersSeeder extends Seeder
                 'level' => 'asesi',
             ]);
         }
-        
+
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }

@@ -20,27 +20,27 @@ class UjianMUKSeeder extends Seeder
     {
         // Disable foreign key checks to avoid constraints issues
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        
+
         // Truncate the table first for clean seeding
         DB::table('ujian_muk')->truncate();
-        
+
         // Get first three asesis
         $asesis = Asesi::take(3)->get();
-        
+
         // Get first three asesors
         $asesors = Asesor::take(3)->get();
-        
+
         // Get TUKs
         $tuks = TUK::take(2)->get();
-        
+
         // Get MUKs
         $muks = MUK::take(3)->get();
-        
+
         // Check if required data exists
         if ($asesis->count() < 3 || $asesors->count() < 3 || $tuks->count() < 2 || $muks->count() < 3) {
             throw new \Exception('Required data (asesis, asesors, TUKs, MUKs) not found. Please run their respective seeders first.');
         }
-        
+
         // Create data with dynamic references
         $ujianData = [
             [
@@ -85,7 +85,7 @@ class UjianMUKSeeder extends Seeder
         foreach ($ujianData as $data) {
             UjianMUK::create($data);
         }
-        
+
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }

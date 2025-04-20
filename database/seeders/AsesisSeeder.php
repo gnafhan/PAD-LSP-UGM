@@ -17,20 +17,20 @@ class AsesisSeeder extends Seeder
     {
         // Disable foreign key checks to avoid constraints issues during seeding
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        
+
         // Truncate the table first for clean seeding
         DB::table('asesi')->truncate();
-        
+
         // Get the users by email to fetch their auto-generated IDs
         $yekaUser = User::where('email', 'yeka@email.com')->first();
         $sakuraUser = User::where('email', 'sakura@email.com')->first();
         $hiroUser = User::where('email', 'hiro@email.com')->first();
-        
+
         // Check if users exist before proceeding
         if (!$yekaUser || !$sakuraUser || !$hiroUser) {
             throw new \Exception('Required users not found. Please run UsersSeeder first.');
         }
-        
+
         // Predefined asesi data
         $predefinedAsesis = [
             [
@@ -108,7 +108,7 @@ class AsesisSeeder extends Seeder
         foreach ($predefinedAsesis as $asesiData) {
             Asesi::create($asesiData);
         }
-        
+
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }

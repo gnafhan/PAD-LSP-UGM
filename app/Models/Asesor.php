@@ -10,8 +10,11 @@ class Asesor extends Model
     use HasFactory;
 
     protected $table = 'asesor';
+
     protected $primaryKey = 'id_asesor';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -50,23 +53,23 @@ class Asesor extends Model
     protected static function boot()
     {
         parent::boot();
-    
+
         static::creating(function ($model) {
             $prefix = 'ASESOR';
             $tahun = date('Y');
             $lastIdTahunIni = self::whereYear('created_at', $tahun)->max('id_asesor');
-            
+
             // Jika belum ada data tahun ini
             if (!$lastIdTahunIni) {
                 $model->id_asesor = $prefix . $tahun . '00001';
                 return;
             }
-            
+
             // Extract nomor urut dari tahun yang sama
             if (preg_match('/' . $prefix . $tahun . '(\d+)/', $lastIdTahunIni, $matches)) {
                 $number = (int)$matches[1];
                 $nextNumber = $number + 1;
-                
+
                 // Format dengan 5 digit
                 $model->id_asesor = $prefix . $tahun . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
             } else {
@@ -77,7 +80,7 @@ class Asesor extends Model
     }
 
     /**
-     * Relasi One to Many: 
+     * Relasi One to Many:
      * Satu asesor memiliki banyak kompetensi teknis.
     */
     public function kompetensiTeknis()

@@ -41,12 +41,10 @@ return new class extends Migration
             $table->string('no_telp_perusahaan', 20)->nullable();
             $table->timestamps();
 
-
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('restrict');
             $table->foreign('id_skema')->references('id_skema')->on('skema')->onDelete('restrict');
         });
     }
-
 
     /**
      * Reverse the migrations.

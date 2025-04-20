@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Asesor;
+use Illuminate\Database\Seeder;
 
 
 class AsesorSeeder extends Seeder
@@ -35,7 +34,7 @@ class AsesorSeeder extends Seeder
                 'institusi_asal' => 'Universitas Gadjah Mada',
                 'no_telp_institusi_asal' => '0211234567',
                 'fax_institusi_asal' => '0217654321',
-                'email_institusi_asal' => 'ugm@mail.ugm.ac.id'
+                'email_institusi_asal' => 'ugm@mail.ugm.ac.id',
             ],
             [
                 'kode_registrasi' => 'R.57600.01.01.25',
@@ -57,7 +56,7 @@ class AsesorSeeder extends Seeder
                 'institusi_asal' => 'Universitas Padjadjaran',
                 'no_telp_institusi_asal' => '0221234567',
                 'fax_institusi_asal' => '0227654321',
-                'email_institusi_asal' => 'unpad@mail.unpad.ac.id'
+                'email_institusi_asal' => 'unpad@mail.unpad.ac.id',
             ],
             [
                 'kode_registrasi' => 'R.57601.02.02.26',
@@ -79,7 +78,7 @@ class AsesorSeeder extends Seeder
                 'institusi_asal' => 'Institut Teknologi Sepuluh Nopember',
                 'no_telp_institusi_asal' => '0311234567',
                 'fax_institusi_asal' => '0317654321',
-                'email_institusi_asal' => 'its@mail.its.ac.id'
+                'email_institusi_asal' => 'its@mail.its.ac.id',
             ],
             [
                 'kode_registrasi' => 'R.57602.03.03.27',
@@ -101,7 +100,7 @@ class AsesorSeeder extends Seeder
                 'institusi_asal' => 'Universitas Sumatera Utara',
                 'no_telp_institusi_asal' => '0611234567',
                 'fax_institusi_asal' => '0617654321',
-                'email_institusi_asal' => 'usu@mail.usu.ac.id'
+                'email_institusi_asal' => 'usu@mail.usu.ac.id',
             ],
         ];
 
