@@ -1,7 +1,4 @@
 <?php
-use App\Http\Controllers\Admin\AsesiPengajuanPageController;
-use App\Http\Controllers\Admin\SkemaPageController;
-use App\Http\Controllers\Admin\UnitKompetensiPageController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
@@ -10,8 +7,14 @@ use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Admin\PenggunaPageController;
-use App\Http\Controllers\Admin\RencanaAsesmenController;
+use App\Http\Controllers\Admin\ManajemenAssignAsesiToAsesor\AsesiPengajuanPageController;
+use App\Http\Controllers\Admin\ManajemenSkema\SkemaPageController;
+use App\Http\Controllers\Admin\ManajemenUnitKompetensi\UnitKompetensiPageController;
+use App\Http\Controllers\Admin\ManajemenSkema\RencanaAsesmenController;
+use App\Http\Controllers\Admin\ManajemenPengguna\PenggunaPageController;
+use App\Http\Controllers\Admin\ManajemenPengguna\AsesorController;
+use App\Http\Controllers\Admin\ManajemenPengguna\AdminUserController;
+use App\Http\Controllers\Admin\ManajemenPengguna\KompetensiTeknisController;
 
 //Level: user
 Route::middleware(['role:user'])->prefix('user')->group(function () {
@@ -63,7 +66,6 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
 
     // Dashboard Admin
     Route::get('/home-admin', [AdminController::class, 'index'])->name('home-admin');
-
 
     // Manajemen Skema
     Route::prefix('skema')->name('admin.skema.')->group(function () {
@@ -119,28 +121,40 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
     Route::get('get-all-asesor', [AsesiPengajuanPageController::class, 'getAllAsesor'])->name('get.all.asesor');
 
 
-    // Manajemen Users
+    // Manajemen Pengguna
     Route::prefix('pengguna')->name('admin.pengguna.')->group(function () {
+        // Dashboard Pengguna (Main view)
         Route::get('/', [PenggunaPageController::class, 'index'])->name('index');
         Route::get('tambah-pengguna', [PenggunaPageController::class, 'create'])->name('create');
 
-        // Asesor
+        // Admin User Management
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::post('store', [AdminUserController::class, 'store'])->name('store');
+            Route::put('{id}/update', [AdminUserController::class, 'update'])->name('update');
+            Route::delete('{id}', [AdminUserController::class, 'destroy'])->name('destroy');
+        });
 
-        Route::put('/pengguna/update-asesor-status', [PenggunaPageController::class, 'updateAsesorStatus'])->name('update-asesor-status');
-        Route::post('create', [PenggunaPageController::class, 'store'])->name('store');
-        Route::delete('{id}', [PenggunaPageController::class, 'destroy'])->name('delete');
-        Route::get('get-sertifikat/{id}', [PenggunaPageController::class, 'getSertifikat'])->name('get-sertifikat');
-        Route::get('/detailAsesor/{id}', [PenggunaPageController::class, 'detail'])->name('detail');
-        Route::get('kompetensiAsesor/{id}', [PenggunaPageController::class, 'kompetensi'])->name('kompetensi');
-        Route::post('kompetensiAsesor/{id}/sertifikat', [PenggunaPageController::class, 'storeSertifikat'])->name('store-sertifikat');
-        Route::delete('kompetensiAsesor/{id}/sertifikat/{sertifikatId}', [PenggunaPageController::class, 'deleteSertifikat'])->name('delete-sertifikat');
-        Route::get('/editAsesor{id}', [PenggunaPageController::class, 'editAsesor'])->name('edit');
+        // Asesor Management
+        Route::prefix('asesor')->name('asesor.')->group(function () {
+            Route::get('create', [AsesorController::class, 'create'])->name('create');
+            Route::post('store', [AsesorController::class, 'store'])->name('store');
+            Route::get('{id}/edit', [AsesorController::class, 'edit'])->name('edit');
+            Route::put('{id}/update-status', [AsesorController::class, 'updateStatus'])->name('update-status');
+            Route::get('{id}', [AsesorController::class, 'show'])->name('show');
+            Route::delete('{id}', [AsesorController::class, 'destroy'])->name('destroy');
+        });
 
-        // Admin
-        // Update admin route
-        Route::put('/{id}/updateAdmin', [PenggunaPageController::class, 'updateAdmin'])->name('updateAdmin');
-        // Delete admin route
-        Route::delete('/{id}/deleteAdmin', [PenggunaPageController::class, 'deleteAdmin'])->name('deleteAdmin');
+        // Kompetensi Teknis Management
+        Route::prefix('kompetensi')->name('kompetensi.')->group(function () {
+            Route::get('{id}', [KompetensiTeknisController::class, 'index'])->name('index');
+            Route::get('{id}/create', [KompetensiTeknisController::class, 'create'])->name('create');
+            Route::post('{id}/store', [KompetensiTeknisController::class, 'store'])->name('store');
+            Route::get('{id}/show/{kompetensiId}', [KompetensiTeknisController::class, 'show'])->name('show');
+            Route::get('{id}/edit/{kompetensiId}', [KompetensiTeknisController::class, 'edit'])->name('edit');
+            Route::put('{id}/update/{kompetensiId}', [KompetensiTeknisController::class, 'update'])->name('update');
+            Route::delete('{id}/destroy/{kompetensiId}', [KompetensiTeknisController::class, 'destroy'])->name('destroy');
+            Route::get('{id}/json', [KompetensiTeknisController::class, 'getSertifikatJson'])->name('json');
+        });
     });
 
 

@@ -142,6 +142,7 @@
                         </svg>
                         Kembali
                     </a>
+
                 </div>
             </div>
         </div>
@@ -210,7 +211,7 @@
                 </div>
             </div>
             <div class="px-4 py-5 sm:p-6">
-                <form action="{{ route('admin.pengguna.store-sertifikat', $asesor->id_asesor) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="{{ route('admin.pengguna.kompetensi.store', $asesor->id_asesor) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     
                     <div class="grid grid-cols-1 gap-y-6 gap-x-6 sm:grid-cols-6">
@@ -373,7 +374,7 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <form action="{{ route('admin.pengguna.delete-sertifikat', ['id' => $asesor->id_asesor, 'sertifikatId' => $item->id_kompetensi_teknis]) }}" method="POST" class="inline-block">
+                                            <form action="{{ route('admin.pengguna.kompetensi.destroy', ['id' => $asesor->id_asesor, 'kompetensiId' => $item->id_kompetensi_teknis]) }}" method="POST" class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Apakah Anda yakin ingin menghapus sertifikat ini?')">

@@ -11,12 +11,9 @@ use App\Models\KompetensiTeknis;
 
 class KompetensiTeknisController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(string $id)
     {
-        // Cari data Asesor berdasarkan ID
+        // Cari data Asesor berdasarkan ID dengan eager loading kompetensiTeknis
         $asesor = Asesor::with('kompetensiTeknis')->find($id);
 
         if (!$asesor) {
@@ -29,77 +26,61 @@ class KompetensiTeknisController extends Controller
         // Ambil jumlah sertifikasi yang diambil oleh asesor
         $jumlahSkema = $asesor->kompetensiTeknis()->count();
 
-        // Ambil daftar ID kompetensi teknis yang dimiliki oleh asesor
-        $daftarIdKompetensiTeknis = $asesor->kompetensiTeknis()->pluck('id_kompetensi_teknis');
+        // Transform kompetensi teknis untuk format yang lebih sesuai
+        $kompetensiTeknis = $asesor->kompetensiTeknis->map(function($item) {
+            return [
+                'id_kompetensi_teknis' => $item->id_kompetensi_teknis,
+                'lembaga_sertifikasi' => $item->lembaga_sertifikasi,
+                'skema_kompetensi' => $item->skema_kompetensi,
+                'masa_berlaku' => $this->formatTanggal($item->masa_berlaku),
+                'file_sertifikat' => $item->file_sertifikat,
+                'file_url' => asset('storage/sertifikat/' . $item->file_sertifikat)
+            ];
+        });
 
         return response()->json([
             'success' => true,
             'message' => 'Data Asesor ditemukan',
             'data' => [
-                'nama_asesor' => $asesor->nama_asesor,
-                'masa_berlaku' => $asesor->masa_berlaku,
-                'no_sertifikat' => $asesor->no_sertifikat,
-                'jumlah_skema' => $jumlahSkema,
-                'status_asesor' => $asesor->status_asesor,
-                'file_sertifikat_asesor' => $asesor->file_sertifikat_asesor,
-                'daftar_id_kompetensi_teknis' => $daftarIdKompetensiTeknis
+                'asesor' => [
+                    'id_asesor' => $asesor->id_asesor,
+                    'nama_asesor' => $asesor->nama_asesor,
+                    'masa_berlaku' => $this->formatTanggal($asesor->masa_berlaku), // Gunakan formatTanggal di sini
+                    'no_sertifikat' => $asesor->no_sertifikat,
+                    'jumlah_skema' => $jumlahSkema,
+                    'status_asesor' => $asesor->status_asesor,
+                    'file_sertifikat' => $asesor->file_sertifikat_asesor,
+                ],
+                'kompetensi_teknis' => $kompetensiTeknis
             ],
         ], 200);
     }
 
     /**
-     * Store a newly created resource in storage. DIPAKAI OLEH ADMIN
+     * Format tanggal dengan penanganan berbagai tipe data
+     * 
+     * @param mixed $tanggal
+     * @return string
      */
-    public function store(Request $request)
+    private function formatTanggal($tanggal)
     {
-        // Validasi input
-        $validator = Validator::make($request->all(), [
-            'id_asesor'             => 'required|exists:asesor,id_asesor',
-            'lembaga_sertifikasi'   => 'required|string|max:60',
-            'skema_kompetensi'      => 'required|string|max:60',
-            'masa_berlaku'          => 'required|date',
-            'file_sertifikat'       => 'required|file|mimes:pdf,jpg,jpeg,png',
-        ]);
-
-        // Jika validasi gagal, kirim respons error
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal',
-                'errors'  => $validator->errors()
-            ], 422);
+        if (empty($tanggal)) {
+            return '';
         }
-
-        // Simpan file sertifikat jika ada
-        $path = null;
-        if ($request->hasFile('file_sertifikat')) {
-            $file = $request->file('file_sertifikat');
-            $path = $file->store('sertifikat_asesor', 'public'); // Simpan ke storage/public/sertifikat_asesor
+        
+        if ($tanggal instanceof \Carbon\Carbon) {
+            return $tanggal->format('d-m-Y');
         }
-
-        // Simpan data ke database
+        
+        // Coba convert string ke carbon
         try {
-            $kompetensiTeknis = KompetensiTeknis::create([
-                'id_asesor'             => $request->id_asesor,
-                'lembaga_sertifikasi'   => $request->lembaga_sertifikasi,
-                'skema_kompetensi'      => $request->skema_kompetensi,
-                'masa_berlaku'          => $request->masa_berlaku,
-                'file_sertifikat'       => $path,
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Kompetensi Teknis berhasil disimpan',
-                'data'    => $kompetensiTeknis
-            ], 201);
+            return \Carbon\Carbon::parse($tanggal)->format('d-m-Y');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat menyimpan data',
-                'error'   => $e->getMessage()
-            ], 500);
+            // Jika parsing gagal, kembalikan data asli
+            return $tanggal;
         }
     }
+
 
     /**
      * Display the specified resource.

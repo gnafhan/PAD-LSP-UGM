@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\User;
+namespace App\Http\Controllers\Api\DataUser;
 
 use App\Http\Controllers\Controller;
 use App\Models\Asesor;
 use Illuminate\Http\Request;
 
-class API_AdminController extends Controller
+class DataAdminController extends Controller
 {
     /**
      * Display a listing of the resource.

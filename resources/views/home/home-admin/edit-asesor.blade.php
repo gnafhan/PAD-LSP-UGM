@@ -145,7 +145,7 @@
                 </p>
             </div>
             <div class="p-6">
-                <form action="{{ route('admin.pengguna.update-asesor-status') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="{{ route('admin.pengguna.asesor.update-status', $asesor->id_asesor ) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id_asesor" value="{{ $asesor->id_asesor }}">
