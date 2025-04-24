@@ -18,9 +18,9 @@ class TandaTanganAdmin extends Model
         'valid_until',
     ];
     
-    protected $dates = [
-        'valid_from',
-        'valid_until',
+    protected $casts = [
+        'valid_from' => 'datetime',
+        'valid_until' => 'datetime',
     ];
     
     public function user()

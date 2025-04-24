@@ -150,7 +150,7 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
             Route::post('store', [AdminUserController::class, 'store'])->name('store');
             Route::put('{id}/update', [AdminUserController::class, 'update'])->name('update');
             Route::delete('{id}', [AdminUserController::class, 'destroy'])->name('destroy');
-            Route::get('{id}/signature', [AdminUserController::class, 'getSignature'])->name('pengguna.admin.signature');
+            Route::get('{id}/signature', [AdminUserController::class, 'getSignature'])->name('signature');
         });
 
         // Asesor Management
