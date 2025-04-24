@@ -15,19 +15,64 @@ use Illuminate\Support\Facades\DB;
 use App\Models\BidangKompetensi;
 use App\Models\User;
 
+//rincian asesmen
+use App\Models\Event;
+use App\Models\RincianAsesmen;
+
 
 
 class AsesiPengajuanPageController extends Controller
 {
     public function indexDataAsesi()
     {
+        $today = Carbon::now()->toDateString();
+        
+        // Get asesi pengajuan with N/A status
         $asesiPengajuan = AsesiPengajuan::where('status_rekomendasi', 'N/A')->paginate(5);
-        $asesi = Asesi::where('id_asesor', null)->paginate(5);
+        
+        // Get asesi who have not been assigned to any asesor
+        $asesi = Asesi::whereNotIn('id_asesi', function($query) {
+            $query->select('id_asesi')
+                  ->from('rincian_asesmen');
+        })->paginate(5);
+        
+        // Get active asesors
         $asesors = Asesor::where('status_asesor', 'Aktif')->get();
+        
+        // Get active events (where current date is within event date range)
+        $activeEvents = Event::where('tanggal_mulai_event', '<=', $today)
+                             ->where('tanggal_berakhir_event', '>=', $today)
+                             ->orderBy('periode_pelaksanaan')
+                             ->orderBy('tahun_pelaksanaan')
+                             ->get();
+        
+        // Get all events for filter dropdown
+        $allEvents = Event::orderBy('tahun_pelaksanaan', 'desc')
+                          ->orderBy('periode_pelaksanaan', 'desc')
+                          ->get();
+        
+        // Get assignment history
+        $assignments = RincianAsesmen::with(['asesi', 'asesi.skema', 'asesor', 'event'])
+                                     ->orderBy('created_at', 'desc')
+                                     ->paginate(10, ['*'], 'assignments_page');
+        
+        // Get total count of asesi
+        $totalAsesi = Asesi::count();
+        
         $skema = Skema::all();
         $bidangKompetensi = BidangKompetensi::all();
         
-        return view('home.home-admin.daftar-asesi', compact('asesiPengajuan', 'asesi', 'asesors', 'skema', 'bidangKompetensi'));
+        return view('home.home-admin.daftar-asesi', compact(
+            'asesiPengajuan', 
+            'asesi', 
+            'asesors', 
+            'activeEvents',
+            'allEvents',
+            'assignments',
+            'totalAsesi',
+            'skema', 
+            'bidangKompetensi'
+        ));
     }
 
     public function getAsesorByBidang($id_bidang)
@@ -50,7 +95,6 @@ class AsesiPengajuanPageController extends Controller
         return response()->json($asesors);
     }
 
-
     public function detailDataAsesi($id)
     {
         $asesiPengajuan = AsesiPengajuan::findOrFail($id);
@@ -67,7 +111,6 @@ class AsesiPengajuanPageController extends Controller
 
         return view('home.home-admin.detail-pengajuan', compact('asesiPengajuan', 'buktiKelengkapan'));
     }
-
 
     public function approveAsesi($id_pengajuan)
     {
@@ -109,39 +152,33 @@ class AsesiPengajuanPageController extends Controller
         return redirect()->route('admin.asesi.index')->with('success', 'Pengajuan asesi telah disetujui');
     }
 
-
     public function assignAsesor(Request $request)
     {
         $request->validate([
             'id_asesor' => 'required|exists:asesor,id_asesor',
             'assign_asesi' => 'required|array|min:1',
             'assign_asesi.*' => 'exists:asesi,id_asesi',
-            'periode' => 'required|in:1,2,3,4',
-            'tahun' => 'required|integer',
+            'id_event' => 'required|exists:event,id_event',
         ]);
     
         $asesorId = $request->input('id_asesor');
         $asesiIds = $request->input('assign_asesi');
-        $periode = $request->input('periode');
-        $tahun = $request->input('tahun');
+        $eventId = $request->input('id_event');
     
         // Begin transaction to ensure data consistency
         DB::beginTransaction();
         try {
-            // Update ID Asesor pada data asesi yang dipilih
-            Asesi::whereIn('id_asesi', $asesiIds)->update(['id_asesor' => $asesorId]);
-    
-            // Simpan data ke tabel periode_asesmen
+            // Create rincian_asesmen entries for each asesi
             foreach ($asesiIds as $asesiId) {
-                PeriodeAsesmen::create([
+                RincianAsesmen::create([
                     'id_asesi' => $asesiId,
-                    'periode' => $periode,
-                    'tahun' => $tahun
+                    'id_asesor' => $asesorId,
+                    'id_event' => $eventId,
                 ]);
             }
     
             DB::commit();
-            return redirect()->back()->with('success', 'Asesi berhasil di-assign ke asesor dengan periode asesmen yang ditentukan.');
+            return redirect()->back()->with('success', 'Asesi berhasil di-assign ke asesor untuk event yang dipilih.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

@@ -312,6 +312,7 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. HP</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanda Tangan</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
@@ -362,6 +363,26 @@
                                             </span>
                                         @else
                                             <span class="text-gray-400 italic">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if($admin->tandaTanganAktif()->first())
+                                            <a href="{{ asset('storage/' . $admin->tandaTanganAktif()->first()->file_tanda_tangan) }}" 
+                                            target="_blank" 
+                                            class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                Lihat Tanda Tangan
+                                            </a>
+                                        @else
+                                            <span class="text-yellow-600 inline-flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                Belum ada Tanda Tangan
+                                            </span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -423,7 +444,7 @@
                                 </div>
                             </div>
                             
-                            <form id="editAdminForm" method="POST" action="">
+                            <form id="editAdminForm" method="POST" action="" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
                                 <div class="px-6 py-4">
@@ -437,6 +458,24 @@
                                         <div>
                                             <label for="edit_no_hp" class="block text-sm font-medium text-gray-700">No. HP</label>
                                             <input type="text" name="no_hp" id="edit_no_hp" class="px-4 py-2 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300">
+                                        </div>
+
+                                        <div>
+                                            <label for="current_signature" class="block text-sm font-medium text-gray-700 mb-1">Tanda Tangan Saat Ini</label>
+                                            <div id="current_signature_container" class="mt-1 mb-3 p-2 border border-gray-300 rounded-md">
+                                                <img id="current_signature_img" src="" alt="Tanda Tangan Saat Ini" class="max-h-24 mx-auto" style="display: none;">
+                                                <p id="no_signature_text" class="text-center text-gray-500 italic py-2">Tidak ada tanda tangan</p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label for="edit_file_tanda_tangan" class="block text-sm font-medium text-gray-700 mb-1">Upload Tanda Tangan Baru</label>
+                                            <input type="file" name="file_tanda_tangan" id="edit_file_tanda_tangan" 
+                                                class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-blue-500 focus:border-blue-500 block shadow-sm sm:text-sm border-gray-300"
+                                                accept="image/png,image/jpeg,image/jpg">
+                                            <p class="mt-1 text-xs text-gray-500">
+                                                Biarkan kosong jika tidak ingin mengubah tanda tangan. Format: JPG, JPEG, PNG
+                                            </p>
                                         </div>
                                     
                                     </div>
@@ -783,6 +822,28 @@ function openEditModal(adminId, email, noHp) {
     
     // Set form action URL dengan format yang benar
     document.getElementById('editAdminForm').action = "{{ url('/admin/pengguna/admin') }}/" + adminId + "/update";
+    
+    // Fetch current signature
+    fetch("{{ url('/admin/pengguna/admin') }}/" + adminId + "/signature")
+        .then(response => response.json())
+        .then(data => {
+            const signatureImg = document.getElementById('current_signature_img');
+            const noSignatureText = document.getElementById('no_signature_text');
+            
+            if (data.success && data.data) {
+                signatureImg.src = data.data.file_path;
+                signatureImg.style.display = 'block';
+                noSignatureText.style.display = 'none';
+            } else {
+                signatureImg.style.display = 'none';
+                noSignatureText.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching signature:', error);
+            document.getElementById('current_signature_img').style.display = 'none';
+            document.getElementById('no_signature_text').style.display = 'block';
+        });
     
     // Tampilkan modal
     const modal = document.getElementById('editAdminModal');

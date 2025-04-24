@@ -66,6 +66,38 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    /**
+     * Relasi One to Many: 
+     * Satu user (admin) memiliki banyak tanda tangan (dengan history).
+    */
+    public function tandaTangan()
+    {
+        return $this->hasMany(TandaTanganAdmin::class, 'id_user', 'id_user');
+    }
+    
+    /**
+     * Mendapatkan tanda tangan user (admin) yang aktif saat ini
+     */
+    public function tandaTanganAktif()
+    {
+        return $this->hasMany(TandaTanganAdmin::class, 'id_user', 'id_user')
+            ->where('valid_until', null);
+    }
+    
+    /**
+     * Mendapatkan tanda tangan user (admin) yang valid pada waktu tertentu
+     */
+    public function getTandaTanganPadaWaktu($timestamp)
+    {
+        return $this->hasMany(TandaTanganAdmin::class, 'id_user', 'id_user')
+            ->where('valid_from', '<=', $timestamp)
+            ->where(function($query) use ($timestamp) {
+                $query->where('valid_until', '>=', $timestamp)
+                      ->orWhereNull('valid_until');
+            })
+            ->first();
+    }
+
     protected static function boot()
     {
         parent::boot();

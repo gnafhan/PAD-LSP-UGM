@@ -154,6 +154,20 @@
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
+
+                                <!-- Add this inside the admin_fields div -->
+                                <div class="mb-4">
+                                    <label for="file_tanda_tangan" class="block text-sm font-medium text-gray-700 mb-1">Tanda Tangan Admin <span class="text-red-500">*</span></label>
+                                    <input type="file" name="file_tanda_tangan" id="file_tanda_tangan" 
+                                        class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('file_tanda_tangan') border-red-500 @enderror" 
+                                        accept="image/png,image/jpeg,image/jpg" required>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        Upload gambar tanda tangan (JPG, JPEG, atau PNG). Pastikan gambar memiliki latar belakang transparan.
+                                    </p>
+                                    @error('file_tanda_tangan')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- Field Asesor -->

@@ -150,6 +150,7 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
             Route::post('store', [AdminUserController::class, 'store'])->name('store');
             Route::put('{id}/update', [AdminUserController::class, 'update'])->name('update');
             Route::delete('{id}', [AdminUserController::class, 'destroy'])->name('destroy');
+            Route::get('{id}/signature', [AdminUserController::class, 'getSignature'])->name('pengguna.admin.signature');
         });
 
         // Asesor Management
@@ -173,10 +174,7 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
             Route::delete('{id}/destroy/{kompetensiId}', [KompetensiTeknisController::class, 'destroy'])->name('destroy');
             Route::get('{id}/json', [KompetensiTeknisController::class, 'getSertifikatJson'])->name('json');
         });
-    });
-
-
-
+    }); 
  
     Route::get('/btn-asesi', function () {
         return view('home/home-admin/button-asesi');
