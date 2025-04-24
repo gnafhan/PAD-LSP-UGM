@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Event extends Model
 {
@@ -17,35 +20,47 @@ class Event extends Model
 
     protected $fillable = [
         'id_event',
+        'id_tuk',
         'nama_event',
         'tanggal_mulai_event',
         'tanggal_berakhir_event',
-        'tuk',
         'tipe_event',
+        'periode_pelaksanaan',
+        'tahun_pelaksanaan',
     ];
 
     protected $dates = ['tanggal_mulai_event', 'tanggal_berakhir_event'];
 
-    public function skemas()
-    {
-        return $this->belongsToMany(Skema::class, 'event_skema', 'id_event', 'id_skema');
-    }
 
-    public function getTanggalMulaiEventAttribute($value)
+    public function getTanggalMulaiEventAttribute($value): Carbon
     {
         return Carbon::parse($value);
     }
 
-    public function getTanggalBerakhirEventAttribute($value)
+    public function getTanggalBerakhirEventAttribute($value): Carbon
     {
         return Carbon::parse($value);
+    }
+
+    
+
+    //tuk
+    public function tuk(): BelongsTo
+    {
+        return $this->belongsTo(Tuk::class, 'id_tuk', 'id_tuk');
+    }
+
+    //has many rincian asesmen
+    public function rincianAsesmen(): HasMany
+    {
+        return $this->hasMany(RincianAsesmen::class, 'id_event', 'id_event');
     }
 
     protected static function boot()
     {
         parent::boot();
     
-        static::creating(function ($model) {
+        static::creating(function ($model): void {
             // Menentukan prefix sesuai dengan nama model
             // Misalnya: 'ASESI', 'ASESOR', 'SKEMA', dll
             $prefix = 'EVENT'; // Ganti dengan prefix yang sesuai untuk setiap model

@@ -64,6 +64,12 @@ class Skema extends Model
         return $this->hasMany(RencanaAsesmen::class, 'id_skema', 'id_skema');
     }
 
+    // asesi
+    public function asesi()
+    {
+        return $this->hasMany(Asesi::class, 'id_skema', 'id_skema');
+    }
+
     protected static function boot()
     {
         parent::boot();

@@ -26,7 +26,6 @@ return new class extends Migration
             $table->string('id_user', 20);
             $table->longText('file_sertifikat')->nullable();
             $table->string('id_skema', 20)->nullable();
-            $table->string('id_asesor', 20)->nullable();
             $table->json('file_kelengkapan_pemohon');
             $table->longText('ttd_pemohon');
             $table->string('status_pekerjaan', 20);

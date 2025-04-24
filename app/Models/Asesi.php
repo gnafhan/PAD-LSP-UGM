@@ -36,7 +36,6 @@ class Asesi extends Model
         'jabatan',
         'alamat_perusahaan',
         'no_telp_perusahaan',
-        'id_asesor'
     ];
 
     protected $casts = [
@@ -56,6 +55,10 @@ class Asesi extends Model
         return $this->belongsTo(Asesor::class, 'id_asesor');
     }
 
+    public function rincianAsesmen()
+    {
+        return $this->hasOne(RincianAsesmen::class, 'id_asesi', 'id_asesi');
+    }
 
     protected static function boot()
     {

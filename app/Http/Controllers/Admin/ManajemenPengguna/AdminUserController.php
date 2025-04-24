@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
 {
@@ -31,20 +32,16 @@ class AdminUserController extends Controller
                 'email',
                 'max:250',
                 'unique:users',
-                'regex:/^[a-zA-Z0-9._%+-]+@mail\.ugm\.ac\.id$/'
+                'regex:/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/'
             ],
             'no_hp' => 'nullable|string|max:20',
-            'password' => 'required|min:6|confirmed',
         ], [
             'email.required' => 'Email tidak boleh kosong',
-            'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id).',
+            'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id).',
             'email.unique' => 'Email sudah digunakan',
             'no_hp.max' => 'Nomor HP maksimal 20 karakter',
-            'password.required' => 'Password tidak boleh kosong',
-            'password.min' => 'Password minimal 6 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak cocok',
         ]);
-
+    
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
@@ -54,10 +51,10 @@ class AdminUserController extends Controller
         try {
             DB::beginTransaction();
             
-            // Buat user admin
+            // Buat user admin dengan password acak
             User::create([
                 'email' => $request->email,
-                'password' => bcrypt($request->password),
+                'password' => bcrypt(Str::random(16)), // Random secure password
                 'no_hp' => $request->no_hp,
                 'level' => 'admin',
             ]);

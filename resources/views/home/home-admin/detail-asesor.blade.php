@@ -153,6 +153,14 @@
                     </div>
                     <div class="sm:col-span-1">
                         <dt class="text-sm font-medium text-gray-500">
+                            No. MET
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900">
+                            {{ $asesor->no_met ?: '-' }}
+                        </dd>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">
                             Status
                         </dt>
                         <dd class="mt-1 text-sm text-gray-900">

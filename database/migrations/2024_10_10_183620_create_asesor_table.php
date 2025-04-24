@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('asesor', function (Blueprint $table) {
             $table->string('id_asesor', 20)->primary();
-            $table->string('kode_registrasi', 30);
+            $table->string('kode_registrasi', 30)->nullable();
             $table->string('nama_asesor', 100);
-            $table->string('no_sertifikat', 30);
-            $table->string('no_hp', 20);
+            $table->string('no_sertifikat', 30)->nullable();
+            $table->string('no_hp', 20)->nullable();
+            $table->string('no_met', 100)->nullable();
             $table->string('email', 100);
             $table->longText('alamat')->nullable();
             $table->string('status_asesor', 10);
             $table->longText('foto_asesor')->nullable();
-            $table->string('no_ktp', 20);
+            $table->string('no_ktp', 20)->nullable();
             $table->string('jenis_kelamin', 10)->nullable();
             $table->string('pendidikan_terakhir', 30)->nullable();
             $table->string('tempat_lahir', 20)->nullable();

@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Admin\ManajemenEvent\EventController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
@@ -15,6 +16,8 @@ use App\Http\Controllers\Admin\ManajemenPengguna\PenggunaPageController;
 use App\Http\Controllers\Admin\ManajemenPengguna\AsesorController;
 use App\Http\Controllers\Admin\ManajemenPengguna\AdminUserController;
 use App\Http\Controllers\Admin\ManajemenPengguna\KompetensiTeknisController;
+use App\Http\Controllers\Admin\ManajemenTUK\TukController;
+use App\Http\Controllers\Admin\ManajemenTUK\PenanggungJawabController;
 
 //Level: user
 Route::middleware(['role:user'])->prefix('user')->group(function () {
@@ -74,7 +77,6 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::post('create', [SkemaPageController::class, 'storeDataSkema'])->name('store');
         Route::get('{id}/edit', [SkemaPageController::class, 'editDataSkema'])->name('edit');
         Route::put('{id}/update', [SkemaPageController::class, 'updateDataSkema'])->name('update');
-        Route::delete('{id}', [SkemaPageController::class, 'destroyDataSkema'])->name('delete');
     });
 
     // Manajemen Unit Kompetensi (UK)
@@ -85,7 +87,6 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::post('create', [UnitKompetensiPageController::class, 'storeDataUk'])->name('store');
         Route::get('{id}/edit', [UnitKompetensiPageController::class, 'editDataUk'])->name('edit');
         Route::put('{id}/update', [UnitKompetensiPageController::class, 'updateDataUk'])->name('update');
-        Route::delete('{id}', [UnitKompetensiPageController::class, 'destroyDataUk'])->name('delete');
     });
 
     // Manajemen Rencana Asesmen
@@ -97,15 +98,32 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::delete('/{id_rencana_asesmen}', [RencanaAsesmenController::class, 'destroy'])->name('destroy');
     });
 
-    // Manajemen Event
-    Route::prefix('event')->name('admin.event.')->group(function () {
-        Route::get('/', [AdminController::class, 'indexDataEvent'])->name('index');
-        Route::get('create', [AdminController::class, 'createDataEvent'])->name('create');
-        Route::post('create', [AdminController::class, 'storeDataEvent'])->name('store');
-        Route::get('{id}/edit', [AdminController::class, 'editDataEvent'])->name('edit');
-        Route::put('{id}/update', [AdminController::class, 'updateDataEvent'])->name('update');
-        Route::delete('{id}', [AdminController::class, 'destroyDataEvent'])->name('delete');
+
+    // Manajemen TUK
+    Route::prefix('tuk')->name('admin.tuk.')->group(function () {
+        Route::get('/', [TukController::class, 'index'])->name('index');
+        Route::get('/create', [TukController::class, 'create'])->name('create');
+        Route::post('/', [TukController::class, 'store'])->name('store');
+        Route::put('/{id}', [TukController::class, 'update'])->name('update');
     });
+
+    // Manajemen Penanggung Jawab
+    Route::prefix('penanggung-jawab')->name('admin.penanggung-jawab.')->group(function () {
+        Route::post('/', [PenanggungJawabController::class, 'store'])->name('store');
+        Route::put('/{id}', [PenanggungJawabController::class, 'update'])->name('update');
+    });
+
+    // Routes for Event Management
+    Route::prefix('event')->name('admin.event.')->group(function () {
+        Route::get('/', [EventController::class, 'indexDataEvent'])->name('index');
+        Route::get('/create', [EventController::class, 'createDataEvent'])->name('create');
+        Route::post('store', [EventController::class, 'storeDataEvent'])->name('store');
+        Route::get('edit/{id}', [EventController::class, 'editDataEvent'])->name('edit');
+        Route::put('update/{id}', [EventController::class, 'updateDataEvent'])->name('update');
+        Route::delete('delete/{id}', [EventController::class, 'destroyDataEvent'])->name('delete');
+        Route::get('detail/{id}', [EventController::class, 'detailEvent'])->name('detail');
+    });
+ 
 
     // Manajemen Asesi
     Route::prefix('asesi')->name('admin.asesi.')->group(function () {

@@ -3,21 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asesor;
-use App\Models\AsesiPengajuan;
 use App\Models\Asesi;
 use App\Models\Skema;
-use App\Models\UK;
-use App\Models\ElemenUK;
-use App\Models\TUK;
-use App\Models\Event;
-use App\Models\UKBidang;
-use App\Models\User;
+use App\Models\Event;;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use App\Models\PeriodeAsesmen;
+use App\Models\RincianAsesmen;
 
 
 
@@ -32,17 +24,17 @@ class AdminController extends Controller
         $asesor = Asesor::all()->count();
         
         // Get skema statistics per period-year
-        $skemaStats = PeriodeAsesmen::getSkemaStats();
+        $skemaStats = RincianAsesmen::getSkemaStats();
         
         // ASESI CHART DATA
-        $asesiSkemaData = PeriodeAsesmen::getAsesiSkemaDistributionData();
-        $asesiYearData = PeriodeAsesmen::getAsesiYearTrendData();
-        $asesiPeriodData = PeriodeAsesmen::getAsesiPeriodTrendData();
+        $asesiSkemaData = RincianAsesmen::getAsesiSkemaDistributionData();
+        $asesiYearData = RincianAsesmen::getAsesiYearTrendData();
+        $asesiPeriodData = RincianAsesmen::getAsesiPeriodTrendData();
         
         // SKEMA CHART DATA
-        $skemaPopularityData = PeriodeAsesmen::getSkemaPopularityData();
-        $skemaYearData = PeriodeAsesmen::getSkemaYearTrendData();
-        $skemaPeriodData = PeriodeAsesmen::getSkemaPeriodTrendData();
+        $skemaPopularityData = RincianAsesmen::getSkemaPopularityData();
+        $skemaYearData = RincianAsesmen::getSkemaYearTrendData();
+        $skemaPeriodData = RincianAsesmen::getSkemaPeriodTrendData();
         
         return view('home.home-admin.home', compact(
             'events', 

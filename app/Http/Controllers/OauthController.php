@@ -23,9 +23,9 @@ class OauthController extends Controller
             // Validate UGM email domain
             $email = $googleUser->email;
             
-            if (!preg_match('/^[a-zA-Z0-9._%+-]+@mail\.ugm\.ac\.id$/', $email)) {
+            if (!preg_match('/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/', $email)) {
                 return redirect()->route('login')
-                    ->with('error', 'Anda harus menggunakan email resmi UGM (@mail.ugm.ac.id) untuk login.');
+                    ->with('error', 'Anda harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id) untuk login.');
             }
             
             // Check if user exists

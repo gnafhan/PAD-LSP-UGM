@@ -38,43 +38,43 @@ class AsesorController extends Controller
                 'email',
                 'max:250',
                 'unique:asesor',
-                'regex:/^[a-zA-Z0-9._%+-]+@mail\.ugm\.ac\.id$/'
+                'regex:/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/'
             ],
-            'no_hp_asesor' => 'nullable|string|max:20',
+            'no_hp_asesor' => 'required|string|max:20',
             'no_ktp' => 'nullable|string|max:20',
             'kode_registrasi' => 'nullable|string|max:100',
             'no_sertifikat' => 'nullable|string|max:100',
             'file_sertifikat_asesor' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
             'status_asesor' => 'required|in:Aktif,Tidak',
             'masa_berlaku' => 'required|date',
-            'bidang_kompetensi' => 'nullable|string',
+            'bidang_kompetensi' => 'required|string',
         ], [
             'nama_asesor.required' => 'Nama asesor tidak boleh kosong',
             'email.required' => 'Email tidak boleh kosong',
-            'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id).',
+            'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id).',
             'email.unique' => 'Email sudah digunakan',
             'status_asesor.required' => 'Status asesor harus dipilih',
             'masa_berlaku.required' => 'Tanggal masa berlaku wajib diisi',
         ]);
-
+    
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
-
+    
         try {
             DB::beginTransaction();
-
+    
             // Proses bidang kompetensi
             $bidangKompetensiIds = [];
             if ($request->filled('bidang_kompetensi')) {
                 $bidangKompetensiIds = json_decode($request->bidang_kompetensi, true);
             }
-
+    
             // Proses upload file sertifikat
             $fileSertifikat = $this->uploadFileSertifikat($request);
-
+    
             // Buat data asesor
             $asesor = Asesor::create([
                 'nama_asesor' => $request->nama_asesor,
@@ -83,6 +83,7 @@ class AsesorController extends Controller
                 'no_ktp' => $request->no_ktp,
                 'kode_registrasi' => $request->kode_registrasi,
                 'no_sertifikat' => $request->no_sertifikat,
+                'no_met' => $request->no_met,
                 'file_sertifikat_asesor' => $fileSertifikat,
                 'status_asesor' => $request->status_asesor,
                 'masa_berlaku' => $request->masa_berlaku,
