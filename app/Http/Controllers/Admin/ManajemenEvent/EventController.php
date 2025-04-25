@@ -167,12 +167,18 @@ class EventController extends Controller
             }])
             ->get();
         
-        // Get asesor data with count of assigned asesis
+        // Replace this section in detailEvent() method
         $asesors = Asesor::whereIn('id_asesor', $asesorIds)
-            ->withCount(['asesi' => function($query) use ($asesiIds) {
-                $query->whereIn('id_asesi', $asesiIds); 
+            ->with(['rincianAsesmen' => function($query) use ($asesiIds) {
+                $query->whereIn('id_asesi', $asesiIds);
             }])
             ->get();
+
+        // Add a computed property for counting asesi
+        $asesors = $asesors->map(function($asesor) {
+            $asesor->asesi_count = $asesor->rincianAsesmen->count();
+            return $asesor;
+        });
         
         // Counts for overview cards
         $asesiCount = $asesiIds->count();
