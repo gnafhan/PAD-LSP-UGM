@@ -233,7 +233,7 @@
             </select>
         </div>
 
-        <form action="{{ route('assign.asesor') }}" method="POST">
+        <form action="{{ route('assign.asesor') }}" method="POST" id="assign-asesor">
             @csrf
             <!-- Table 2: Assign Asesi -->
             <div class="overflow-x-auto">
@@ -485,25 +485,39 @@
     });
   });
 
-  // Update the existing form validation
-document.querySelector('form').addEventListener('submit', function(e) {
-    const selectedAsesi = document.querySelectorAll('.asesi-checkbox:checked');
-    const selectedEvent = document.getElementById('id_event').value;
-    const selectedAsesor = document.getElementById('asesor').value;
+// Update the form validation to use SweetAlert and be more specific
+document.addEventListener('DOMContentLoaded', function() {
+    // Target specific form by ID instead of all forms
+    const assignmentForm = document.getElementById('assign-asesor');
     
-    if (selectedAsesi.length === 0) {
-        e.preventDefault();
-        alert('Pilih minimal satu asesi untuk di-assign.');
-    }
-    
-    if (!selectedEvent) {
-        e.preventDefault();
-        alert('Pilih event untuk assignment.');
-    }
-    
-    if (!selectedAsesor) {
-        e.preventDefault();
-        alert('Pilih asesor untuk assignment.');
+    if (assignmentForm) {
+        assignmentForm.addEventListener('submit', function(e) {
+            const selectedAsesi = document.querySelectorAll('.asesi-checkbox:checked');
+            const selectedEvent = document.getElementById('id_event').value;
+            const selectedAsesor = document.getElementById('asesor').value;
+            
+            let errorMessage = '';
+            
+            if (selectedAsesi.length === 0) {
+                errorMessage = 'Pilih minimal satu asesi untuk di-assign.';
+            } else if (!selectedEvent) {
+                errorMessage = 'Pilih event untuk assignment.';
+            } else if (!selectedAsesor) {
+                errorMessage = 'Pilih asesor untuk assignment.';
+            }
+            
+            if (errorMessage) {
+                e.preventDefault();
+                
+                // Use SweetAlert instead of regular alert
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: errorMessage,
+                    confirmButtonColor: '#4F46E5'
+                });
+            }
+        });
     }
 });
 
@@ -566,4 +580,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<!-- Load SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

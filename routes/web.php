@@ -128,9 +128,8 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
     // Manajemen Asesi
     Route::prefix('asesi')->name('admin.asesi.')->group(function () {
         Route::get('/', [AsesiPengajuanPageController::class, 'indexDataAsesi'])->name('index');
-        Route::get('{id}/edit', [AsesiPengajuanPageController::class, 'detailDataAsesi'])->name('detail');
-        Route::post('approve/{id_pengajuan}', [AsesiPengajuanPageController::class, 'approveAsesi'])->name('approve');
-        // Get asesor berdasarkan bidang kompetensi
+        Route::post('{id}/process', [AsesiPengajuanPageController::class, 'processAsesi'])->name('process');
+        Route::get('{id}/detail', [AsesiPengajuanPageController::class, 'showPengajuanDetail'])->name('detail');
     });
 
     // Manajemen Asesor untuk Asesi untuk fitur dependent dropdown list

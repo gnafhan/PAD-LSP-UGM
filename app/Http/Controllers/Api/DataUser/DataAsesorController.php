@@ -138,6 +138,7 @@ class DataAsesorController extends Controller
 
             // Proses tanda tangan jika ada
             if ($request->hasFile('tanda_tangan')) {
+
                 // Nonaktifkan tanda tangan aktif yang ada
                 TandaTanganAsesor::where('id_asesor', $id)
                     ->whereNull('valid_until')

@@ -41,7 +41,10 @@ class AsesiPengajuan extends Model
         'nama_perusahaan',
         'jabatan',
         'alamat_perusahaan',
-        'no_telp_perusahaan'
+        'no_telp_perusahaan',
+        'waktu_tanda_tangan',
+        'alasan_penolakan_pengajuan',
+        'id_admin'
     ];
 
     protected $casts = [
