@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('rincian_asesmen', function (Blueprint $table) {
-            $table->id('id_princian_asesmen');
+            $table->id('id_rincian_asesmen');
             $table->string('id_asesi', 20);
             $table->string('id_event', 20);
             $table->string('id_asesor', 20);

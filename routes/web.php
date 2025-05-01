@@ -19,7 +19,7 @@ use App\Http\Controllers\Admin\ManajemenPengguna\KompetensiTeknisController;
 use App\Http\Controllers\Admin\ManajemenTUK\TukController;
 use App\Http\Controllers\Admin\ManajemenTUK\PenanggungJawabController;
 
-//Level: user
+// Level: user
 Route::middleware(['role:user'])->prefix('user')->group(function () {
 
     // Dashboard User
@@ -35,25 +35,25 @@ Route::middleware(['role:user'])->prefix('user')->group(function () {
 
     // APL-01 Pengajuan Sertifikasi
     Route::prefix('apl1')->name('user.apl1.')->group(function () {
-        Route::get('/b1', function () {
-            return view('home/home-visitor/APL-01/data-pribadi');
-        })->name('pribadi');
+        // Data Pribadi
+        Route::get('/b1', [PengajuanController::class, 'showDataPribadi'])->name('pribadi');
         Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
 
+        // Data Sertifikasi
         Route::get('/b2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
         Route::get('/get-nomor-skema', [PengajuanController::class, 'getNomorSkema']);
         Route::get('/get-daftar-uk', [PengajuanController::class, 'showDaftarUK']);
-        Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save-data-sertifikasi');
+        Route::post('/save-data-sertifikasi', [PengajuanController::class, 'saveDataSertifikasi'])->name('save.data.sertifikasi');
 
-        Route::get('/b3', function () {
-            return view('home/home-visitor/APL-01/bukti-pemohon');
-        })->name('bukti');
+        // Bukti Kelengkapan
+        Route::get('/b3', [PengajuanController::class, 'showBuktiKelengkapan'])->name('bukti');
+        Route::post('/save-bukti-kelengkapan', [PengajuanController::class, 'saveBuktiKelengkapan'])->name('save.bukti');
 
-        Route::get('/b4', function () {
-            return view('home/home-visitor/APL-01/konfirmasi');
-        })->name('konfirmasi');
+        // Konfirmasi
+        Route::get('/b4', [PengajuanController::class, 'showKonfirmasi'])->name('konfirmasi');
+        Route::post('/submit-pengajuan', [PengajuanController::class, 'submitPengajuan'])->name('submit');
 
-        Route::post('/save-data-pengajuan', [PengajuanController::class, 'storePengajuan'])->name('save');
+        Route::post('pengajuan/restart', [PengajuanController::class, 'restartPengajuan'])->name('restart');
     });
 
     // Logout User
@@ -130,6 +130,7 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::get('/', [AsesiPengajuanPageController::class, 'indexDataAsesi'])->name('index');
         Route::post('{id}/process', [AsesiPengajuanPageController::class, 'processAsesi'])->name('process');
         Route::get('{id}/detail', [AsesiPengajuanPageController::class, 'showPengajuanDetail'])->name('detail');
+        Route::post('/pengajuan/{id_pengajuan}/revisi', [AsesiPengajuanPageController::class, 'requestRevision'])->name('request.revision');
     });
 
     // Manajemen Asesor untuk Asesi untuk fitur dependent dropdown list
@@ -148,7 +149,6 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('store', [AdminUserController::class, 'store'])->name('store');
             Route::put('{id}/update', [AdminUserController::class, 'update'])->name('update');
-            Route::delete('{id}', [AdminUserController::class, 'destroy'])->name('destroy');
             Route::get('{id}/signature', [AdminUserController::class, 'getSignature'])->name('signature');
         });
 

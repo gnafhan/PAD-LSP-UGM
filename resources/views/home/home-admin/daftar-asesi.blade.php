@@ -3,8 +3,8 @@
 @section('title', 'Daftar Asesi - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gray-100 p-8">
-  <div class="container mx-auto">
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
 
     <!-- Alert Messages -->
     @if(session('success'))
@@ -59,20 +59,24 @@
         </p>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Pending APL.01 -->
-            <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-blue-500 bg-opacity-10">
-                        <svg class="h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <h4 class="text-sm font-medium text-blue-800">Asesi Pengajuan Menunggu Persetujuan APL.01</h4>
-                        <p class="mt-1 text-xl font-semibold text-blue-900">{{ $asesiPengajuan->total() }}</p>
+        <!-- Pending APL.01 -->
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-500 bg-opacity-10">
+                    <svg class="h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h4 class="text-sm font-medium text-blue-800">Pengajuan Baru & Revisi</h4>
+                    <div class="mt-1 flex space-x-2">
+                        <span class="text-lg font-semibold text-blue-900">{{ $pengajuanBaru->total() }}</span>
+                        <span class="text-gray-500">|</span>
+                        <span class="text-lg font-semibold text-amber-600">{{ $pengajuanRevisi->total() }}</span>
                     </div>
                 </div>
             </div>
+        </div>
             
             <!-- Total Asesi -->
             <div class="bg-green-50 rounded-lg p-4 border border-green-100">
@@ -127,9 +131,12 @@
                 <div class="ml-4 border-l-2 border-blue-200 pl-4">
                     <h3 class="font-bold text-blue-800 mb-2">1. Daftar Calon Asesi (Tabel Atas)</h3>
                     <ul class="list-disc ml-5 space-y-2">
-                        <li>Tabel ini menampilkan daftar calon asesi yang telah mengajukan formulir APL-01</li>
+                        <li>Tabel ini menampilkan daftar calon asesi yang telah mengajukan formulir APL-01 dan terbagi menjadi dua tab:</li>
+                        <li class="ml-4"><strong>Tab Pengajuan Baru</strong> - Berisi pengajuan yang belum diperiksa</li>
+                        <li class="ml-4"><strong>Tab Perlu Revisi</strong> - Berisi pengajuan yang sedang menjalani proses revisi</li>
                         <li>Admin perlu <span class="font-semibold">memeriksa formulir APL-01</span> dengan mengklik tombol "Detail Pengajuan"</li>
                         <li>Jika formulir sudah sesuai, klik tombol "Setujui" untuk menyetujui pengajuan</li>
+                        <li>Jika formulir perlu diperbaiki, klik tombol "Minta Revisi" untuk meminta revisi</li>
                         <li>Setelah disetujui, asesi akan muncul pada tabel bagian bawah untuk di-assign ke asesor</li>
                     </ul>
                 </div>
@@ -165,56 +172,136 @@
     <div class="bg-white p-6 rounded-lg shadow-md mb-8">
         <h2 class="text-2xl font-bold mb-6 text-center text-gray-800 border-b pb-3">Daftar Pengajuan Calon Asesi</h2>
         
-        <!-- Filter Skema for Table 1 -->
-        <div class="mb-6">
-            <label for="filter-skema-1" class="block text-sm font-medium text-gray-700 mb-2">Filter Berdasarkan Skema:</label>
-            <select id="filter-skema-1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                <option value="">Semua Skema</option>
-                @foreach($skema as $s)
-                    <option value="{{ $s->id_skema }}">{{ $s->nama_skema }}</option>
-                @endforeach
-            </select>
+        <!-- Tab Navigation -->
+        <div class="flex border-b border-gray-200 mb-6">
+            <button id="tab-pengajuan-baru" class="py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-500 tab-button active">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Pengajuan Baru
+                    <span class="ml-1 bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-xs">{{ $pengajuanBaru->total() }}</span>
+                </div>
+            </button>
+            <button id="tab-perlu-revisi" class="py-2 px-4 font-medium text-gray-500 hover:text-gray-700 tab-button">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Perlu Revisi
+                    <span class="ml-1 bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full text-xs">{{ $pengajuanRevisi->total() }}</span>
+                </div>
+            </button>
         </div>
         
-        <!-- Table 1: Calon Asesi -->
-        <div class="overflow-x-auto">
-            <table id="calon-asesi-table" class="min-w-full bg-white rounded-lg overflow-hidden">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">No</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Nama Calon Asesi</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Tanggal Daftar</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Skema</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Pengajuan</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    @if($asesiPengajuan->isEmpty())
+        <!-- Tab Content: Pengajuan Baru -->
+        <div id="content-pengajuan-baru" class="tab-content">
+            <!-- Filter Skema for Table 1 -->
+            <div class="mb-6">
+                <label for="filter-skema-1" class="block text-sm font-medium text-gray-700 mb-2">Filter Berdasarkan Skema:</label>
+                <select id="filter-skema-1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Semua Skema</option>
+                    @foreach($skema as $s)
+                        <option value="{{ $s->id_skema }}">{{ $s->nama_skema }}</option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <!-- Table 1: Calon Asesi Baru -->
+            <div class="overflow-x-auto">
+                <table id="calon-asesi-table" class="min-w-full bg-white rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100">
                         <tr>
-                            <td colspan="5" class="px-4 py-3 text-center text-gray-500">Tidak ada data pengajuan calon asesi yang tersedia</td>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">No</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Nama Calon Asesi</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Tanggal Daftar</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Skema</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Pengajuan</th>
                         </tr>
-                    @else
-                        @foreach($asesiPengajuan as $index => $asesi_pengajuan)
-                            <tr class="hover:bg-gray-50 data-row" data-skema="{{ $asesi_pengajuan->id_skema }}">
-                                <td class="px-4 py-3 text-sm text-gray-700">{{ ($asesiPengajuan->currentPage() - 1) * $asesiPengajuan->perPage() + $index + 1 }}</td>
-                                <td class="px-4 py-3 text-sm text-gray-700">{{ $asesi_pengajuan->nama_user }}</td>
-                                <td class="px-4 py-3 text-sm text-gray-700">{{ \Carbon\Carbon::parse($asesi_pengajuan->created_at)->format('d M Y, H:i') }}</td>
-                                <td class="px-4 py-3 text-sm text-gray-700">{{ $asesi_pengajuan->nama_skema }}</td>
-                                <td class="px-4 py-3 text-sm whitespace-nowrap">
-                                    <a href="{{ route('admin.asesi.detail', $asesi_pengajuan->id_pengajuan) }}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors w-full sm:w-auto text-center">
-                                        Detail Pengajuan
-                                    </a>
-                                </td>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @if($pengajuanBaru->isEmpty())
+                            <tr>
+                                <td colspan="5" class="px-4 py-3 text-center text-gray-500">Tidak ada data pengajuan calon asesi baru</td>
                             </tr>
-                        @endforeach
-                    @endif
-                </tbody>
-            </table>
-        </div>
+                        @else
+                            @foreach($pengajuanBaru as $index => $asesi_pengajuan)
+                                <tr class="hover:bg-gray-50 data-row" data-skema="{{ $asesi_pengajuan->id_skema }}">
+                                    <td class="px-4 py-3 text-sm text-gray-700">{{ ($pengajuanBaru->currentPage() - 1) * $pengajuanBaru->perPage() + $index + 1 }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700">{{ $asesi_pengajuan->nama_user }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700">{{ \Carbon\Carbon::parse($asesi_pengajuan->created_at)->format('d M Y, H:i') }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700">{{ $asesi_pengajuan->nama_skema }}</td>
+                                    <td class="px-4 py-3 text-sm whitespace-nowrap">
+                                        <a href="{{ route('admin.asesi.detail', $asesi_pengajuan->id_pengajuan) }}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors w-full sm:w-auto text-center">
+                                            Detail Pengajuan
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- Pagination -->
-        <div class="mt-4 flex justify-center">
-            {{ $asesiPengajuan->links() }}
+            <!-- Pagination -->
+            <div class="mt-4 flex justify-center">
+                {{ $pengajuanBaru->links() }}
+            </div>
+        </div>
+        
+        <!-- Tab Content: Perlu Revisi -->
+        <div id="content-perlu-revisi" class="tab-content hidden">
+            <!-- Filter Skema for Revision Table -->
+            <div class="mb-6">
+                <label for="filter-skema-revision" class="block text-sm font-medium text-gray-700 mb-2">Filter Berdasarkan Skema:</label>
+                <select id="filter-skema-revision" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500">
+                    <option value="">Semua Skema</option>
+                    @foreach($skema as $s)
+                        <option value="{{ $s->id_skema }}">{{ $s->nama_skema }}</option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <!-- Table: Calon Asesi Revisi -->
+            <div class="overflow-x-auto">
+                <table id="revisi-asesi-table" class="min-w-full bg-white rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100 border-b border-amber-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-800 tracking-wider">No</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-800 tracking-wider">Nama Calon Asesi</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-800 tracking-wider">Tanggal Revisi</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-800 tracking-wider">Skema</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-800 tracking-wider">Pengajuan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @if($pengajuanRevisi->isEmpty())
+                            <tr>
+                                <td colspan="5" class="px-4 py-3 text-center text-gray-500">Tidak ada data pengajuan yang perlu direvisi</td>
+                            </tr>
+                        @else
+                            @foreach($pengajuanRevisi as $index => $asesi_pengajuan)
+                                <tr class="hover:bg-amber-50 revision-row" data-skema="{{ $asesi_pengajuan->id_skema }}">
+                                    <td class="px-4 py-3 text-sm text-gray-700">{{ ($pengajuanRevisi->currentPage() - 1) * $pengajuanRevisi->perPage() + $index + 1 }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700">{{ $asesi_pengajuan->nama_user }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700">{{ \Carbon\Carbon::parse($asesi_pengajuan->updated_at)->format('d M Y, H:i') }}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700">{{ $asesi_pengajuan->nama_skema }}</td>
+                                    <td class="px-4 py-3 text-sm whitespace-nowrap">
+                                        <a href="{{ route('admin.asesi.detail', $asesi_pengajuan->id_pengajuan) }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded text-xs sm:text-sm font-medium transition-colors w-full sm:w-auto text-center shadow-sm">
+                                            Lihat Revisi
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination for Revision Table -->
+            <div class="mt-4 flex justify-center">
+                {{ $pengajuanRevisi->links() }}
+            </div>
         </div>
     </div>
 
@@ -578,6 +665,63 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+});
+
+// Tab functionality for Section 1
+document.addEventListener('DOMContentLoaded', function() {
+    const tabPengajuanBaru = document.getElementById('tab-pengajuan-baru');
+    const tabPerluRevisi = document.getElementById('tab-perlu-revisi');
+    const contentPengajuanBaru = document.getElementById('content-pengajuan-baru');
+    const contentPerluRevisi = document.getElementById('content-perlu-revisi');
+    
+    // Function to activate Pengajuan Baru tab
+    function activatePengajuanBaruTab() {
+        // Activate button styling
+        tabPengajuanBaru.classList.add('text-blue-600', 'border-b-2', 'border-blue-500');
+        tabPengajuanBaru.classList.add('active');
+        tabPerluRevisi.classList.remove('text-blue-600', 'border-b-2', 'border-blue-500');
+        tabPerluRevisi.classList.remove('active');
+        tabPerluRevisi.classList.add('text-gray-500', 'hover:text-gray-700');
+        
+        // Show/hide content
+        contentPengajuanBaru.classList.remove('hidden');
+        contentPerluRevisi.classList.add('hidden');
+    }
+    
+    // Function to activate Perlu Revisi tab
+    function activatePerluRevisiTab() {
+        // Activate button styling
+        tabPerluRevisi.classList.add('text-blue-600', 'border-b-2', 'border-blue-500');
+        tabPerluRevisi.classList.add('active');
+        tabPengajuanBaru.classList.remove('text-blue-600', 'border-b-2', 'border-blue-500');
+        tabPengajuanBaru.classList.remove('active');
+        tabPengajuanBaru.classList.add('text-gray-500', 'hover:text-gray-700');
+        
+        // Show/hide content
+        contentPerluRevisi.classList.remove('hidden');
+        contentPengajuanBaru.classList.add('hidden');
+    }
+    
+    // Add event listeners to tabs
+    tabPengajuanBaru.addEventListener('click', function(e) {
+        e.preventDefault();
+        activatePengajuanBaruTab();
+    });
+    
+    tabPerluRevisi.addEventListener('click', function(e) {
+        e.preventDefault();
+        activatePerluRevisiTab();
+    });
+    
+    // Ensure default tab is active
+    if (tabPengajuanBaru.classList.contains('active')) {
+        activatePengajuanBaruTab();
+    } else if (tabPerluRevisi.classList.contains('active')) {
+        activatePerluRevisiTab();
+    } else {
+        // Default to Pengajuan Baru tab if no active class is found
+        activatePengajuanBaruTab();
+    }
 });
 </script>
 <!-- Load SweetAlert library -->

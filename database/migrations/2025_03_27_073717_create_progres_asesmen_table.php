@@ -10,12 +10,20 @@ return new class extends Migration {
         Schema::create('progres_asesmen', function (Blueprint $table) {
             $table->id('id_progres_asesmen');
             $table->string('id_asesi', 20);
+            $table->boolean('apl01')->default(true);
             $table->boolean('apl02')->default(false);
             $table->boolean('ak01')->default(false);
             $table->boolean('konsultasi_pra_uji')->default(false);
+            $table->boolean('mapa01')->default(false);
+            $table->boolean('mapa02')->default(false);
+            $table->boolean('pertanyaan_ketidak_berpihakan')->default(false);
+            $table->boolean('ak07')->default(false);
             $table->boolean('ia01')->default(false);
             $table->boolean('ia02')->default(false);
-            $table->boolean('ia07')->default(false);
+            $table->boolean('hasil_asesmen')->default(false);
+            $table->boolean('ak02')->default(false);
+            $table->boolean('umpan_balik')->default(false);
+            $table->boolean('ak04')->default(false);
             $table->timestamps();
         });
     }

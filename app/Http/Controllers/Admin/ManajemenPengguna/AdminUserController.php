@@ -14,13 +14,6 @@ use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
 {
-    /**
-     * Show the form for creating a new admin user.
-     */
-    public function create()
-    {
-        return view('home.home-admin.tambah-admin');
-    }
 
     /**
      * Store a newly created admin user.
@@ -35,9 +28,12 @@ class AdminUserController extends Controller
                 'unique:users',
                 'regex:/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/'
             ],
+            'name' => 'required|string|max:255',
             'no_hp' => 'nullable|string|max:20',
             'file_tanda_tangan' => 'required|file|mimes:jpeg,png,jpg|max:2048',
         ], [
+            'name.required' => 'Nama tidak boleh kosong',
+            'name.max' => 'Nama maksimal 255 karakter',
             'email.required' => 'Email tidak boleh kosong',
             'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id).',
             'email.unique' => 'Email sudah digunakan',
@@ -58,6 +54,7 @@ class AdminUserController extends Controller
             
             // Buat user admin dengan password acak
             $admin = User::create([
+                'name' => $request->name,
                 'email' => $request->email,
                 'password' => bcrypt(Str::random(16)), // Random secure password
                 'no_hp' => $request->no_hp,
@@ -98,8 +95,6 @@ class AdminUserController extends Controller
     public function update(Request $request, $id)
     {
         $admin = User::findOrFail($id);
-
-        // dd($request->all());
         
         $validator = Validator::make($request->all(), [
             'email' => [
@@ -110,9 +105,13 @@ class AdminUserController extends Controller
                 'unique:users,email,' . $admin->id_user . ',id_user',
                 'regex:/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/'
             ],
+            'name' => ['required', 'string', 'max:255'],
             'no_hp' => ['required', 'string', 'max:15'],
             'file_tanda_tangan' => 'nullable|mimes:jpeg,png,jpg,pdf',
         ], [
+            'name.required' => 'Nama tidak boleh kosong',
+            'name.max' => 'Nama maksimal 255 karakter',
+            'email.unique' => 'Email sudah digunakan',
             'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id).',
             'email.required' => 'Email tidak boleh kosong',
             'no_hp.required' => 'Nomor HP tidak boleh kosong',
@@ -129,6 +128,7 @@ class AdminUserController extends Controller
             DB::beginTransaction();
             
             // Update data admin
+            $admin->name = $request->name;
             $admin->email = $request->email;
             $admin->no_hp = $request->no_hp;
             $admin->save();
@@ -164,42 +164,6 @@ class AdminUserController extends Controller
             return redirect()->back()
                 ->with('error', 'Gagal memperbarui admin: ' . $e->getMessage())
                 ->withInput();
-        }
-    }
-    
-    /**
-     * Delete admin user.
-     */
-    public function destroy($id)
-    {
-        try {
-            $admin = User::findOrFail($id);
-            
-            // Pastikan tidak menghapus diri sendiri
-            if ($admin->id_user === auth()->user()->id_user) {
-                return redirect()->route('admin.pengguna.index')
-                    ->with('error', 'Anda tidak dapat menghapus akun yang sedang digunakan');
-            }
-            
-            // Hapus tanda tangan terlebih dahulu untuk menjaga integritas referensial
-            $tandaTangan = TandaTanganAdmin::where('id_user', $admin->id_user)->get();
-            foreach ($tandaTangan as $ttd) {
-                // Hapus file dari storage
-                if (Storage::disk('public')->exists($ttd->file_tanda_tangan)) {
-                    Storage::disk('public')->delete($ttd->file_tanda_tangan);
-                }
-                $ttd->delete();
-            }
-            
-            $admin->delete();
-            
-            return redirect()->route('admin.pengguna.index')
-                ->with('success', 'Admin berhasil dihapus');
-        } catch (\Exception $e) {
-            Log::error('Error deleting admin: ' . $e->getMessage());
-            
-            return redirect()->route('admin.pengguna.index')
-                ->with('error', 'Gagal menghapus admin: ' . $e->getMessage());
         }
     }
     

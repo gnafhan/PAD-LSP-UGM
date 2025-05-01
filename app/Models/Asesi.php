@@ -60,6 +60,12 @@ class Asesi extends Model
         return $this->hasOne(RincianAsesmen::class, 'id_asesi', 'id_asesi');
     }
 
+    //progress asesmen
+    public function progresAsesmen()
+    {
+        return $this->hasOne(ProgresAsesmen::class, 'id_asesi', 'id_asesi');
+    }
+
     protected static function boot()
     {
         parent::boot();

@@ -10,7 +10,11 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    @include('home.home-admin.partials.navbar')
+    @if (Auth::user()->level == 'admin')
+        @include('home.home-admin.partials.navbar')
+    @elseif (Auth::user()->level == 'asesi')
+        @include('home.home-asesi.partials.navbar')
+    @endif
     <main>
         @yield('content')
         @yield('scripts')

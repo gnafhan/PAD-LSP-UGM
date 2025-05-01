@@ -28,6 +28,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'id_user',
+        'name',
         'email',
         'password',
         'no_hp',
@@ -96,6 +97,18 @@ class User extends Authenticatable
                       ->orWhereNull('valid_until');
             })
             ->first();
+    }
+
+    //asesi
+    public function asesi()
+    {
+        return $this->hasOne(Asesi::class, 'id_user', 'id_user');
+    }
+
+    //asesi pengajuan
+    public function asesiPengajuan()
+    {
+        return $this->hasOne(AsesiPengajuan::class, 'id_user', 'id_user');
     }
 
     protected static function boot()

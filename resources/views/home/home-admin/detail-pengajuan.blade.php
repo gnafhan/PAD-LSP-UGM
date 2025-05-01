@@ -103,18 +103,28 @@
         <div class="max-w-5xl mx-auto">
             <!-- Header with breadcrumbs -->
             <div class="mb-6 flex justify-between items-center">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-900">Detail Permohonan Sertifikasi</h1>
-                    <div class="text-sm breadcrumbs mt-1">
-                        <ul class="flex text-gray-500 space-x-1">
-                            <li><a href="{{ route('home-admin') }}" class="hover:text-indigo-600">Dashboard</a></li>
-                            <li><span class="mx-1">/</span></li>
-                            <li><a href="{{ route('admin.asesi.index') }}" class="hover:text-indigo-600">Daftar Pengajuan</a></li>
-                            <li><span class="mx-1">/</span></li>
-                            <li class="text-gray-700 font-medium">{{ $asesiPengajuan->nama_user }}</li>
-                        </ul>
+                @if(Auth::user()->level === 'admin')
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Detail Permohonan Sertifikasi</h1>
+                        <div class="text-sm breadcrumbs mt-1">
+                            <ul class="flex text-gray-500 space-x-1">
+                                <li><a href="{{ route('home-admin') }}" class="hover:text-indigo-600">Dashboard</a></li>
+                                <li><span class="mx-1">/</span></li>
+                                <li><a href="{{ route('admin.asesi.index') }}" class="hover:text-indigo-600">Daftar Pengajuan</a></li>
+                                <li><span class="mx-1">/</span></li>
+                                <li class="text-gray-700 font-medium">{{ $asesiPengajuan->nama_user }}</li>
+                            </ul>
+                        </div>
                     </div>
+                @else    
+                <div class="flex justify-end mt-8">
+                    <button type="button" onclick="window.history.back()" class="btn-action px-5 py-2.5 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                         Kembali
+                   </button>
                 </div>
+                @endif
                 
                 <!-- Status Badge -->
                 <div>
@@ -132,6 +142,13 @@
                             </svg>
                             Pengajuan Ditolak
                         </span>
+                    @elseif($asesiPengajuan->status === 'needs_revision')
+                        <span class="status-badge px-4 py-2 bg-amber-100 text-amber-800 rounded-full text-sm font-medium inline-flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Menunggu Revisi
+                        </span>
                     @else
                         <span class="status-badge px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium inline-flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -147,8 +164,8 @@
                 </div>
             </div>
 
-                  <!-- Alert Messages -->
-      @if (session('success'))
+        <!-- Alert Messages -->
+        @if (session('success'))
         <div class="mb-8 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md" role="alert">
             <div class="flex">
                 <div class="flex-shrink-0">
@@ -223,6 +240,21 @@
                             </svg>
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        @if($asesiPengajuan->status === 'revised_by_asesi')
+        <div class="mb-8 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">Asesi telah menyelesaikan revisi. Mohon periksa data yang telah diperbarui.</p>
                 </div>
             </div>
         </div>
@@ -366,81 +398,64 @@
                     <div class="form-section mb-8">
                         <h2 class="section-header font-semibold text-lg text-gray-800 mb-3">Bagian 3: Bukti Kelengkapan Dokumen</h2>
                         
-                        @php
-                            // Decode JSON string to PHP array if it's a string
-                            $fileKelengkapan = is_string($asesiPengajuan->file_kelengkapan_pemohon) 
-                                ? json_decode($asesiPengajuan->file_kelengkapan_pemohon, true) 
-                                : $asesiPengajuan->file_kelengkapan_pemohon;
-                                
-                            // Define file type mapping
-                            $fileMapping = [
-                                'jenjang_siswa' => 'Ijazah Pendidikan',
-                                'transkrip' => 'Transkrip Nilai',
-                                'pengalaman_kerja' => 'Bukti Pengalaman Kerja',
-                                'magang' => 'Sertifikat Magang/PKL',
-                                'ktp' => 'KTP/Kartu Identitas',
-                                'foto' => 'Pas Foto',
-                            ];
+                    @php
+                        // Decode JSON string to PHP array if it's a string
+                        $fileKelengkapan = is_string($asesiPengajuan->file_kelengkapan_pemohon) 
+                            ? json_decode($asesiPengajuan->file_kelengkapan_pemohon, true) 
+                            : $asesiPengajuan->file_kelengkapan_pemohon;
                             
-                            // Extract file paths into categories and ensure they're prefixed with 'storage/'
-                            $documents = [];
-                            if (is_array($fileKelengkapan)) {
-                                foreach ($fileKelengkapan as $path) {
-                                    $pathParts = explode('/', $path);
-                                    if (count($pathParts) >= 3) {
-                                        $category = $pathParts[2];
-                                        // Check if path already starts with 'storage/'
-                                        if (strpos($path, 'storage/') !== 0) {
-                                            $path = 'storage/' . $path;
-                                        }
-                                        $documents[$category] = $path;
-                                    }
-                                }
-                            }
-                        @endphp
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                            @foreach($fileMapping as $key => $label)
-                                <div class="document-card bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-                                    <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-                                        <h5 class="font-medium text-gray-700">{{ $label }}</h5>
-                                        
-                                        @if(isset($documents[$key]))
-                                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Tersedia</span>
-                                        @else
-                                            <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Tidak Tersedia</span>
-                                        @endif
-                                    </div>
+                        // Define file type mapping - sesuaikan dengan key yang sebenarnya
+                        $fileMapping = [
+                            'bukti_jenjang_siswa' => 'Ijazah Pendidikan',
+                            'bukti_transkrip' => 'Transkrip Nilai',
+                            'bukti_pengalaman_kerja' => 'Bukti Pengalaman Kerja',
+                            'bukti_magang' => 'Sertifikat Magang/PKL',
+                            'bukti_ktp' => 'KTP/Kartu Identitas',
+                            'bukti_foto' => 'Pas Foto',
+                        ];
+                    @endphp
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        @foreach($fileMapping as $key => $label)
+                            <div class="document-card bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                                <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                                    <h5 class="font-medium text-gray-700">{{ $label }}</h5>
                                     
-                                    <div class="p-4">
-                                        @if(isset($documents[$key]))
-                                            <div class="pdf-container">
-                                                <object data="{{ asset($documents[$key]) }}" type="application/pdf" width="100%" height="100%">
-                                                    <iframe src="https://docs.google.com/viewer?url={{ urlencode(asset($documents[$key])) }}&embedded=true" width="100%" height="100%" frameborder="0">
-                                                        Browser tidak mendukung tampilan PDF. <a href="{{ asset($documents[$key]) }}" target="_blank">Klik untuk mengunduh</a>
-                                                    </iframe>
-                                                </object>
-                                            </div>
-                                            <div class="mt-3 flex justify-end">
-                                                <a href="{{ asset($documents[$key]) }}" target="_blank" class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                    </svg>
-                                                    Buka di tab baru
-                                                </a>
-                                            </div>
-                                        @else
-                                            <div class="h-48 flex flex-col items-center justify-center bg-gray-50 rounded border border-dashed border-gray-300">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                </svg>
-                                                <p class="mt-2 text-sm text-gray-500">Dokumen tidak tersedia</p>
-                                            </div>
-                                        @endif
-                                    </div>
+                                    @if(isset($fileKelengkapan[$key]) && !empty($fileKelengkapan[$key]))
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Tersedia</span>
+                                    @else
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Tidak Tersedia</span>
+                                    @endif
                                 </div>
-                            @endforeach
-                        </div>
+                                
+                                <div class="p-4">
+                                    @if(isset($fileKelengkapan[$key]) && !empty($fileKelengkapan[$key]))
+                                        <div class="pdf-container">
+                                            <object data="{{ asset($fileKelengkapan[$key]) }}" type="application/pdf" width="100%" height="100%">
+                                                <iframe src="https://docs.google.com/viewer?url={{ urlencode(asset($fileKelengkapan[$key])) }}&embedded=true" width="100%" height="100%" frameborder="0">
+                                                    Browser tidak mendukung tampilan PDF. <a href="{{ asset($fileKelengkapan[$key]) }}" target="_blank">Klik untuk mengunduh</a>
+                                                </iframe>
+                                            </object>
+                                        </div>
+                                        <div class="mt-3 flex justify-end">
+                                            <a href="{{ asset($fileKelengkapan[$key]) }}" target="_blank" class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                </svg>
+                                                Buka di tab baru
+                                            </a>
+                                        </div>
+                                    @else
+                                        <div class="h-48 flex flex-col items-center justify-center bg-gray-50 rounded border border-dashed border-gray-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <p class="mt-2 text-sm text-gray-500">Dokumen tidak tersedia</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                     
                     <!-- Tanda Tangan dan Persetujuan -->
@@ -494,24 +509,47 @@
                                 
                                 <div class="mb-3">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Admin</label>
+                                    @if (Auth::user()->level != 'admin')
+                                        <input type="text" value="{{ Auth::user()->asesiPengajuan->admin->name ?? 'Admin LSP' }}" class="w-full p-2 border border-gray-300 rounded-md bg-white text-gray-800" readonly />
+                                    @else
                                     <input type="text" value="{{ Auth::user()->name ?? 'Admin LSP' }}" class="w-full p-2 border border-gray-300 rounded-md bg-white text-gray-800" readonly />
+                                    @endif
                                 </div>
                                 
                                 <div class="signature-area flex flex-col items-center justify-center p-3 mt-2">
-                                    @php
-                                        $adminTtd = Auth::user()->tandaTanganAktif()->first();
-                                    @endphp
-                                    
-                                    @if($adminTtd && $adminTtd->file_tanda_tangan)
-                                        <img src="{{ asset('storage/' . $adminTtd->file_tanda_tangan) }}" alt="Tanda Tangan Admin" class="h-20 mb-2">
+                                    @if (Auth::user()->level != 'admin')
+                                        @php
+                                            $adminTtd = Auth::user()->asesiPengajuan->admin->getTandaTanganPadaWaktu($asesiPengajuan->waktu_tanda_tangan)->first();
+                                        @endphp
+                                        
+                                        @if($adminTtd && $adminTtd->file_tanda_tangan)
+                                            <img src="{{ asset('storage/' . $adminTtd->file_tanda_tangan) }}" alt="Tanda Tangan Admin" class="h-20 mb-2">
+                                        @else
+                                            <div class="text-center py-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                                <p class="mt-1 text-sm text-gray-500">Tanda tangan tidak tersedia</p>
+                                            </div>
+                                        @endif
                                     @else
-                                        <div class="text-center py-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                            <p class="mt-1 text-sm text-gray-500">Tanda tangan tidak tersedia</p>
-                                        </div>
+                                        @php
+                                            $adminTtd = Auth::user()->tandaTanganAktif()->first();
+                                        @endphp
+                                        
+                                        @if($adminTtd && $adminTtd->file_tanda_tangan)
+                                            <img src="{{ asset('storage/' . $adminTtd->file_tanda_tangan) }}" alt="Tanda Tangan Admin" class="h-20 mb-2">
+                                        @else
+                                            <div class="text-center py-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                                <p class="mt-1 text-s text-gray-500">Tanda tangan tidak tersedia</p>
+                                                <span class="mt-1 text-sm font-bold text-gray-500">Upload data tanda tangan di halaman Pengguna!</span>
+                                            </div>
+                                        @endif 
                                     @endif
+             
                                 </div>
                             </div>
                         </div>
@@ -530,34 +568,140 @@
                             @endif
                         </div>
                     </div>
+
+                    <!-- Formulir Revisi -->
+                    <div id="revision-section" class="form-section mb-8 {{ $asesiPengajuan->status === 'needs_revision' ? '' : 'hidden' }}">
+                        <h3 class="section-header text-lg text-gray-800">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Permintaan Revisi
+                            </div>
+                        </h3>
+                        
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            @if($asesiPengajuan->status === 'needs_revision')
+                                <div class="mb-4">
+                                    <div class="flex items-center mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span class="font-medium text-gray-700">Catatan Revisi:</span>
+                                    </div>
+                                    <div class="ml-7 p-3 bg-white rounded-md border border-gray-200 text-gray-700">
+                                        {{ $asesiPengajuan->revision_notes ?? 'Tidak ada catatan spesifik.' }}
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="flex items-center mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        </svg>
+                                        <span class="font-medium text-gray-700">Bagian yang Perlu Direvisi:</span>
+                                    </div>
+                                    <div class="ml-7">
+                                        <ul class="list-disc pl-5 text-gray-700 space-y-1">
+                                            @if(is_array($asesiPengajuan->sections_to_revise))
+                                                @foreach($asesiPengajuan->sections_to_revise as $section)
+                                                    <li class="text-gray-700">
+                                                        @if($section == \App\Models\AsesiPengajuan::STEP_DATA_PRIBADI)
+                                                            Data Pribadi
+                                                        @elseif($section == \App\Models\AsesiPengajuan::STEP_DATA_SERTIFIKASI)
+                                                            Data Sertifikasi
+                                                        @elseif($section == \App\Models\AsesiPengajuan::STEP_BUKTI_KELENGKAPAN)
+                                                            Bukti Kelengkapan
+                                                        @elseif($section == \App\Models\AsesiPengajuan::STEP_KONFIRMASI)
+                                                            Konfirmasi
+                                                        @endif
+                                                    </li>
+                                                @endforeach
+                                            @else
+                                                <li class="text-gray-500 italic">Tidak ada bagian spesifik yang ditandai.</li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                            @else
+                                <div class="mb-4">
+                                    <label for="revision_notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan Revisi</label>
+                                    <textarea id="revision_notes" name="revision_notes" rows="4" class="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Jelaskan bagian apa yang perlu direvisi dan instruksi spesifik..."></textarea>
+                                    <p class="text-xs text-gray-500 mt-1">Minimal 10 karakter. Berikan instruksi yang jelas kepada pemohon.</p>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Bagian yang Perlu Direvisi</label>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="revise_data_pribadi" name="sections_to_revise[]" value="{{ \App\Models\AsesiPengajuan::STEP_DATA_PRIBADI }}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                            <label for="revise_data_pribadi" class="ml-2 text-sm text-gray-700">Data Pribadi</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="revise_data_sertifikasi" name="sections_to_revise[]" value="{{ \App\Models\AsesiPengajuan::STEP_DATA_SERTIFIKASI }}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                            <label for="revise_data_sertifikasi" class="ml-2 text-sm text-gray-700">Data Sertifikasi</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="revise_bukti_kelengkapan" name="sections_to_revise[]" value="{{ \App\Models\AsesiPengajuan::STEP_BUKTI_KELENGKAPAN }}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                            <label for="revise_bukti_kelengkapan" class="ml-2 text-sm text-gray-700">Bukti Kelengkapan</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" id="btn-confirm-revision" class="mt-4 w-full bg-amber-600  bg-white border border-black-500 text-black-600 hover:bg-amber-700 text-black px-4 py-2 rounded-md transition flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Kirim Permintaan Revisi
+                            </button>
+                            @endif
+                        </div>
+                    </div>
                     
                     <!-- Tombol Aksi -->
-                    @if($asesiPengajuan->status_rekomendasi != 'Diterima' && $asesiPengajuan->status_rekomendasi != 'Ditolak')
-                        <div class="flex justify-end space-x-4 mt-8">
-                            <input type="hidden" name="action" id="form-action" value="">
-                            
-                            <button type="button" id="btn-reject" class="btn-action px-5 py-2.5 bg-white border border-red-500 text-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                                Tolak Pengajuan
-                            </button>
-                            
-                            <button type="button" id="btn-approve" class="btn-action px-5 py-2.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                Setujui Pengajuan
-                            </button>
-                        </div>
+                    @if(Auth::user()->level === 'admin')
+                        @if($asesiPengajuan->status_rekomendasi != 'Diterima' && $asesiPengajuan->status_rekomendasi != 'Ditolak')
+                            <div class="flex justify-end space-x-4 mt-8">
+                                <input type="hidden" name="action" id="form-action-input" value="">
+                                
+                                <button type="button" id="btn-reject" class="btn-action px-5 py-2.5 bg-white border border-red-500 text-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    Tolak Pengajuan
+                                </button>
+                                
+                                <button type="button" id="btn-revise" class="btn-action px-5 py-2.5 bg-white border border-amber-500 text-amber-600 rounded-md hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Minta Revisi
+                                </button>
+                                
+                                <button type="button" id="btn-approve" class="btn-action px-5 py-2.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    Setujui Pengajuan
+                                </button>
+                            </div>
+                        @else
+                            <div class="flex justify-end mt-8">
+                                <a href="{{ route('admin.asesi.index') }}" class="btn-action px-5 py-2.5 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                    </svg>
+                                    Kembali ke Daftar
+                                </a>
+                            </div>
+                        @endif
                     @else
                         <div class="flex justify-end mt-8">
-                            <a href="{{ route('admin.asesi.index') }}" class="btn-action px-5 py-2.5 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                            <button type="button" onclick="window.history.back()" class="btn-action px-5 py-2.5 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
-                                Kembali ke Daftar
-                            </a>
+                                Kembali
+                            </button>
                         </div>
                     @endif
                     </form>
@@ -572,20 +716,17 @@
 document.addEventListener('DOMContentLoaded', function() {
     const btnApprove = document.getElementById('btn-approve');
     const btnReject = document.getElementById('btn-reject');
+    const btnRevise = document.getElementById('btn-revise');
     const form = document.getElementById('process-pengajuan-form');
     const rejectReasonContainer = document.getElementById('reject-reason-container');
+    const revisionSection = document.getElementById('revision-section');
     const approveAdminCheckbox = document.getElementById('approve-admin');
     
-    // Fix the form action field - just use one clearly named field
-    // First, remove any duplicate fields
-    const duplicateField = document.querySelector('input[name="action"][id="form-action"]');
-    if (duplicateField) {
-        duplicateField.parentNode.removeChild(duplicateField);
-    }
-    
-    // Get the action input element (we'll use this one)
+    // Fix the form action field - pastikan hanya menggunakan satu field
     const actionInput = document.getElementById('form-action-input');
-    
+    const formAction = document.getElementById('form-action');
+    const confirmRevisionBtn = document.getElementById('btn-confirm-revision');
+
     if (btnApprove) {
         btnApprove.addEventListener('click', function() {
             if (!approveAdminCheckbox.checked) {
@@ -609,12 +750,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Set form action value
-                    document.getElementById('form-action').value = 'approve';
+                    // Set form action value pada kedua field
                     actionInput.value = 'approve';
-                    rejectReasonContainer.classList.add('hidden');
+                    if (formAction) formAction.value = 'approve';
                     
-                    // Simple form submission
+                    // Hide sections that shouldn't be visible
+                    rejectReasonContainer.classList.add('hidden');
+                    revisionSection.classList.add('hidden');
+                    
+                    // Submit form
                     form.submit();
                 }
             });
@@ -623,9 +767,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (btnReject) {
         btnReject.addEventListener('click', function() {
-            document.getElementById('form-action').value = 'reject';
+            // Set form action pada kedua field
             actionInput.value = 'reject';
+            if (formAction) formAction.value = 'reject';
+            
+            // Show reject section, hide revision section
             rejectReasonContainer.classList.remove('hidden');
+            revisionSection.classList.add('hidden');
             
             // Scroll to the rejection reason field
             rejectReasonContainer.scrollIntoView({ behavior: 'smooth' });
@@ -665,7 +813,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // Simple form submission
                             form.submit();
                         }
                     });
@@ -677,26 +824,73 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Handle URL parameters for notifications
-    const urlParams = new URLSearchParams(window.location.search);
-    const successMessage = urlParams.get('success');
-    const errorMessage = urlParams.get('error');
-    
-    if (successMessage) {
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: decodeURIComponent(successMessage),
-            confirmButtonColor: '#4F46E5'
+    // New handler for revision button
+    if (btnRevise) {
+        btnRevise.addEventListener('click', function() {
+            // Show revision form, hide reject section
+            revisionSection.classList.remove('hidden');
+            rejectReasonContainer.classList.add('hidden');
+            
+            // Set the action value pada kedua field
+            actionInput.value = 'revise';
+            if (formAction) formAction.value = 'revise';
+            
+            // Scroll to the revision section
+            revisionSection.scrollIntoView({ behavior: 'smooth' });
         });
     }
-    
-    if (errorMessage) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: decodeURIComponent(errorMessage),
-            confirmButtonColor: '#4F46E5'
+
+    // Event handler untuk tombol "Kirim Permintaan Revisi"
+    if (confirmRevisionBtn) {
+        confirmRevisionBtn.addEventListener('click', function() {
+            const notesField = document.getElementById('revision_notes');
+            const checkboxes = document.querySelectorAll('input[name="sections_to_revise[]"]:checked');
+            
+            if (!notesField.value || notesField.value.length < 10) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Catatan Revisi Diperlukan',
+                    text: 'Berikan catatan revisi minimal 10 karakter.',
+                    confirmButtonColor: '#4F46E5'
+                });
+                return;
+            }
+            
+            if (checkboxes.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pilih Bagian untuk Direvisi',
+                    text: 'Pilih minimal satu bagian yang perlu direvisi.',
+                    confirmButtonColor: '#4F46E5'
+                });
+                return;
+            }
+            
+            Swal.fire({
+                title: 'Kirim Permintaan Revisi?',
+                text: 'Apakah Anda yakin akan meminta asesi merevisi pengajuan ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#EAB308',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Ya, Kirim Permintaan',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Memastikan kedua field action terisi dengan benar
+                    actionInput.value = 'revise';
+                    if (formAction) formAction.value = 'revise';
+                    
+                    // Jika ada field alasan penolakan, kosongkan untuk mencegah validasi
+                    const reasonField = document.getElementById('alasan_penolakan');
+                    if (reasonField) {
+                        // Beri nilai placeholder agar lolos validasi jika diperlukan
+                        reasonField.value = "REVISI - TIDAK DIPERLUKAN";
+                    }
+                    
+                    form.submit();
+                }
+            });
         });
     }
 });

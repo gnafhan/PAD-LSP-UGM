@@ -144,6 +144,17 @@
 
                             <!-- Field Admin -->
                             <div id="admin_fields">
+                                <!-- Nama Admin Field -->
+                                <div class="mb-4">
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                                    <input type="text" name="name" id="name" 
+                                        class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror" 
+                                        placeholder="Contoh: John Doe" value="{{ old('name') }}">
+                                    @error('name')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
                                 <!-- No HP Admin Field -->
                                 <div class="mb-4">
                                     <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-1">Nomor HP <span class="text-red-500">*</span></label>
@@ -155,7 +166,6 @@
                                     @enderror
                                 </div>
 
-                                <!-- Add this inside the admin_fields div -->
                                 <div class="mb-4">
                                     <label for="file_tanda_tangan" class="block text-sm font-medium text-gray-700 mb-1">Tanda Tangan Admin <span class="text-red-500">*</span></label>
                                     <input type="file" name="file_tanda_tangan" id="file_tanda_tangan" 
