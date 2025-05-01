@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\DataUser\DataAsesorController;
+use App\Http\Controllers\Api\DataUser\DataAsesiController;
 use App\Http\Controllers\Api\Kompetensi\KompetensiTeknisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,11 @@ Route::middleware('api_key')->group(function () {
 
         // GET Kompetensi Teknis asesor
         Route::get('/kompetensi_teknis/{id}', [KompetensiTeknisController::class, 'index']);
+
+        // GET data for dashboard
+        Route::get('/dashboard/{id}', [DataAsesorController::class, 'dashboard_asesor']);
+        Route::get('/asesis/{id}', [DataAsesiController::class, 'get_asesis']);
+        Route::get('/progressAsesi/{id}', [DataAsesiController::class, 'get_progress_asesmen']);
     });
 });
 

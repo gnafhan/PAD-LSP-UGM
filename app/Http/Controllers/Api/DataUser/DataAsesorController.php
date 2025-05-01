@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\DataUser;
 
 use App\Http\Controllers\Controller;
+use App\Models\KompetensiTeknis;
+use App\Models\RincianAsesmen;
 use Illuminate\Http\Request;
 use App\Models\Asesor;
 use Illuminate\Support\Facades\Storage;
@@ -13,30 +15,6 @@ use Illuminate\Support\Facades\DB;
 
 class DataAsesorController extends Controller
 {
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function show_asesor()
-    {
-        // Ambil data asesor dengan paginasi, default 20 per halaman
-        $asesors = Asesor::latest()->paginate(20);
-
-        // Cek apakah ada data
-        if ($asesors->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data asesor tidak ditemukan',
-                'data' => []
-            ], 404); // Status Code 404 Not Found
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Data asesor berhasil diambil',
-            'data' => $asesors
-        ], 200); // Status Code 200 OK
-    }
 
     /**
      * Store a updated asesor's data resource in storage.
@@ -176,6 +154,10 @@ class DataAsesorController extends Controller
         }
     }
 
+
+    /**
+     * Show biodata asesor
+     */
     public function show_biodata(string $id)
     {
         // Cari data Asesor berdasarkan ID dengan tanda tangan aktif
@@ -199,5 +181,98 @@ class DataAsesorController extends Controller
             'message' => 'Data Asesor ditemukan',
             'data'    => $asesor
         ], 200);
+    }
+
+    /**
+     * Get data asesor for dashboard page
+     */
+    public function dashboard_asesor(string $id){
+        $asesor = Asesor::where('id_asesor', $id)->first();
+
+        if ($asesor){
+            $jumlahAsesi = RincianAsesmen::where('id_asesor', $id)->count();
+            $jumlahEvent = RincianAsesmen::where('id_asesor', $id)->distinct('id_event')->count('id_event');
+            $jumlahSkema = DB::table('rincian_asesmen')
+                ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
+                ->where('rincian_asesmen.id_asesor', $id)
+                ->distinct('asesi.id_skema')
+                ->count('asesi.id_skema');
+            $jumlahKompetensiTeknis = KompetensiTeknis::where('id_asesor', $id)->count();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Asesor ditemukan',
+                'data'    => [
+                    'nama_asesor' => $asesor->nama_asesor,
+                    'email_asesor' => $asesor->email,
+                    'jumlah_asesi' => $jumlahAsesi,
+                    'jumlah_event' => $jumlahEvent,
+                    'jumlah_skema' => $jumlahSkema,
+                    'jumlah_kompetensi_teknis' => $jumlahKompetensiTeknis
+                ]
+            ], 200);
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Data Asesor tidak ditemukan'
+        ], 404);
+    }
+
+    /**
+     * Get data asesi for asesor dashboard page
+     */
+    public function get_asesis(string $id){
+        $asesor = Asesor::where('id_asesor', $id)->first();
+
+        if ($asesor){
+            $asesis = DB::table('rincian_asesmen')
+            ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
+            ->where('rincian_asesmen.id_asesor', $id)
+            ->join('skema', 'asesi.id_skema', '=', 'skema.id_skema')
+            ->select('asesi.id_asesi', 'asesi.nama_asesi', 'skema.nama_skema', 'skema.nomor_skema');
+            if ($asesis){
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data Daftar Asesi ditemukan',
+                    'data'    => [
+                        'asesis' => $asesis->get(),
+                        'jumlah_asesi' => $asesis->count()
+                    ]
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data Asesi tidak ditemukan'
+                ], 404);
+            }
+
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Data Asesor tidak ditemukan'
+        ], 404);
+    }
+
+    /**
+     * Get asesi's progress asesmen
+     */
+    public function get_progress_asesmen(string $id){
+        $asesi = DB::table('rincian_asesmen')
+            ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
+            ->where('rincian_asesmen.id_asesi', $id)
+            ->select('rincian_asesmen.*', 'asesi.nama_asesi')
+            ->first();
+
+        if ($asesi){
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Asesi ditemukan',
+                'data'    => $asesi
+            ], 200);
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Data Asesi tidak ditemukan'
+        ], 404);
     }
 }
