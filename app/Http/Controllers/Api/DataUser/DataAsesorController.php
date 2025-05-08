@@ -12,12 +12,107 @@ use App\Models\TandaTanganAsesor;
 use Illuminate\Support\Facades\DB;
 
 
-
+/**
+ * @OA\Tag(
+ *     name="Asesor",
+ *     description="API Endpoints untuk pengelolaan data Asesor"
+ * )
+ */
 class DataAsesorController extends Controller
 {
 
     /**
-     * Store a updated asesor's data resource in storage.
+     * Update biodata asesor
+     * 
+     * @OA\Post(
+     *     path="/asesor/biodata/{id}",
+     *     summary="Update data asesor",
+     *     tags={"Asesor"},
+     *     security={{"api_key":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID asesor",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"_method", "nama_asesor", "no_sertifikat", "no_hp", "alamat", "bidang", 
+     *                          "gelar_depan", "gelar_belakang", "no_ktp", "jenis_kelamin", 
+     *                          "pendidikan_terakhir", "keahlian", "tempat_lahir", "tanggal_lahir",
+     *                          "kebangsaan", "no_lisensi", "institusi_asal", "no_telp_institusi_asal",
+     *                          "fax_institusi_asal", "email_institusi_asal"},
+     *                 @OA\Property(
+     *                     property="_method", 
+     *                     type="string", 
+     *                     default="PUT",
+     *                     description="Method spoofing untuk Laravel"
+     *                 ),
+     *                 @OA\Property(property="nama_asesor", type="string", example="John Doe"),
+     *                 @OA\Property(property="no_sertifikat", type="string", example="CERT123456"),
+     *                 @OA\Property(property="no_hp", type="string", example="081234567890"),
+     *                 @OA\Property(property="alamat", type="string", example="Jl. Contoh No. 123"),
+     *                 @OA\Property(property="bidang", type="string", example="Teknologi Informasi"),
+     *                 @OA\Property(property="gelar_depan", type="string", example="Dr."),
+     *                 @OA\Property(property="gelar_belakang", type="string", example="S.Kom., M.T."),
+     *                 @OA\Property(property="no_ktp", type="string", example="3301012345678901"),
+     *                 @OA\Property(property="jenis_kelamin", type="string", example="Laki-laki"),
+     *                 @OA\Property(property="pendidikan_terakhir", type="string", example="S2"),
+     *                 @OA\Property(property="keahlian", type="string", example="Software Engineering"),
+     *                 @OA\Property(property="tempat_lahir", type="string", example="Jakarta"),
+     *                 @OA\Property(property="tanggal_lahir", type="string", format="date", example="1990-01-01"),
+     *                 @OA\Property(property="kebangsaan", type="string", example="Indonesia"),
+     *                 @OA\Property(property="no_lisensi", type="string", example="LSN123456"),
+     *                 @OA\Property(property="institusi_asal", type="string", example="Universitas Gadjah Mada"),
+     *                 @OA\Property(property="no_telp_institusi_asal", type="string", example="0274123456"),
+     *                 @OA\Property(property="fax_institusi_asal", type="string", example="0274654321"),
+     *                 @OA\Property(property="email_institusi_asal", type="string", format="email", example="info@ugm.ac.id"),
+     *                 @OA\Property(
+     *                     property="tanda_tangan",
+     *                     description="File tanda tangan",
+     *                     type="file",
+     *                     format="binary"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="foto_asesor",
+     *                     description="Foto asesor",
+     *                     type="file",
+     *                     format="binary"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Data asesor berhasil diupdate",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Data Asesor berhasil diupdate"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Data asesor tidak ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data Asesor tidak ditemukan")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validasi gagal",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validasi gagal"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
      */
     public function update_biodata(Request $request, string $id)
     {
@@ -26,7 +121,6 @@ class DataAsesorController extends Controller
             'nama_asesor'               => 'required|string|max:255',
             'no_sertifikat'             => 'required|string|max:255',
             'no_hp'                     => 'required|string|max:20',
-            'email'                     => 'required|email|max:255',
             'alamat'                    => 'required|string|max:255',
             'bidang'                    => 'required|string|max:255',
             'gelar_depan'               => 'required|string|max:255',
@@ -45,7 +139,6 @@ class DataAsesorController extends Controller
             'email_institusi_asal'      => 'required|email|max:255',
             'tanda_tangan'              => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
-            // ...existing validation messages...
             'tanda_tangan.image'        => 'File tanda tangan harus berupa gambar',
             'tanda_tangan.mimes'        => 'Format tanda tangan harus jpeg, png, jpg, atau gif',
             'tanda_tangan.max'          => 'Ukuran tanda tangan maksimal 2MB',
@@ -74,7 +167,6 @@ class DataAsesorController extends Controller
             'nama_asesor'               => $request->nama_asesor,
             'no_sertifikat'             => $request->no_sertifikat,
             'no_hp'                     => $request->no_hp,
-            'email'                     => $request->email,
             'alamat'                    => $request->alamat,
             'bidang'                    => $request->bidang,
             'gelar_depan'               => $request->gelar_depan,
@@ -157,6 +249,37 @@ class DataAsesorController extends Controller
 
     /**
      * Show biodata asesor
+     * 
+     * @OA\Get(
+     *     path="/asesor/biodata/{id}",
+     *     summary="Mendapatkan data biodata asesor",
+     *     tags={"Asesor"},
+     *     security={{"api_key":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID asesor",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Data asesor ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Data Asesor ditemukan"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Data asesor tidak ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data Asesor tidak ditemukan")
+     *         )
+     *     )
+     * )
      */
     public function show_biodata(string $id)
     {
@@ -185,6 +308,44 @@ class DataAsesorController extends Controller
 
     /**
      * Get data asesor for dashboard page
+     * 
+     * @OA\Get(
+     *     path="/asesor/dashboard/{id}",
+     *     summary="Mendapatkan data dashboard asesor",
+     *     tags={"Asesor"},
+     *     security={{"api_key":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID asesor",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Data asesor ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Data Asesor ditemukan"),
+     *             @OA\Property(property="data", type="object", 
+     *                  @OA\Property(property="nama_asesor", type="string", example="John Doe"),
+     *                  @OA\Property(property="email_asesor", type="string", example="john@example.com"),
+     *                  @OA\Property(property="jumlah_asesi", type="integer", example=10),
+     *                  @OA\Property(property="jumlah_event", type="integer", example=5),
+     *                  @OA\Property(property="jumlah_skema", type="integer", example=3),
+     *                  @OA\Property(property="jumlah_kompetensi_teknis", type="integer", example=4)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Data asesor tidak ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data Asesor tidak ditemukan")
+     *         )
+     *     )
+     * )
      */
     public function dashboard_asesor(string $id){
         $asesor = Asesor::where('id_asesor', $id)->first();
@@ -215,64 +376,6 @@ class DataAsesorController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'Data Asesor tidak ditemukan'
-        ], 404);
-    }
-
-    /**
-     * Get data asesi for asesor dashboard page
-     */
-    public function get_asesis(string $id){
-        $asesor = Asesor::where('id_asesor', $id)->first();
-
-        if ($asesor){
-            $asesis = DB::table('rincian_asesmen')
-            ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
-            ->where('rincian_asesmen.id_asesor', $id)
-            ->join('skema', 'asesi.id_skema', '=', 'skema.id_skema')
-            ->select('asesi.id_asesi', 'asesi.nama_asesi', 'skema.nama_skema', 'skema.nomor_skema');
-            if ($asesis){
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Data Daftar Asesi ditemukan',
-                    'data'    => [
-                        'asesis' => $asesis->get(),
-                        'jumlah_asesi' => $asesis->count()
-                    ]
-                ], 200);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Data Asesi tidak ditemukan'
-                ], 404);
-            }
-
-        }
-        return response()->json([
-            'success' => false,
-            'message' => 'Data Asesor tidak ditemukan'
-        ], 404);
-    }
-
-    /**
-     * Get asesi's progress asesmen
-     */
-    public function get_progress_asesmen(string $id){
-        $asesi = DB::table('rincian_asesmen')
-            ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
-            ->where('rincian_asesmen.id_asesi', $id)
-            ->select('rincian_asesmen.*', 'asesi.nama_asesi')
-            ->first();
-
-        if ($asesi){
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Asesi ditemukan',
-                'data'    => $asesi
-            ], 200);
-        }
-        return response()->json([
-            'success' => false,
-            'message' => 'Data Asesi tidak ditemukan'
         ], 404);
     }
 }

@@ -8,9 +8,68 @@ use App\Models\Asesor;
 use Illuminate\Support\Facades\Validator;
 use App\Models\KompetensiTeknis;
 
-
+/**
+ * @OA\Tag(
+ *     name="Asesor",
+ *     description="API Endpoints untuk pengelolaan kompetensi teknis asesor"
+ * )
+ */
 class KompetensiTeknisController extends Controller
 {
+        /**
+     * Get data kompetensi teknis asesor
+     * 
+     * @OA\Get(
+     *     path="/asesor/kompetensi_teknis/{id}",
+     *     summary="Mendapatkan data kompetensi teknis asesor",
+     *     tags={"Kompetensi Teknis"},
+     *     security={{"api_key":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID asesor",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Data asesor ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Data Asesor ditemukan"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="asesor", type="object",
+     *                     @OA\Property(property="id_asesor", type="string", example="1"),
+     *                     @OA\Property(property="nama_asesor", type="string", example="John Doe"),
+     *                     @OA\Property(property="masa_berlaku", type="string", example="01-01-2025"),
+     *                     @OA\Property(property="no_sertifikat", type="string", example="CERT123456"),
+     *                     @OA\Property(property="jumlah_skema", type="integer", example=3),
+     *                     @OA\Property(property="status_asesor", type="string", example="Aktif"),
+     *                     @OA\Property(property="file_sertifikat", type="string", example="cert123.pdf")
+     *                 ),
+     *                 @OA\Property(property="kompetensi_teknis", type="array", 
+     *                     @OA\Items(
+     *                         @OA\Property(property="id_kompetensi_teknis", type="string", example="1"),
+     *                         @OA\Property(property="lembaga_sertifikasi", type="string", example="LSP UGM"),
+     *                         @OA\Property(property="skema_kompetensi", type="string", example="Software Developer"),
+     *                         @OA\Property(property="masa_berlaku", type="string", example="01-01-2025"),
+     *                         @OA\Property(property="file_sertifikat", type="string", example="cert_teknis123.pdf"),
+     *                         @OA\Property(property="file_url", type="string", example="http://localhost/storage/sertifikat/cert_teknis123.pdf")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Data asesor tidak ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data Asesor tidak ditemukan")
+     *         )
+     *     )
+     * )
+     */
     public function index(string $id)
     {
         // Cari data Asesor berdasarkan ID dengan eager loading kompetensiTeknis

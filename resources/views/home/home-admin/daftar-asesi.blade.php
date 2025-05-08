@@ -70,9 +70,9 @@
                 <div class="ml-4">
                     <h4 class="text-sm font-medium text-blue-800">Pengajuan Baru & Revisi</h4>
                     <div class="mt-1 flex space-x-2">
-                        <span class="text-lg font-semibold text-blue-900">{{ $pengajuanBaru->total() }}</span>
+                        <span class="text-sm font-semibold text-blue-900">{{ $pengajuanBaru->total() }} Pengajuan </span>
                         <span class="text-gray-500">|</span>
-                        <span class="text-lg font-semibold text-amber-600">{{ $pengajuanRevisi->total() }}</span>
+                        <span class="text-sm font-semibold text-amber-600">{{ $pengajuanRevisi->total() }} Revisi </span>
                     </div>
                 </div>
             </div>

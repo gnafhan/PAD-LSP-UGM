@@ -1,0 +1,767 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "LSP UGM API Documentation",
+        "description": "API Documentation for LSP UGM Application",
+        "contact": {
+            "name": "Administrator",
+            "email": "admin@lsp-ugm.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/v1",
+            "description": "LSP UGM API Server"
+        }
+    ],
+    "paths": {
+        "/asesor/asesis/{id}": {
+            "get": {
+                "tags": [
+                    "Asesi"
+                ],
+                "summary": "Mendapatkan daftar asesi berdasarkan asesor",
+                "description": "Get data asesi for asesor dashboard page",
+                "operationId": "0406acfbaca292cbb0814f0e327e8405",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID asesor",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor ditemukan"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "asesis": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id_asesi": {
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "nama_asesi": {
+                                                                "type": "string",
+                                                                "example": "Jane Doe"
+                                                            },
+                                                            "nama_skema": {
+                                                                "type": "string",
+                                                                "example": "Software Development"
+                                                            },
+                                                            "nomor_skema": {
+                                                                "type": "string",
+                                                                "example": "SKM-001"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "jumlah_asesi": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data asesor tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor tidak ditemukan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesor/progressAsesi/{id}": {
+            "get": {
+                "tags": [
+                    "Asesi"
+                ],
+                "summary": "Mendapatkan data progres asesmen asesi",
+                "description": "Get asesi's progress asesmen",
+                "operationId": "87ee5a5b03dd7ee23b2e0d032880eebe",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID asesi",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Progress Asesmen ditemukan"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "progress_asesmen": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Progress Asesmen tidak ditemukan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesor/biodata/{id}": {
+            "get": {
+                "tags": [
+                    "Asesor"
+                ],
+                "summary": "Mendapatkan data biodata asesor",
+                "description": "Show biodata asesor",
+                "operationId": "13832adc2884086705f00d7c73c681ac",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID asesor",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data asesor ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor ditemukan"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data asesor tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor tidak ditemukan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Asesor"
+                ],
+                "summary": "Update data asesor",
+                "description": "Update biodata asesor",
+                "operationId": "02e858c28c38a7f12ef6c50cb19a3c28",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID asesor",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "_method",
+                                    "nama_asesor",
+                                    "no_sertifikat",
+                                    "no_hp",
+                                    "alamat",
+                                    "bidang",
+                                    "gelar_depan",
+                                    "gelar_belakang",
+                                    "no_ktp",
+                                    "jenis_kelamin",
+                                    "pendidikan_terakhir",
+                                    "keahlian",
+                                    "tempat_lahir",
+                                    "tanggal_lahir",
+                                    "kebangsaan",
+                                    "no_lisensi",
+                                    "institusi_asal",
+                                    "no_telp_institusi_asal",
+                                    "fax_institusi_asal",
+                                    "email_institusi_asal"
+                                ],
+                                "properties": {
+                                    "_method": {
+                                        "description": "Method spoofing untuk Laravel",
+                                        "type": "string",
+                                        "default": "PUT"
+                                    },
+                                    "nama_asesor": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "no_sertifikat": {
+                                        "type": "string",
+                                        "example": "CERT123456"
+                                    },
+                                    "no_hp": {
+                                        "type": "string",
+                                        "example": "081234567890"
+                                    },
+                                    "alamat": {
+                                        "type": "string",
+                                        "example": "Jl. Contoh No. 123"
+                                    },
+                                    "bidang": {
+                                        "type": "string",
+                                        "example": "Teknologi Informasi"
+                                    },
+                                    "gelar_depan": {
+                                        "type": "string",
+                                        "example": "Dr."
+                                    },
+                                    "gelar_belakang": {
+                                        "type": "string",
+                                        "example": "S.Kom., M.T."
+                                    },
+                                    "no_ktp": {
+                                        "type": "string",
+                                        "example": "3301012345678901"
+                                    },
+                                    "jenis_kelamin": {
+                                        "type": "string",
+                                        "example": "Laki-laki"
+                                    },
+                                    "pendidikan_terakhir": {
+                                        "type": "string",
+                                        "example": "S2"
+                                    },
+                                    "keahlian": {
+                                        "type": "string",
+                                        "example": "Software Engineering"
+                                    },
+                                    "tempat_lahir": {
+                                        "type": "string",
+                                        "example": "Jakarta"
+                                    },
+                                    "tanggal_lahir": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1990-01-01"
+                                    },
+                                    "kebangsaan": {
+                                        "type": "string",
+                                        "example": "Indonesia"
+                                    },
+                                    "no_lisensi": {
+                                        "type": "string",
+                                        "example": "LSN123456"
+                                    },
+                                    "institusi_asal": {
+                                        "type": "string",
+                                        "example": "Universitas Gadjah Mada"
+                                    },
+                                    "no_telp_institusi_asal": {
+                                        "type": "string",
+                                        "example": "0274123456"
+                                    },
+                                    "fax_institusi_asal": {
+                                        "type": "string",
+                                        "example": "0274654321"
+                                    },
+                                    "email_institusi_asal": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "info@ugm.ac.id"
+                                    },
+                                    "tanda_tangan": {
+                                        "description": "File tanda tangan",
+                                        "type": "file",
+                                        "format": "binary"
+                                    },
+                                    "foto_asesor": {
+                                        "description": "Foto asesor",
+                                        "type": "file",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data asesor berhasil diupdate",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor berhasil diupdate"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data asesor tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor tidak ditemukan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validasi gagal"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesor/dashboard/{id}": {
+            "get": {
+                "tags": [
+                    "Asesor"
+                ],
+                "summary": "Mendapatkan data dashboard asesor",
+                "description": "Get data asesor for dashboard page",
+                "operationId": "180e9d3bb5c7ec05ade257531f39d3df",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID asesor",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data asesor ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor ditemukan"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "nama_asesor": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email_asesor": {
+                                                    "type": "string",
+                                                    "example": "john@example.com"
+                                                },
+                                                "jumlah_asesi": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "jumlah_event": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "jumlah_skema": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "jumlah_kompetensi_teknis": {
+                                                    "type": "integer",
+                                                    "example": 4
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data asesor tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor tidak ditemukan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesor/kompetensi_teknis/{id}": {
+            "get": {
+                "tags": [
+                    "Kompetensi Teknis"
+                ],
+                "summary": "Mendapatkan data kompetensi teknis asesor",
+                "description": "Get data kompetensi teknis asesor",
+                "operationId": "42c0d8ced7f693c8f545f01452a41104",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID asesor",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data asesor ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor ditemukan"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "asesor": {
+                                                    "properties": {
+                                                        "id_asesor": {
+                                                            "type": "string",
+                                                            "example": "1"
+                                                        },
+                                                        "nama_asesor": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        },
+                                                        "masa_berlaku": {
+                                                            "type": "string",
+                                                            "example": "01-01-2025"
+                                                        },
+                                                        "no_sertifikat": {
+                                                            "type": "string",
+                                                            "example": "CERT123456"
+                                                        },
+                                                        "jumlah_skema": {
+                                                            "type": "integer",
+                                                            "example": 3
+                                                        },
+                                                        "status_asesor": {
+                                                            "type": "string",
+                                                            "example": "Aktif"
+                                                        },
+                                                        "file_sertifikat": {
+                                                            "type": "string",
+                                                            "example": "cert123.pdf"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "kompetensi_teknis": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id_kompetensi_teknis": {
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "lembaga_sertifikasi": {
+                                                                "type": "string",
+                                                                "example": "LSP UGM"
+                                                            },
+                                                            "skema_kompetensi": {
+                                                                "type": "string",
+                                                                "example": "Software Developer"
+                                                            },
+                                                            "masa_berlaku": {
+                                                                "type": "string",
+                                                                "example": "01-01-2025"
+                                                            },
+                                                            "file_sertifikat": {
+                                                                "type": "string",
+                                                                "example": "cert_teknis123.pdf"
+                                                            },
+                                                            "file_url": {
+                                                                "type": "string",
+                                                                "example": "http://localhost/storage/sertifikat/cert_teknis123.pdf"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Data asesor tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data Asesor tidak ditemukan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "FileUpload": {
+                "description": "File upload schema untuk tanda tangan dan foto",
+                "properties": {
+                    "file": {
+                        "description": "File yang akan diupload",
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "api_key": {
+                "type": "apiKey",
+                "name": "API_KEY",
+                "in": "header"
+            },
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "name": "API_KEY",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Asesi",
+            "description": "API Endpoints untuk pengelolaan data Asesi"
+        },
+        {
+            "name": "Asesor",
+            "description": "API Endpoints untuk pengelolaan kompetensi teknis asesor"
+        },
+        {
+            "name": "Kompetensi Teknis",
+            "description": "Kompetensi Teknis"
+        }
+    ],
+    "externalDocs": {
+        "description": "Panduan Penggunaan API",
+        "url": "https://lsp-ugm.com/api-docs"
+    }
+}

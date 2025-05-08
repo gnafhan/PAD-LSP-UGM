@@ -9,12 +9,58 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Asesi;
 use App\Models\RincianAsesmen;
 
-
+/**
+ * @OA\Tag(
+ *     name="Asesi",
+ *     description="API Endpoints untuk pengelolaan data Asesi"
+ * )
+ */
 class DataAsesiController extends Controller
 {
 
     /**
      * Get data asesi for asesor dashboard page
+     * 
+     * @OA\Get(
+     *     path="/asesor/asesis/{id}",
+     *     summary="Mendapatkan daftar asesi berdasarkan asesor",
+     *     tags={"Asesi"},
+     *     security={{"api_key":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID asesor",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Data ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Data Asesor ditemukan"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="asesis", type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="id_asesi", type="string", example="1"),
+     *                         @OA\Property(property="nama_asesi", type="string", example="Jane Doe"),
+     *                         @OA\Property(property="nama_skema", type="string", example="Software Development"),
+     *                         @OA\Property(property="nomor_skema", type="string", example="SKM-001")
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="jumlah_asesi", type="integer", example=5)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Data asesor tidak ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data Asesor tidak ditemukan")
+     *         )
+     *     )
+     * )
      */
     public function get_asesis(string $id){
         $asesor = Asesor::where('id_asesor', $id)->first();
@@ -50,6 +96,39 @@ class DataAsesiController extends Controller
 
     /**
      * Get asesi's progress asesmen
+     * 
+     * @OA\Get(
+     *     path="/asesor/progressAsesi/{id}",
+     *     summary="Mendapatkan data progres asesmen asesi",
+     *     tags={"Asesi"},
+     *     security={{"api_key":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID asesi",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Data ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Data Progress Asesmen ditemukan"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="progress_asesmen", type="object")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Data tidak ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Data Progress Asesmen tidak ditemukan")
+     *         )
+     *     )
+     * )
      */
     public function get_progress_asesmen(string $id){
         $progress_asesmen = ProgresAsesmen::where('id_asesi', $id)->first();

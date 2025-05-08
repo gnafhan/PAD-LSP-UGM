@@ -5,6 +5,14 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\SecurityScheme(
+ *      securityScheme="ApiKeyAuth",
+ *      in="header",
+ *      name="API_KEY",
+ *      type="apiKey"
+ * )
+ */
 class ApiKeyMiddleware
 {
     public function handle(Request $request, Closure $next)

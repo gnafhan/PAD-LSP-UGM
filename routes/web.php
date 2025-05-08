@@ -18,6 +18,12 @@ use App\Http\Controllers\Admin\ManajemenPengguna\AdminUserController;
 use App\Http\Controllers\Admin\ManajemenPengguna\KompetensiTeknisController;
 use App\Http\Controllers\Admin\ManajemenTUK\TukController;
 use App\Http\Controllers\Admin\ManajemenTUK\PenanggungJawabController;
+use App\Http\Controllers\SwaggerController;
+
+
+// API Documentation
+Route::get('api/documentation', [SwaggerController::class, 'index'])
+    ->name('l5-swagger.default.api');
 
 // Level: user
 Route::middleware(['role:user'])->prefix('user')->group(function () {
