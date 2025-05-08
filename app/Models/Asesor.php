@@ -119,4 +119,14 @@ class Asesor extends Model
             })
             ->first();
     }
+
+    public function asesi()
+    {
+        return $this->belongsToMany(Asesi::class, 'rincian_asesmen', 'id_asesor', 'id_asesi');
+    }
+    
+    public function rincianAsesmen()
+    {
+        return $this->hasMany(RincianAsesmen::class, 'id_asesor', 'id_asesor');
+    }
 }

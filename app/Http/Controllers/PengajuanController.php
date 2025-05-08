@@ -1,365 +1,693 @@
 <?php
+// filepath: app/Http/Controllers/PengajuanController.php
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\AsesiPengajuan;
 use App\Models\Skema;
 use App\Models\UK;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class PengajuanController extends Controller
 {
+    /**
+     * Show the persetujuan TTD form
+     */
     public function indexPersetujuan()
     {
-        // if (!auth()->check()) {
-        //     return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
-        // }
-
+        // Jika user sudah memiliki pengajuan, redirect ke konfirmasi
         $idUser = auth()->user()->id_user;
-
-        // Ambil data dari tabel asesi_pengajuan berdasarkan id_user
-        $asesiPengajuan = AsesiPengajuan::where('id_user', $idUser)->first();
+        $asesiPengajuan = AsesiPengajuan::where('id_user', $idUser)
+                            ->whereIn('status', [
+                                AsesiPengajuan::STATUS_DRAFT,
+                                AsesiPengajuan::STATUS_NEEDS_REVISION,
+                                AsesiPengajuan::STATUS_REJECTED,
+                                AsesiPengajuan::STATUS_SUBMITTED,
+                                AsesiPengajuan::STATUS_REVISED_BY_ASESI
+                            ])
+                            ->first();
 
         if ($asesiPengajuan) {
-            return view('home.home-visitor.APL-01.konfirmasi', compact('asesiPengajuan'));
-        }
-
-        $data = auth()->user()->email;
-
-        return view('home.home-visitor.persetujuan', compact('data'));
-    }
-
-    public function saveDataPersetujuan(Request $request)
-    {
-        try {
-            if (! $request->hasFile('signature')) {
-                return response()->json(['errors' => ['signature' => ['Tanda tangan wajib diisi.']]], 422);
+            // If status is approved, redirect to home-asesi
+            if ($asesiPengajuan->status == AsesiPengajuan::STATUS_APPROVED) {
+                return redirect()->route('home.asesi');
             }
 
-            $validatedData = $request->validate([
-                'signature' => 'file|mimes:jpg,jpeg,png|max:2048',
-            ], [
-                'signature.file' => 'Tanda tangan harus berupa file jpg, jpeg, atau png.',
-                'signature.mimes' => 'Tanda tangan harus berupa file jpg, jpeg, atau png.',
-                'signature.max' => 'Ukuran file tanda tangan tidak boleh lebih dari 2048.',
-            ]);
+            // Otherwise redirect to confirmation page
+            return redirect()->route('user.apl1.konfirmasi')
+                ->with('info', 'Anda sudah memiliki pengajuan sertifikasi.');
+        }
 
-            // Dapatkan user ID dari user yang sedang login
+        // Get current user
+        $user = Auth::user();
+        $data = $user->name ?? $user->email ?? 'User';
+
+        return view('home.home-visitor.persetujuan', [
+            'data' => $data,
+        ]);
+    }
+
+    /**
+     * Save persetujuan TTD data
+     */
+    public function saveDataPersetujuan(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'signature' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'signature.required' => 'Anda harus mengupload tanda tangan digital',
+            'signature.mimes' => 'Format tanda tangan harus berupa PNG, JPG, atau JPEG',
+            'signature.max' => 'Ukuran file maksimal 2MB'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            // Get current user's ID
             $user = auth()->user();
             $userId = $user->id_user;
 
-            $signatureFile = $request->file('signature');
-            $fileName = 'ttd_'.$userId.'.'.$signatureFile->getClientOriginalExtension();
-            $ttd_pemohon = $signatureFile->storeAs('signatures', $fileName);
+            // Create filename pattern for existing signature
+            $filePattern = 'ttd_' . $userId . '.*';
 
-            session()->put('dataPersetujuan', ['ttd_pemohon' => $ttd_pemohon]);
-
-            return response()->json(['message' => 'Data berhasil disimpan'], 200);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-
-        } catch (\Exception $e) {
-            Log::error('Error menyimpan tanda tangan: '.$e->getMessage());
-
-            return response()->json(['error' => 'Terjadi kesalahan saat menyimpan data'], 500);
-        }
-    }
-
-    public function saveDataPribadi(Request $request)
-    {
-        $request->validate([
-            'nama_user' => 'required|string|max:150',
-            'nik' => 'required|string|max:20',
-            'nim' => 'required|string|max:20',
-            'kota_domisili' => 'required|string|max:100',
-            'tempat_tanggal_lahir' => 'required|string|max:200',
-            'jenis_kelamin' => 'required|string|max:20',
-            'kebangsaan' => 'required|string|max:20',
-            'alamat_rumah' => 'required|string|max:200',
-            'no_telp' => 'required|string|max:20',
-            'pendidikan_terakhir' => 'required|string|max:100',
-            'status_pekerjaan' => 'required|string|max:20',
-            'nama_perusahaan' => 'required|string|max:100',
-            'jabatan' => 'required|string|max:100',
-            'alamat_perusahaan' => 'required|string',
-            'no_telp_perusahaan' => 'required|string|max:20',
-        ], [
-            'nama_user.required' => 'Nama lengkap wajib diisi.',
-            'nama_user.string' => 'Nama lengkap harus berupa teks.',
-            'nama_user.max' => 'Nama lengkap tidak boleh lebih dari 150 karakter.',
-
-            'nik.required' => 'NIK wajib diisi.',
-            'nik.string' => 'NIK harus berupa teks.',
-            'nik.max' => 'NIK tidak boleh lebih dari 20 karakter.',
-
-            'nim.required' => 'NIM wajib diisi.',
-            'nim.string' => 'NIM harus berupa teks.',
-            'nim.max' => 'NIM tidak boleh lebih dari 20 karakter.',
-
-            'kota_domisili.required' => 'Kota domisili wajib diisi.',
-            'kota_domisili.string' => 'Kota domisili harus berupa teks.',
-            'kota_domisili.max' => 'Kota domisili tidak boleh lebih dari 100 karakter.',
-
-            'tempat_tanggal_lahir.required' => 'Tempat dan tanggal lahir wajib diisi.',
-            'tempat_tanggal_lahir.string' => 'Tempat dan tanggal lahir harus berupa teks.',
-            'tempat_tanggal_lahir.max' => 'Tempat dan tanggal lahir tidak boleh lebih dari 200 karakter.',
-
-            'jenis_kelamin.required' => 'Jenis kelamin wajib diisi.',
-            'jenis_kelamin.string' => 'Jenis kelamin harus berupa teks.',
-            'jenis_kelamin.max' => 'Jenis kelamin tidak boleh lebih dari 20 karakter.',
-
-            'kebangsaan.required' => 'Kebangsaan wajib diisi.',
-            'kebangsaan.string' => 'Kebangsaan harus berupa teks.',
-            'kebangsaan.max' => 'Kebangsaan tidak boleh lebih dari 20 karakter.',
-
-            'alamat_rumah.required' => 'Alamat rumah wajib diisi.',
-            'alamat_rumah.string' => 'Alamat rumah harus berupa teks.',
-            'alamat_rumah.max' => 'Alamat rumah tidak boleh lebih dari 200 karakter.',
-
-            'no_telp.required' => 'Nomor telepon wajib diisi.',
-            'no_telp.string' => 'Nomor telepon harus berupa teks.',
-            'no_telp.max' => 'Nomor telepon tidak boleh lebih dari 20 karakter.',
-
-            'pendidikan_terakhir.required' => 'Pendidikan terakhir wajib diisi.',
-            'pendidikan_terakhir.string' => 'Pendidikan terakhir harus berupa teks.',
-            'pendidikan_terakhir.max' => 'Pendidikan terakhir tidak boleh lebih dari 100 karakter.',
-
-            'status_pekerjaan.required' => 'Status pekerjaan wajib diisi.',
-            'status_pekerjaan.string' => 'Status pekerjaan harus berupa teks.',
-            'status_pekerjaan.max' => 'Status pekerjaan tidak boleh lebih dari 20 karakter.',
-
-            'nama_perusahaan.required' => 'Nama perusahaan wajib diisi.',
-            'nama_perusahaan.string' => 'Nama perusahaan harus berupa teks.',
-            'nama_perusahaan.max' => 'Nama perusahaan tidak boleh lebih dari 100 karakter.',
-
-            'jabatan.required' => 'Jabatan wajib diisi.',
-            'jabatan.string' => 'Jabatan harus berupa teks.',
-            'jabatan.max' => 'Jabatan tidak boleh lebih dari 100 karakter.',
-
-            'alamat_perusahaan.required' => 'Alamat perusahaan wajib diisi.',
-            'alamat_perusahaan.string' => 'Alamat perusahaan harus berupa teks.',
-
-            'no_telp_perusahaan.required' => 'Nomor telepon perusahaan wajib diisi.',
-            'no_telp_perusahaan.string' => 'Nomor telepon perusahaan harus berupa teks.',
-            'no_telp_perusahaan.max' => 'Nomor telepon perusahaan tidak boleh lebih dari 20 karakter.',
-        ]);
-
-        try {
-            session()->put('dataPribadi', $request->all());
-
-            return response()->json(['message' => 'Data berhasil disimpan'], 200);
-
-        } catch (\Exception $e) {
-            Log::error('Error menyimpan data pribadi: '.$e->getMessage());
-
-            return response()->json(['error' => 'Terjadi kesalahan saat menyimpan data'], 500);
-        }
-    }
-
-    public function showDataSertifikasi()
-    {
-        $skemaList = Skema::all();
-
-        return view('home.home-visitor.APL-01.data-sertifikasi', ['skemaList' => $skemaList]);
-    }
-
-    public function getNomorSkema(Request $request)
-    {
-        Log::info('Received nama_skema: '.$request->input('nama_skema'));
-        $namaSkema = $request->query('nama_skema');
-        $skema = Skema::where('nama_skema', $namaSkema)->first();
-
-        if ($skema) {
-            return response()->json(['nomor_skema' => $skema->nomor_skema]);
-        } else {
-            return response()->json(['nomor_skema' => null]);
-        }
-    }
-
-    public function showDaftarUK(Request $request)
-    {
-        $namaSkema = $request->query('nama_skema');
-        $skema = Skema::where('nama_skema', $namaSkema)->first();
-
-        if ($skema) {
-            $daftarIdUk = json_decode($skema->daftar_id_uk, true);
-            $ukList = UK::whereIn('id_uk', $daftarIdUk)->get();
-
-            return response()->json(['ukList' => $ukList]);
-        } else {
-            return response()->json(['ukList' => []]);
-        }
-    }
-
-    public function saveDataSertifikasi(Request $request)
-    {
-        $request->validate([
-            'skema_sertifikasi' => 'required|string|max:10',
-            'skemaDropdown' => 'required|string|max:100',
-            'nomorSkemaInput' => 'required|string|max:100',
-            'tujuan_asesmen' => 'required|string|max:100',
-        ], [
-            'skema_sertifikasi.required' => 'Skema sertifikasi wajib diisi.',
-            'skema_sertifikasi.string' => 'Skema sertifikasi harus berupa teks.',
-            'skema_sertifikasi.max' => 'Skema sertifikasi tidak boleh lebih dari 10 karakter.',
-
-            'skemaDropdown.required' => 'Nama skema wajib diisi.',
-            'skemaDropdown.string' => 'Nama skema harus berupa teks.',
-            'skemaDropdown.max' => 'Nama skema tidak boleh lebih dari 100 karakter.',
-
-            'nomorSkemaInput.required' => 'Nomor skema wajib diisi.',
-            'nomorSkemaInput.string' => 'Nomor skema harus berupa teks.',
-            'nomorSkemaInput.max' => 'Nomor skema tidak boleh lebih dari 100 karakter.',
-
-            'tujuan_asesmen.required' => 'Tujuan asesmen wajib diisi.',
-            'tujuan_asesmen.string' => 'Tujuan asesmen harus berupa teks.',
-            'tujuan_asesmen.max' => 'Tujuan asesmen tidak boleh lebih dari 100 karakter.',
-        ]);
-
-        try {
-            session()->put('dataSertifikasi', $request->all());
-
-            return response()->json(['message' => 'Data berhasil disimpan'], 200);
-
-        } catch (\Exception $e) {
-            Log::error($e);
-
-            return response()->json(['error' => 'Terjadi kesalahan saat menyimpan data'], 500);
-        }
-    }
-
-    public function storePengajuan(Request $request)
-    {
-        $user = auth()->user();
-
-        try {
-
-            $dataPersetujuan = session()->get('dataPersetujuan');
-            $dataPribadi = session()->get('dataPribadi');
-            $dataSertifikasi = session()->get('dataSertifikasi');
-
-            $data = array_merge($dataPersetujuan, $dataPribadi, $dataSertifikasi, $request->all());
-
-            $validatedData = $request->validate([
-                'bukti_jenjang_siswa' => 'required|file|mimes:pdf|max:5120',
-                'bukti_transkrip' => 'required|file|mimes:pdf|max:5120',
-                'bukti_pengalaman_kerja' => 'required|file|mimes:pdf|max:5120',
-                'bukti_magang' => 'required|file|mimes:pdf|max:5120',
-                'bukti_ktp' => 'required|file|mimes:pdf|max:5120',
-                'bukti_foto' => 'required|file|mimes:pdf|max:5120',
-            ], [
-                'bukti_jenjang_siswa.required' => 'Bukti jenjang siswa wajib diisi.',
-                'bukti_jenjang_siswa.file' => 'Bukti jenjang siswa harus berupa file pdf.',
-                'bukti_jenjang_siswa.mimes' => 'Bukti jenjang siswa harus berupa file pdf.',
-                'bukti_jenjang_siswa.max' => 'Ukuran file bukti jenjang siswa tidak boleh lebih dari 5 MB.',
-
-                'bukti_transkrip.required' => 'Bukti transkrip nilai wajib diisi.',
-                'bukti_transkrip.file' => 'Bukti transkrip nilai harus berupa file pdf.',
-                'bukti_transkrip.mimes' => 'Bukti transkrip nilai harus berupa file pdf.',
-                'bukti_transkrip.max' => 'Ukuran file bukti transkrip nilai tidak boleh lebih dari 5 MB.',
-
-                'bukti_pengalaman_kerja.required' => 'Bukti surat pengalaman kerja wajib diisi.',
-                'bukti_pengalaman_kerja.file' => 'Bukti transkrip nilai harus berupa file pdf.',
-                'bukti_pengalaman_kerja.mimes' => 'Bukti transkrip nilai harus berupa file pdf.',
-                'bukti_pengalaman_kerja.max' => 'Ukuran file bukti pengalaman kerja tidak boleh lebih dari 5 MB.',
-
-                'bukti_magang.required' => 'Bukti surat PKL/Magang wajib diisi.',
-                'bukti_magang.file' => 'Bukti magang harus berupa file pdf.',
-                'bukti_magang.mimes' => 'Bukti magang harus berupa file pdf.',
-                'bukti_magang.max' => 'Ukuran file bukti surat PKL/Magang tidak boleh lebih dari 5 MB.',
-
-                'bukti_ktp.required' => 'Bukti KTP wajib diisi.',
-                'bukti_ktp.file' => 'Bukti KTP harus berupa file pdf.',
-                'bukti_ktp.mimes' => 'Bukti KTP harus berupa file pdf.',
-                'bukti_ktp.max' => 'Ukuran file bukti KTP tidak boleh lebih dari 5 MB.',
-
-                'bukti_foto.required' => 'Bukti foto 3x4 wajib diisi.',
-                'bukti_foto.file' => 'Bukti foto 3x4 harus berupa file pdf.',
-                'bukti_foto.mimes' => 'Bukti foto 3x4 harus berupa file pdf.',
-                'bukti_foto.max' => 'Ukuran file bukti foto 3x4 tidak boleh lebih dari 5 MB.',
-            ]);
-
-            $skema = Skema::where('nomor_skema', $data['nomorSkemaInput'])->firstOrFail();
-
-            $buktiPemohonPaths = [
-                'bukti_jenjang_siswa' => $request->file('bukti_jenjang_siswa') ? $request->file('bukti_jenjang_siswa')->storeAs(
-                    'uploads/bukti_pemohon/jenjang_siswa',
-                    'bukti_jenjang_siswa_'.$user->id_user.'.'.$request->file('bukti_jenjang_siswa')->getClientOriginalExtension()
-                ) : null,
-                'bukti_transkrip' => $request->file('bukti_transkrip') ? $request->file('bukti_transkrip')->storeAs(
-                    'uploads/bukti_pemohon/transkrip',
-                    'bukti_transkrip_'.$user->id_user.'.'.$request->file('bukti_transkrip')->getClientOriginalExtension()
-                ) : null,
-                'bukti_pengalaman_kerja' => $request->file('bukti_pengalaman_kerja') ? $request->file('bukti_pengalaman_kerja')->storeAs(
-                    'uploads/bukti_pemohon/pengalaman_kerja',
-                    'bukti_pengalaman_kerja_'.$user->id_user.'.'.$request->file('bukti_pengalaman_kerja')->getClientOriginalExtension()
-                ) : null,
-                'bukti_magang' => $request->file('bukti_magang') ? $request->file('bukti_magang')->storeAs(
-                    'uploads/bukti_pemohon/magang',
-                    'bukti_magang_'.$user->id_user.'.'.$request->file('bukti_magang')->getClientOriginalExtension()
-                ) : null,
-                'bukti_ktp' => $request->file('bukti_ktp') ? $request->file('bukti_ktp')->storeAs(
-                    'uploads/bukti_pemohon/ktp',
-                    'bukti_ktp_'.$user->id_user.'.'.$request->file('bukti_ktp')->getClientOriginalExtension()
-                ) : null,
-                'bukti_foto' => $request->file('bukti_foto') ? $request->file('bukti_foto')->storeAs(
-                    'uploads/bukti_pemohon/foto',
-                    'bukti_foto_'.$user->id_user.'.'.$request->file('bukti_foto')->getClientOriginalExtension()
-                ) : null,
-            ];
-
-            AsesiPengajuan::create(array_merge($validatedData, [
-                'id_user' => $user->id_user,
-                'id_skema' => $skema->id_skema,
-                'nama_user' => $data['nama_user'],
-                'nik' => $data['nik'],
-                'nim' => $data['nim'],
-                'kota_domisili' => $data['kota_domisili'],
-                'tempat_tanggal_lahir' => $data['tempat_tanggal_lahir'],
-                'jenis_kelamin' => $data['jenis_kelamin'],
-                'kebangsaan' => $data['kebangsaan'],
-                'alamat_rumah' => $data['alamat_rumah'],
-                'no_telp' => $data['no_telp'],
-                'pendidikan_terakhir' => $data['pendidikan_terakhir'],
-                'skema_sertifikasi' => $data['skema_sertifikasi'],
-                'nama_skema' => $data['skemaDropdown'],
-                'nomor_skema' => $data['nomorSkemaInput'],
-                'tujuan_asesmen' => $data['tujuan_asesmen'],
-                'sumber_anggaran' => null,
-                'email' => $user->email,
-                'file_kelengkapan_pemohon' => json_encode(array_values(array_filter([
-                    $buktiPemohonPaths['bukti_jenjang_siswa'],
-                    $buktiPemohonPaths['bukti_transkrip'],
-                    $buktiPemohonPaths['bukti_pengalaman_kerja'],
-                    $buktiPemohonPaths['bukti_magang'],
-                    $buktiPemohonPaths['bukti_ktp'],
-                    $buktiPemohonPaths['bukti_foto'],
-                ]))),
-                'ttd_pemohon' => $data['ttd_pemohon'],
-                'status_rekomendasi' => 'N/A',
-                'status_pekerjaan' => $data['status_pekerjaan'],
-                'nama_perusahaan' => $data['nama_perusahaan'],
-                'jabatan' => $data['jabatan'],
-                'alamat_perusahaan' => $data['alamat_perusahaan'],
-                'no_telp_perusahaan' => $data['no_telp_perusahaan'],
-            ]));
-
-            $idUser = auth()->user()->id_user;
-
-            // Ambil data dari tabel asesi_pengajuan berdasarkan id_user
-            $asesiPengajuan = AsesiPengajuan::where('id_user', $idUser)->first();
-
-            if ($asesiPengajuan) {
-                return view('home.home-visitor.APL-01.konfirmasi', compact('asesiPengajuan'));
+            // Check if user already has a signature in storage
+            $existingFiles = Storage::disk('public')->files('signatures');
+            foreach ($existingFiles as $file) {
+                // Check if file matches pattern for this user's signature
+                if (preg_match('/signatures\/ttd_' . $userId . '\.[a-z]+$/i', $file)) {
+                    // Delete old signature file
+                    Storage::disk('public')->delete($file);
+                    \Log::info('Deleted existing signature: ' . $file);
+                }
             }
 
-        } catch (\Exception $e) {
-            Log::error('Error menyimpan pengajuan: '.$e->getMessage());
+            // Store new signature
+            if ($request->hasFile('signature') && $request->file('signature')->isValid()) {
+                // Create filename for new signature
+                $fileName = 'ttd_' . $userId . '.' . $request->file('signature')->getClientOriginalExtension();
 
-            return redirect()->back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
+                // Store file in public/storage/signatures
+                $ttd_pemohon = $request->file('signature')->storeAs('signatures', $fileName, 'public');
+
+                // Store in session
+                session()->put('dataPersetujuan', ['ttd_pemohon' => $ttd_pemohon]);
+
+                \Log::info('New signature saved: ' . $ttd_pemohon);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Tanda tangan berhasil disimpan'
+                ]);
+            }
+
+            return response()->json([
+                'errors' => ['signature' => ['Gagal mengupload tanda tangan']]
+            ], 500);
+
+        } catch (\Exception $e) {
+            \Log::error('Error saving signature: ' . $e->getMessage());
+
+            return response()->json([
+                'errors' => ['system' => ['Terjadi kesalahan sistem: ' . $e->getMessage()]]
+            ], 500);
+        }
+    }
+
+
+    /**
+     * Show the data pribadi form
+     */
+    public function showDataPribadi()
+    {
+        // Get draft first for revision check
+        $draft = $this->getDraft();
+
+        // If user is in revision mode, allow access regardless of previous steps
+        if ($draft && $draft->status == AsesiPengajuan::STATUS_NEEDS_REVISION) {
+            $revisionMessage = null;
+            $isRevision = true;
+
+            if ($draft->needsRevisionForStep(AsesiPengajuan::STEP_DATA_PRIBADI)) {
+                $revisionMessage = "Pengajuan Anda memerlukan revisi pada data pribadi: {$draft->revision_notes}";
+            }
+
+            return view('home.home-visitor.APL-01.data-pribadi', [
+                'pengajuan' => $draft,
+                'revisionMessage' => $revisionMessage,
+                'isRevision' => $isRevision
+            ]);
         }
 
+        // For non-revision, check proper flow
+        if (!session()->has('dataPersetujuan')) {
+            return redirect()->route('user.persetujuan.index')
+                ->with('error', 'Anda harus melakukan persetujuan dan upload tanda tangan terlebih dahulu');
+        }
+
+        // If draft exists and not in revision, use it
+        if ($draft) {
+            return view('home.home-visitor.APL-01.data-pribadi', [
+                'pengajuan' => $draft,
+                'revisionMessage' => null,
+                'isRevision' => false
+            ]);
+        }
+
+        // If no draft, use session data if any
+        $dataPribadi = session('dataPribadi', []);
+
+        return view('home.home-visitor.APL-01.data-pribadi', [
+            'pengajuan' => (object)$dataPribadi,
+            'revisionMessage' => null,
+            'isRevision' => false
+        ]);
+    }
+
+
+
+    /**
+     * Save data pribadi
+     */
+    public function saveDataPribadi(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_user' => 'required',
+            'nik' => 'required|digits:16',
+            'tempat_tanggal_lahir' => 'required',
+            'jenis_kelamin' => 'required',
+            'kebangsaan' => 'required',
+            'alamat_rumah' => 'required',
+            'kota_domisili' => 'required',
+            'no_telp' => 'required',
+            'pendidikan_terakhir' => 'required',
+            'status_pekerjaan' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Ambil data yang sudah divalidasi
+        $dataPribadi = $request->only([
+            'nama_user', 'nik', 'nim', 'tempat_tanggal_lahir', 'jenis_kelamin',
+            'kebangsaan', 'alamat_rumah', 'kota_domisili', 'no_telp',
+            'pendidikan_terakhir', 'status_pekerjaan'
+        ]);
+
+        // Tambahkan data pekerjaan jika bekerja
+        if ($request->status_pekerjaan == 'Bekerja') {
+            $dataPribadi = array_merge($dataPribadi, $request->only([
+                'nama_perusahaan', 'jabatan', 'alamat_perusahaan', 'no_telp_perusahaan'
+            ]));
+        }
+
+        // Cek apakah user sudah memiliki pengajuan (untuk revisi)
+        $draft = $this->getDraft();
+
+        // Jika sudah ada pengajuan, update langsung ke database
+        if ($draft) {
+            foreach ($dataPribadi as $key => $value) {
+                $draft->{$key} = $value;
+            }
+
+            // Update step completion
+            $draft->updateStepCompleted(AsesiPengajuan::STEP_DATA_PRIBADI);
+            $draft->save();
+        } else {
+            // Simpan ke session untuk digunakan nanti
+            session()->put('dataPribadi', $dataPribadi);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Show the data sertifikasi form
+     */
+    public function showDataSertifikasi()
+    {
+        // Cek jika user sudah memiliki pengajuan (untuk revisi)
+        $draft = $this->getDraft();
+
+        // Jika dalam mode revisi, tampilkan langsung form tanpa pengecekan lain
+        if ($draft && $draft->status == AsesiPengajuan::STATUS_NEEDS_REVISION) {
+            $skemaList = Skema::all();
+            $revisionMessage = null;
+            $isRevision = true;
+
+            if ($draft->needsRevisionForStep(AsesiPengajuan::STEP_DATA_SERTIFIKASI)) {
+                $revisionMessage = "Pengajuan Anda memerlukan revisi pada data sertifikasi: {$draft->revision_notes}";
+            }
+
+            return view('home.home-visitor.APL-01.data-sertifikasi', [
+                'pengajuan' => $draft, // Menggunakan 'pengajuan' untuk konsistensi
+                'skemaList' => $skemaList,
+                'revisionMessage' => $revisionMessage,
+                'isRevision' => $isRevision
+            ]);
+        }
+
+        // Untuk non-revisi, lakukan pengecekan normal
+        if (!session()->has('dataPersetujuan')) {
+            return redirect()->route('user.persetujuan.index')
+                ->with('error', 'Anda harus melakukan persetujuan dan upload tanda tangan terlebih dahulu');
+        }
+
+        // Untuk draft normal yang sudah ada
+        if ($draft) {
+            $skemaList = Skema::all();
+            return view('home.home-visitor.APL-01.data-sertifikasi', [
+                'pengajuan' => $draft, // Menggunakan 'pengajuan' untuk konsistensi
+                'skemaList' => $skemaList
+            ]);
+        }
+
+        // Jika belum ada draft tapi belum ada data pribadi, redirect ke data pribadi
+        if (!session()->has('dataPribadi')) {
+            return redirect()->route('user.apl1.pribadi')
+                ->with('error', 'Anda harus mengisi data pribadi terlebih dahulu');
+        }
+
+        // Jika tidak ada draft tapi ada data pribadi di session, lanjutkan
+        $dataSertifikasi = session('dataSertifikasi', []);
+
+        // Get data Skema yang mempunyai informasi lengkap
+        $skemaList = Skema::where('has_complete_info', 1)->get();
+
+        return view('home.home-visitor.APL-01.data-sertifikasi', [
+            'pengajuan' => (object)$dataSertifikasi,
+            'skemaList' => $skemaList,
+            'revisionMessage' => null
+        ]);
+    }
+
+    /**
+     * Get nomor skema based on nama skema
+     */
+    public function getNomorSkema(Request $request)
+    {
+        $idSkema = $request->input('id_skema');
+        $skema = Skema::where('id_skema', $idSkema)->first();
+
+        if ($skema) {
+            return response()->json([
+                'nomor_skema' => $skema->nomor_skema,
+                'dokumen_skkni' => $skema->dokumen_skkni,
+                'tujuan_asesmen' => 'sertifikasi' // Default value
+            ]);
+        }
+
+        return response()->json([
+            'nomor_skema' => '',
+            'dokumen_skkni' => null,
+            'tujuan_asesmen' => ''
+        ]);
+    }
+
+    /**
+     * Get daftar unit kompetensi based on nama skema
+     */
+    public function showDaftarUK(Request $request)
+    {
+        $idSkema = $request->input('id_skema');
+        $skema = Skema::where('id_skema', $idSkema)->first();
+
+        if ($skema) {
+            // Gunakan accessor unit_kompetensi yang sudah didefinisikan di model Skema
+            $ukList = $skema->unit_kompetensi;
+
+            // Transform data jika diperlukan untuk format response yang lebih baik
+            $transformedList = $ukList->map(function($uk) {
+                return [
+                    'id_uk' => $uk->id_uk,
+                    'kode_uk' => $uk->kode_uk,
+                    'nama_uk' => $uk->nama_uk,
+                    'jenis_standar' => $uk->jenis_standar
+                ];
+            });
+
+            return response()->json(['ukList' => $transformedList]);
+        }
+
+        return response()->json(['ukList' => []], 404);
+    }
+
+    /**
+     * Save data sertifikasi
+     */
+    public function saveDataSertifikasi(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'skema_sertifikasi' => 'required',
+            'skemaDropdown' => 'required',
+            'nomorSkemaInput' => 'required',
+            'tujuan_asesmen' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Find id skema
+        $skema = Skema::where('id_skema', $request->skemaDropdown)->first();
+        if (!$skema) {
+            return response()->json(['errors' => ['skemaDropdown' => ['Skema tidak valid']]], 422);
+        }
+
+        // Data sertifikasi yang akan disimpan
+        $dataSertifikasi = [
+            'skema_sertifikasi' => $request->skema_sertifikasi,
+            'nama_skema' => $request->skemaDropdown,
+            'nomor_skema' => $request->nomorSkemaInput,
+            'tujuan_asesmen' => $request->tujuan_asesmen,
+            'id_skema' => $skema->id_skema
+        ];
+
+        // Cek apakah user sudah memiliki pengajuan (untuk revisi)
+        $draft = $this->getDraft();
+
+        // Jika sudah ada pengajuan, update langsung ke database
+        if ($draft) {
+            foreach ($dataSertifikasi as $key => $value) {
+                $draft->{$key} = $value;
+            }
+
+            // Update step completion
+            $draft->updateStepCompleted(AsesiPengajuan::STEP_DATA_SERTIFIKASI);
+            $draft->save();
+        } else {
+            // Simpan ke session untuk digunakan nanti
+            session()->put('dataSertifikasi', $dataSertifikasi);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+        /**
+     * Show the bukti kelengkapan form
+     */
+    public function showBuktiKelengkapan()
+    {
+        // Cek jika user sudah memiliki pengajuan (untuk revisi)
+        $draft = $this->getDraft();
+
+        // Jika sudah ada draft, gunakan data tersebut
+        if ($draft) {
+            $revisionMessage = null;
+            if ($draft->status == AsesiPengajuan::STATUS_NEEDS_REVISION &&
+                $draft->needsRevisionForStep(AsesiPengajuan::STEP_BUKTI_KELENGKAPAN)) {
+                $revisionMessage = "Pengajuan Anda memerlukan revisi pada bukti kelengkapan: {$draft->revision_notes}";
+            }
+
+            return view('home.home-visitor.APL-01.bukti-pemohon', [
+                'pengajuan' => $draft,
+                'revisionMessage' => $revisionMessage
+            ]);
+        }
+
+        // Cek jika user belum mengisi data-data sebelumnya
+        if (!session()->has('dataPersetujuan')) {
+            return redirect()->route('user.persetujuan.index')
+                ->with('error', 'Anda harus melakukan persetujuan dan upload tanda tangan terlebih dahulu');
+        }
+
+        if (!session()->has('dataPribadi')) {
+            return redirect()->route('user.apl1.pribadi')
+                ->with('error', 'Anda harus mengisi data pribadi terlebih dahulu');
+        }
+
+        if (!session()->has('dataSertifikasi')) {
+            return redirect()->route('user.apl1.sertifikasi')
+                ->with('error', 'Anda harus mengisi data sertifikasi terlebih dahulu');
+        }
+
+        // Buat draft baru dari session data (ini adalah saat pertama kali draft dibuat)
+        $draft = $this->createDraftFromSession();
+
+        return view('home.home-visitor.APL-01.bukti-pemohon', [
+            'pengajuan' => $draft,
+            'revisionMessage' => null
+        ]);
+    }
+
+    /**
+     * Save bukti kelengkapan
+     */
+    public function saveBuktiKelengkapan(Request $request)
+    {
+        // Get existing draft first
+        $pengajuan = $this->getDraft();
+
+        if (!$pengajuan) {
+            return redirect()->route('user.apl1.sertifikasi')
+                ->with('error', 'Data pengajuan tidak ditemukan. Silakan lengkapi data sertifikasi terlebih dahulu.');
+        }
+
+        // Check if KTP file already exists
+        $fileKelengkapan = $pengajuan->file_kelengkapan_pemohon ?? [];
+        $ktpExists = isset($fileKelengkapan['bukti_ktp']);
+
+        // Dynamic validation rules based on existing files
+        $rules = [
+            'bukti_ktp' => $ktpExists ? 'nullable|file|mimes:pdf' : 'required|file|mimes:pdf',
+            'bukti_foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
+            'bukti_jenjang_siswa' => 'nullable|file|mimes:pdf',
+            'bukti_transkrip' => 'nullable|file|mimes:pdf',
+            'bukti_pengalaman_kerja' => 'nullable|file|mimes:pdf',
+            'bukti_magang' => 'nullable|file|mimes:pdf',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Process each file upload
+        $fileFields = [
+            'bukti_ktp', 'bukti_foto', 'bukti_jenjang_siswa',
+            'bukti_transkrip', 'bukti_pengalaman_kerja', 'bukti_magang'
+        ];
+
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field) && $request->file($field)->isValid()) {
+                // Delete old file if exists
+                if (isset($fileKelengkapan[$field])) {
+                    $oldPath = str_replace('storage/', 'public/', $fileKelengkapan[$field]);
+                    if (Storage::exists($oldPath)) {
+                        Storage::delete($oldPath);
+                    }
+                }
+
+                // Save new file
+                $path = $request->file($field)->store('public/bukti-kelengkapan');
+                $fileKelengkapan[$field] = str_replace('public/', 'storage/', $path);
+            }
+        }
+
+        // Update pengajuan
+        $pengajuan->file_kelengkapan_pemohon = $fileKelengkapan;
+
+        // Update step completion
+        $pengajuan->updateStepCompleted(AsesiPengajuan::STEP_BUKTI_KELENGKAPAN);
+        $pengajuan->save();
+
+        return redirect()->route('user.apl1.konfirmasi')
+            ->with('success', 'Bukti kelengkapan berhasil diunggah');
+    }
+
+    /**
+     * Show the konfirmasi form
+     */
+    public function showKonfirmasi()
+    {
+        $idUser = auth()->user()->id_user;
+
+
+
+        // Cek apakah ada pengajuan dengan status apapun
+        $pengajuan = AsesiPengajuan::where('id_user', $idUser)
+                        ->whereIn('status', [
+                            AsesiPengajuan::STATUS_DRAFT,
+                            AsesiPengajuan::STATUS_NEEDS_REVISION,
+                            AsesiPengajuan::STATUS_SUBMITTED,
+                            AsesiPengajuan::STATUS_APPROVED,
+                            AsesiPengajuan::STATUS_REJECTED,
+                            AsesiPengajuan::STATUS_REVISED_BY_ASESI
+                        ])
+                        ->first();
+
+        if (!$pengajuan) {
+            return redirect()->route('user.persetujuan.index')
+                ->with('error', 'Data pengajuan tidak ditemukan. Silakan mulai dari awal.');
+        }
+
+        // Khusus untuk draft & needs_revision, cek tahapan
+        if (in_array($pengajuan->status, [AsesiPengajuan::STATUS_DRAFT, AsesiPengajuan::STATUS_NEEDS_REVISION])) {
+            if ($pengajuan->steps_completed < AsesiPengajuan::STEP_BUKTI_KELENGKAPAN) {
+                return redirect()->route('user.apl1.bukti')
+                    ->with('error', 'Anda harus melengkapi bukti kelengkapan terlebih dahulu');
+            }
+        }
+
+        return view('home.home-visitor.APL-01.konfirmasi', [
+            'asesiPengajuan' => $pengajuan
+        ]);
+    }
+
+    /**
+     * Submit final application
+     */
+    public function submitPengajuan(Request $request)
+    {
+        $pengajuan = AsesiPengajuan::where('id_user', Auth::id())
+                        ->whereIn('status', [
+                            AsesiPengajuan::STATUS_DRAFT,
+                            AsesiPengajuan::STATUS_NEEDS_REVISION
+                        ])
+                        ->first();
+
+        if (!$pengajuan) {
+            return redirect()->back()
+                ->with('error', 'Pengajuan tidak ditemukan');
+        }
+
+        // Validate final submission
+        if ($pengajuan->steps_completed < AsesiPengajuan::STEP_BUKTI_KELENGKAPAN) {
+            return redirect()->back()
+                ->with('error', 'Anda harus melengkapi semua tahapan terlebih dahulu');
+        }
+
+        // Check if this is a revision submission
+        $isRevision = $pengajuan->status === AsesiPengajuan::STATUS_NEEDS_REVISION;
+
+        if ($isRevision) {
+            // For revision, mark as revised but keep in the same category
+            $pengajuan->status = 'revised_by_asesi'; // Tambahkan status baru ini di model AsesiPengajuan
+            $successMessage = 'Revisi permohonan sertifikasi Anda telah berhasil diajukan dan sedang menunggu persetujuan';
+        } else {
+            // For new submission
+            $pengajuan->status = AsesiPengajuan::STATUS_SUBMITTED;
+            $successMessage = 'Permohonan sertifikasi Anda telah berhasil diajukan dan sedang menunggu persetujuan';
+        }
+
+        $pengajuan->steps_completed = AsesiPengajuan::STEP_KONFIRMASI;
+        $pengajuan->submitted_at = now();
+
+        // Clear revision notes if this was a revision
+        if ($pengajuan->revision_steps) {
+            $pengajuan->revision_steps = null;
+            $pengajuan->revision_notes = null;
+        }
+
+        $pengajuan->save();
+
+        return redirect()->route('home')
+            ->with('success', $successMessage);
+    }
+
+    /**
+     * Helper: Get existing draft if exists
+     */
+    private function getDraft()
+    {
+        $idUser = auth()->user()->id_user;
+        return AsesiPengajuan::where('id_user', $idUser)
+                    ->whereIn('status', [
+                        AsesiPengajuan::STATUS_DRAFT,
+                        AsesiPengajuan::STATUS_NEEDS_REVISION
+                    ])
+                    ->first();
+    }
+
+    /**
+     * Helper: Create new draft from session data
+     * Hanya dipanggil pada tahap bukti-pemohon
+     */
+    private function createDraftFromSession()
+    {
+        $idUser = auth()->user()->id_user;
+
+        // Create new draft
+        $draft = new AsesiPengajuan();
+        $draft->id_user = $idUser;
+        $draft->status = AsesiPengajuan::STATUS_DRAFT;
+        $draft->status_rekomendasi = 'N/A';
+        $draft->steps_completed = 0;
+        $draft->email = auth()->user()->email;
+
+        // Add data from all sessions
+        // 1. Data Persetujuan (tanda tangan)
+        if (session()->has('dataPersetujuan')) {
+            $dataPersetujuan = session('dataPersetujuan');
+            $draft->ttd_pemohon = $dataPersetujuan['ttd_pemohon'] ?? null;
+        }
+
+        // 2. Data Pribadi
+        if (session()->has('dataPribadi')) {
+            $dataPribadi = session('dataPribadi');
+            foreach ($dataPribadi as $key => $value) {
+                $draft->{$key} = $value;
+            }
+            $draft->steps_completed = AsesiPengajuan::STEP_DATA_PRIBADI;
+        }
+
+        // 3. Data Sertifikasi
+        if (session()->has('dataSertifikasi')) {
+            $dataSertifikasi = session('dataSertifikasi');
+            foreach ($dataSertifikasi as $key => $value) {
+                $draft->{$key} = $value;
+            }
+            $draft->steps_completed = AsesiPengajuan::STEP_DATA_SERTIFIKASI;
+        }
+
+        $draft->save();
+
+        // Clear session data after saving to database
+        session()->forget(['dataPribadi', 'dataPersetujuan', 'dataSertifikasi']);
+
+        return $draft;
+    }
+
+    /**
+     * Restart application process after rejection
+     */
+    public function restartPengajuan()
+    {
+        $idUser = auth()->user()->id_user;
+        $pengajuan = AsesiPengajuan::where('id_user', $idUser)
+                        ->where('status', AsesiPengajuan::STATUS_REJECTED)
+                        ->first();
+
+        if ($pengajuan) {
+            // Hapus file yang terkait
+            if ($pengajuan->file_kelengkapan_pemohon) {
+                foreach ($pengajuan->file_kelengkapan_pemohon as $path) {
+                    if (Storage::exists(str_replace('storage/', 'public/', $path))) {
+                        Storage::delete(str_replace('storage/', 'public/', $path));
+                    }
+                }
+            }
+
+            // Hapus pengajuan
+            $pengajuan->delete();
+
+            // Hapus session terkait
+            session()->forget(['dataPribadi', 'dataPersetujuan', 'dataSertifikasi']);
+
+            return redirect()->route('user.persetujuan.index')
+                ->with('success', 'Pengajuan lama telah dihapus. Silakan mulai proses baru.');
+        }
+
+        return redirect()->route('home')
+            ->with('error', 'Pengajuan tidak ditemukan.');
     }
 }

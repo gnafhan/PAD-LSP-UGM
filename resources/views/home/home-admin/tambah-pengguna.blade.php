@@ -144,13 +144,37 @@
 
                             <!-- Field Admin -->
                             <div id="admin_fields">
+                                <!-- Nama Admin Field -->
+                                <div class="mb-4">
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                                    <input type="text" name="name" id="name" 
+                                        class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror" 
+                                        placeholder="Contoh: John Doe" value="{{ old('name') }}">
+                                    @error('name')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
                                 <!-- No HP Admin Field -->
                                 <div class="mb-4">
-                                    <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-1">Nomor HP</label>
+                                    <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-1">Nomor HP <span class="text-red-500">*</span></label>
                                     <input type="text" name="no_hp" id="no_hp" 
                                         class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('no_hp') border-red-500 @enderror" 
                                         placeholder="Contoh: 08123456789" value="{{ old('no_hp') }}">
                                     @error('no_hp')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="file_tanda_tangan" class="block text-sm font-medium text-gray-700 mb-1">Tanda Tangan Admin <span class="text-red-500">*</span></label>
+                                    <input type="file" name="file_tanda_tangan" id="file_tanda_tangan" 
+                                        class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('file_tanda_tangan') border-red-500 @enderror" 
+                                        accept="image/png,image/jpeg,image/jpg" required>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        Upload gambar tanda tangan (JPG, JPEG, atau PNG). Pastikan gambar memiliki latar belakang transparan.
+                                    </p>
+                                    @error('file_tanda_tangan')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -226,6 +250,17 @@
                                     @enderror
                                 </div>
 
+                                <!-- Nomor MET Asesor Field -->
+                                <div class="mb-4">
+                                    <label for="nomor_met" class="block text-sm font-medium text-gray-700 mb-1">Nomor MET</label>
+                                    <input type="text" name="no_met" id="no_met" 
+                                        class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('no_sertifikat') border-red-500 @enderror" 
+                                        placeholder="Nomor MET" value="{{ old('no_met') }}">
+                                    @error('no_met')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
                                 <!-- Status Asesor Field -->
                                 <div class="mb-4">
                                     <label for="status_asesor" class="block text-sm font-medium text-gray-700 mb-1">Status Asesor <span class="text-red-500">*</span></label>
@@ -241,7 +276,7 @@
 
                                 <!-- Masa Berlaku Field -->
                                 <div class="mb-4">
-                                    <label for="masa_berlaku" class="block text-sm font-medium text-gray-700 mb-1">Masa Berlaku</label>
+                                    <label for="masa_berlaku" class="block text-sm font-medium text-gray-700 mb-1">Masa Berlaku<span class="text-red-500">*</span></label>
                                     <input type="date" name="masa_berlaku" id="masa_berlaku" 
                                         class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('masa_berlaku') border-red-500 @enderror" 
                                         value="{{ old('masa_berlaku') }}">
@@ -253,7 +288,7 @@
 
                                 <!-- Bidang Kompetensi section -->
                                 <div class="mb-6">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Bidang Kompetensi</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Bidang Kompetensi<span class="text-red-500">*</span></label>
                                     
                                     <div class="flex space-x-2 mb-3">
                                         <select id="id_bidang" 
@@ -291,28 +326,27 @@
 
                         <hr class="border-gray-200">
 
-                        <!-- Keamanan Akun -->
+                        <!-- Keamanan Akun section to be replaced -->
                         <div>
-                            <h3 class="font-semibold text-lg text-gray-800 mb-4">Keamanan Akun</h3>
-
-                            <!-- Password Field -->
-                            <div class="mb-4">
-                                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
-                                <input type="password" name="password" id="password" 
-                                       class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror" 
-                                       placeholder="Masukkan password" required>
-                                <p class="mt-1 text-sm text-gray-500">Minimal 6 karakter</p>
-                                @error('password')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Konfirmasi Password Field -->
-                            <div class="mb-4">
-                                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password <span class="text-red-500">*</span></label>
-                                <input type="password" name="password_confirmation" id="password_confirmation" 
-                                       class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                       placeholder="Konfirmasi password" required>
+                            <h3 class="font-semibold text-lg text-gray-800 mb-4">Informasi Login</h3>
+                            
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-m text-blue-800">
+                                            <strong>Tentang Login:</strong> Akun ini menggunakan metode login dengan Google.
+                                        </p>
+                                        <p class="text-m text-blue-700 mt-1">
+                                            Setelah membuat akun melalui panel admin ini (dengan mengatur Role User, seperti Asesor/Admin), pengguna hanya perlu masuk dengan akun Google UGM mereka (@mail.ugm.ac.id atau @ugm.ac.id). 
+                                            Tidak perlu mengingat atau membuat password terpisah.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

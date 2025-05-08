@@ -329,16 +329,6 @@
                                             </svg>
                                             Edit
                                         </a>
-                                        <form action="{{ route('admin.uk.delete', $item->id_uk) }}" method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" onclick="openDeleteModal('{{ route('admin.uk.delete', $item->id_uk) }}')" class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded-md text-white transition-all">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                Hapus
-                                            </button>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -360,44 +350,6 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Modal Konfirmasi Hapus -->
-            <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden overflow-y-auto">
-                <div class="flex items-center justify-center min-h-screen p-4">
-                    <div class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all">
-                        <div class="p-6">
-                            <div class="flex items-center">
-                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0">
-                                    <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                    </svg>
-                                </div>
-                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                    <h3 class="text-lg leading-6 font-medium text-gray-900">Hapus Unit Kompetensi</h3>
-                                    <div class="mt-2">
-                                        <p class="text-sm text-gray-500">
-                                            Apakah Anda yakin ingin menghapus unit kompetensi ini? Tindakan ini tidak dapat dibatalkan.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                                <form id="deleteForm" method="POST" action="" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                        Hapus
-                                    </button>
-                                </form>
-                                <button type="button" onclick="closeDeleteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm">
-                                    Batal
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             
             <!-- Pagination -->
             <div class="px-6 py-4 bg-white border-t border-gray-200 rounded-b-lg">
@@ -411,30 +363,4 @@
         </div>
     </div>
 </div>
-@endsection
-@section('scripts')
-<script>
-function openDeleteModal(deleteUrl) {
-    document.getElementById('deleteModal').classList.remove('hidden');
-    document.getElementById('deleteForm').action = deleteUrl;
-}
-
-function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.add('hidden');
-}
-
-// Close modal when clicking outside
-document.getElementById('deleteModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeDeleteModal();
-    }
-});
-
-// Close modal with ESC key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && !document.getElementById('deleteModal').classList.contains('hidden')) {
-        closeDeleteModal();
-    }
-});
-</script>
 @endsection

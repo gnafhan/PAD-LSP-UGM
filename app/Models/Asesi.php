@@ -39,7 +39,6 @@ class Asesi extends Model
         'jabatan',
         'alamat_perusahaan',
         'no_telp_perusahaan',
-        'id_asesor'
     ];
 
     protected $casts = [
@@ -56,7 +55,18 @@ class Asesi extends Model
 
     public function asesor()
     {
-        return $this->belongsTo(Asesor::class, 'id_asesor');
+        return $this->belongsToMany(Asesor::class, 'rincian_asesmen', 'id_asesi', 'id_asesor');
+    }
+
+    public function rincianAsesmen()
+    {
+        return $this->hasOne(RincianAsesmen::class, 'id_asesi', 'id_asesi');
+    }
+
+    //progress asesmen
+    public function progresAsesmen()
+    {
+        return $this->hasOne(ProgresAsesmen::class, 'id_asesi', 'id_asesi');
     }
 
     protected static function boot()

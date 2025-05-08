@@ -18,6 +18,8 @@
             </a>
             <a href="{{ route('admin.event.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Event</a>
+            <a href="{{ route('admin.tuk.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            TUK</a>
             <a href="{{ route('admin.skema.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Skema</a>
             <a href="{{ route('admin.uk.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
@@ -42,6 +44,8 @@
             </a>
             <a href="{{ route('admin.event.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Event</a>
+            <a href="{{ route('admin.tuk.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
+            TUK</a>
             <a href="{{ route('admin.skema.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">
             Skema</a>
             <a href="{{ route('admin.uk.index') }}" class="text-white font-semibold hover:bg-blue-400 hover:text-gray-100 rounded-md px-3 py-2 transition duration-300">

@@ -8,6 +8,7 @@ use App\Models\Skema;
 use App\Models\UK;
 use App\Models\UKBidang;
 use App\Models\Asesi;
+use Illuminate\Support\Facades\Log;
 
 class SkemaPageController extends Controller
 {
@@ -134,12 +135,4 @@ class SkemaPageController extends Controller
         return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil ditambahkan');
     }
 
-
-    public function destroyDataSkema($id)
-    {
-        $Skema = Skema::findOrFail($id);
-        $Skema->delete();
-
-        return redirect()->route('admin.skema.index')->with('success', 'Data skema berhasil dihapus.');
-    }
 }

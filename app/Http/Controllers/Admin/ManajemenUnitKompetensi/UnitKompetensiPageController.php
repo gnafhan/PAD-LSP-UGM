@@ -136,21 +136,4 @@ class UnitKompetensiPageController extends Controller
 
         return redirect()->route('admin.uk.index')->with('success', 'Unit Kompetensi berhasil diperbarui');
     }
-
-    /**
-     * Menghapus data Unit Kompetensi
-     */
-    public function destroyDataUk($id)
-    {
-        $uk = UK::findOrFail($id);
-        
-        // Elemen UK akan otomatis terhapus karena relasi foreign key dengan CASCADE
-        // Jika tidak menggunakan CASCADE, tambahkan kode berikut:
-        // ElemenUK::where('id_uk', $uk->id_uk)->delete();
-        
-        $uk->delete();
-
-        return redirect()->route('admin.uk.index')->with('success', 'Data unit kompetensi berhasil dihapus.');
-    }
-
 }

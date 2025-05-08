@@ -46,4 +46,34 @@
     </div>
   </div>
 </div>
+
+<!-- Load SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check for session messages and display SweetAlert notifications
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#4F46E5',
+            timer: 4000,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#4F46E5',
+            timer: 4000,
+            timerProgressBar: true
+        });
+    @endif
+});
+</script>
 @endsection

@@ -7,20 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 
-class PeriodeAsesmen extends Model
+class RincianAsesmen extends Model
 {
     use HasFactory;
 
-    protected $table = 'periode_asesmen';
-    protected $primaryKey = 'id_periode_asesmen';
+    protected $table = 'rincian_asesmen';
+    protected $primaryKey = 'id_rincian_asesmen';
     public $incrementing = true;
     protected $keyType = 'int';
 
     protected $fillable = [
         'id_asesi',
         'id_asesor',
-        'periode',
-        'tahun',
+        'id_event',
     ];
 
     public function asesi(): BelongsTo
@@ -32,6 +31,11 @@ class PeriodeAsesmen extends Model
     {
         return $this->belongsTo(Asesor::class, 'id_asesor', 'id_asesor');
     }
+
+    public function event(): BelongsTo
+    {
+        return $this->belongsTo(Event::class, 'id_event', 'id_event');
+    }
     
     /**
      * Get skema statistics grouped by periode and tahun
@@ -40,19 +44,20 @@ class PeriodeAsesmen extends Model
      */
     public static function getSkemaStats()
     {
-        return DB::table('periode_asesmen as pa')
-            ->join('asesi as a', 'pa.id_asesi', '=', 'a.id_asesi')
+        return DB::table('rincian_asesmen as ra')
+            ->join('asesi as a', 'ra.id_asesi', '=', 'a.id_asesi')
             ->join('skema as s', 'a.id_skema', '=', 's.id_skema')
+            ->join('event as e', 'ra.id_event', '=', 'e.id_event')
             ->select(
                 's.id_skema',
                 's.nama_skema',
-                'pa.periode',
-                'pa.tahun',
+                'e.periode_pelaksanaan as periode',
+                'e.tahun_pelaksanaan as tahun',
                 DB::raw('COUNT(a.id_asesi) as jumlah_asesi')
             )
-            ->groupBy('s.id_skema', 's.nama_skema', 'pa.periode', 'pa.tahun')
-            ->orderBy('pa.tahun', 'desc')
-            ->orderBy('pa.periode', 'desc')
+            ->groupBy('s.id_skema', 's.nama_skema', 'e.periode_pelaksanaan', 'e.tahun_pelaksanaan')
+            ->orderBy('e.tahun_pelaksanaan', 'desc')
+            ->orderBy('e.periode_pelaksanaan', 'desc')
             ->orderBy('s.nama_skema')
             ->get();
     }
@@ -64,8 +69,8 @@ class PeriodeAsesmen extends Model
      */
     public static function getSkemaChartData()
     {
-        $data = DB::table('periode_asesmen as pa')
-            ->join('asesi as a', 'pa.id_asesi', '=', 'a.id_asesi')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('asesi as a', 'ra.id_asesi', '=', 'a.id_asesi')
             ->join('skema as s', 'a.id_skema', '=', 's.id_skema')
             ->select(
                 's.nama_skema',
@@ -92,14 +97,15 @@ class PeriodeAsesmen extends Model
      */
     public static function getTrendChartData()
     {
-        $data = DB::table('periode_asesmen as pa')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('event as e', 'ra.id_event', '=', 'e.id_event')
             ->select(
-                DB::raw("CONCAT('P', periode, ' ', tahun) as periode_tahun"),
-                DB::raw('COUNT(id_asesi) as jumlah_asesi')
+                DB::raw("CONCAT('P', e.periode_pelaksanaan, ' ', e.tahun_pelaksanaan) as periode_tahun"),
+                DB::raw('COUNT(ra.id_asesi) as jumlah_asesi')
             )
-            ->groupBy('tahun', 'periode', 'periode_tahun')
-            ->orderBy('tahun')
-            ->orderBy('periode')
+            ->groupBy('e.tahun_pelaksanaan', 'e.periode_pelaksanaan', 'periode_tahun')
+            ->orderBy('e.tahun_pelaksanaan')
+            ->orderBy('e.periode_pelaksanaan')
             ->limit(10)
             ->get();
             
@@ -111,6 +117,7 @@ class PeriodeAsesmen extends Model
             'data' => $values
         ];
     }
+    
     /**
      * Get data for year chart
      * 
@@ -118,14 +125,15 @@ class PeriodeAsesmen extends Model
      */
     public static function getYearChartData()
     {
-        $data = DB::table('periode_asesmen as pa')
-            ->join('asesi as a', 'pa.id_asesi', '=', 'a.id_asesi')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('event as e', 'ra.id_event', '=', 'e.id_event')
+            ->join('asesi as a', 'ra.id_asesi', '=', 'a.id_asesi')
             ->select(
-                'pa.tahun',
+                'e.tahun_pelaksanaan as tahun',
                 DB::raw('COUNT(a.id_asesi) as jumlah_asesi')
             )
-            ->groupBy('pa.tahun')
-            ->orderBy('pa.tahun', 'asc')
+            ->groupBy('e.tahun_pelaksanaan')
+            ->orderBy('e.tahun_pelaksanaan', 'asc')
             ->get();
             
         $labels = $data->pluck('tahun')->toArray();
@@ -144,14 +152,15 @@ class PeriodeAsesmen extends Model
      */
     public static function getPeriodChartData()
     {
-        $data = DB::table('periode_asesmen as pa')
-            ->join('asesi as a', 'pa.id_asesi', '=', 'a.id_asesi')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('event as e', 'ra.id_event', '=', 'e.id_event')
+            ->join('asesi as a', 'ra.id_asesi', '=', 'a.id_asesi')
             ->select(
-                'pa.periode',
+                'e.periode_pelaksanaan as periode',
                 DB::raw('COUNT(a.id_asesi) as jumlah_asesi')
             )
-            ->groupBy('pa.periode')
-            ->orderBy('pa.periode', 'asc')
+            ->groupBy('e.periode_pelaksanaan')
+            ->orderBy('e.periode_pelaksanaan', 'asc')
             ->get();
             
         // Format the period labels (e.g., "Periode 1")
@@ -166,13 +175,14 @@ class PeriodeAsesmen extends Model
             'data' => $values
         ];
     }
+    
     /**
      * Get data for Asesi distribution by Skema (Chart 1)
      */
     public static function getAsesiSkemaDistributionData()
     {
-        $data = DB::table('periode_asesmen as pa')
-            ->join('asesi as a', 'pa.id_asesi', '=', 'a.id_asesi')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('asesi as a', 'ra.id_asesi', '=', 'a.id_asesi')
             ->join('skema as s', 'a.id_skema', '=', 's.id_skema')
             ->select('s.nama_skema', DB::raw('COUNT(a.id_asesi) as jumlah_asesi'))
             ->groupBy('s.nama_skema')
@@ -191,10 +201,11 @@ class PeriodeAsesmen extends Model
      */
     public static function getAsesiYearTrendData()
     {
-        $data = DB::table('periode_asesmen')
-            ->select('tahun', DB::raw('COUNT(id_asesi) as jumlah_asesi'))
-            ->groupBy('tahun')
-            ->orderBy('tahun')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('event as e', 'ra.id_event', '=', 'e.id_event')
+            ->select('e.tahun_pelaksanaan as tahun', DB::raw('COUNT(ra.id_asesi) as jumlah_asesi'))
+            ->groupBy('e.tahun_pelaksanaan')
+            ->orderBy('e.tahun_pelaksanaan')
             ->get();
             
         return [
@@ -208,10 +219,11 @@ class PeriodeAsesmen extends Model
      */
     public static function getAsesiPeriodTrendData()
     {
-        $data = DB::table('periode_asesmen')
-            ->select('periode', DB::raw('COUNT(id_asesi) as jumlah_asesi'))
-            ->groupBy('periode')
-            ->orderBy('periode')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('event as e', 'ra.id_event', '=', 'e.id_event')
+            ->select('e.periode_pelaksanaan as periode', DB::raw('COUNT(ra.id_asesi) as jumlah_asesi'))
+            ->groupBy('e.periode_pelaksanaan')
+            ->orderBy('e.periode_pelaksanaan')
             ->get();
             
         // Format period labels
@@ -230,8 +242,8 @@ class PeriodeAsesmen extends Model
      */
     public static function getSkemaPopularityData()
     {
-        $data = DB::table('periode_asesmen as pa')
-            ->join('asesi as a', 'pa.id_asesi', '=', 'a.id_asesi')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('asesi as a', 'ra.id_asesi', '=', 'a.id_asesi')
             ->join('skema as s', 'a.id_skema', '=', 's.id_skema')
             ->select('s.nama_skema', DB::raw('COUNT(a.id_asesi) as jumlah_asesi'))
             ->groupBy('s.nama_skema')
@@ -250,11 +262,12 @@ class PeriodeAsesmen extends Model
      */
     public static function getSkemaYearTrendData()
     {
-        $data = DB::table('periode_asesmen as pa')
-            ->join('asesi as a', 'pa.id_asesi', '=', 'a.id_asesi')
-            ->select('pa.tahun', DB::raw('COUNT(DISTINCT a.id_skema) as jumlah_skema'))
-            ->groupBy('pa.tahun')
-            ->orderBy('pa.tahun')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('event as e', 'ra.id_event', '=', 'e.id_event')
+            ->join('asesi as a', 'ra.id_asesi', '=', 'a.id_asesi')
+            ->select('e.tahun_pelaksanaan as tahun', DB::raw('COUNT(DISTINCT a.id_skema) as jumlah_skema'))
+            ->groupBy('e.tahun_pelaksanaan')
+            ->orderBy('e.tahun_pelaksanaan')
             ->get();
             
         return [
@@ -268,11 +281,12 @@ class PeriodeAsesmen extends Model
      */
     public static function getSkemaPeriodTrendData()
     {
-        $data = DB::table('periode_asesmen as pa')
-            ->join('asesi as a', 'pa.id_asesi', '=', 'a.id_asesi')
-            ->select('pa.periode', DB::raw('COUNT(DISTINCT a.id_skema) as jumlah_skema'))
-            ->groupBy('pa.periode')
-            ->orderBy('pa.periode')
+        $data = DB::table('rincian_asesmen as ra')
+            ->join('event as e', 'ra.id_event', '=', 'e.id_event')
+            ->join('asesi as a', 'ra.id_asesi', '=', 'a.id_asesi')
+            ->select('e.periode_pelaksanaan as periode', DB::raw('COUNT(DISTINCT a.id_skema) as jumlah_skema'))
+            ->groupBy('e.periode_pelaksanaan')
+            ->orderBy('e.periode_pelaksanaan')
             ->get();
             
         // Format period labels

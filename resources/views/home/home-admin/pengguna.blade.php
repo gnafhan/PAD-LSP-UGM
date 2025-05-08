@@ -312,6 +312,7 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. HP</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanda Tangan</th>
                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
@@ -321,29 +322,19 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $index + 1 }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-800 font-bold text-sm">
-                                                @php
-                                                    // Mengambil bagian sebelum @ dari email untuk ditampilkan sebagai nama
-                                                    $emailParts = explode('@', $admin['email']);
-                                                    $displayName = $emailParts[0];
-                                                    
-                                                    // Tampilkan huruf pertama untuk avatar
-                                                    $initial = strtoupper(substr($displayName, 0, 1));
-                                                @endphp
-                                                {{ $initial }}
+                                            <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-800 font-bold text-sm">
+                                                {{ !empty($admin->name) ? strtoupper(substr($admin->name, 0, 1)) : 'A' }}
                                             </div>
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900">
-                                                    {{ $displayName }}
-                                                </div>
-                                                <div class="text-xs text-gray-500">
-                                                    {{ $admin['level'] ?? 'Admin' }}
+                                                    {{ $admin->name ?? '--- Nama tidak tersedia ---' }}
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
+                                    
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <span class="inline-flex items-center">
                                             <svg class="h-4 w-4 mr-1.5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -364,27 +355,37 @@
                                             <span class="text-gray-400 italic">-</span>
                                         @endif
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if($admin->tandaTanganAktif()->first())
+                                            <a href="{{ asset('storage/' . $admin->tandaTanganAktif()->first()->file_tanda_tangan) }}" 
+                                            target="_blank" 
+                                            class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                Lihat Tanda Tangan
+                                            </a>
+                                        @else
+                                            <span class="text-yellow-600 inline-flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                Belum ada Tanda Tangan
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex justify-end space-x-2">
                                             <button 
                                                 type="button" 
                                                 class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white transition-all"
-                                                onclick="openEditModal('{{ $admin['id_user'] }}', '{{ $admin['email'] }}', '{{ $admin['no_hp'] ?? '' }}')"
+                                                onclick="openEditModal('{{ $admin['id_user'] }}', '{{ $admin['email'] }}','{{ $admin['name'] }}', '{{ $admin['no_hp'] ?? '' }}')"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                 </svg>
                                                 Edit
-                                            </button>
-                                            <button 
-                                                type="button" 
-                                                class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded-md text-white transition-all"
-                                                onclick="openDeleteModal('{{ $admin['id_user'] }}')"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                Hapus
                                             </button>
                                         </div>
                                     </td>
@@ -423,12 +424,16 @@
                                 </div>
                             </div>
                             
-                            <form id="editAdminForm" method="POST" action="">
+                            <form id="editAdminForm" method="POST" action="" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
                                 <div class="px-6 py-4">
                                     <div class="space-y-4">
                                         
+                                        <div>
+                                            <label for="edit_nama" class="block text-sm font-medium text-gray-700">Nama</label>
+                                            <input type="text" name="name" id="edit_nama" class="px-4 py-2 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300">
+                                        </div>
                                         <div>
                                             <label for="edit_email" class="block text-sm font-medium text-gray-700">Email Resmi UGM</label>
                                             <input type="email" name="email" id="edit_email" class="px-4 py-2 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300">
@@ -437,6 +442,40 @@
                                         <div>
                                             <label for="edit_no_hp" class="block text-sm font-medium text-gray-700">No. HP</label>
                                             <input type="text" name="no_hp" id="edit_no_hp" class="px-4 py-2 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300">
+                                        </div>
+
+                                        <div>
+                                            <label for="current_signature" class="block text-sm font-medium text-gray-700 mb-1">Tanda Tangan Saat Ini</label>
+                                            <div id="current_signature_container" class="mt-1 mb-3">
+                                                <!-- Button/link for viewing signature (initially hidden) -->
+                                                <a id="view_signature_btn" href="#" target="_blank" 
+                                                class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none"
+                                                style="display: none;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                    Lihat Tanda Tangan
+                                                </a>
+                                                
+                                                <!-- Message for no signature (initially shown) -->
+                                                <p id="no_signature_text" class="text-yellow-600 inline-flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                    </svg>
+                                                    Belum ada tanda tangan
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label for="edit_file_tanda_tangan" class="block text-sm font-medium text-gray-700 mb-1">Upload Tanda Tangan Baru</label>
+                                            <input type="file" name="file_tanda_tangan" id="edit_file_tanda_tangan" 
+                                                class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-blue-500 focus:border-blue-500 block shadow-sm sm:text-sm border-gray-300"
+                                                accept="image/png,image/jpeg,image/jpg">
+                                            <p class="mt-1 text-xs text-gray-500">
+                                                Biarkan kosong jika tidak ingin mengubah tanda tangan. Format: JPG, JPEG, PNG
+                                            </p>
                                         </div>
                                     
                                     </div>
@@ -451,46 +490,6 @@
                                     </button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Konfirmasi Hapus -->
-                <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden overflow-y-auto">
-                    <div class="flex items-center justify-center min-h-screen p-4">
-                        <div class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all">
-                            <div class="p-6">
-                                <div class="flex items-center justify-center">
-                                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0">
-                                        <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                        </svg>
-                                    </div>
-                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                        <h3 class="text-lg leading-6 font-medium text-gray-900">Hapus Admin</h3>
-                                        <div class="mt-2">
-                                            <p class="text-sm text-gray-500">
-                                                Apakah Anda yakin ingin menghapus admin ini? Tindakan ini tidak dapat dibatalkan.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                                    <form id="deleteForm" method="POST" action="" enctype="multipart/form-data">
-                                        @csrf
-                                        @method('DELETE')
-                                        <input type="hidden" id="delete_admin_id" name="id" value="">
-
-                                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                    <button type="button" onclick="closeDeleteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm">
-                                        Batal
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -774,15 +773,40 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Fungsi untuk modal edit admin
-function openEditModal(adminId, email, noHp) {
+function openEditModal(adminId, email, name, noHp) {
     console.log('Opening edit modal for:', adminId);
     
     // Set nilai pada form
     document.getElementById('edit_email').value = email;
+    document.getElementById('edit_nama').value = name;
     document.getElementById('edit_no_hp').value = noHp;
     
     // Set form action URL dengan format yang benar
     document.getElementById('editAdminForm').action = "{{ url('/admin/pengguna/admin') }}/" + adminId + "/update";
+    
+    // Fetch current signature
+    fetch("{{ url('/admin/pengguna/admin') }}/" + adminId + "/signature")
+        .then(response => response.json())
+        .then(data => {
+            const viewSignatureBtn = document.getElementById('view_signature_btn');
+            const noSignatureText = document.getElementById('no_signature_text');
+            
+            if (data.success && data.data) {
+                // Show button with correct link to signature
+                viewSignatureBtn.href = data.data.file_path;
+                viewSignatureBtn.style.display = 'inline-flex';
+                noSignatureText.style.display = 'none';
+            } else {
+                // Show "no signature" message
+                viewSignatureBtn.style.display = 'none';
+                noSignatureText.style.display = 'inline-flex';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching signature:', error);
+            document.getElementById('view_signature_btn').style.display = 'none';
+            document.getElementById('no_signature_text').style.display = 'inline-flex';
+        });
     
     // Tampilkan modal
     const modal = document.getElementById('editAdminModal');

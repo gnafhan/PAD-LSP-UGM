@@ -17,12 +17,20 @@ class ProgresAsesmen extends Model
 
     protected $fillable = [
         'id_asesi',
+        'apl01',
         'apl02',
         'ak01',
         'konsultasi_pra_uji',
+        'mapa01',
+        'mapa02',
+        'pertanyaan_ketidak_berpihakan',
+        'ak07',
         'ia01',
         'ia02',
-        'ia07',
+        'hasil_asesmen',
+        'ak02',
+        'umpan_balik',
+        'ak04'
     ];
 
     public function asesi(): BelongsTo

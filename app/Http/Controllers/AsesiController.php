@@ -58,6 +58,7 @@ class AsesiController extends Controller
 
     public function detailApl1($id)
     {
+        // dd(Auth::user()->asesiPengajuan->admin);
         // Cari pengajuan berdasarkan id_user yang diberikan
         $asesiPengajuan = AsesiPengajuan::where('id_user', $id)->latest()->first();
 
@@ -77,7 +78,7 @@ class AsesiController extends Controller
             'foto' => asset('storage/uploads/bukti_pemohon/foto/bukti_foto_' . $id_user . '.pdf')
         ];
 
-        return view('home.home-asesi.APL-01.apl1-detail', compact('asesiPengajuan', 'buktiKelengkapan'));
+        return view('home.home-admin.detail-pengajuan', compact('asesiPengajuan', 'buktiKelengkapan'));
     }
 
 

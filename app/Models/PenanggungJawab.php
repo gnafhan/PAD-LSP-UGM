@@ -19,7 +19,7 @@ class PenanggungJawab extends Model
 
     protected $fillable = [
         'id_penanggung_jawab',
-        'nama_pananggung_jawab',
+        'nama_penanggung_jawab',
         'status_penanggung_jawab',
     ];
 
