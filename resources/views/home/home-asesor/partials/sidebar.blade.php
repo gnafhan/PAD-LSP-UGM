@@ -4,10 +4,10 @@
             <img src="{{ asset('images/logo.png') }}" alt="LSP UGM Logo" class="h-12 me-3">
         </a>
         <ul class="font-medium">
-            <li class="space-y-2 ">
-                <span class="mb-2 text-sidebar_font font-normal text-sm">Home</span>
+            <li class="py-2">
+                <span class="text-sidebar_font font-normal text-sm">Home</span>
                 <li>
-                    <a href="{{ route('home-asesor') }}" class="{{ request()->routeIs('home-asesor') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                    <a href="{{ route('home-asesor') }}" class="{{ request()->routeIs('home-asesor') ? 'bg-gradient-to-r from-biru to-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
                         <svg class="w-5 h-5 {{ request()->routeIs('home-asesor') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4 12 8-8 8 8M6 10.5V19a1 1 0 0 0 1 1h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3a1 1 0 0 0 1-1v-8.5"/>
                         </svg>
@@ -15,7 +15,7 @@
                     </a>
                </li>
                <li>
-                    <a href="{{ route('biodata-asesor') }}" class="{{ request()->routeIs('biodata-asesor') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                    <a href="{{ route('biodata-asesor') }}" class="{{ request()->routeIs('biodata-asesor') ? 'bg-gradient-to-r from-biru to-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
                         <svg class="w-5 h-5 {{ request()->routeIs('biodata-asesor') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9h3m-3 3h3m-3 3h3m-6 1c-.306-.613-.933-1-1.618-1H7.618c-.685 0-1.312.387-1.618 1M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm7 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
                         </svg>
@@ -23,14 +23,128 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('kompetensi-asesor') }}" class="{{ request()->routeIs('kompetensi-asesor') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                    <a href="{{ route('kompetensi-asesor') }}" class="{{ request()->routeIs('kompetensi-asesor') ? 'bg-gradient-to-r from-biru to-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
                         <svg class="w-5 h-5 {{ request()->routeIs('kompetensi-asesor') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
                         </svg>
                         <span class="ms-3">Kompetensi</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-gradient-to-r from-biru to-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">Daftar Asesi</span>
+                    </a>
+                </li>
             </li>
+            <li class="py-2">
+                <span class="text-sidebar_font font-normal text-sm">Pelaksanaan Asesmen</span>
+                <li>
+                    <a href="{{ route('frapl02-asesor') }}" class="{{ request()->routeIs('frapl02-asesor') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('frapl02-asesor') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">FR.APL.02</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">FR.AK.01</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">Konsul Pra Uji</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">FR.MAPA.01</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">FR.MAPA.02</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3 text-sm">Pernyataan Ketidakberpihakan</span>
+                    </a>
+                </li>
+            </li>
+            <li class="py-2">
+                <span class="text-sidebar_font font-normal text-sm">Perangkat Asesmen</span>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">FR.AK.07</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">FR.IA.01</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">FR.IA.02</span>
+                    </a>
+                </li>
+            </li>
+            <li class="py-2">
+                <span class="text-sidebar_font font-normal text-sm">Keputusan Asesmen</span>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">Hasil Asesmen</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">FR.AK.02</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('daftar-asesi') }}" class="{{ request()->routeIs('daftar-asesi') ? 'bg-ungu text-white' : 'text-sidebar_font' }} flex items-center p-2 text-sidebar_font rounded-lg hover:bg-btn_hover hover:text-sidebar_font group">
+                        <svg class="w-5 h-5 {{ request()->routeIs('daftar-asesi') ? 'text-white' : 'text-sidebar_font' }} group-hover:text-sidebar_font hover" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z"/>
+                        </svg>
+                        <span class="ms-3">FR.AK.04</span>
+                    </a>
+                </li>
+            </li>
+        </ul>
 
             {{-- <li>
                 <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
@@ -80,7 +194,6 @@
                     <span class="flex-1 ms-3 whitespace-nowrap">Sign Up</span>
                 </a>
             </li> --}}
-        </ul>
     </div>
 </aside>
 

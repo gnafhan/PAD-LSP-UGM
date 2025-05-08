@@ -10,124 +10,127 @@
         </svg>
         <span class="ms-2 text-xl font-bold text-black">Kompetensi Asesor</span>
     </div>
-    <div class="p-6 border border-border bg-white rounded-2xl">
+    <div id="bgGradient"
+        class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
+    </div>
+    <div id="frameHomeAsesor" class="relative z-10 p-8 border border-border bg-white rounded-2xl">
         <p class="mb-4 text-lg font-medium text-black">Kompetensi Teknis Asesor</p>
-        <div class="grid grid-cols-5 divide-x-2 divide-dashed gap-6 justify-center px-4 mb-4 bg-white border border-border rounded-md">
+        <div class="grid grid-cols-7 divide-x-2 divide-dashed gap-6 justify-center px-4 mb-4 bg-white border border-border rounded-md">
             <div class="flex col-span-3 items-center p-3 gap-2 rounded-full bg-white">
-                <svg class="w-40 h-40 text-biru_tua" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z" clip-rule="evenodd"/>
-                </svg>
+                <img id="profilePicture" src="{{ asset('images/ronaldo.png') }}" alt="Profile Picture" class="w-40 h-40 rounded-full">
                 <div class="flex-col gap-2 pe-2">
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 mb-4">
                         <svg class="w-6 h-6 text-sidebar_font" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z" clip-rule="evenodd"/>
                         </svg>
                         <p class="font-medium text-black">Nama Pengguna</p>
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 mb-4">
                         <svg class="w-6 h-6 text-sidebar_font" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" d="M8 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1h2a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2Zm6 1h-4v2H9a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2h-1V4Zm-6 8a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1Zm1 3a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Z" clip-rule="evenodd"/>
                         </svg>
-                        <p class="font-medium text-black">Nama Pengguna</p>
+                        <p class="font-medium text-font_abu">MET 123456</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-6 h-6 text-sidebar_font" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Z" clip-rule="evenodd"/>
+                        </svg>
+                        <p class="font-medium text-font_abu">Jumlah Skema: </p>
+                        <span class="font-medium text-font_abu">5</span>
                     </div>
                 </div>
             </div>
-            <div class="flex items-center my-6 bg-white">
+            <div class="flex col-span-2 items-center justify-center my-6 bg-white">
                 <div class="px-2 font-medium text-black justify-items-center items-center">
-                    <svg class="w-6 h-6 text-sidebar_font" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-16 h-16 text-sidebar_font" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd" d="M3 6a2 2 0 0 1 2-2h5.532a2 2 0 0 1 1.536.72l1.9 2.28H3V6Zm0 3v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9H3Z" clip-rule="evenodd"/>
                     </svg>
                     <p class="font-normal text-center">Lihat Sertifikat BNSP Kompeten</p>
                 </div>
             </div>
-            <div class="flex items-center my-6 bg-white">
+            <div class="flex col-span-2 items-center justify-center my-6 bg-white">
                 <div class="px-2 font-medium text-black justify-items-center items-center">
-                    <svg class="w-6 h-6 text-sidebar_font" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M3 6a2 2 0 0 1 2-2h5.532a2 2 0 0 1 1.536.72l1.9 2.28H3V6Zm0 3v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9H3Z" clip-rule="evenodd"/>
-                    </svg>
-                    <p class="font-normal text-center">Lihat Sertifikat BNSP Kompeten</p>
+                    <div class="bg-hijau_muda text-font_hijau p-2 rounded-md">
+                        <p class="font-bold ">AKTIF</p>
+                    </div>
+
+                    <p class="font-normal text-center text-font_desc">Hingga</p>
+                    <p class="font-semibold text-md text-center text-font_desc">32 Februari 2025</p>
                 </div>
             </div>
 
         </div>
         <p class="mb-4 text-lg font-medium text-black">Daftar Skema yang Diikuti Asesor</p>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <div class="overflow-x-auto shadow-sm rounded-lg">
+            <table id="kompetensi-table" class="min-w-full bg-white overflow-hidden">
+                <thead class="bg-bg_dashboard text-center">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Product name
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">
+                            <div class="flex items-center">
+                                No
+                            </div>
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Color
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">
+                            <div class="flex items-center">
+                                Lembaga Sertifikasi
+                            </div>
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Category
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">
+                            <div class="flex items-center">
+                                Sertifikasi
+                            </div>
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Price
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">
+                            <div class="flex items-center">
+                                File Sertifikat
+                            </div>
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Action
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(3)">
+                            <div class="flex items-center">
+                                Masa Berlaku
+                            </div>
+                        </th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(4)">
+                            <div class="flex items-center">
+                                Status
+                            </div>
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Apple MacBook Pro 17"
-                        </th>
-                        <td class="px-6 py-4">
-                            Silver
-                        </td>
-                        <td class="px-6 py-4">
-                            Laptop
-                        </td>
-                        <td class="px-6 py-4">
-                            $2999
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Microsoft Surface Pro
-                        </th>
-                        <td class="px-6 py-4">
-                            White
-                        </td>
-                        <td class="px-6 py-4">
-                            Laptop PC
-                        </td>
-                        <td class="px-6 py-4">
-                            $1999
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white dark:bg-gray-800">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            Magic Mouse 2
-                        </th>
-                        <td class="px-6 py-4">
-                            Black
-                        </td>
-                        <td class="px-6 py-4">
-                            Accessories
-                        </td>
-                        <td class="px-6 py-4">
-                            $99
-                        </td>
-                        <td class="px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
+                <tbody class="divide-y divide-gray-200 text-black">
+                    <td class="px-4 py-3 text-sm text-gray-700">1</td>
+                    <td>Nafa Company</td>
+                    <td>Sertifikasi Frontend</td>
+                    <td class="items-center">
+                        <svg class="w-6 h-6 text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clip-rule="evenodd"/>
+                        </svg>
+                    </td>
+                    <td>12345</td>
+                    <td>aktif</td>
                 </tbody>
+                {{-- <tbody class="divide-y divide-gray-200">
+                    @if($skemaStats->isEmpty())
+                        <tr>
+                            <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data skema per periode yang tersedia</td>
+                        </tr>
+                    @else
+                        @foreach($skemaStats as $index => $stat)
+                        <tr class="hover:bg-gray-50 skema-row" data-periode="{{ $stat->periode }}" data-tahun="{{ $stat->tahun }}">
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ $index + 1 }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ $stat->nama_skema }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ $stat->periode }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ $stat->tahun }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-700">{{ $stat->jumlah_asesi }}</td>
+                        </tr>
+                        @endforeach
+                    @endif
+                </tbody> --}}
             </table>
         </div>
-
+    </div>
+    <div id="bgGradient"
+        class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
     </div>
 </div>
 

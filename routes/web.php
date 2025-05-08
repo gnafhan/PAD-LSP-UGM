@@ -228,6 +228,15 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/kompetensi');
     })->name('kompetensi-asesor');
 
+    Route::get('/daftar-asesi', function () {
+        return view('home/home-asesor/daftar-asesi');
+    })->name('daftar-asesi');
+
+    Route::get('/frapl02-asesor', function () {
+        return view('home/home-asesor/frapl02-asesor');
+    })->name('frapl02-asesor');
+
+
     // Aksi Asesor
     Route::get('/aksi/aktif', function () {
         return view('home/home-asesor/aktif');
