@@ -16,6 +16,765 @@
         }
     ],
     "paths": {
+        "/asesmen/konsultasi-prauji/{id_asesi}": {
+            "get": {
+                "tags": [
+                    "Konsultasi Pra Uji"
+                ],
+                "summary": "Mendapatkan data formulir Konsultasi Pra Uji",
+                "description": "Get KonsultasiPraUji data for an Asesi",
+                "operationId": "a3a7bf251ccfaa84de7cab63bfb9f361",
+                "parameters": [
+                    {
+                        "name": "id_asesi",
+                        "in": "path",
+                        "description": "ID asesi",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data formulir konsultasi pra uji",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "general_info": {
+                                                    "properties": {
+                                                        "skema": {
+                                                            "properties": {
+                                                                "id_skema": {
+                                                                    "type": "string",
+                                                                    "example": "SKEMA2025XXXXX"
+                                                                },
+                                                                "nomor_skema": {
+                                                                    "type": "string",
+                                                                    "example": "SKM-001"
+                                                                },
+                                                                "nama_skema": {
+                                                                    "type": "string",
+                                                                    "example": "Programmer"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "unit_kompetensi": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "id_uk": {
+                                                                        "type": "string",
+                                                                        "example": "UK2025XXXXX"
+                                                                    },
+                                                                    "kode_uk": {
+                                                                        "type": "string",
+                                                                        "example": "J.62.01.01"
+                                                                    },
+                                                                    "nama_uk": {
+                                                                        "type": "string",
+                                                                        "example": "Menganalisis Kebutuhan Software"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "id_asesor": {
+                                                            "type": "string",
+                                                            "example": "ASESOR2025XXXXX"
+                                                        },
+                                                        "nama_asesor": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "konsultasi_pra_uji": {
+                                                    "properties": {
+                                                        "tanggal_asesmen_disepakati": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2025-05-06"
+                                                        },
+                                                        "waktu_pelaksanaan": {
+                                                            "type": "string",
+                                                            "example": "09:00"
+                                                        },
+                                                        "tempat_uji": {
+                                                            "type": "string",
+                                                            "example": "JTTC"
+                                                        },
+                                                        "ttd_asesi": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        },
+                                                        "waktu_tanda_tangan_asesor": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2025-05-05 14:30:00",
+                                                            "nullable": true
+                                                        },
+                                                        "jawaban_checklist": {
+                                                            "properties": {
+                                                                "point_1": {
+                                                                    "properties": {
+                                                                        "jawaban_asesi": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "jawaban_asesor": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "point_2": {
+                                                                    "properties": {
+                                                                        "jawaban_asesi": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "jawaban_asesor": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "point_3": {
+                                                                    "properties": {
+                                                                        "jawaban_asesi": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "jawaban_asesor": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "point_4": {
+                                                                    "properties": {
+                                                                        "jawaban_asesi": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "jawaban_asesor": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "point_5": {
+                                                                    "properties": {
+                                                                        "jawaban_asesi": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "jawaban_asesor": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "point_6": {
+                                                                    "properties": {
+                                                                        "jawaban_asesi": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "jawaban_asesor": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "point_7": {
+                                                                    "properties": {
+                                                                        "jawaban_asesi": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "jawaban_asesor": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "point_8": {
+                                                                    "properties": {
+                                                                        "jawaban_asesi": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "jawaban_asesor": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                },
+                                                                "point_9": {
+                                                                    "properties": {
+                                                                        "jawaban_asesi": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        },
+                                                                        "jawaban_asesor": {
+                                                                            "type": "string",
+                                                                            "example": "Ya",
+                                                                            "nullable": true
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "record_exists": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan atau belum memiliki rincian asesmen",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Formulir prasyarat belum diselesaikan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Formulir AK-01 (Formulir Persetujuan Asesmen) belum diselesaikan"
+                                        },
+                                        "missing_form": {
+                                            "type": "string",
+                                            "example": "ak01"
+                                        },
+                                        "display_name": {
+                                            "type": "string",
+                                            "example": "AK-01 (Formulir Persetujuan Asesmen)"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 422
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesmen/konsultasi-prauji/asesi/save": {
+            "post": {
+                "tags": [
+                    "Konsultasi Pra Uji"
+                ],
+                "summary": "Menyimpan data formulir Konsultasi Pra Uji oleh Asesi",
+                "description": "Create or update KonsultasiPraUji data for Asesi",
+                "operationId": "9dd5866cda85382a2816f07d026aab83",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_asesi",
+                                    "id_asesor",
+                                    "jawaban_checklist"
+                                ],
+                                "properties": {
+                                    "id_asesi": {
+                                        "type": "string",
+                                        "example": "ASESI2025XXXXX"
+                                    },
+                                    "id_asesor": {
+                                        "type": "string",
+                                        "example": "ASESOR2025XXXXX"
+                                    },
+                                    "jawaban_checklist": {
+                                        "properties": {
+                                            "point_1": {
+                                                "properties": {
+                                                    "jawaban_asesi": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_2": {
+                                                "properties": {
+                                                    "jawaban_asesi": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_3": {
+                                                "properties": {
+                                                    "jawaban_asesi": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_4": {
+                                                "properties": {
+                                                    "jawaban_asesi": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_5": {
+                                                "properties": {
+                                                    "jawaban_asesi": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_6": {
+                                                "properties": {
+                                                    "jawaban_asesi": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_7": {
+                                                "properties": {
+                                                    "jawaban_asesi": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_8": {
+                                                "properties": {
+                                                    "jawaban_asesi": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_9": {
+                                                "properties": {
+                                                    "jawaban_asesi": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data konsultasi pra uji berhasil disimpan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data konsultasi pra uji berhasil disimpan oleh Asesi"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Asesi tidak terdaftar dengan asesor ini",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak terdaftar dengan asesor ini"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 403
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal atau formulir prasyarat belum diselesaikan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesmen/konsultasi-prauji/asesor/save": {
+            "post": {
+                "tags": [
+                    "Konsultasi Pra Uji"
+                ],
+                "summary": "Menyimpan data formulir Konsultasi Pra Uji oleh Asesor",
+                "description": "Create or update KonsultasiPraUji data for Asesor",
+                "operationId": "41d45e17f5c8ee0686fc4280fa372342",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_asesi",
+                                    "id_asesor",
+                                    "jawaban_checklist"
+                                ],
+                                "properties": {
+                                    "id_asesi": {
+                                        "type": "string",
+                                        "example": "ASESI2025XXXXX"
+                                    },
+                                    "id_asesor": {
+                                        "type": "string",
+                                        "example": "ASESOR2025XXXXX"
+                                    },
+                                    "jawaban_checklist": {
+                                        "properties": {
+                                            "point_1": {
+                                                "properties": {
+                                                    "jawaban_asesor": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_2": {
+                                                "properties": {
+                                                    "jawaban_asesor": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_3": {
+                                                "properties": {
+                                                    "jawaban_asesor": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_4": {
+                                                "properties": {
+                                                    "jawaban_asesor": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_5": {
+                                                "properties": {
+                                                    "jawaban_asesor": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_6": {
+                                                "properties": {
+                                                    "jawaban_asesor": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_7": {
+                                                "properties": {
+                                                    "jawaban_asesor": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_8": {
+                                                "properties": {
+                                                    "jawaban_asesor": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "point_9": {
+                                                "properties": {
+                                                    "jawaban_asesor": {
+                                                        "type": "string",
+                                                        "example": "Ya"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "is_asesor_signing": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data konsultasi pra uji berhasil disimpan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data konsultasi pra uji berhasil disimpan oleh Asesor"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Asesor tidak ditugaskan untuk asesi ini",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesor tidak ditugaskan untuk asesi ini"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 403
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal atau formulir prasyarat belum diselesaikan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
         "/asesor/asesis/{id}": {
             "get": {
                 "tags": [
@@ -747,6 +1506,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Konsultasi Pra Uji",
+            "description": "API Endpoints untuk pengelolaan formulir Konsultasi Pra Uji"
+        },
         {
             "name": "Asesi",
             "description": "API Endpoints untuk pengelolaan data Asesi"

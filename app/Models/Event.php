@@ -32,6 +32,11 @@ class Event extends Model
     protected $dates = ['tanggal_mulai_event', 'tanggal_berakhir_event'];
 
 
+    public function getRentangWaktuAttribute(): string
+    {
+        return $this->tanggal_mulai_event->format('d-m-Y') . ' s/d ' . $this->tanggal_berakhir_event->format('d-m-Y');
+    }
+
     public function getTanggalMulaiEventAttribute($value): Carbon
     {
         return Carbon::parse($value);
@@ -42,7 +47,6 @@ class Event extends Model
         return Carbon::parse($value);
     }
 
-    
 
     //tuk
     public function tuk(): BelongsTo

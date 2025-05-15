@@ -47,6 +47,11 @@ class Asesor extends Model
         return $this->hasMany(BidangKompetensi::class, 'id_bidang_kompetensi', 'id_bidang_kompetensi');
     }
 
+    public function konsultasiPraUji()
+    {
+        return $this->hasMany(KonsultasiPraUji::class, 'id_asesor', 'id_asesor');
+    }
+
     protected static function boot()
     {
         parent::boot();
