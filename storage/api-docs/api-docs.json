@@ -16,6 +16,348 @@
         }
     ],
     "paths": {
+        "/asesmen/ak01/{id_asesi}": {
+            "get": {
+                "tags": [
+                    "AK01"
+                ],
+                "summary": "Mendapatkan data formulir AK01 untuk asesi",
+                "description": "Get AK01 data for an Asesi",
+                "operationId": "10347f0941a6265a7454f9777ed2eeab",
+                "parameters": [
+                    {
+                        "name": "id_asesi",
+                        "in": "path",
+                        "description": "ID asesi",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data formulir AK01",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "general_info": {
+                                                    "properties": {
+                                                        "nama_asesi": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        },
+                                                        "nama_asesor": {
+                                                            "type": "string",
+                                                            "example": "Jane Smith"
+                                                        },
+                                                        "nama_tuk": {
+                                                            "type": "string",
+                                                            "example": "TUK JTTC"
+                                                        },
+                                                        "judul_skema": {
+                                                            "type": "string",
+                                                            "example": "Programmer"
+                                                        },
+                                                        "kode_skema": {
+                                                            "type": "string",
+                                                            "example": "SKM-001"
+                                                        },
+                                                        "pelaksanaan_asesmen_disepakati_mulai": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2025-01-15"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "ak01": {
+                                                    "properties": {
+                                                        "hasil_yang_akan_dikumpulkan": {
+                                                            "type": "string",
+                                                            "example": "Hasil unjuk kerja, portofolio, dan knowledge test"
+                                                        },
+                                                        "waktu_tanda_tangan_asesi": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2025-05-14",
+                                                            "nullable": true
+                                                        },
+                                                        "waktu_tanda_tangan_asesor": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2025-05-15",
+                                                            "nullable": true
+                                                        },
+                                                        "tanda_tangan_asesor": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "signature/ttd_asesor.png"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "record_exists": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan atau belum memiliki rincian asesmen",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesmen/ak01/asesi/save": {
+            "post": {
+                "tags": [
+                    "AK01"
+                ],
+                "summary": "Menyimpan tanda tangan Asesi pada formulir AK01",
+                "description": "Create or update AK01 data for Asesi",
+                "operationId": "51acc8918742b190d1809aff2b999c0e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_asesi",
+                                    "id_asesor"
+                                ],
+                                "properties": {
+                                    "id_asesi": {
+                                        "type": "string",
+                                        "example": "ASESI2025XXXXX"
+                                    },
+                                    "id_asesor": {
+                                        "type": "string",
+                                        "example": "ASESOR2025XXXXX"
+                                    },
+                                    "is_signing": {
+                                        "description": "Set to true to sign the form",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data AK01 berhasil disimpan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data AK01 berhasil ditandatangani oleh Asesi"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Asesi tidak terdaftar dengan asesor ini",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak terdaftar dengan asesor ini"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 403
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesmen/ak01/asesor/save": {
+            "post": {
+                "tags": [
+                    "AK01"
+                ],
+                "summary": "Menyimpan data formulir AK01 oleh Asesor",
+                "description": "Create or update AK01 data for Asesor",
+                "operationId": "2456a598da1c04a8e9611c380ddc968f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_asesi",
+                                    "id_asesor",
+                                    "hasil_yang_akan_dikumpulkan"
+                                ],
+                                "properties": {
+                                    "id_asesi": {
+                                        "type": "string",
+                                        "example": "ASESI2025XXXXX"
+                                    },
+                                    "id_asesor": {
+                                        "type": "string",
+                                        "example": "ASESOR2025XXXXX"
+                                    },
+                                    "hasil_yang_akan_dikumpulkan": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "Hasil Observasi Langsung"
+                                        }
+                                    },
+                                    "is_signing": {
+                                        "description": "Set to true if the asesor is signing the form",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data AK01 berhasil disimpan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data AK01 berhasil disimpan oleh Asesor"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
         "/asesmen/konsultasi-prauji/{id_asesi}": {
             "get": {
                 "tags": [
@@ -23,7 +365,7 @@
                 ],
                 "summary": "Mendapatkan data formulir Konsultasi Pra Uji",
                 "description": "Get KonsultasiPraUji data for an Asesi",
-                "operationId": "a3a7bf251ccfaa84de7cab63bfb9f361",
+                "operationId": "aad2347775d5bfc60ee7470d1b7aee38",
                 "parameters": [
                     {
                         "name": "id_asesi",
@@ -117,10 +459,9 @@
                                                             "type": "boolean",
                                                             "example": true
                                                         },
-                                                        "waktu_tanda_tangan_asesor": {
+                                                        "tanda_tangan_asesor": {
                                                             "type": "string",
-                                                            "format": "date-time",
-                                                            "example": "2025-05-05 14:30:00",
+                                                            "example": "signature/ttd_asesor.png",
                                                             "nullable": true
                                                         },
                                                         "jawaban_checklist": {
@@ -350,7 +691,7 @@
                 ],
                 "summary": "Menyimpan data formulir Konsultasi Pra Uji oleh Asesi",
                 "description": "Create or update KonsultasiPraUji data for Asesi",
-                "operationId": "9dd5866cda85382a2816f07d026aab83",
+                "operationId": "7ba3215748ba47a0a8a7b87a60fbf070",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -564,7 +905,7 @@
                 ],
                 "summary": "Menyimpan data formulir Konsultasi Pra Uji oleh Asesor",
                 "description": "Create or update KonsultasiPraUji data for Asesor",
-                "operationId": "41d45e17f5c8ee0686fc4280fa372342",
+                "operationId": "85964372c9f3a3bc2a3033878e23e536",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -694,6 +1035,697 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Data konsultasi pra uji berhasil disimpan oleh Asesor"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Asesor tidak ditugaskan untuk asesi ini",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesor tidak ditugaskan untuk asesi ini"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 403
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal atau formulir prasyarat belum diselesaikan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesmen/mapa01/{id_asesi}": {
+            "get": {
+                "tags": [
+                    "MAPA01"
+                ],
+                "summary": "Mendapatkan data formulir MAPA01 untuk asesi",
+                "description": "Get MAPA01 data for an Asesi",
+                "operationId": "798e85dc109e31c7929fba150925b6d0",
+                "parameters": [
+                    {
+                        "name": "id_asesi",
+                        "in": "path",
+                        "description": "ID asesi",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data formulir MAPA01",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "general_info": {
+                                                    "properties": {
+                                                        "nama_asesi": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        },
+                                                        "nama_asesor": {
+                                                            "type": "string",
+                                                            "example": "Jane Smith"
+                                                        },
+                                                        "nama_tuk": {
+                                                            "type": "string",
+                                                            "example": "TUK JTTC"
+                                                        },
+                                                        "judul_skema": {
+                                                            "type": "string",
+                                                            "example": "Programmer"
+                                                        },
+                                                        "kode_skema": {
+                                                            "type": "string",
+                                                            "example": "SKM-001"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "rencana_asesmen": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id_uk": {
+                                                                "type": "string",
+                                                                "example": "UK-001"
+                                                            },
+                                                            "kode_uk": {
+                                                                "type": "string",
+                                                                "example": "UK001"
+                                                            },
+                                                            "nama_uk": {
+                                                                "type": "string",
+                                                                "example": "Mengembangkan Aplikasi Web"
+                                                            },
+                                                            "rencana": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "elemen": {
+                                                                            "type": "string",
+                                                                            "example": "Menyiapkan kebutuhan"
+                                                                        },
+                                                                        "bukti_bukti": {
+                                                                            "type": "string",
+                                                                            "example": "Portofolio"
+                                                                        },
+                                                                        "jenis_bukti": {
+                                                                            "type": "string",
+                                                                            "example": "L"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "mapa01": {
+                                                    "properties": {
+                                                        "pendekatan_asesmen_asesi": {
+                                                            "type": "string",
+                                                            "example": "Pendekatan asesmen yang digunakan"
+                                                        },
+                                                        "tujuan_asesmen": {
+                                                            "type": "string",
+                                                            "example": "Tujuan pelaksanaan asesmen"
+                                                        },
+                                                        "lingkungan": {
+                                                            "type": "string",
+                                                            "example": "Tempat kerja nyata"
+                                                        },
+                                                        "peluang_untuk_mengumpulkan_bukti": {
+                                                            "type": "string",
+                                                            "example": "Tersedia"
+                                                        },
+                                                        "hubungan_antara_standar_kompetensi": {
+                                                            "type": "string",
+                                                            "example": "Keterkaitan dengan standar industri"
+                                                        },
+                                                        "pelaksana_asesmen": {
+                                                            "type": "string",
+                                                            "example": "Tim asesor LSP UGM"
+                                                        },
+                                                        "pihak_yang_relevan_untuk_dikonfirmasi": {
+                                                            "type": "string",
+                                                            "example": "Atasan, rekan kerja, klien"
+                                                        },
+                                                        "tolak_ukur_asesmen": {
+                                                            "type": "string",
+                                                            "example": "Kriteria unjuk kerja dan pengetahuan pendukung"
+                                                        },
+                                                        "waktu_tanda_tangan_asesor": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2025-05-15",
+                                                            "nullable": true
+                                                        },
+                                                        "tanda_tangan_asesor": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "signature/ttd_asesor.png"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "record_exists": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan atau belum memiliki rincian asesmen",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesmen/mapa01/save": {
+            "post": {
+                "tags": [
+                    "MAPA01"
+                ],
+                "summary": "Menyimpan data formulir MAPA01 oleh Asesor",
+                "description": "Create or update MAPA01 data for Asesor",
+                "operationId": "ecf75dc63b3c0074c78c08b6c8f828cf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_asesi",
+                                    "id_asesor",
+                                    "lingkungan",
+                                    "peluang_untuk_mengumpulkan_bukti",
+                                    "hubungan_antara_standar_kompetensi",
+                                    "pelaksana_asesmen",
+                                    "pihak_yang_relevan_untuk_dikonfirmasi",
+                                    "tolak_ukur_asesmen"
+                                ],
+                                "properties": {
+                                    "id_asesi": {
+                                        "type": "string",
+                                        "example": "ASESI2025XXXXX"
+                                    },
+                                    "id_asesor": {
+                                        "type": "string",
+                                        "example": "ASESOR2025XXXXX"
+                                    },
+                                    "pendekatan_asesmen_asesi": {
+                                        "type": "string",
+                                        "example": "Pekerja Berpengalaman, dimana berasal dari industri/tempat kerja yang dalam operasionalnya mampu telusur dengan standar kompetensi"
+                                    },
+                                    "tujuan_asesmen": {
+                                        "type": "string",
+                                        "example": "Sertifikasi"
+                                    },
+                                    "lingkungan": {
+                                        "type": "string",
+                                        "example": "Tempat kerja nyata"
+                                    },
+                                    "peluang_untuk_mengumpulkan_bukti": {
+                                        "type": "string",
+                                        "example": "Tersedia"
+                                    },
+                                    "hubungan_antara_standar_kompetensi": {
+                                        "type": "string",
+                                        "example": "\tBukti untuk mendukung asesmen / RPL"
+                                    },
+                                    "pelaksana_asesmen": {
+                                        "type": "string",
+                                        "example": "\tOleh Lembaga Sertifikasi"
+                                    },
+                                    "pihak_yang_relevan_untuk_dikonfirmasi": {
+                                        "type": "string",
+                                        "example": "Manajer sertifikasi LSP"
+                                    },
+                                    "tolak_ukur_asesmen": {
+                                        "type": "string",
+                                        "example": "Kriteria asesmen dari kurikulum pelatihan"
+                                    },
+                                    "is_signing": {
+                                        "description": "Set to true if the asesor is signing the form",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data MAPA01 berhasil disimpan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data MAPA01 berhasil disimpan"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Asesi tidak terdaftar dengan asesor ini",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak terdaftar dengan asesor ini"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 403
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesmen/mapa02/{id_asesi}": {
+            "get": {
+                "tags": [
+                    "MAPA.02"
+                ],
+                "summary": "Mendapatkan data formulir MAPA.02 untuk asesi",
+                "description": "Get Mapa02 data for an Asesi",
+                "operationId": "cc45bd19c04eb33149fdadfc6f0a811f",
+                "parameters": [
+                    {
+                        "name": "id_asesi",
+                        "in": "path",
+                        "description": "ID asesi",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data formulir MAPA.02",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "general_info": {
+                                                    "properties": {
+                                                        "nama_asesi": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        },
+                                                        "nama_asesor": {
+                                                            "type": "string",
+                                                            "example": "Jane Smith"
+                                                        },
+                                                        "judul_skema": {
+                                                            "type": "string",
+                                                            "example": "Programmer"
+                                                        },
+                                                        "kode_skema": {
+                                                            "type": "string",
+                                                            "example": "SKM-001"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "mapa02": {
+                                                    "properties": {
+                                                        "muk_ceklis_observasi": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "muk_tugas_praktik_demonstrasi": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "muk_pertanyaan_tertulis_esai": {
+                                                            "type": "integer",
+                                                            "example": 0
+                                                        },
+                                                        "muk_pertanyaan_lisan": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "muk_ceklis_verifikasi_portfolio": {
+                                                            "type": "integer",
+                                                            "example": 0
+                                                        },
+                                                        "muk_ceklis_meninjau_materi_uji": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "waktu_tanda_tangan_asesor": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "2025-05-15"
+                                                        },
+                                                        "tanda_tangan_asesor": {
+                                                            "type": "string",
+                                                            "format": "date",
+                                                            "example": "signature/ttd_asesor.png"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "record_exists": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan atau belum memiliki rincian asesmen",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Formulir prasyarat belum diselesaikan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Formulir MAPA-01 (Merencanakan Aktivitas) belum diselesaikan"
+                                        },
+                                        "missing_form": {
+                                            "type": "string",
+                                            "example": "mapa01"
+                                        },
+                                        "display_name": {
+                                            "type": "string",
+                                            "example": "MAPA-01 (Merencanakan Aktivitas)"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 422
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesmen/mapa02/save": {
+            "post": {
+                "tags": [
+                    "MAPA.02"
+                ],
+                "summary": "Menyimpan data formulir MAPA.02",
+                "description": "Create or update Mapa02 data",
+                "operationId": "6e260efdd6c4759f9d889ec7f0b76f9b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_asesi",
+                                    "id_asesor",
+                                    "muk_ceklis_observasi",
+                                    "muk_tugas_praktik_demonstrasi",
+                                    "muk_pertanyaan_tertulis_esai",
+                                    "muk_pertanyaan_lisan",
+                                    "muk_ceklis_verifikasi_portfolio",
+                                    "muk_ceklis_meninjau_materi_uji"
+                                ],
+                                "properties": {
+                                    "id_asesi": {
+                                        "type": "string",
+                                        "example": "ASESI2025XXXXX"
+                                    },
+                                    "id_asesor": {
+                                        "type": "string",
+                                        "example": "ASESOR2025XXXXX"
+                                    },
+                                    "muk_ceklis_observasi": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "muk_tugas_praktik_demonstrasi": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "muk_pertanyaan_tertulis_esai": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "muk_pertanyaan_lisan": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "muk_ceklis_verifikasi_portfolio": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "muk_ceklis_meninjau_materi_uji": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "is_signing": {
+                                        "description": "Set to true if the asesor is signing the form",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Data MAPA.02 berhasil disimpan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data MAPA.02 berhasil disimpan"
                                         },
                                         "data": {
                                             "type": "object"
@@ -1051,21 +2083,11 @@
                                     "no_sertifikat",
                                     "no_hp",
                                     "alamat",
-                                    "bidang",
-                                    "gelar_depan",
-                                    "gelar_belakang",
                                     "no_ktp",
                                     "jenis_kelamin",
-                                    "pendidikan_terakhir",
-                                    "keahlian",
-                                    "tempat_lahir",
-                                    "tanggal_lahir",
                                     "kebangsaan",
-                                    "no_lisensi",
-                                    "institusi_asal",
-                                    "no_telp_institusi_asal",
-                                    "fax_institusi_asal",
-                                    "email_institusi_asal"
+                                    "no_met",
+                                    "kode_pos"
                                 ],
                                 "properties": {
                                     "_method": {
@@ -1089,18 +2111,6 @@
                                         "type": "string",
                                         "example": "Jl. Contoh No. 123"
                                     },
-                                    "bidang": {
-                                        "type": "string",
-                                        "example": "Teknologi Informasi"
-                                    },
-                                    "gelar_depan": {
-                                        "type": "string",
-                                        "example": "Dr."
-                                    },
-                                    "gelar_belakang": {
-                                        "type": "string",
-                                        "example": "S.Kom., M.T."
-                                    },
                                     "no_ktp": {
                                         "type": "string",
                                         "example": "3301012345678901"
@@ -1109,47 +2119,21 @@
                                         "type": "string",
                                         "example": "Laki-laki"
                                     },
-                                    "pendidikan_terakhir": {
-                                        "type": "string",
-                                        "example": "S2"
-                                    },
-                                    "keahlian": {
-                                        "type": "string",
-                                        "example": "Software Engineering"
-                                    },
-                                    "tempat_lahir": {
-                                        "type": "string",
-                                        "example": "Jakarta"
-                                    },
-                                    "tanggal_lahir": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "1990-01-01"
-                                    },
                                     "kebangsaan": {
                                         "type": "string",
                                         "example": "Indonesia"
                                     },
-                                    "no_lisensi": {
+                                    "no_met": {
                                         "type": "string",
-                                        "example": "LSN123456"
+                                        "example": "MET12345"
                                     },
-                                    "institusi_asal": {
+                                    "kode_pos": {
                                         "type": "string",
-                                        "example": "Universitas Gadjah Mada"
+                                        "example": "12345"
                                     },
-                                    "no_telp_institusi_asal": {
+                                    "kode_registrasi": {
                                         "type": "string",
-                                        "example": "0274123456"
-                                    },
-                                    "fax_institusi_asal": {
-                                        "type": "string",
-                                        "example": "0274654321"
-                                    },
-                                    "email_institusi_asal": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "info@ugm.ac.id"
+                                        "example": "REG-2025-001"
                                     },
                                     "tanda_tangan": {
                                         "description": "File tanda tangan",
@@ -1507,8 +2491,20 @@
     },
     "tags": [
         {
+            "name": "AK01",
+            "description": "API Endpoints untuk pengelolaan formulir AK01 (Persetujuan Asesmen & Kerahasiaan)"
+        },
+        {
             "name": "Konsultasi Pra Uji",
             "description": "API Endpoints untuk pengelolaan formulir Konsultasi Pra Uji"
+        },
+        {
+            "name": "MAPA01",
+            "description": "API Endpoints untuk pengelolaan formulir MAPA01 (Merencanakan Aktifitas & Proses Asesmen)"
+        },
+        {
+            "name": "MAPA.02",
+            "description": "API Endpoints untuk pengelolaan formulir MAPA.02 (Peta Instrumen Asesmen)"
         },
         {
             "name": "Asesi",

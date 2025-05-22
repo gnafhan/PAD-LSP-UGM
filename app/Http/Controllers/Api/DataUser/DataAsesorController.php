@@ -38,14 +38,11 @@ class DataAsesorController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\MediaType(
+     *         @OA\MediaType( 
      *             mediaType="multipart/form-data",
-     *             @OA\Schema(
-     *                 required={"_method", "nama_asesor", "no_sertifikat", "no_hp", "alamat", "bidang", 
-     *                          "gelar_depan", "gelar_belakang", "no_ktp", "jenis_kelamin", 
-     *                          "pendidikan_terakhir", "keahlian", "tempat_lahir", "tanggal_lahir",
-     *                          "kebangsaan", "no_lisensi", "institusi_asal", "no_telp_institusi_asal",
-     *                          "fax_institusi_asal", "email_institusi_asal"},
+     *             @OA\Schema( 
+     *                 required={"_method", "nama_asesor", "no_sertifikat", "no_hp", "alamat", "no_ktp",
+     *                           "jenis_kelamin", "kebangsaan", "no_met", "kode_pos"},
      *                 @OA\Property(
      *                     property="_method", 
      *                     type="string", 
@@ -56,36 +53,27 @@ class DataAsesorController extends Controller
      *                 @OA\Property(property="no_sertifikat", type="string", example="CERT123456"),
      *                 @OA\Property(property="no_hp", type="string", example="081234567890"),
      *                 @OA\Property(property="alamat", type="string", example="Jl. Contoh No. 123"),
-     *                 @OA\Property(property="bidang", type="string", example="Teknologi Informasi"),
-     *                 @OA\Property(property="gelar_depan", type="string", example="Dr."),
-     *                 @OA\Property(property="gelar_belakang", type="string", example="S.Kom., M.T."),
      *                 @OA\Property(property="no_ktp", type="string", example="3301012345678901"),
      *                 @OA\Property(property="jenis_kelamin", type="string", example="Laki-laki"),
-     *                 @OA\Property(property="pendidikan_terakhir", type="string", example="S2"),
-     *                 @OA\Property(property="keahlian", type="string", example="Software Engineering"),
-     *                 @OA\Property(property="tempat_lahir", type="string", example="Jakarta"),
-     *                 @OA\Property(property="tanggal_lahir", type="string", format="date", example="1990-01-01"),
      *                 @OA\Property(property="kebangsaan", type="string", example="Indonesia"),
-     *                 @OA\Property(property="no_lisensi", type="string", example="LSN123456"),
-     *                 @OA\Property(property="institusi_asal", type="string", example="Universitas Gadjah Mada"),
-     *                 @OA\Property(property="no_telp_institusi_asal", type="string", example="0274123456"),
-     *                 @OA\Property(property="fax_institusi_asal", type="string", example="0274654321"),
-     *                 @OA\Property(property="email_institusi_asal", type="string", format="email", example="info@ugm.ac.id"),
+     *                 @OA\Property(property="no_met", type="string", example="MET12345"),
+     *                 @OA\Property(property="kode_pos", type="string", example="12345"),
+     *                 @OA\Property(property="kode_registrasi", type="string", example="REG-2025-001"),
      *                 @OA\Property(
      *                     property="tanda_tangan",
      *                     description="File tanda tangan",
      *                     type="file",
      *                     format="binary"
      *                 ),
-     *                 @OA\Property(
+     *                 @OA\Property( 
      *                     property="foto_asesor",
      *                     description="Foto asesor",
      *                     type="file",
      *                     format="binary"
-     *                 )
-     *             )
-     *         )
-     *     ),
+     *                 ) 
+     *             ) 
+     *         ) 
+     *     ), 
      *     @OA\Response(
      *         response=200,
      *         description="Data asesor berhasil diupdate",
@@ -112,36 +100,24 @@ class DataAsesorController extends Controller
      *             @OA\Property(property="errors", type="object")
      *         )
      *     )
-     * )
+     * ) 
      */
     public function update_biodata(Request $request, string $id)
     {
         // Lakukan validasi menggunakan Validator
         $validator = \Validator::make($request->all(), [
             'nama_asesor'               => 'required|string|max:255',
-            'no_sertifikat'             => 'required|string|max:255',
+            'no_sertifikat'             => 'required|string|max:30',
             'no_hp'                     => 'required|string|max:20',
-            'alamat'                    => 'required|string|max:255',
-            'bidang'                    => 'required|string|max:255',
-            'gelar_depan'               => 'required|string|max:255',
-            'gelar_belakang'            => 'required|string|max:255',
+            'no_met'                    => 'nullable|string|max:100',
+            'alamat'                    => 'required|string',
             'no_ktp'                    => 'required|string|max:20',
             'jenis_kelamin'             => 'required|string|in:Laki-laki,Perempuan',
-            'pendidikan_terakhir'       => 'required|string|max:255',
-            'keahlian'                  => 'required|string|max:255',
-            'tempat_lahir'              => 'required|string|max:255',
-            'tanggal_lahir'             => 'required|date',
-            'kebangsaan'                => 'required|string|max:255',
-            'no_lisensi'                => 'required|string|max:255',
-            'institusi_asal'            => 'required|string|max:255',
-            'no_telp_institusi_asal'    => 'required|string|max:20',
-            'fax_institusi_asal'        => 'required|string|max:20',
-            'email_institusi_asal'      => 'required|email|max:255',
+            'kebangsaan'                => 'required|string|max:30',
+            'kode_pos'                  => 'nullable|string|max:30',
+            'kode_registrasi'           => 'nullable|string|max:30',
             'tanda_tangan'              => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], [
-            'tanda_tangan.image'        => 'File tanda tangan harus berupa gambar',
-            'tanda_tangan.mimes'        => 'Format tanda tangan harus jpeg, png, jpg, atau gif',
-            'tanda_tangan.max'          => 'Ukuran tanda tangan maksimal 2MB',
+            'foto_asesor'               => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Jika validasi gagal, kembalikan error response dengan status code 422
@@ -167,22 +143,13 @@ class DataAsesorController extends Controller
             'nama_asesor'               => $request->nama_asesor,
             'no_sertifikat'             => $request->no_sertifikat,
             'no_hp'                     => $request->no_hp,
+            'no_met'                    => $request->no_met,
             'alamat'                    => $request->alamat,
-            'bidang'                    => $request->bidang,
-            'gelar_depan'               => $request->gelar_depan,
-            'gelar_belakang'            => $request->gelar_belakang,
             'no_ktp'                    => $request->no_ktp,
             'jenis_kelamin'             => $request->jenis_kelamin,
-            'pendidikan_terakhir'       => $request->pendidikan_terakhir,
-            'keahlian'                  => $request->keahlian,
-            'tempat_lahir'              => $request->tempat_lahir,
-            'tanggal_lahir'             => $request->tanggal_lahir,
             'kebangsaan'                => $request->kebangsaan,
-            'no_lisensi'                => $request->no_lisensi,
-            'institusi_asal'            => $request->institusi_asal,
-            'no_telp_institusi_asal'    => $request->no_telp_institusi_asal,
-            'fax_institusi_asal'        => $request->fax_institusi_asal,
-            'email_institusi_asal'      => $request->email_institusi_asal,
+            'kode_pos'                  => $request->kode_pos,
+            'kode_registrasi'           => $request->kode_registrasi,
         ];
 
         // Simpan update ke database dengan error handling dan transaction
@@ -268,7 +235,10 @@ class DataAsesorController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="Data Asesor ditemukan"),
-     *             @OA\Property(property="data", type="object")
+     *             @OA\Property(
+     *                 property="data", 
+     *                 type="object",
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -283,7 +253,6 @@ class DataAsesorController extends Controller
      */
     public function show_biodata(string $id)
     {
-        // Cari data Asesor berdasarkan ID dengan tanda tangan aktif
         $asesor = Asesor::with('tandaTanganAktif')->find($id);
         if (!$asesor) {
             return response()->json([
@@ -292,17 +261,18 @@ class DataAsesorController extends Controller
             ], 404);
         }
         
-        // Tambahkan URL untuk tanda tangan aktif jika ada
+        // Accessor for daftar_bidang_kompetensi will automatically convert IDs to names
+        // when $asesor is serialized to JSON.
+        // The tandaTanganAktif relation also needs its file_url if present.
         if ($asesor->tandaTanganAktif->isNotEmpty()) {
             $tandaTangan = $asesor->tandaTanganAktif->first();
-            $tandaTangan->file_url = asset('storage/tanda_tangan/' . $tandaTangan->file_tanda_tangan);
+            $asesor->file_url_tanda_tangan = asset('storage/tanda_tangan/' . $tandaTangan->file_tanda_tangan);
         }
         
-        // Jika data ditemukan, kembalikan response dengan data Asesor
         return response()->json([
             'success' => true,
             'message' => 'Data Asesor ditemukan',
-            'data'    => $asesor
+            'data'    => $asesor->makeHidden(['created_at', 'updated_at', 'tanda_tangan']),
         ], 200);
     }
 

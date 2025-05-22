@@ -21,7 +21,7 @@ class CreateKonsultasiPraUjiTable extends Migration
             $table->string('waktu_pelaksanaan')->nullable();
             $table->string('tempat_uji')->nullable();
             $table->json('jawaban_checklist')->nullable();
-            $table->date('waktu_tanda_tangan_asesor');
+            $table->timestamp('waktu_tanda_tangan_asesor')->nullable();
             $table->timestamps();
 
             $table->foreign('id_asesi')->references('id_asesi')->on('asesi');

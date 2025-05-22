@@ -39,7 +39,7 @@ return new class extends Migration
             $table->string('jabatan', 100)->nullable();
             $table->longText('alamat_perusahaan')->nullable();
             $table->string('no_telp_perusahaan', 20)->nullable();
-            $table->longText('waktu_tanda_tangan')->nullable();
+            $table->timestamp('waktu_tanda_tangan')->nullable();
             $table->longText('alasan_penolakan')->nullable();
             $table->string('id_admin', 20)->nullable();
             $table->timestamps();

@@ -86,16 +86,76 @@ class User extends Authenticatable
     }
     
     /**
-     * Mendapatkan tanda tangan user (admin) yang valid pada waktu tertentu
+     * Mendapatkan tanda tangan asesor yang valid pada waktu tertentu
+     * 
+     * @param mixed $timestamp Timestamp ketika tanda tangan dibutuhkan
+     * @return TandaTanganAsesor|null Instance tanda tangan yang valid atau null jika tidak ditemukan
      */
     public function getTandaTanganPadaWaktu($timestamp)
     {
+        // Jika timestamp null, return null
+        if ($timestamp === null) {
+            return null;
+        }
+        
+        // Konversi timestamp ke Carbon untuk konsistensi penanganan
+        $carbonTime = is_string($timestamp) 
+            ? \Carbon\Carbon::parse($timestamp) 
+            : ($timestamp instanceof \Carbon\Carbon 
+                ? $timestamp 
+                : \Carbon\Carbon::parse($timestamp));
+        
+        // 1. Cari tanda tangan yang valid saat dokumen ditandatangani
+        // Ambil semua tanda tangan asesor
+        $allSignatures = $this->hasMany(TandaTanganAdmin::class, 'id_user', 'id_user')
+            ->orderBy('valid_from', 'asc')
+            ->get();
+        
+        // Jika tidak ada tanda tangan sama sekali
+        if ($allSignatures->isEmpty()) {
+            //Log
+            return null;
+        }
+        
+        // Kasus khusus: jika hanya ada satu tanda tangan dan belum pernah diupdate
+        if ($allSignatures->count() === 1) {
+            return $allSignatures->first();
+        }
+        
+        // Cari tanda tangan yang valid saat dokumen ditandatangani
+        foreach ($allSignatures as $i => $signature) {
+            $nextSignature = $i < $allSignatures->count() - 1 ? $allSignatures[$i + 1] : null;
+            
+            // Cek apakah timestamp berada di antara tanda tangan ini dan tanda tangan berikutnya
+            // atau ini adalah tanda tangan terakhir dan timestamp lebih besar dari valid_from nya
+            if (
+                // Kasus: waktu formulir berada di antara tanda tangan ini dan berikutnya
+                ($nextSignature && 
+                $carbonTime->greaterThanOrEqualTo($signature->valid_from) && 
+                $carbonTime->lessThan($nextSignature->valid_from))
+                ||
+                // Kasus: ini tanda tangan terakhir dan waktu formulir setelahnya
+                ($i === $allSignatures->count() - 1 && 
+                $carbonTime->greaterThanOrEqualTo($signature->valid_from))
+            ) {
+                return $signature;
+            }
+            
+            // Kasus: ini tanda tangan pertama dan waktu formulir sebelumnya
+            if ($i === 0 && $carbonTime->lessThan($signature->valid_from)) {
+                //Log
+                return null; // Belum ada tanda tangan saat formulir ditandatangani
+            }
+        }
+        
+        // Default: Jika semua kondisi di atas gagal, cari tanda tangan yang valid pada timestamp
         return $this->hasMany(TandaTanganAdmin::class, 'id_user', 'id_user')
-            ->where('valid_from', '<=', $timestamp)
-            ->where(function($query) use ($timestamp) {
-                $query->where('valid_until', '>=', $timestamp)
-                      ->orWhereNull('valid_until');
+            ->where('valid_from', '<=', $carbonTime)
+            ->where(function ($query) use ($carbonTime) {
+                $query->where('valid_until', '>=', $carbonTime)
+                    ->orWhereNull('valid_until');
             })
+            ->orderBy('valid_from', 'desc')
             ->first();
     }
 

@@ -5,7 +5,10 @@ use App\Http\Controllers\Api\DataUser\DataAsesiController;
 use App\Http\Controllers\Api\Kompetensi\KompetensiTeknisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Asesmen\FR_PraUji\KonsultasiPraUjiController;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KonsultasiPraUjiController;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa02Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak01Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa01Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,5 +76,39 @@ Route::middleware('api_key')->group(function () {
         // Save data - separate endpoints for Asesi and Asesor
         Route::post('/asesi/save', [KonsultasiPraUjiController::class, 'saveKonsultasiPraUjiAsesi']);
         Route::post('/asesor/save', [KonsultasiPraUjiController::class, 'saveKonsultasiPraUjiAsesor']);
+    });
+});
+
+// Route for MAPA01
+Route::middleware('api_key')->group(function () {
+    Route::prefix('/v1/asesmen/mapa01')->group(function () {
+        // Get data 
+        Route::get('/{id_asesi}', [Mapa01Controller::class, 'getMapa01']);
+        
+        // Save data
+        Route::post('/save', [Mapa01Controller::class, 'saveMapa01']);
+    });
+});
+
+// Route for MAPA.02
+Route::middleware('api_key')->group(function () {
+    Route::prefix('/v1/asesmen/mapa02')->group(function () {
+        // Get data 
+        Route::get('/{id_asesi}', [Mapa02Controller::class, 'getMapa02']);
+        
+        // Save data
+        Route::post('/save', [Mapa02Controller::class, 'saveMapa02']);
+    });
+});
+
+// Route for AK01
+Route::middleware('api_key')->group(function () {
+    Route::prefix('/v1/asesmen/ak01')->group(function () {
+        // Get data 
+        Route::get('/{id_asesi}', [Ak01Controller::class, 'getAk01']);
+        
+        // Save data - separate endpoints for Asesi and Asesor
+        Route::post('/asesi/save', [Ak01Controller::class, 'saveAk01Asesi']);
+        Route::post('/asesor/save', [Ak01Controller::class, 'saveAk01Asesor']);
     });
 });

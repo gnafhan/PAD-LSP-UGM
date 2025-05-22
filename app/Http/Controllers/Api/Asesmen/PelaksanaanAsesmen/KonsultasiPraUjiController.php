@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\Asesmen\FR_PraUji;
+namespace App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen;
 
 use App\Http\Controllers\Controller;
 use App\Models\Asesor;
+use App\Models\TandaTanganAsesor;
 use Illuminate\Http\Request;
 use App\Models\Asesi;
 use App\Models\KonsultasiPraUji;
@@ -81,7 +82,7 @@ class KonsultasiPraUjiController extends Controller
      *                     @OA\Property(property="waktu_pelaksanaan", type="string", example="09:00"),
      *                     @OA\Property(property="tempat_uji", type="string", example="JTTC"),
      *                     @OA\Property(property="ttd_asesi", type="boolean", example=true),
-     *                     @OA\Property(property="waktu_tanda_tangan_asesor", type="string", format="date-time", nullable=true, example="2025-05-05 14:30:00"),
+     *                     @OA\Property(property="tanda_tangan_asesor", type="string", nullable=true, example="signature/ttd_asesor.png"),
      *                     @OA\Property(
      *                         property="jawaban_checklist",
      *                         type="object",
@@ -193,8 +194,8 @@ class KonsultasiPraUjiController extends Controller
             return response()->json($dependencyResult, $dependencyResult['code']);
         }
 
-        $id_asesor = $asesi->rincianAsesmen->id_asesor;
-        $asesor = Asesor::find($id_asesor)->first();
+        $asesor = $asesi->rincianAsesmen->asesor;
+        $id_asesor = $asesor->id_asesor;
         
         // Get KonsultasiPraUji data if it exists
         $konsultasi = KonsultasiPraUji::where('id_asesi', $id_asesi)
@@ -226,6 +227,10 @@ class KonsultasiPraUjiController extends Controller
 
         // Check if the KonsultasiPraUji record exists
         if ($konsultasi) {
+            $tandaTanganAsesor = $asesor->getTandaTanganPadaWaktu($konsultasi->waktu_tanda_tangan_asesor);
+            if ($tandaTanganAsesor) {
+                $tandaTanganAsesor->file_url = asset('storage/tanda_tangan/' . $tandaTanganAsesor->file_tanda_tangan);
+            }
             // Record exists - return the record data
             return response()->json([
                 'status' => 'success',
@@ -241,7 +246,7 @@ class KonsultasiPraUjiController extends Controller
                         'waktu_pelaksanaan' => $konsultasi->waktu_pelaksanaan,
                         'tempat_uji' => $konsultasi->tempat_uji,
                         'ttd_asesi' => $asesi->ttd_pemohon,
-                        'ttd_asesor' => $asesor->getTandaTanganPadaWaktu($konsultasi->waktu_tanda_tangan_asesor),
+                        'ttd_asesor' => $tandaTanganAsesor->file_url ?? null,
                         'jawaban_checklist' => $konsultasi->jawaban_checklist,
                     ],
                     'record_exists' => true
@@ -250,7 +255,7 @@ class KonsultasiPraUjiController extends Controller
         } else {
             // Record doesn't exist - provide default values
             $tempatUji = null;
-            $tanggalAsesmenDisepakati = $asesi->created_at->format('Y-m-d');
+            $tanggalAsesmenDisepakati = $asesi->created_at->format('d-m-Y');
             
             // Try to get tempat_uji from rincianAsesmen->event->tuk
             if ($asesi->rincianAsesmen && $asesi->rincianAsesmen->event && $asesi->rincianAsesmen->event->tuk) {
@@ -468,8 +473,13 @@ class KonsultasiPraUjiController extends Controller
         $konsultasi->save();
 
         // If the Asesi has signed and the Asesor has signed, update progressAsesmen status
-        if ($asesi->ttd_pemohon && $konsultasi->waktu_tanda_tangan_asesor) {
+        if ($konsultasi->jawaban_checklist['point_1']['jawaban_asesi'] == 'Ya' && $konsultasi->jawaban_checklist['point_1']['jawaban_asesor'] == 'Ya') {
             $asesi->progresAsesmen->konsultasi_pra_uji = true;
+            $asesi->progresAsesmen->save();
+                \Log::info('Konsultasi Pra Uji completed for Asesi', [
+                'id_asesi' => $request->id_asesi,
+                'id_asesor' => $request->id_asesor,
+            ]);
         }
 
         return response()->json([
@@ -648,14 +658,29 @@ class KonsultasiPraUjiController extends Controller
         
         // Update asesor's signature timestamp if signing
         if ($request->is_asesor_signing) {
-            $konsultasi->waktu_tanda_tangan_asesor = Carbon::now();
+            // check if asesor has a signature
+            $tanda_tangan_asesor = TandaTanganAsesor::where('id_asesor', $request->id_asesor)->first();
+            if ($tanda_tangan_asesor) {
+                $konsultasi->waktu_tanda_tangan_asesor = now();                
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Asesor tidak memiliki tanda tangan',
+                ], 422);
+            }
         }
 
         $konsultasi->save();
 
         // If the Asesi has signed and the Asesor has signed, update progressAsesmen status
-        if ($asesi->ttd_pemohon && $konsultasi->waktu_tanda_tangan_asesor) {
+        if ($konsultasi->jawaban_checklist['point_1']['jawaban_asesi'] == 'Ya' && $konsultasi->jawaban_checklist['point_1']['jawaban_asesor'] == 'Ya') {
             $asesi->progresAsesmen->konsultasi_pra_uji = true;
+            $asesi->progresAsesmen->save();
+            // Log
+            \Log::info('Konsultasi Pra Uji completed for Asesi', [
+                'id_asesi' => $request->id_asesi,
+                'id_asesor' => $request->id_asesor,
+            ]);
         }
 
         return response()->json([

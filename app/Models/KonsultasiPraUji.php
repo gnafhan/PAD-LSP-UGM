@@ -23,7 +23,8 @@ class KonsultasiPraUji extends Model
     
     protected $casts = [
         'jawaban_checklist' => 'array',
-        'tanggal_konsultasi' => 'date'
+        'tanggal_konsultasi' => 'date',
+        'waktu_tanda_tangan_asesor' => 'timestamp',
     ];
     
     public function asesi()
