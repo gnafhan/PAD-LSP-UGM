@@ -69,6 +69,16 @@ class Asesi extends Model
         return $this->hasOne(ProgresAsesmen::class, 'id_asesi', 'id_asesi');
     }
 
+    public function konsultasiPraUji()
+    {
+        return $this->hasMany(KonsultasiPraUji::class, 'id_asesi', 'id_asesi');
+    }
+
+    public function ak01()
+    {
+        return $this->hasMany(Ak01::class, 'id_asesi', 'id_asesi');
+    }
+
     protected static function boot()
     {
         parent::boot();

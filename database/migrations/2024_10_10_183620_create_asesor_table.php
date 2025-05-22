@@ -24,16 +24,9 @@ return new class extends Migration
             $table->longText('foto_asesor')->nullable();
             $table->string('no_ktp', 20)->nullable();
             $table->string('jenis_kelamin', 10)->nullable();
-            $table->string('pendidikan_terakhir', 30)->nullable();
-            $table->string('tempat_lahir', 20)->nullable();
-            $table->dateTime('tanggal_lahir')->nullable();
             $table->string('kebangsaan', 30)->nullable();
-            $table->string('no_lisensi', 30)->nullable();
+            $table->string('kode_pos', 30)->nullable();
             $table->dateTime('masa_berlaku');
-            $table->string('institusi_asal', 100)->nullable();
-            $table->string('no_telp_institusi_asal', 20)->nullable();
-            $table->string('fax_institusi_asal', 20)->nullable();
-            $table->string('email_institusi_asal', 100)->nullable();
             $table->longText('file_sertifikat_asesor')->nullable();
             $table->json('daftar_bidang_kompetensi')->nullable(); //json
             $table->timestamps();

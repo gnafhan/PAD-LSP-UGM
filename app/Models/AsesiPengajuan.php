@@ -62,6 +62,7 @@ class AsesiPengajuan extends Model
         'ttd_pemohon' => 'string',
         'sections_to_revise' => 'array',
         'submitted_at' => 'datetime',
+        'waktu_tanda_tangan' => 'datetime',
     ];
 
     public $timestamps = true;
