@@ -358,6 +358,245 @@
                 ]
             }
         },
+        "/asesmen/ketidakberpihakan/{id_asesi}": {
+            "get": {
+                "tags": [
+                    "Ketidakberpihakan"
+                ],
+                "summary": "Mendapatkan data formulir Ketidakberpihakan untuk asesi",
+                "description": "Get Ketidakberpihakan data for an Asesi",
+                "operationId": "3820c8c980102245d66a8e650ed60ede",
+                "parameters": [
+                    {
+                        "name": "id_asesi",
+                        "in": "path",
+                        "description": "ID asesi",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data formulir Ketidakberpihakan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "general_info": {
+                                                    "properties": {
+                                                        "nama_asesor": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        },
+                                                        "alamat": {
+                                                            "type": "string",
+                                                            "example": "Jl. Contoh No. 123"
+                                                        },
+                                                        "jabatan": {
+                                                            "type": "string",
+                                                            "example": "Asesor"
+                                                        },
+                                                        "kode_registrasi": {
+                                                            "type": "string",
+                                                            "example": "REG-001"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "ketidakberpihakan": {
+                                                    "properties": {
+                                                        "waktu_tanda_tangan_asesor": {
+                                                            "type": "string",
+                                                            "format": "date-time",
+                                                            "example": "2023-01-15T14:30:00"
+                                                        },
+                                                        "tanda_tangan_asesor": {
+                                                            "type": "string",
+                                                            "example": "storage/tanda_tangan/ttd_asesor.png"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "record_exists": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan atau belum memiliki rincian asesmen",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
+        "/asesmen/ketidakberpihakan/sign": {
+            "post": {
+                "tags": [
+                    "Ketidakberpihakan"
+                ],
+                "summary": "Menandatangani formulir Ketidakberpihakan oleh Asesor",
+                "description": "Sign Ketidakberpihakan form",
+                "operationId": "2e23e88e37e30e4b38febe204407a4db",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_asesi",
+                                    "id_asesor"
+                                ],
+                                "properties": {
+                                    "id_asesi": {
+                                        "type": "string",
+                                        "example": "ASESI2025XXXXX"
+                                    },
+                                    "id_asesor": {
+                                        "type": "string",
+                                        "example": "ASESOR2025XXXXX"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Formulir Ketidakberpihakan berhasil ditandatangani",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Formulir Ketidakberpihakan berhasil ditandatangani"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Asesi tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesi tidak ditemukan"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Asesor tidak ditugaskan untuk asesi ini",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Asesor tidak ditugaskan untuk asesi ini"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 403
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi gagal",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
+            }
+        },
         "/asesmen/konsultasi-prauji/{id_asesi}": {
             "get": {
                 "tags": [
@@ -2493,6 +2732,10 @@
         {
             "name": "AK01",
             "description": "API Endpoints untuk pengelolaan formulir AK01 (Persetujuan Asesmen & Kerahasiaan)"
+        },
+        {
+            "name": "Ketidakberpihakan",
+            "description": "API Endpoints untuk pengelolaan formulir Ketidakberpihakan (Pernyataan Ketidakberpihakan Asesor)"
         },
         {
             "name": "Konsultasi Pra Uji",

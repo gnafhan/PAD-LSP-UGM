@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KonsultasiPraUjiControll
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa02Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak01Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa01Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KetidakberpihakkanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -110,5 +111,16 @@ Route::middleware('api_key')->group(function () {
         // Save data - separate endpoints for Asesi and Asesor
         Route::post('/asesi/save', [Ak01Controller::class, 'saveAk01Asesi']);
         Route::post('/asesor/save', [Ak01Controller::class, 'saveAk01Asesor']);
+    });
+});
+
+// Route for Ketidakberpihakan
+Route::middleware('api_key')->group(function () {
+    Route::prefix('/v1/asesmen/ketidakberpihakan')->group(function () {
+        // Get data
+        Route::get('/{id_asesi}', [KetidakberpihakkanController::class, 'getKetidakberpihakan']);
+        
+        // Sign form
+        Route::post('/sign', [KetidakberpihakkanController::class, 'signKetidakberpihakan']);
     });
 });

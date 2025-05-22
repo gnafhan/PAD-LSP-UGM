@@ -160,6 +160,8 @@ class Asesor extends Model
         // Jika tidak ada tanda tangan sama sekali
         if ($allSignatures->isEmpty()) {
             //Log
+            \Log::info($timestamp);
+
             \Log::info('Tidak ada tanda tangan untuk asesor dengan ID: ' . $this->id_asesor);
             return null;
         }
