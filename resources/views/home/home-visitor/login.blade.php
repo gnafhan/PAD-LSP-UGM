@@ -3,7 +3,7 @@
 @section('title', 'Login - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen bg-gray-100 flex items-center justify-center py-32 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
 
     <!-- Logo Section -->
@@ -15,7 +15,7 @@
 
     <h1 class="text-2xl font-bold text-gray-800 text-center mb-4">Selamat Datang</h1>
     <p class="text-center text-gray-600 mb-8">Silakan login menggunakan akun Google UGM Anda</p>
-    
+
     <!-- Google Login Button - More Prominent -->
     <div class="flex justify-center mb-8">
         <a href="{{ route('oauth.google') }}" class="flex items-center justify-center w-full py-3 px-6 border border-gray-300 rounded-lg shadow-md bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">
@@ -23,7 +23,7 @@
             <span>Login dengan Google</span>
         </a>
     </div>
-    
+
     <!-- UGM Email Info - Enhanced -->
     <div class="mb-8">
         <div class="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg shadow-sm">

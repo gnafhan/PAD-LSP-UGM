@@ -24,24 +24,14 @@ class AdminController extends Controller
         $asesor = Asesor::all()->count();
 
         // Get skema statistics per period-year
-        $skemaStats = PeriodeAsesmen::getSkemaStats();
-
         $skemaStats = RincianAsesmen::getSkemaStats();
 
         // ASESI CHART DATA
-        $asesiSkemaData = PeriodeAsesmen::getAsesiSkemaDistributionData();
-        $asesiYearData = PeriodeAsesmen::getAsesiYearTrendData();
-        $asesiPeriodData = PeriodeAsesmen::getAsesiPeriodTrendData();
-
         $asesiSkemaData = RincianAsesmen::getAsesiSkemaDistributionData();
         $asesiYearData = RincianAsesmen::getAsesiYearTrendData();
         $asesiPeriodData = RincianAsesmen::getAsesiPeriodTrendData();
 
         // SKEMA CHART DATA
-        $skemaPopularityData = PeriodeAsesmen::getSkemaPopularityData();
-        $skemaYearData = PeriodeAsesmen::getSkemaYearTrendData();
-        $skemaPeriodData = PeriodeAsesmen::getSkemaPeriodTrendData();
-
         $skemaPopularityData = RincianAsesmen::getSkemaPopularityData();
         $skemaYearData = RincianAsesmen::getSkemaYearTrendData();
         $skemaPeriodData = RincianAsesmen::getSkemaPeriodTrendData();

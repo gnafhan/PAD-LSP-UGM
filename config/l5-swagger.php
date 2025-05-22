@@ -53,7 +53,7 @@ return [
             |--------------------------------------------------------------------------
             */
             'api' => 'api/documentation',
-            
+
             /*
              * Route for accessing parsed swagger annotations.
             */

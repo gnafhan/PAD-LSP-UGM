@@ -1,6 +1,6 @@
 @extends('home.home-asesor.layouts.layout')
 
-@section('title', 'FR.APL.02 - Asesor')
+@section('title', 'Konsultasi Pra Uji - Asesor')
 
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
@@ -15,7 +15,7 @@
             <path stroke="url(#icon-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
               d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z" />
         </svg>
-        <p class="ms-2 text-xl font-bold text-black">APL.02</p>
+        <p class="ms-2 text-xl font-bold text-black">Konsultasi Pra Uji</p>
     </div>
     <div id="breadcrumbs" class="hidden pb-4 px-6">
         <!-- Breadcrumb -->
@@ -31,12 +31,12 @@
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 9l4-4-4-4"/>
                         </svg>
-                        <a href="{{ route('frapl02-asesor') }}" class="ms-1 text-sm font-medium text-black hover:text-sidebar_font">
-                            FR.APL.02
+                        <a href="{{ route('konsul-prauji-asesor') }}" class="ms-1 text-sm font-medium text-black hover:text-sidebar_font">
+                            Konsultasi Pra Uji
                         </a>
                     </div>
                 </li>
-                <!-- Memanggil detail formulir apl 02 berdasar nama -->
+                <!-- Memanggil data nama asesi -->
                 <li aria-current="page">
                     <div class="flex items-center">
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
@@ -51,12 +51,12 @@
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
     </div>
-    <div id="frameAPL02" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
-        <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir APL.02 Asesmen Mandiri</p>
+    <div id="frameKonsul" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
+        <p id="titlePage" class="mb-4 text-lg font-medium text-black">Konsultasi Pra Uji</p>
         <!-- Search Form -->
-        <form id="searchAPL02" class="max-w-md mb-4 rounded-xl">
+        <form id="searchKonsul" class="max-w-md mb-4 rounded-xl">
             <div class="relative">
-            <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Nama Peserta" required />
+            <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
                 <button type="submit" class="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
                     <svg class="w-4 h-4 text-biru" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -65,16 +65,15 @@
             </div>
         </form>
         <div class="overflow-x-auto shadow-md rounded-lg">
-            <table id="daftarAPL02" class="min-w-full bg-white overflow-hidden">
+            <table id="daftarKonsul" class="min-w-full bg-white overflow-hidden">
                 <thead class="bg-bg_dashboard text-center">
                     <tr>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Aksi</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Nama Peserta</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(3)">Skema Sertifikasi</th>
-                        <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(4)">Status</th>
-                        <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(5)">Tanggal Input</th>
-                        <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(6)">Progress</th>
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(4)">Kode Skema</th>
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(5)">Progress</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 text-black text-center">
@@ -97,16 +96,8 @@
                         </td>
                         <td class="px-4 py-3 text-gray-700 text-left">Muhammad Rifai</td>
                         <td class="px-4 py-3 text-gray-700 text-left">Sertifikasi Frontend</td>
-                        <!-- Jika sukses, tampilkan lanjut -->
-                        <!-- Jika gagal, tampilkan - -->
-                        <td class="px-4 py-3 text-gray-700 text-left">Lanjut Asesmen</td>
-                        <td class="px-4 py-3 text-gray-700">
-                            10/01/2025<br>
-                            <p class="text-xs font-normal text-black">10:00 WIB</p>
-                        </td>
-                        <!-- Jika sukses, tampilkan icon hijau -->
-                        <!-- Jika gagal, tampilkan icon merah -->
-                        <td class="px-4 py-2">
+                        <td class="px-4 py-3 text-gray-700 text-left">SK1234567890</td>
+                        <td class="px-4 py-0">
                             <div class="flex px-4 py-3 justify-center items-center">
                                 <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
@@ -117,24 +108,33 @@
                 </tbody>
             </table>
         </div>
-        <div id="detailAPL02" class="hidden pt-0 p-4 text-black">
+        <div id="detailKonsul" class="hidden pt-0 p-4 text-black">
             <!-- Input Formulir APL.02 -->
-            <div id="FRAPL02" class="pt-0 p-4 space-y-6">
+            <div id="KonsulPrauji" class="p-4 space-y-6">
+                <p id="judulDetail" class="text-lg font-semibold text-sidebar_font">FORMULIR KONSULTASI PRA UJI OKUPASI PEMANDU MUSEUM</p>
                 <div class="max-w-full space-y-1">
                     <div class="flex">
                         <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -ms-px w-1/3">
-                            Judul Sertifikasi
+                            Referensi
                         </span>
-                        <p id="judulSertifikasi" type="text" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Sertifikasi Frontend
+                        <p id="judulSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
+                            FOR 21.2019
                         </p>
                     </div>
                     <div class="flex">
                         <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            Nomor Sertifikasi
+                            Revisi
                         </span>
                         <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        SKM/1602/00023/2/19
+                            00
+                        </p>
+                    </div>
+                    <div class="flex">
+                        <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                            Valid Mulai
+                        </span>
+                        <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
+                            16 Mei 2025
                         </p>
                     </div>
                 </div>
@@ -144,7 +144,7 @@
                             Nama Peserta Sertifikasi
                         </span>
                         <p id="namaPeserta" type="text" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Muhammad Rifai
+                            Muhammad Rifai
                         </p>
                     </div>
                     <div class="flex">
@@ -166,45 +166,23 @@
                 </div>
             </div>
 
-            <!-- Checklist Kompeten -->
-            <div id="clKompeten" class="p-4">
-                <form class="max-w-full mx-auto">
-                    <label for="pilihKompetensi" class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">Checklist Kompetensi</label>
-                    <select id="pilihKompetensi" class="border border-border_input text-sidebar_font text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2">
-                        <option selected>Pilih Kompetensi</option>
-                        <option value="kompeten">Kompeten</option>
-                        <option value="tidak_kompeten">Tidak Kompeten</option>
-                    </select>
-                </form>
-            </div>
-
-            <!-- Tabel 1 APL02 -->
+            <!-- Tabel 1 Skema Konsul -->
             <div class="p-4">
-                <p id="judulTabelAPL02" class="text-sidebar_font font-semibold pb-2">No 1.  Kode Unit : R.93KPW00.011.2</p>
-
+                <p id="judulTabelKonsul" class="text-sidebar_font font-semibold pb-2">Skema Sertifikat Okupasi Pemandu Museum</p>
                 <div class="overflow-x-auto shadow-md rounded-lg mb-4">
                     <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
                         <thead class="bg-bg_dashboard text-center">
                             <tr>
                                 <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Kode Unit</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Judul Unit</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 text-black text-center items-center">
                             <tr>
                                 <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik?</td>
-                                <td class="flex px-4 py-3 justify-center">
-                                    <form id="ddKompetensi" class="w-40">
-                                        <select id="selectKompetensi" onchange="ubahWarnaSelect()"
-                                            class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
-                                            <option selected value="">Pilih</option>
-                                            <option value="kompeten">Kompeten</option>
-                                            <option value="tidak_kompeten">Tidak Kompeten</option>
-                                        </select>
-                                    </form>
-                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">Mengikuti Prosedur Kesehatan, Keselamatan dan Keamanan di Tempat Kerja</td>
                             </tr>
                         </tbody>
                     </table>
@@ -213,28 +191,39 @@
 
             <!-- Tabel 2 APL02 -->
             <div class="p-4">
-                <p id="judulTabelAPL02" class="text-sidebar_font font-semibold pb-2">No 2.  Kode Unit : R.93KPW00.011.2</p>
+                <p id="judulTabelAPL02" class="text-sidebar_font font-semibold pb-2">
+                    Asesor agar menginformasikan hal-hal dibawah ini :
+                </p>
 
                 <div class="overflow-x-auto shadow-md rounded-lg mb-4">
                     <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
                         <thead class="bg-bg_dashboard text-center">
                             <tr>
                                 <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Situasi</th>
                                 <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 text-black text-center items-center">
                             <tr>
-                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik?</td>
+                                <td class="px-4 py-3 text-sm text-black">1</td>
+                                <td class="px-4 py-3 text-black text-left">
+                                    Pembukaan : Salam, menyampaikan tujuan pertemuan hari ini.
+                                    <ul class="list-disc pl-5">
+                                        <li>Memperkenalkan diri</li>
+                                        <li>Menanyakan nama dan asal peserta</li>
+                                        <li>Percakapan sederhana (Informal)</li>
+                                        <li>Menjelaskan maksud dilaksanakannya konsultasi pra asesmen</li>
+                                    </ul>
+                                </td>
+
                                 <td class="flex px-4 py-3 justify-center">
                                     <form id="ddKompetensi" class="w-40">
                                         <select id="selectKompetensi" onchange="ubahWarnaSelect()"
                                             class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
                                             <option selected value="">Pilih</option>
-                                            <option value="kompeten">Kompeten</option>
-                                            <option value="tidak_kompeten">Tidak Kompeten</option>
+                                            <option value="kompeten">Ya</option>
+                                            <option value="tidak_kompeten">Tidak</option>
                                         </select>
                                     </form>
                                 </td>
@@ -244,37 +233,9 @@
                 </div>
             </div>
 
-            <!-- Button Simpan -->
-            <div class="flex justify-end pe-4">
-                <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                    Simpan dan Setujui
-                </button>
-            </div>
-
+            <!-- Tandatangan -->
             <div class="my-6 px-4 space-y-6">
-                <!-- Hasil Kompetensi -->
-                <div id="hasilAPL02" class="">
-                    <label for="hasilKompetensi" class="block mb-2 font-medium text-sidebar_font">Hasil Kompetensi</label>
-                    <p type="text" id="hasilKompetensi" aria-label="hasil kompetensi"
-                        class="border border-border_input text-sidebar_font text-sm rounded-lg block w-full p-2" disabled readonly>
-                        Belum dinilai
-                    </p>
-                </div>
-                <!-- Rekomendasi -->
-                <div class="mb-6">
-                    <label for="rekomendasi" class="block mb-2 font-medium text-sidebar_font">Rekomendasi</label>
-                    <textarea id="rekomendasi" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Masukkan Rekomendasi Anda"></textarea>
-                </div>
-                <!-- Tandatangan -->
-                <label for="tandaTanganAsesi" class="block mb-2 font-medium text-sidebar_font">Tanda Tangan</label>
-                <div class="flex flex-row justify-evenly">
-                    <!-- Tanda Tangan Asesi -->
-                    <div class="flex flex-col items-center justify-center">
-                        <p class="font-medium text-sidebar_font">16 Mei 2025</p>
-                        <img id="tandaTanganAsesi" src="{{ asset('images/contoh ttd.png') }}" alt="Tanda Tangan Asesi" class="w-60 h-40 border-b border-border_input">
-                        <p class="font-medium text-sidebar_font">Asesi</p>
-                        <p class="font-normal text-sidebar_font">Muhammad Rifai</p>
-                    </div>
+                <div class="flex flex-row justify-end">
                     <!-- Tanda Tangan Asesor -->
                     <div class="flex flex-col items-center justify-center">
                         <p class="font-medium text-sidebar_font">16 Mei 2025</p>
@@ -286,8 +247,8 @@
 
                 <!-- Button Simpan -->
                 <div class="flex justify-end pe-4">
-                    <button id="simpanRekomendasi" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                        Simpan Rekomendasi
+                    <button id="simpanRekomendasi" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
+                        Saya Menyetujui
                     </button>
                 </div>
             </div>
@@ -295,40 +256,27 @@
         </div>
     </div>
     <div id="bgGradient"
-        class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[80%] rounded-full bg-biru opacity-10 blur-[80px]">
+        class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
     </div>
 </div>
 
 <script>
-    function showSummary() {
-       // Sembunyikan elemen pencarian utama
-        document.getElementById('searchAPL02').classList.add('hidden');
+function showSummary() {
+    // Sembunyikan elemen pencarian utama
+    document.getElementById('searchKonsul').classList.add('hidden');
 
-        // Sembunyikan elemen daftar asesi
-        document.getElementById('daftarAPL02').classList.add('hidden');
+    // Sembunyikan elemen daftar asesi
+    document.getElementById('daftarKonsul').classList.add('hidden');
 
-        // Tampilkan bagian breadcrumbs
-        document.getElementById('breadcrumbs').classList.remove('hidden');
+    // Tampilkan bagian breadcrumbs
+    document.getElementById('breadcrumbs').classList.remove('hidden');
 
-        // Tampilkan bagian detail asesi
-        document.getElementById('detailAPL02').classList.remove('hidden');
+    // Tampilkan bagian detail asesi
+    document.getElementById('detailKonsul').classList.remove('hidden');
 
-        // Optional: scroll ke bagian detail
-        document.getElementById('detailAPL02').scrollIntoView({ behavior: 'smooth' });
-    }
-    function ubahWarnaSelect() {
-        const select = document.getElementById('selectKompetensi');
-        const nilai = select.value;
-
-        // Reset ke default
-        select.classList.remove('bg-blue-300', 'text-blue-800', 'bg-red-200', 'text-red-800');
-        if (nilai === "kompeten") {
-            select.classList.add('bg-blue-300', 'text-blue-800');
-        } else if (nilai === "tidak_kompeten") {
-            select.classList.add('bg-red-200', 'text-red-800');
-        }
-    }
-
+    // Optional: scroll ke bagian detail
+    document.getElementById('detailKonsul').scrollIntoView({ behavior: 'smooth' });
+}
 </script>
 
 @endsection

@@ -4,9 +4,16 @@
 
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
-    <div id="judulPage" class="flex items-center mb-4 ms-4">
-        <svg class="w-8 h-8 text-biru_tua" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 9h3m-3 3h3m-3 3h3m-6 1c-.306-.613-.933-1-1.618-1H7.618c-.685 0-1.312.387-1.618 1M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm7 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
+    <div id="judulPage" class="relative z-10 flex items-center mb-4 ms-4">
+        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none">
+            <defs>
+              <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stop-color="#3B82F6" /> <!-- biru -->
+                <stop offset="100%" stop-color="#8B5CF6" /> <!-- ungu -->
+              </linearGradient>
+            </defs>
+            <path stroke="url(#icon-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              d="M15 9h3m-3 3h3m-3 3h3m-6 1c-.306-.613-.933-1-1.618-1H7.618c-.685 0-1.312.387-1.618 1M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm7 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/>
         </svg>
         <span class="ms-2 text-xl font-bold text-black">Biodata Asesor</span>
     </div>
@@ -173,7 +180,7 @@
                 </div>
             </div>
             <div class="flex justify-end">
-                <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm/6 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-6">Simpan</button>
+                <button id="simpanBiodata" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">Simpan</button>
             </div>
         </form>
     </div>

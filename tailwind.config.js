@@ -17,6 +17,7 @@ module.exports = {
                 border: "#E4E7EB",
                 biru: "#53A4FF",
                 biru_muda: "#36B2E6",
+                biru_soft: "#E8F9FF",
                 softLilac: "#EDE5FF",
                 ungu: "#8B5CF6",
                 biru_tua: "#52BAFF",

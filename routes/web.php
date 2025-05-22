@@ -241,6 +241,82 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/asesor');
     })->name('asesor.dashboard');
 
+    Route::get('/biodata', function () {
+        return view('home/home-asesor/biodata');
+    })->name('biodata-asesor');
+
+    Route::get('/kompetensi', function () {
+        return view('home/home-asesor/kompetensi');
+    })->name('kompetensi-asesor');
+
+    Route::get('/daftar-asesi', function () {
+        return view('home/home-asesor/daftar-asesi');
+    })->name('daftar-asesi');
+
+    Route::get('/frapl02', function () {
+        return view('home/home-asesor/frapl02-asesor');
+    })->name('frapl02-asesor');
+
+    Route::get('/frak01', function () {
+        return view('home/home-asesor/frak01-asesor');
+    })->name('frak01-asesor');
+
+    Route::get('/konsulprauji', function () {
+        return view('home/home-asesor/konsul-prauji');
+    })->name('konsul-prauji-asesor');
+
+    Route::get('/frmapa01', function () {
+        return view('home/home-asesor/frmapa01');
+    })->name('frmapa01-asesor');
+
+    Route::get('/frmapa02', function () {
+        return view('home/home-asesor/frmapa02');
+    })->name('frmapa02-asesor');
+
+    Route::get('/ketidakberpihakan', function () {
+        return view('home/home-asesor/ketidakberpihakan');
+    })->name('ketidakberpihakan-asesor');
+
+    Route::get('/frak07', function () {
+        return view('home/home-asesor/frak07-asesor');
+    })->name('frak07-asesor');
+
+    Route::get('/fria01', function () {
+        return view('home/home-asesor/fria01-asesor');
+    })->name('fria01-asesor');
+
+    Route::get('/fria02', function () {
+        return view('home/home-asesor/fria02-asesor');
+    })->name('fria02-asesor');
+
+    Route::get('/fria03', function () {
+        return view('home/home-asesor/fria03-asesor');
+    })->name('fria03-asesor');
+
+    Route::get('/fria05', function () {
+        return view('home/home-asesor/fria05-asesor');
+    })->name('fria05-asesor');
+
+    Route::get('/fria07', function () {
+        return view('home/home-asesor/fria07-asesor');
+    })->name('fria07-asesor');
+
+    Route::get('/hasilasesmen', function () {
+        return view('home/home-asesor/hasil-asesmen');
+    })->name('hasil-asesmen-asesor');
+
+    Route::get('/frak02', function () {
+        return view('home/home-asesor/frak02-asesor');
+    })->name('frak02-asesor');
+
+    Route::get('/frak03', function () {
+        return view('home/home-asesor/frak03-asesor');
+    })->name('frak03-asesor');
+
+    Route::get('/frak04', function () {
+        return view('home/home-asesor/frak04-asesor');
+    })->name('frak04-asesor');
+
     // Aksi Asesor
     Route::get('/aksi/aktif', function () {
         return view('home/home-asesor/aktif');
