@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
             UjianMUKSeeder::class,
             AsesiMUKSeeder::class,
             JadwalMUKSeeder::class,
-            AsesiApl02Seeder::class,
             EventSkemaSeeder::class,
             BidangKompetensiSeeder::class,
         ]);

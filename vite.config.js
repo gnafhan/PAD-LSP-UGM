@@ -6,5 +6,11 @@ export default defineConfig({
     optimizeDeps: {
         exclude: ['vanilla-calendar-pro'], // Hindari error saat build
     },
+
+    resolve: {
+        alias: {
+            'flowbite': 'node_modules/flowbite/dist/flowbite.js',
+        },
+    },
 });
 

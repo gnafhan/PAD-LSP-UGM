@@ -38,8 +38,6 @@ module.exports = {
     },
     plugins: [
         require('flowbite/plugin'),
-        require('flyonui'),
-        require('flyonui/plugin'),
         // require('preline/plugin'),
     ],
 };
