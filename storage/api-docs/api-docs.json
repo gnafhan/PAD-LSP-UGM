@@ -2645,6 +2645,18 @@
                                                             "nomor_skema": {
                                                                 "type": "string",
                                                                 "example": "SKM-001"
+                                                            },
+                                                            "progress_percentage": {
+                                                                "type": "integer",
+                                                                "example": "50"
+                                                            },
+                                                            "completed_steps": {
+                                                                "type": "integer",
+                                                                "example": "5"
+                                                            },
+                                                            "total_steps": {
+                                                                "type": "integer",
+                                                                "example": "10"
                                                             }
                                                         },
                                                         "type": "object"
