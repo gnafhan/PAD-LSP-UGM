@@ -78,8 +78,7 @@ class PenggunaPageController extends Controller
             $bidangKompetensiList = [];
             
             if (!empty($asesor->daftar_bidang_kompetensi)) {
-                $bidangIds = json_decode($asesor->daftar_bidang_kompetensi, true);
-                
+                $bidangIds = $asesor->daftar_bidang_kompetensi;                 
                 foreach ($bidangIds as $idBidang) {
                     if (isset($bidangKompetensiData[$idBidang])) {
                         $bidangKompetensiList[] = [

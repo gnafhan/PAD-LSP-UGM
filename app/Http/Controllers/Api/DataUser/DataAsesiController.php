@@ -45,7 +45,10 @@ class DataAsesiController extends Controller
      *                         @OA\Property(property="id_asesi", type="string", example="1"),
      *                         @OA\Property(property="nama_asesi", type="string", example="Jane Doe"),
      *                         @OA\Property(property="nama_skema", type="string", example="Software Development"),
-     *                         @OA\Property(property="nomor_skema", type="string", example="SKM-001")
+     *                         @OA\Property(property="nomor_skema", type="string", example="SKM-001"),
+     *                         @OA\Property(property="progress_percentage", type="int", example="50"),
+     *                         @OA\Property(property="completed_steps", type="int", example="5"),
+     *                         @OA\Property(property="total_steps", type="int", example="10"),
      *                     )
      *                 ),
      *                 @OA\Property(property="jumlah_asesi", type="integer", example=5)
@@ -66,18 +69,59 @@ class DataAsesiController extends Controller
         $asesor = Asesor::where('id_asesor', $id)->first();
 
         if ($asesor){
-            $asesis = DB::table('rincian_asesmen')
-            ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
-            ->where('rincian_asesmen.id_asesor', $id)
-            ->join('skema', 'asesi.id_skema', '=', 'skema.id_skema')
-            ->select('asesi.id_asesi', 'asesi.nama_asesi', 'skema.nama_skema', 'skema.nomor_skema');
+            // Get base asesi data
+            $asesisQuery = DB::table('rincian_asesmen')
+                ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
+                ->where('rincian_asesmen.id_asesor', $id)
+                ->join('skema', 'asesi.id_skema', '=', 'skema.id_skema')
+                ->select('asesi.id_asesi', 'asesi.nama_asesi', 'skema.nama_skema', 'skema.nomor_skema');
+            
+            $asesis = $asesisQuery->get();
+            
             if ($asesis){
+                // Get progress data and calculate percentage for each asesi
+                foreach ($asesis as $key => $asesi) {
+                    $progres = ProgresAsesmen::where('id_asesi', $asesi->id_asesi)->first();
+                    
+                    if ($progres) {
+                        // Get all tracked progress fields (excluding id_asesi and timestamps)
+                        $progressFields = [
+                            'apl01', 'apl02', 'ak01', 'konsultasi_pra_uji', 
+                            'mapa01', 'mapa02', 'pertanyaan_ketidak_berpihakan',
+                            'ak07', 'ia01', 'ia02', 'hasil_asesmen',
+                            'ak02', 'umpan_balik', 'ak04'
+                        ];
+                        
+                        // Count completed steps
+                        $completedSteps = 0;
+                        foreach ($progressFields as $field) {
+                            if ($progres->$field) {
+                                $completedSteps++;
+                            }
+                        }
+                        
+                        // Calculate percentage
+                        $totalSteps = count($progressFields);
+                        $percentage = ($totalSteps > 0) ? round(($completedSteps / $totalSteps) * 100) : 0;
+                        
+                        // Add to asesi data
+                        $asesis[$key]->progress_percentage = $percentage;
+                        $asesis[$key]->completed_steps = $completedSteps;
+                        $asesis[$key]->total_steps = $totalSteps;
+                    } else {
+                        // If no progress record exists
+                        $asesis[$key]->progress_percentage = 0;
+                        $asesis[$key]->completed_steps = 0;
+                        $asesis[$key]->total_steps = 14; // Number of progress fields
+                    }
+                }
+                
                 return response()->json([
                     'success' => true,
                     'message' => 'Data Asesor ditemukan',
                     'data'    => [
-                        'asesis' => $asesis->get(),
-                        'jumlah_asesi' => $asesis->count()
+                        'asesis' => $asesis,
+                        'jumlah_asesi' => count($asesis)
                     ]
                 ], 200);
             } else {
@@ -86,8 +130,8 @@ class DataAsesiController extends Controller
                     'message' => 'Data Asesi tidak ditemukan'
                 ], 404);
             }
-
         }
+        
         return response()->json([
             'success' => false,
             'message' => 'Data Asesor tidak ditemukan'
