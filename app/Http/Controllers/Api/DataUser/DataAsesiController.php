@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Asesor;
 use App\Models\ProgresAsesmen;
 use Illuminate\Support\Facades\DB;
-use App\Models\Asesi;
-use App\Models\RincianAsesmen;
+use App\Helpers\DateTimeHelper;
 
 /**
  * @OA\Tag(
@@ -84,35 +83,34 @@ class DataAsesiController extends Controller
                     $progres = ProgresAsesmen::where('id_asesi', $asesi->id_asesi)->first();
                     
                     if ($progres) {
-                        // Get all tracked progress fields (excluding id_asesi and timestamps)
-                        $progressFields = [
-                            'apl01', 'apl02', 'ak01', 'konsultasi_pra_uji', 
-                            'mapa01', 'mapa02', 'pertanyaan_ketidak_berpihakan',
-                            'ak07', 'ia01', 'ia02', 'hasil_asesmen',
-                            'ak02', 'umpan_balik', 'ak04'
-                        ];
+                        // Use the new calculation method
+                        $progressData = $progres->calculateProgress();
                         
-                        // Count completed steps
-                        $completedSteps = 0;
-                        foreach ($progressFields as $field) {
-                            if ($progres->$field) {
-                                $completedSteps++;
+                        // Add to asesi data
+                        $asesis[$key]->progress_percentage = $progressData['progress_percentage'];
+                        $asesis[$key]->completed_steps = $progressData['completed_steps'];
+                        $asesis[$key]->total_steps = $progressData['total_steps'];
+                        
+                        // Add information about the latest completion time
+                        $structured = $progres->getStructuredProgress();
+                        $latestTime = null;
+
+                        foreach ($structured as $step => $data) {
+                            if (isset($data['completed']) && $data['completed'] && isset($data['completed_at'])) {
+                                if ($latestTime === null || strtotime($data['completed_at']) > strtotime($latestTime)) {
+                                    $latestTime = $data['completed_at'];
+                                }
                             }
                         }
                         
-                        // Calculate percentage
-                        $totalSteps = count($progressFields);
-                        $percentage = ($totalSteps > 0) ? round(($completedSteps / $totalSteps) * 100) : 0;
-                        
-                        // Add to asesi data
-                        $asesis[$key]->progress_percentage = $percentage;
-                        $asesis[$key]->completed_steps = $completedSteps;
-                        $asesis[$key]->total_steps = $totalSteps;
+                        // Konversi ke format WIB menggunakan helper
+                        $asesis[$key]->latest_activity = DateTimeHelper::toWIB($latestTime);
                     } else {
                         // If no progress record exists
                         $asesis[$key]->progress_percentage = 0;
                         $asesis[$key]->completed_steps = 0;
                         $asesis[$key]->total_steps = 14; // Number of progress fields
+                        $asesis[$key]->latest_activity = null;
                     }
                 }
                 
@@ -121,7 +119,8 @@ class DataAsesiController extends Controller
                     'message' => 'Data Asesor ditemukan',
                     'data'    => [
                         'asesis' => $asesis,
-                        'jumlah_asesi' => count($asesis)
+                        'jumlah_asesi' => count($asesis),
+                        'timezone' => 'WIB'
                     ]
                 ], 200);
             } else {
@@ -160,7 +159,8 @@ class DataAsesiController extends Controller
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="Data Progress Asesmen ditemukan"),
      *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="progress_asesmen", type="object")
+     *                 @OA\Property(property="progress_asesmen", type="object"),
+     *                 @OA\Property(property="progress_summary", type="object")
      *             )
      *         )
      *     ),
@@ -178,11 +178,26 @@ class DataAsesiController extends Controller
         $progress_asesmen = ProgresAsesmen::where('id_asesi', $id)->first();
 
         if ($progress_asesmen){
+            // Get structured progress data using the new method
+            $structured_progress = $progress_asesmen->getStructuredProgress();
+            
+            // Convert all timestamps to WIB format
+            foreach ($structured_progress as $step => &$data) {
+                if (isset($data['completed_at']) && $data['completed_at']) {
+                    $data['completed_at'] = DateTimeHelper::toWIB($data['completed_at']);
+                }
+            }
+            
+            // Calculate progress summary
+            $progress_summary = $progress_asesmen->calculateProgress();
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Data Progress Asesmen ditemukan',
                 'data'    => [
-                    'progress_asesmen' => $progress_asesmen
+                    'progress_asesmen' => $structured_progress,
+                    'progress_summary' => $progress_summary,
+                    'timezone' => 'WIB'
                 ]
             ], 200);
         } else {

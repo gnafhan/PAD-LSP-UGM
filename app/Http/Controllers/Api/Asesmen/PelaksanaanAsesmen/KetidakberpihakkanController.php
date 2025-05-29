@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Asesi;
 use App\Models\Asesor;
 use App\Models\Ketidakberpihakan;
-use App\Models\RincianAsesmen;
 use Carbon\Carbon;
 use App\Services\AsesmenValidationService;
+use App\Services\ProgressTrackingService;
+use App\Helpers\DateTimeHelper;
 
 /**
  * @OA\Tag(
@@ -20,10 +20,14 @@ use App\Services\AsesmenValidationService;
 class KetidakberpihakkanController extends Controller
 {
     protected $validationService;
+    protected $progressService;
+
     
-    public function __construct(AsesmenValidationService $validationService)
+    public function __construct(AsesmenValidationService $validationService, ProgressTrackingService $progressService)
     {
         $this->validationService = $validationService;
+        $this->progressService = $progressService;
+
     }
 
     /**
@@ -129,7 +133,7 @@ class KetidakberpihakkanController extends Controller
                 'data' => [
                     'general_info' => $generalInfo,
                     'ketidakberpihakan' => [
-                        'waktu_tanda_tangan_asesor' => $ketidakberpihakan->waktu_tanda_tangan_asesor->format('d-m-Y H:i:s'),
+                        'waktu_tanda_tangan_asesor' =>DateTimeHelper::toWIB($ketidakberpihakan->waktu_tanda_tangan_asesor),
                         'tanda_tangan_asesor' => $tandaTanganUrl,
                     ],
                     'record_exists' => true
@@ -245,11 +249,11 @@ class KetidakberpihakkanController extends Controller
         $ketidakberpihakan->save();
         
         // Update progress tracking if needed (like in other controllers)
-        $asesi = Asesi::find($request->id_asesi);
-        if ($asesi && $asesi->progresAsesmen) {
-            $asesi->progresAsesmen->ketidakberpihakan = true;
-            $asesi->progresAsesmen->save();
-        }
+        $this->progressService->completeStep(
+            $request->id_asesi, 
+            'pernyataan_ketidak_berpihakan', 
+            'Completed by Asesor ID: ' . $request->id_asesor . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
+        );
 
         return response()->json([
             'status' => 'success',

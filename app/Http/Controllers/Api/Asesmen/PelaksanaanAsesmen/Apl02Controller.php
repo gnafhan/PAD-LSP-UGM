@@ -5,15 +5,13 @@ namespace App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen;
 use App\Http\Controllers\Controller;
 use App\Models\Apl02;
 use App\Models\Apl02Kompetensi;
-use App\Models\Asesi;
-use App\Models\Asesor;
-use App\Models\RincianAsesmen;
-use App\Models\Skema;
 use App\Models\TandaTanganAsesor;
 use App\Services\AsesmenValidationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\ProgressTrackingService;
+use App\Helpers\DateTimeHelper;
 
 /**
  * @OA\Tag(
@@ -24,10 +22,14 @@ use Illuminate\Support\Facades\DB;
 class Apl02Controller extends Controller
 {
     protected $validationService;
+    protected $progressService;
+
     
-    public function __construct(AsesmenValidationService $validationService)
+    public function __construct(AsesmenValidationService $validationService, ProgressTrackingService $progressService)
     {
         $this->validationService = $validationService;
+        $this->progressService = $progressService;
+
     }
 
     /**
@@ -58,7 +60,9 @@ class Apl02Controller extends Controller
      *                     type="object",
      *                     @OA\Property(property="nama_asesi", type="string", example="John Doe"),
      *                     @OA\Property(property="nama_tuk", type="string", example="TUK XYZ"),
+     *                     @OA\Property(property="nama_asesor", type="string", example="Joko Wi"),
      *                     @OA\Property(property="nama_skema", type="string", example="Programmer")
+     *                     @OA\Property(property="nomor_skema", type="string", example="SKM/0317/00010/2/2019/22")
      *                 ),
      *                 @OA\Property(property="detail_skema", type="array", @OA\Items(type="object")),
      *                 @OA\Property(property="record_exists", type="boolean", example=true),
@@ -119,7 +123,9 @@ class Apl02Controller extends Controller
         $generalInfo = [
             'nama_asesi' => $asesi->nama_asesi,
             'nama_tuk' => $asesi->rincianAsesmen->event->tuk->nama_tuk ?? 'TUK tidak tersedia',
+            'nama_asesor' => $asesi->rincianAsesmen->asesor->nama_asesor ?? 'Nama Asesor tidak tersedia',
             'nama_skema' => $asesi->skema->nama_skema,
+            'nomor_skema' => $asesi->skema->nomor_skema,
         ];
 
         // Check if the APL02 record exists
@@ -141,8 +147,8 @@ class Apl02Controller extends Controller
             
             // Format detail APL02
             $detailApl02 = [
-                'waktu_tanda_tangan_asesor' => $apl02->waktu_tanda_tangan_asesor,
-                'waktu_tanda_tangan_asesi' => $apl02->waktu_tanda_tangan_asesi,
+             'waktu_tanda_tangan_asesor' => DateTimeHelper::toWIB($apl02->waktu_tanda_tangan_asesor),
+                'waktu_tanda_tangan_asesi' => DateTimeHelper::toWIB($apl02->waktu_tanda_tangan_asesi),
                 'ttd_asesor' => $tandaTanganAsesor,
                 'ttd_asesi' => $tandaTanganAsesi,
                 'rekomendasi' => $apl02->rekomendasi,
@@ -302,8 +308,8 @@ class Apl02Controller extends Controller
             
             // Format detail APL02 - simpler for asesi view
             $detailApl02 = [
-                'waktu_tanda_tangan_asesor' => $apl02->waktu_tanda_tangan_asesor,
-                'waktu_tanda_tangan_asesi' => $apl02->waktu_tanda_tangan_asesi,
+                'waktu_tanda_tangan_asesor' => DateTimeHelper::toWIB($apl02->waktu_tanda_tangan_asesor),
+                'waktu_tanda_tangan_asesi' => DateTimeHelper::toWIB($apl02->waktu_tanda_tangan_asesi),
                 'ttd_asesor' => $tandaTanganAsesor,
                 'ttd_asesi' => $tandaTanganAsesi
             ];
@@ -492,14 +498,16 @@ class Apl02Controller extends Controller
                 }
             }
             
-            
             DB::commit();
             
             if ($apl02->waktu_tanda_tangan_asesi && $apl02->waktu_tanda_tangan_asesor) {
                 // If both signatures are present, update the APL02 status
                 // Update progress
-                $asesi->progresAsesmen->apl02 = true;
-                $asesi->progresAsesmen->save();    
+                $this->progressService->completeStep(
+                    $request->id_asesi, 
+                    'apl02', 
+                    'Completed by Asesor ID: ' . $request->id_asesor . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
+                );   
             }
             return response()->json([
                 'status' => 'success',
@@ -625,8 +633,11 @@ class Apl02Controller extends Controller
             if ($apl02->waktu_tanda_tangan_asesi && $apl02->waktu_tanda_tangan_asesor) {
                 // If both signatures are present, update the APL02 status
                 // Update progress
-                $asesi->progresAsesmen->apl02 = true;
-                $asesi->progresAsesmen->save();    
+                $this->progressService->completeStep(
+                    $request->id_asesi, 
+                    'apl02', 
+                    'Completed by Asesi ID: ' . $request->id_asesi . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
+                );
             }
             
             return response()->json([

@@ -151,7 +151,7 @@ class AsesorController extends Controller
             'id_asesor' => 'required|string',
             'status_asesor' => 'required|in:Aktif,Tidak',
             'masa_berlaku' => 'required|date',
-            'bidang_kompetensi' => 'nullable|string',
+            'bidang_kompetensi' => 'required|string',
             'kode_registrasi' => 'nullable|string|max:100',
             'no_sertifikat' => 'nullable|string|max:100',
             'file_sertifikat_asesor' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
@@ -346,20 +346,23 @@ class AsesorController extends Controller
     private function enrichAsesorWithBidangKompetensi($asesor)
     {
         $bidangKompetensiData = BidangKompetensi::all()->keyBy('id_bidang_kompetensi');
+        log::info($bidangKompetensiData);
         $bidangKompetensiList = [];
-        
+        log::info($asesor->daftar_bidang_kompetensi);
         if (!empty($asesor->daftar_bidang_kompetensi)) {
-            $bidangIds = json_decode($asesor->daftar_bidang_kompetensi, true);
-            
+            log::info('Bidang kompetensi ditemukan');
+            $bidangIds = $asesor->daftar_bidang_kompetensi;            
             foreach ($bidangIds as $idBidang) {
                 if (isset($bidangKompetensiData[$idBidang])) {
                     $bidangKompetensiList[] = [
                         'id' => $idBidang,
                         'nama_bidang' => $bidangKompetensiData[$idBidang]->nama_bidang
                     ];
+                    log::info('Bidang kompetensi: ' . $bidangKompetensiData[$idBidang]->nama_bidang);
                 }
             }
         }
+
         
         $asesor->bidang_kompetensi = $bidangKompetensiList;
     }
