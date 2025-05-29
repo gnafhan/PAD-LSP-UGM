@@ -39,6 +39,7 @@ class Asesor extends Model
 
     protected $dates = ['masa_berlaku'];
 
+
     public function bidangKompetensi()
     {
         return $this->hasMany(BidangKompetensi::class, 'id_bidang_kompetensi', 'id_bidang_kompetensi');
@@ -61,20 +62,7 @@ class Asesor extends Model
         if (is_null($value) || $value === 'null' || $value === '') {
             return [];
         }
-
-        $ids = json_decode($value);
-
-        if (is_array($ids) && !empty($ids)) {
-            // Fetch models and preserve order of IDs if possible, or just get names
-            $bidangKompetensiModels = BidangKompetensi::whereIn('id_bidang_kompetensi', $ids)->get();
-            // Create a map of id => nama_bidang
-            $namaBidangMap = $bidangKompetensiModels->pluck('nama_bidang', 'id_bidang_kompetensi');
-            // Map IDs to names, preserving order from $ids array
-            return collect($ids)->map(function ($id) use ($namaBidangMap) {
-                return $namaBidangMap[$id] ?? null;
-            })->filter()->values()->all(); // Filter out nulls if an ID wasn't found
-        }
-        return [];
+        return json_decode($value, true) ?: [];
     }
 
     protected static function boot()

@@ -17,7 +17,7 @@ class CreateKonsultasiPraUjiTable extends Migration
             $table->id();
             $table->string('id_asesi');
             $table->string('id_asesor');
-            $table->date('tanggal_konsultasi')->nullable();
+            $table->timestamp('tanggal_konsultasi')->nullable();
             $table->string('waktu_pelaksanaan')->nullable();
             $table->string('tempat_uji')->nullable();
             $table->json('jawaban_checklist')->nullable();

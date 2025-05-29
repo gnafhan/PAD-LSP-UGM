@@ -42,7 +42,7 @@ class Mapa01 extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'waktu_tanda_tangan_asesor' => 'datetime',
+        'waktu_tanda_tangan_asesor' => 'timestamp',
     ];
 
     /**

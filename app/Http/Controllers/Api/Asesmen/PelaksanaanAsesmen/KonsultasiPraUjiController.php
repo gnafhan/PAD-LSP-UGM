@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen;
 
 use App\Http\Controllers\Controller;
-use App\Models\Asesor;
 use App\Models\TandaTanganAsesor;
 use Illuminate\Http\Request;
 use App\Models\Asesi;
@@ -11,6 +10,9 @@ use App\Models\KonsultasiPraUji;
 use App\Models\RincianAsesmen;
 use Carbon\Carbon;
 use App\Services\AsesmenValidationService;
+use App\Services\ProgressTrackingService;
+use App\Helpers\DateTimeHelper;
+
 
 
 /**
@@ -23,10 +25,14 @@ class KonsultasiPraUjiController extends Controller
 {
 
     protected $validationService;
+    protected $progressService;
+
     
-    public function __construct(AsesmenValidationService $validationService)
+    public function __construct(AsesmenValidationService $validationService, ProgressTrackingService $progressService)
     {
         $this->validationService = $validationService;
+        $this->progressService = $progressService;
+
     }
 
     /**
@@ -242,7 +248,8 @@ class KonsultasiPraUjiController extends Controller
                         'nama_asesor' => $asesor->nama_asesor,
                     ],
                     'konsultasi_pra_uji' => [
-                        'tanggal_asesmen_disepakati' => $konsultasi->tanggal_konsultasi,
+                        'waktu_tanda_tangan_asesor' => DateTimeHelper::toWIB($konsultasi->waktu_tanda_tangan_asesor),
+                        'tanggal_asesmen_disepakati' => DateTimeHelper::toWIB($konsultasi->tanggal_konsultasi),
                         'waktu_pelaksanaan' => $konsultasi->waktu_pelaksanaan,
                         'tempat_uji' => $konsultasi->tempat_uji,
                         'ttd_asesi' => $asesi->ttd_pemohon,
@@ -450,7 +457,7 @@ class KonsultasiPraUjiController extends Controller
         $rincianAsesmen = RincianAsesmen::where('id_asesor', $request->id_asesor)
                           ->where('id_asesi', $request->id_asesi)
                           ->first();
-        $konsultasi->tanggal_konsultasi = $asesi->created_at->format('d-m-Y');
+        $konsultasi->tanggal_konsultasi = $asesi->created_at;
         $konsultasi->waktu_pelaksanaan = $rincianAsesmen->event->getRentangWaktuAttribute();
         $konsultasi->tempat_uji = $rincianAsesmen->event->tuk->nama_tuk ?? $request->tempat_uji;
         
@@ -474,12 +481,12 @@ class KonsultasiPraUjiController extends Controller
 
         // If the Asesi has signed and the Asesor has signed, update progressAsesmen status
         if ($konsultasi->jawaban_checklist['point_1']['jawaban_asesi'] == 'Ya' && $konsultasi->jawaban_checklist['point_1']['jawaban_asesor'] == 'Ya') {
-            $asesi->progresAsesmen->konsultasi_pra_uji = true;
-            $asesi->progresAsesmen->save();
-                \Log::info('Konsultasi Pra Uji completed for Asesi', [
-                'id_asesi' => $request->id_asesi,
-                'id_asesor' => $request->id_asesor,
-            ]);
+            // Use the progress service to mark step as completed
+            $this->progressService->completeStep(
+                $request->id_asesi, 
+                'konsultasi_pra_uji', 
+                'Completed by Asesi ID: ' . $request->id_asesi . ' at ' . Carbon::now()
+            );
         }
 
         return response()->json([
@@ -635,7 +642,7 @@ class KonsultasiPraUjiController extends Controller
         $rincianAsesmen = RincianAsesmen::where('id_asesor', $request->id_asesor)
                           ->where('id_asesi', $request->id_asesi)
                           ->first();
-        $konsultasi->tanggal_konsultasi = $asesi->created_at->format('d-m-Y');
+        $konsultasi->tanggal_konsultasi = $asesi->created_at;
         $konsultasi->waktu_pelaksanaan = $rincianAsesmen->event->getRentangWaktuAttribute();
         $konsultasi->tempat_uji = $rincianAsesmen->event->tuk->nama_tuk ?? $request->tempat_uji;
         $konsultasi->waktu_tanda_tangan_asesor = now();
@@ -674,13 +681,12 @@ class KonsultasiPraUjiController extends Controller
 
         // If the Asesi has signed and the Asesor has signed, update progressAsesmen status
         if ($konsultasi->jawaban_checklist['point_1']['jawaban_asesi'] == 'Ya' && $konsultasi->jawaban_checklist['point_1']['jawaban_asesor'] == 'Ya') {
-            $asesi->progresAsesmen->konsultasi_pra_uji = true;
-            $asesi->progresAsesmen->save();
-            // Log
-            \Log::info('Konsultasi Pra Uji completed for Asesi', [
-                'id_asesi' => $request->id_asesi,
-                'id_asesor' => $request->id_asesor,
-            ]);
+            // Use the progress service to mark step as completed
+            $this->progressService->completeStep(
+                $request->id_asesi, 
+                'konsultasi_pra_uji', 
+                'Completed by Asesor ID: ' . $request->id_asesor
+            );
         }
 
         return response()->json([

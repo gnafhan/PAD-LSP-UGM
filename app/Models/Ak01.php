@@ -37,7 +37,7 @@ class Ak01 extends Model
      */
     protected $casts = [
         'waktu_tanda_tangan_asesor' => 'timestamp',
-        'waktu_tanda_tangan_asesi' => 'date',
+        'waktu_tanda_tangan_asesi' => 'timestamp',
     ];
 
     /**

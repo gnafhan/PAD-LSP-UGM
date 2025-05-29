@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Asesi;
-use App\Models\Asesor;
 use App\Models\Mapa01;
 use App\Models\RencanaAsesmen;
 use App\Services\AsesmenValidationService;
 use App\Models\TandaTanganAsesor;
-use Carbon\Carbon;
+use App\Services\ProgressTrackingService;
+use App\Helpers\DateTimeHelper;
 
 /**
  * @OA\Tag(
@@ -20,11 +19,14 @@ use Carbon\Carbon;
  */
 class Mapa01Controller extends Controller
 {
+
     protected $validationService;
-    
-    public function __construct(AsesmenValidationService $validationService)
+    protected $progressService;
+
+    public function __construct(AsesmenValidationService $validationService, ProgressTrackingService $progressService)
     {
         $this->validationService = $validationService;
+        $this->progressService = $progressService;
     }
 
     /**
@@ -209,7 +211,7 @@ class Mapa01Controller extends Controller
                         'pelaksana_asesmen' => $mapa01->pelaksana_asesmen,
                         'pihak_yang_relevan_untuk_dikonfirmasi' => $mapa01->pihak_yang_relevan_untuk_dikonfirmasi,
                         'tolak_ukur_asesmen' => $mapa01->tolak_ukur_asesmen,
-                        'waktu_tanda_tangan_asesor' => $mapa01->waktu_tanda_tangan_asesor ? $mapa01->waktu_tanda_tangan_asesor->format('d-m-Y') : null,
+                        'waktu_tanda_tangan_asesor' => $mapa01->waktu_tanda_tangan_asesor ? DateTimeHelper::toWIB($mapa01->waktu_tanda_tangan_asesor) : null,
                         'tanda_tangan_asesor' => $tandaTanganAsesor ? $tandaTanganAsesor->file_url : null,
                     ],
                     'record_exists' => true
@@ -355,11 +357,11 @@ class Mapa01Controller extends Controller
 
         // Update the progres_asesmen table if the asesor has signed
         if ($mapa01->waktu_tanda_tangan_asesor) {
-            $asesi = Asesi::find($request->id_asesi);
-            if ($asesi && $asesi->progresAsesmen) {
-                $asesi->progresAsesmen->mapa01 = true;
-                $asesi->progresAsesmen->save();
-            }
+            $this->progressService->completeStep(
+                $request->id_asesi, 
+                'mapa01', 
+                'Completed by Asesor ID: ' . $request->id_asesor
+            );
         }
 
         return response()->json([

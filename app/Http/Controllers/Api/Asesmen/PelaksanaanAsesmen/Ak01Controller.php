@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Asesi;
-use App\Models\Asesor;
+use App\Helpers\DateTimeHelper;
 use App\Models\Ak01;
 use Carbon\Carbon;
 use App\Services\AsesmenValidationService;
 use App\Models\TandaTanganAsesor;
+use App\Services\ProgressTrackingService;
+use Illuminate\Support\Facades\Log;
+
+
 
 /**
  * @OA\Tag(
@@ -20,10 +23,14 @@ use App\Models\TandaTanganAsesor;
 class Ak01Controller extends Controller
 {
     protected $validationService;
+    protected $progressService;
+
     
-    public function __construct(AsesmenValidationService $validationService)
+    public function __construct(AsesmenValidationService $validationService, ProgressTrackingService $progressService)
     {
         $this->validationService = $validationService;
+        $this->progressService = $progressService;
+
     }
 
     /**
@@ -65,7 +72,8 @@ class Ak01Controller extends Controller
      *                     @OA\Property(property="hasil_yang_akan_dikumpulkan", type="string", example="Hasil unjuk kerja, portofolio, dan knowledge test"),
      *                     @OA\Property(property="waktu_tanda_tangan_asesi", type="string", format="date", example="2025-05-14", nullable=true),
      *                     @OA\Property(property="waktu_tanda_tangan_asesor", type="string", format="date", example="2025-05-15", nullable=true),
-     *                     @OA\Property(property="tanda_tangan_asesor", type="string", format="date", example="signature/ttd_asesor.png"),
+     *                     @OA\Property(property="tanda_tangan_asesor", type="string", format="string", example="tanda_tangan/ttd_asesor.png"),
+     *                     @OA\Property(property="tanda_tangan_asesi", type="string", format="string", example="signature/ttd_asesi.png"),
      *                 ),
      *                 @OA\Property(property="record_exists", type="boolean", example=true)
      *             )
@@ -138,7 +146,9 @@ class Ak01Controller extends Controller
                     'general_info' => $generalInfo,
                     'ak01' => [
                         'hasil_yang_akan_dikumpulkan' => $hasilItems,
-                        'waktu_tanda_tangan_asesi' => $ak01->waktu_tanda_tangan_asesi ? $ak01->waktu_tanda_tangan_asesi->format('d-m-Y') : null,
+                        'waktu_tanda_tangan_asesi' => DateTimeHelper::toWIB($ak01->waktu_tanda_tangan_asesi),                        
+                        'tanda_tangan_asesi' => $asesi->ttd_pemohon ? $asesi->ttd_pemohon = asset('storage/' . $asesi->ttd_pemohon) : null,
+                        'waktu_tanda_tangan_asesor' => DateTimeHelper::toWIB($ak01->waktu_tanda_tangan_asesor),                        
                         'tanda_tangan_asesor' => $tandaTanganAsesor ? $tandaTanganAsesor->file_url : "null",
                     ],
                     'record_exists' => true
@@ -241,7 +251,7 @@ class Ak01Controller extends Controller
 
         // Set the signing timestamp if the asesi is signing
         if ($request->boolean('is_signing')) {
-            $ak01->waktu_tanda_tangan_asesi = Carbon::now();
+            $ak01->waktu_tanda_tangan_asesi = now();
         }
 
         $ak01->save();
@@ -249,11 +259,16 @@ class Ak01Controller extends Controller
         // Check if both asesi and asesor have signed, and if so, update progress
         if ($ak01->waktu_tanda_tangan_asesi && $ak01->waktu_tanda_tangan_asesor) {
             // Update the progres_asesmen table
-            $asesi = Asesi::find($request->id_asesi);
-            if ($asesi && $asesi->progresAsesmen) {
-                $asesi->progresAsesmen->ak01 = true;
-                $asesi->progresAsesmen->save();
-            }
+            log::info('AK01 completed by Asesi', [
+                'id_asesi' => $request->id_asesi,
+                'id_asesor' => $request->id_asesor,
+                'timestamp' => Carbon::now()->format('d-m-Y H:i:s')
+            ]);
+            $this->progressService->completeStep(
+                $request->id_asesi, 
+                'ak01', 
+                'Completed by Asesi ID: ' . $request->id_asesi . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
+            );
         }
 
         return response()->json([
@@ -354,13 +369,18 @@ class Ak01Controller extends Controller
         }
 
         // Check if both asesi and asesor have signed, and if so, update progress
-        if ($ak01->waktu_tanda_tangan_asesi && $ak01->waktu_tanda_tangan_asesor && $ak01->hasilItems->count() > 0) {
+        if ($ak01->waktu_tanda_tangan_asesi && $ak01->waktu_tanda_tangan_asesor) {
             // Update the progres_asesmen table
-            $asesi = Asesi::find($request->id_asesi);
-            if ($asesi && $asesi->progresAsesmen) {
-                $asesi->progresAsesmen->ak01 = true;
-                $asesi->progresAsesmen->save();
-            }
+            $this->progressService->completeStep(
+                $request->id_asesi, 
+                'ak01', 
+                'Completed by Asesor ID: ' . $request->id_asesor . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
+            );
+            log::info('AK01 completed by Asesor', [
+                'id_asesi' => $request->id_asesi,
+                'id_asesor' => $request->id_asesor,
+                'timestamp' => Carbon::now()->format('d-m-Y H:i:s')
+            ]);
         }
 
         return response()->json([

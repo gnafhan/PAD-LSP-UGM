@@ -190,16 +190,8 @@ class AsesiPengajuanPageController extends Controller
                         'alamat_perusahaan' => $asesiPengajuan->alamat_perusahaan,
                         'no_telp_perusahaan' => $asesiPengajuan->no_telp_perusahaan,
                     ]);
-
-                    // Create progress record
-                    $result = $this->createProgressAsesi($asesi->id_asesi);
-
-                    if($result) {
-                        \Log::info('Progress Asesi created successfully for ID: ' . $asesiPengajuan->id_user);
-                    } else {
-                        \Log::error('Failed to create Progress Asesi for ID: ' . $asesiPengajuan->id_user);
-                    }
                     
+                    // Progress creation moved to assignAsesor method
                     
                     // Update user level to asesi
                     $user = User::find($asesiPengajuan->id_user);
@@ -251,12 +243,23 @@ class AsesiPengajuanPageController extends Controller
     {
         try {
             $asesi = Asesi::findOrFail($id_asesi);
+            $now = Carbon::now()->format('d-m-Y H:i:s');
+            
+            // Create progress record with explicit apl01 completion
             ProgresAsesmen::create([
                 'id_asesi' => $asesi->id_asesi,
+                'apl01' => [
+                    'completed' => true,
+                    'completed_at' => $now
+                ]
+                // No need to explicitly set other fields as the model's booted method 
+                // will initialize them with default values
             ]);
+            
+            \Log::info('Progress Asesi created for ID: ' . $id_asesi . ' with apl01 completed at ' . $now);
             return true;
         } catch (\Exception $e) {
-            \Log::error('Failed to update Asesi status: ' . $e->getMessage());
+            \Log::error('Failed to create Progress Asesi: ' . $e->getMessage());
             return false;
         }
     }
@@ -289,27 +292,36 @@ class AsesiPengajuanPageController extends Controller
             'assign_asesi.*' => 'exists:asesi,id_asesi',
             'id_event' => 'required|exists:event,id_event',
         ]);
-    
+
         $asesorId = $request->input('id_asesor');
         $asesiIds = $request->input('assign_asesi');
         $eventId = $request->input('id_event');
-    
+
         // Begin transaction to ensure data consistency
         DB::beginTransaction();
         try {
             // Create rincian_asesmen entries for each asesi
             foreach ($asesiIds as $asesiId) {
+                // Create rincian asesmen record
                 RincianAsesmen::create([
                     'id_asesi' => $asesiId,
                     'id_asesor' => $asesorId,
                     'id_event' => $eventId,
                 ]);
+                
+                // Check if progress record exists, if not create it
+                $progressExists = ProgresAsesmen::where('id_asesi', $asesiId)->exists();
+                if (!$progressExists) {
+                    $this->createProgressAsesi($asesiId);
+                    \Log::info('Created progress record for asesi ID: ' . $asesiId . ' during asesor assignment');
+                }
             }
-    
+
             DB::commit();
             return redirect()->back()->with('success', 'Asesi berhasil di-assign ke asesor untuk event yang dipilih.');
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::error('Error in assignAsesor: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }

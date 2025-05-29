@@ -55,7 +55,7 @@
 
     <!-- Register Link -->
     <div class="text-center mt-6">
-        <p class="text-sm text-gray-700">Belum Punya Akun? <a href="/register" class="text-indigo-600 hover:text-indigo-800 font-medium">Register</a></p>
+        <p class="text-sm text-gray-700">Belum Punya Akun? <a href="/dev/register" class="text-indigo-600 hover:text-indigo-800 font-medium">Register</a></p>
     </div>
   </div>
 </div>
