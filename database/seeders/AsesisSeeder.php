@@ -23,9 +23,9 @@ class AsesisSeeder extends Seeder
         DB::table('asesi')->truncate();
 
         // Get the users by email to fetch their auto-generated IDs
-        $yekaUser = User::where('email', 'yeka@email.com')->first();
-        $sakuraUser = User::where('email', 'sakura@email.com')->first();
-        $hiroUser = User::where('email', 'hiro@email.com')->first();
+        $yekaUser = User::where('email', 'yeka@mail.ugm.ac.id')->first();
+        $sakuraUser = User::where('email', 'sakura@mail.ugm.ac.id')->first();
+        $hiroUser = User::where('email', 'hiro@mail.ugm.ac.id')->first();
 
 
         // Get skema

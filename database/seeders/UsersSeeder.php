@@ -23,40 +23,46 @@ class UsersSeeder extends Seeder
         // Predefined users with specific details
         $predefinedUsers = [
             [
-                'email' => 'yeka@email.com',
+                'email' => 'yeka@mail.ugm.ac.id',
                 'password' => '123123',
                 'no_hp' => '081234567890',
                 'level' => 'asesi',
             ],
             [
-                'email' => 'sakura@email.com',
+                'email' => 'sakura@mail.ugm.ac.id',
                 'password' => '123456',
                 'no_hp' => '082345678901',
                 'level' => 'asesi',
             ],
             [
-                'email' => 'hiro@email.com',
+                'email' => 'hiro@mail.ugm.ac.id',
                 'password' => '345345',
                 'no_hp' => '083456789012',
                 'level' => 'asesi',
             ],
             [
-                'email' => 'annisa@email.com',
+                'email' => 'dwianggaranajwansugama@mail.ugm.ac.id',
                 'password' => '123123',
-                'no_hp' => '085678901234',
-                'level' => 'user',
-            ],
-            [
-                'email' => 'belda@email.com',
-                'password' => '123123',
-                'no_hp' => '085678901234',
+                'no_hp' => '085678901235',
                 'level' => 'admin',
             ],
             [
-                'email' => 'lintang@email.com',
+                'email' => 'nadziraazhanifarahiya@mail.ugm.ac.id',
                 'password' => '123123',
-                'no_hp' => '085678901234',
-                'level' => 'asesor',
+                'no_hp' => '085678901236',
+                'level' => 'admin',
+            ],
+            [
+                'email' => 'zhazhanurani@mail.ugm.ac.id',
+                'password' => '123123',
+                'no_hp' => '085678901246',
+                'level' => 'admin',
+            ],
+            [
+                'email' => 'dinar.nugroho.p@mail.ugm.ac.id',
+                'password' => '123123',
+                'no_hp' => '085678901226',
+                'level' => 'admin',
             ],
         ];
 

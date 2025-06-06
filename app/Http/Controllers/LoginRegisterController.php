@@ -18,7 +18,7 @@ class LoginRegisterController extends Controller
                 'email',
                 'max:250',
                 'unique:users',
-                'regex:/^[a-zA-Z0-9._%+-]+@mail\.ugm\.ac\.id$/'
+                'regex:/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/' // Validasi email UGM
             ],
             'no_hp' => 'required|string|max:20|unique:users',
             'password' => 'required|min:6|confirmed',
@@ -26,7 +26,7 @@ class LoginRegisterController extends Controller
             'nik' => 'nullable|string|size:16|unique:users',
             'alamat' => 'nullable|string|max:255',
         ], [
-            'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id).',
+            'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id) atau (@ugm.ac.id)',
             'nik.size' => 'NIK harus 16 digit.',
             'level.in' => 'Role yang dipilih tidak valid.'
         ]);
