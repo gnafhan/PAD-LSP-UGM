@@ -26,8 +26,8 @@ class AsesiPengajuanSeeder extends Seeder
         $faker = Faker::create('id_ID');
 
         // Get users by email to fetch their auto-generated IDs
-        $yekaUser = User::where('email', 'yeka@email.com')->first();
-        $sakuraUser = User::where('email', 'sakura@email.com')->first();
+        $yekaUser = User::where('email', 'yeka@mail.ugm.ac.id')->first();
+        $sakuraUser = User::where('email', 'sakura@mail.ugm.ac.id')->first();
 
         // Get skemas by name to fetch their auto-generated IDs
         $skemaProgrammer = Skema::where('nama_skema', 'Programmer')->first();
