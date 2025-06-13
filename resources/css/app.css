@@ -1,5 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* 1. Import Google Fonts - boleh di paling atas */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+/* 2. Tailwind directives harus di bawah semua @import */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+

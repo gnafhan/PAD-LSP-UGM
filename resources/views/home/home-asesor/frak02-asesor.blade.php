@@ -5,15 +5,16 @@
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
     <div id="judulPage" class="relative z-10 flex items-center mx-4 pb-4">
-        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 15 15" fill="url(#icon-gradient)">
             <defs>
-              <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stop-color="#3B82F6" /> <!-- biru -->
-                <stop offset="100%" stop-color="#8B5CF6" /> <!-- ungu -->
-              </linearGradient>
+                <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#3B82F6" /> <!-- Biru -->
+                    <stop offset="100%" stop-color="#8B5CF6" /> <!-- Ungu -->
+                </linearGradient>
             </defs>
-            <path stroke="url(#icon-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z" />
+            <path
+                d="M10.7907 7.5L11.5257 6.765C11.7823 6.50833 12.109 6.36833 12.4648 6.33333V5.75L8.96484 2.25H3.13151C2.48401 2.25 1.96484 2.76917 1.96484 3.41667V11.5833C1.96484 11.8928 2.08776 12.1895 2.30655 12.4083C2.52534 12.6271 2.82209 12.75 3.13151 12.75H6.63151V11.6592L6.70734 11.5833H3.13151V3.41667H7.21484V7.5H10.7907ZM8.38151 3.125L11.5898 6.33333H8.38151V3.125ZM11.374 8.5675L12.564 9.7575L8.98818 13.3333H7.79818V12.1433L11.374 8.5675ZM13.544 8.7775L12.9723 9.34917L11.7823 8.15917L12.354 7.5875C12.4648 7.47083 12.6573 7.47083 12.774 7.5875L13.544 8.3575C13.6607 8.47417 13.6607 8.66667 13.544 8.7775Z"
+            />
         </svg>
         <p class="ms-2 text-xl font-bold text-black">AK.01</p>
     </div>
@@ -255,7 +256,7 @@
                     </p>
                 </div>
                 <!-- Rekomendasi -->
-                
+
                 <div class="mb-6">
                     <label for="rekomendasi" class="block mb-2 text-sm font-medium text-sidebar_font">Rekomendasi</label>
                     <textarea id="rekomendasi" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Masukkan Rekomendasi Anda"></textarea>

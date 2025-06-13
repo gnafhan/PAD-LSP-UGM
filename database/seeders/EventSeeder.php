@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Event;
 use Illuminate\Database\Seeder;
-use App\Models\Event;
 use App\Models\TUK;
 
 class EventSeeder extends Seeder

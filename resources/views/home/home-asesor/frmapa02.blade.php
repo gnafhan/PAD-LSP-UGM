@@ -1,21 +1,22 @@
 @extends('home.home-asesor.layouts.layout')
 
-@section('title', 'FR.AK-01 - Asesor')
+@section('title', 'FR.MAPA-02 - Asesor')
 
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
     <div id="judulPage" class="relative z-10 flex items-center mx-4 pb-4">
-        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 15 15" fill="url(#icon-gradient)">
             <defs>
-              <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stop-color="#3B82F6" /> <!-- biru -->
-                <stop offset="100%" stop-color="#8B5CF6" /> <!-- ungu -->
-              </linearGradient>
+                <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#3B82F6" /> <!-- Biru -->
+                    <stop offset="100%" stop-color="#8B5CF6" /> <!-- Ungu -->
+                </linearGradient>
             </defs>
-            <path stroke="url(#icon-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z" />
+            <path
+                d="M10.7907 7.5L11.5257 6.765C11.7823 6.50833 12.109 6.36833 12.4648 6.33333V5.75L8.96484 2.25H3.13151C2.48401 2.25 1.96484 2.76917 1.96484 3.41667V11.5833C1.96484 11.8928 2.08776 12.1895 2.30655 12.4083C2.52534 12.6271 2.82209 12.75 3.13151 12.75H6.63151V11.6592L6.70734 11.5833H3.13151V3.41667H7.21484V7.5H10.7907ZM8.38151 3.125L11.5898 6.33333H8.38151V3.125ZM11.374 8.5675L12.564 9.7575L8.98818 13.3333H7.79818V12.1433L11.374 8.5675ZM13.544 8.7775L12.9723 9.34917L11.7823 8.15917L12.354 7.5875C12.4648 7.47083 12.6573 7.47083 12.774 7.5875L13.544 8.3575C13.6607 8.47417 13.6607 8.66667 13.544 8.7775Z"
+            />
         </svg>
-        <p class="ms-2 text-xl font-bold text-black">MAPA.02</p>
+        <p class="ms-2 text-xl font-bold bg-gradient-to-r from-biru to-ungu text-transparent bg-clip-text">Formulir Merencanakan Aktivitas dan Proses Asesmen 02</p>
     </div>
     <div id="breadcrumbs" class="hidden pb-4 px-6">
         <!-- Breadcrumb -->
@@ -51,10 +52,10 @@
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
     </div>
-    <div id="frameAK01" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
+    <div id="frameMAPA02" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir MAPA.02 Peta Instrumen Asesmen Hasil Pendekatan Asesmen & Perencanaan Asesmen</p>
         <!-- Search Form -->
-        <form id="searchAK01" class="max-w-md mb-4 rounded-xl">
+        <form id="searchMAPA02" class="max-w-md mb-4 rounded-xl">
             <div class="relative">
             <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
                 <button type="submit" class="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
@@ -65,7 +66,7 @@
             </div>
         </form>
         <div class="overflow-x-auto shadow-sm rounded-lg">
-            <table id="daftarAK01" class="min-w-full bg-white overflow-hidden">
+            <table id="daftarMAPA02" class="min-w-full bg-white overflow-hidden">
                 <thead class="bg-bg_dashboard text-center">
                     <tr>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
@@ -102,15 +103,18 @@
                                 <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
                                 </svg>
+                                <svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                                </svg>
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div id="detailAK01" class="hidden pt-0 p-4 text-black">
+        <div id="detailMAPA02" class="hidden pt-0 p-4 text-black">
             <!-- Input Formulir APL.02 -->
-            <div id="FRAK01" class="pt-0 p-4 space-y-6">
+            <div id="FRMAPA02" class="pt-0 p-4 space-y-6">
                 <div class="max-w-full space-y-1">
                     <div class="flex">
                         <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -ms-px w-1/3">
@@ -157,111 +161,67 @@
                 </div>
             </div>
 
-            <!-- Checklist Kompeten -->
-            <div id="clKompeten" class="p-4">
-                <form class="max-w-full mx-auto">
-                    <label for="pilihKompetensi" class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">Checklist Kompetensi</label>
-                    <select id="pilihKompetensi" class="border border-border_input text-sidebar_font text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2">
-                        <option selected>Pilih Kompetensi</option>
-                        <option value="kompeten">Kompeten</option>
-                        <option value="tidak_kompeten">Tidak Kompeten</option>
-                    </select>
-                </form>
-            </div>
-
-            <!-- Tabel 1 AK01 -->
+           <!-- Checklist MAPA 2 -->
             <div class="p-4">
-                <p id="judulTabelAK01" class="text-sidebar_font font-semibold pb-2">No 1.  Kode Unit : R.93KPW00.011.2</p>
-
-                <div class="overflow-x-auto shadow-md rounded-lg mb-4">
-                    <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
+                <p class="block mb-2 text-xl font-bold text-sidebar_font">
+                    1. Pendekatan Asesmen
+                </p>
+                <div class="w-max-full flex flex-row flex-wrap border border-border_input rounded-md p-2 space-y-2">
+                    <table id="daftarMAPA02" class="min-w-full bg-white overflow-hidden border border-gray-200 rounded-lg text-sm text-gray-600">
                         <thead class="bg-bg_dashboard text-center">
+                            <!-- Header Baris Pertama -->
                             <tr>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
+                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">No</th>
+                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">MUK</th>
+                                <th colspan="5" class="px-4 py-3 font-semibold border-b border-gray-200">Potensi Asesi</th>
+                            </tr>
+                            <!-- Header Baris Kedua -->
+                            <tr>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">1</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">2</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">3</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">4</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">5</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 text-black text-center items-center">
-                            <tr>
-                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik?</td>
-                                <td class="flex px-4 py-3 justify-center">
-                                    <form id="ddKompetensi" class="w-40">
-                                        <select id="selectKompetensi" onchange="ubahWarnaSelect()"
-                                            class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
-                                            <option selected value="">Pilih</option>
-                                            <option value="kompeten">Kompeten</option>
-                                            <option value="tidak_kompeten">Tidak Kompeten</option>
-                                        </select>
-                                    </form>
+                        <tbody class="divide-y divide-gray-200 text-center">
+                            <tr class="text-black">
+                                <td class="px-4 py-3">1</td>
+                                <td class="px-4 py-3 text-left">
+                                    <p>Ceklis Observasi Untuk Aktivitas di Tempat Kerja atau Tempat Kerja Simulasi</p>
                                 </td>
+                                @for ($i = 0; $i < 5; $i++)
+                                    <td class="px-4 py-3">
+                                    <input id="inline-radio-{{ $i }}" type="radio" value="{{ $i }}" name="inline-radio-group"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-border focus:ring-blue-500">
+                                    </td>
+                                @endfor
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-            <!-- Tabel 2 APL02 -->
-            <div class="p-4">
-                <p id="judulTabelAPL02" class="text-sidebar_font font-semibold pb-2">No 2.  Kode Unit : R.93KPW00.011.2</p>
-
-                <div class="overflow-x-auto shadow-md rounded-lg mb-4">
-                    <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
-                        <thead class="bg-bg_dashboard text-center">
-                            <tr>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 text-black text-center items-center">
-                            <tr>
-                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik?</td>
-                                <td class="flex px-4 py-3 justify-center">
-                                    <form id="ddKompetensi" class="w-40">
-                                        <select id="selectKompetensi" onchange="ubahWarnaSelect()"
-                                            class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
-                                            <option selected value="">Pilih</option>
-                                            <option value="kompeten">Kompeten</option>
-                                            <option value="tidak_kompeten">Tidak Kompeten</option>
-                                        </select>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Button Simpan -->
-            <div class="flex justify-end pe-4">
-                <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                    Simpan dan Setujui
-                </button>
-            </div>
-
-            <div class="my-6 px-4 space-y-6">
-                <!-- Hasil Kompetensi -->
-                <div id="hasilAPL02" class="">
-                    <label for="hasilKompetensi" class="block mb-2 font-semibold text-sidebar_font">Hasil Kompetensi</label>
-                    <p type="text" id="hasilKompetensi" aria-label="hasil kompetensi"
-                        class="border border-border_input text-sidebar_font text-sm rounded-lg block w-full p-2" disabled readonly>
-                        Belum dinilai
+                <div class="text-sidebar_font">
+                    <p class="mt-4 text-lg font-semibold">Catatan:</p>
+                    <p class="text-sidebar_font text-base">*  : diisi berdasarkan hasil penentuan pendekatan asesmen dan perencanaan asesmen</p>
+                    <p class="text-sidebar_font text-base">** : Keterangan:
+                        <ol class="ps-5 mt-2 space-y-1 list-decimal list-inside text-sidebar_font text-base">
+                            <li>Hasil pelatihan dan / atau pendidikan, dimana Kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi.</li>
+                            <li>Hasil pelatihan dan / atau pendidikan, dimana kurikulum berbasis kompetensi.</li>
+                            <li>Pekerja berpengalaman, dimana berasal dari industri/tempat kerja yang dalam operasionalnya mampu telusur dengan standar kompetensi.</li>
+                            <li>Pekerja berpengalaman, dimana berasal dari industri/tempat kerja yang dalam operasionalnya berbasis kompetensi.</li>
+                            <li>Pelatihan / belajar mandiri atau otodidak.</li>
+                        </ol>
                     </p>
                 </div>
-                <!-- Rekomendasi -->
 
-                <div class="mb-6">
-                    <label for="rekomendasi" class="block mb-2 text-sm font-medium text-sidebar_font">Rekomendasi</label>
-                    <textarea id="rekomendasi" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Masukkan Rekomendasi Anda"></textarea>
-                </div>
+            </div>
+
+
 
                 <!-- Button Simpan -->
                 <div class="flex justify-end pe-4">
                     <button id="simpanRekomendasi" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                        Simpan Rekomendasi
+                        Simpan dan Setujui
                     </button>
                 </div>
             </div>
@@ -279,19 +239,19 @@ function showSummary() {
     // document.getElementById('titlePage').classList.add('hidden');
 
     // Sembunyikan elemen pencarian utama
-    document.getElementById('searchAK01').classList.add('hidden');
+    document.getElementById('searchMAPA02').classList.add('hidden');
 
     // Sembunyikan elemen daftar asesi
-    document.getElementById('daftarAK01').classList.add('hidden');
+    document.getElementById('daftarMAPA02').classList.add('hidden');
 
     // Tampilkan bagian breadcrumbs
     document.getElementById('breadcrumbs').classList.remove('hidden');
 
     // Tampilkan bagian detail asesi
-    document.getElementById('detailAK01').classList.remove('hidden');
+    document.getElementById('detailMAPA02').classList.remove('hidden');
 
     // Optional: scroll ke bagian detail
-    document.getElementById('detailAK01').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('detailMAPA02').scrollIntoView({ behavior: 'smooth' });
 }
 </script>
 

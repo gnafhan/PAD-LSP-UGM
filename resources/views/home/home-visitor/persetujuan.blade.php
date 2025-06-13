@@ -3,7 +3,7 @@
 @section('title', 'Persetujuan Proses Assessment - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+<div class="bg-gray-100 min-h-screen py-32 px-4 sm:px-6 lg:px-8">
     <div class="bg-white rounded-xl shadow-xl max-w-3xl mx-auto overflow-hidden">
         <!-- Header Section -->
         <div class="bg-blue-600 px-6 py-4">
@@ -57,7 +57,7 @@
                         Tanda Tangan Digital
                     </span>
                 </label>
-                
+
                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
                     <div class="space-y-1 text-center">
                         <div id="signature-preview" class="hidden mb-3">
@@ -76,7 +76,7 @@
                         <p class="text-xs text-gray-500">PNG, JPG, JPEG hingga 2MB</p>
                     </div>
                 </div>
-                
+
                 <!-- User Data Information -->
                 <div class="mt-4 bg-blue-50 p-3 rounded-lg">
                     <p class="text-sm text-gray-700 font-medium">{{ $data }}</p>
@@ -129,15 +129,15 @@
 
         signatureInput.addEventListener('change', function() {
             const file = this.files[0];
-            
+
             if (file) {
                 const reader = new FileReader();
-                
+
                 reader.onload = function(e) {
                     previewImage.src = e.target.result;
                     previewContainer.classList.remove('hidden');
                 }
-                
+
                 reader.readAsDataURL(file);
             } else {
                 previewContainer.classList.add('hidden');
@@ -148,7 +148,7 @@
         function saveDataPersetujuan() {
             const formData = new FormData();
             formData.append('_token', '{{ csrf_token() }}');
-            
+
             const fileInput = document.getElementById('signature');
             if (fileInput.files.length > 0) {
                 formData.append('signature', fileInput.files[0]);
@@ -157,7 +157,7 @@
             // Show loading state
             const buttonText = document.getElementById('button-text');
             const buttonLoading = document.getElementById('button-loading');
-            
+
             buttonText.textContent = 'Mengirim...';
             buttonLoading.classList.remove('hidden');
             document.getElementById('btn-selanjutnya').disabled = true;
@@ -188,7 +188,7 @@
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON.errors;
                         let errorMessage = '';
-                        
+
                         Object.keys(errors).forEach(key => {
                             errors[key].forEach(message => {
                                 errorMessage += `${message}<br>`;
@@ -216,7 +216,7 @@
         // Event listener for the submit button
         document.getElementById('btn-selanjutnya').addEventListener('click', function(event) {
             event.preventDefault();
-            
+
             // Check if file is selected
             if (!document.getElementById('signature').files.length) {
                 Swal.fire({
@@ -227,44 +227,44 @@
                 });
                 return;
             }
-            
+
             saveDataPersetujuan();
         });
 
         // Optional: Add drag and drop functionality
         const dropArea = document.querySelector('.border-dashed');
-        
+
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, preventDefaults, false);
         });
-        
+
         function preventDefaults(e) {
             e.preventDefault();
             e.stopPropagation();
         }
-        
+
         ['dragenter', 'dragover'].forEach(eventName => {
             dropArea.addEventListener(eventName, highlight, false);
         });
-        
+
         ['dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, unhighlight, false);
         });
-        
+
         function highlight() {
             dropArea.classList.add('border-blue-500', 'bg-blue-50');
         }
-        
+
         function unhighlight() {
             dropArea.classList.remove('border-blue-500', 'bg-blue-50');
         }
-        
+
         dropArea.addEventListener('drop', handleDrop, false);
-        
+
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
-            
+
             if (files.length) {
                 document.getElementById('signature').files = files;
                 const event = new Event('change');

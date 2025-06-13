@@ -5,17 +5,18 @@
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
     <div id="judulPage" class="relative z-10 flex items-center mx-4 pb-4">
-        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 15 15" fill="url(#icon-gradient)">
             <defs>
-              <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stop-color="#3B82F6" /> <!-- biru -->
-                <stop offset="100%" stop-color="#8B5CF6" /> <!-- ungu -->
-              </linearGradient>
+                <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#3B82F6" /> <!-- Biru -->
+                    <stop offset="100%" stop-color="#8B5CF6" /> <!-- Ungu -->
+                </linearGradient>
             </defs>
-            <path stroke="url(#icon-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z" />
+            <path
+                d="M10.7907 7.5L11.5257 6.765C11.7823 6.50833 12.109 6.36833 12.4648 6.33333V5.75L8.96484 2.25H3.13151C2.48401 2.25 1.96484 2.76917 1.96484 3.41667V11.5833C1.96484 11.8928 2.08776 12.1895 2.30655 12.4083C2.52534 12.6271 2.82209 12.75 3.13151 12.75H6.63151V11.6592L6.70734 11.5833H3.13151V3.41667H7.21484V7.5H10.7907ZM8.38151 3.125L11.5898 6.33333H8.38151V3.125ZM11.374 8.5675L12.564 9.7575L8.98818 13.3333H7.79818V12.1433L11.374 8.5675ZM13.544 8.7775L12.9723 9.34917L11.7823 8.15917L12.354 7.5875C12.4648 7.47083 12.6573 7.47083 12.774 7.5875L13.544 8.3575C13.6607 8.47417 13.6607 8.66667 13.544 8.7775Z"
+            />
         </svg>
-        <p class="ms-2 text-xl font-bold text-black">MAPA.01</p>
+        <p class="ms-2 text-xl font-bold bg-gradient-to-r from-biru to-ungu text-transparent bg-clip-text">Formulir Merencanakan Aktivitas dan Proses Asesmen 01</p>
     </div>
     <div id="breadcrumbs" class="hidden pb-4 px-6">
         <!-- Breadcrumb -->
@@ -51,7 +52,7 @@
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
     </div>
-    <div id="frameAK01" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
+    <div id="frameMAPA01" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir MAPA.01 Merencanakan Aktifitas & Proses Asesmen</p>
         <!-- Search Form -->
         <form id="searchMAPA01" class="max-w-md mb-4 rounded-xl">
@@ -102,6 +103,9 @@
                                 <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
                                 </svg>
+                                <svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                                </svg>
                             </div>
                         </td>
                     </tr>
@@ -109,8 +113,6 @@
             </table>
         </div>
         <div id="detailMAPA01" class="hidden pt-0 p-4 text-black">
-
-            <!-- Input Formulir APL.02 -->
             <div id="FRMAPA01" class="p-4 space-y-6">
                 <div class="max-w-full space-y-1">
                     <div class="flex">
@@ -159,82 +161,327 @@
             </div>
 
             <!-- Checklist Hasil Pengumpulan -->
-            <div class="p-4">
-                <p class="block mb-2 text-xl font-bold text-sidebar_font">
+            <div class="px-4 pb-16">
+                <p class="block mb-4 text-xl font-bold text-sidebar_font">
                     1. Pendekatan Asesmen
                 </p>
-                <div class="w-max-full flex flex-row flex-wrap border border-border_input rounded-md py-4 px-8 space-y-2" required>
-                    <div class="flex items-center me-8">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm">
-                        <label for="default-checkbox" class="ms-2 text-sm font-medium text-sidebar_font">Hasil yang Dikumpulkan</label>
-                    </div>
-                    <div class="flex items-center me-8">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm">
-                        <label for="default-checkbox" class="ms-2 text-sm font-medium text-sidebar_font">Hasil yang Dikumpulkan</label>
-                    </div>
-                    <div class="flex items-center me-8">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm">
-                        <label for="default-checkbox" class="ms-2 text-sm font-medium text-sidebar_font">Hasil yang Dikumpulkan</label>
-                    </div>
-                    <div class="flex items-center me-8">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm">
-                        <label for="default-checkbox" class="ms-2 text-sm font-medium text-sidebar_font">Hasil yang Dikumpulkan</label>
-                    </div>
-                    <div class="flex items-center me-8">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm">
-                        <label for="default-checkbox" class="ms-2 text-sm font-medium text-sidebar_font">Hasil yang Dikumpulkan</label>
-                    </div>
-                    <div class="flex items-center me-8">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm">
-                        <label for="default-checkbox" class="ms-2 text-sm font-medium text-sidebar_font">Hasil yang Dikumpulkan</label>
-                    </div>
-                </div>
-                <div class="my-6">
-                    <label for="text" class="block font-medium text-sidebar_font">ASESI</label>
-                    <p id="pernyataanAsesi" type="text" class="peer text-sidebar_font block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0" placeholder="Masukkan Pernyataan Asesi" required>
-                        Bahwa saya telah mendapatkan penjelasan terkait hak dan prosedur banding asesmen dari asesor.
-                    </p>
-                </div>
-                <div class="my-6">
-                    <label for="text" class="block font-medium text-sidebar_font">ASESOR</label>
-                    <p id="pernyataanAsesi" type="text" class="peer text-sidebar_font block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0" placeholder="Masukkan Pernyataan Asesi" required>
-                        Bahwa saya telah mendapatkan penjelasan terkait hak dan prosedur banding asesmen dari asesor.
-                    </p>
-                </div>
-                <div class="my-6">
-                    <label for="text" class="block font-medium text-sidebar_font">ASESI</label>
-                    <p id="pernyataanAsesi" type="text" class="peer text-sidebar_font block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0" placeholder="Masukkan Pernyataan Asesi" required>
-                        Bahwa saya telah mendapatkan penjelasan terkait hak dan prosedur banding asesmen dari asesor.
-                    </p>
-                </div>
-            </div>
+                <div class="w-full border border-border rounded-md p-2 bg-white text-sm text-sidebar_font">
+                    <table id="pendekatanAsesMAPA01" class="min-w-full bg-white overflow-hidden border border-gray-200 rounded-lg text-sm text-gray-600">
+                        <thead class="bg-bg_dashboard text-center">
+                            <tr>
+                                <th class="px-4 py-2 text-center">No</th>
+                                <th class="px-4 py-2 text-center w-1/4">Pendekatan Asesmen</th>
+                                <th class="px-4 py-2 text-center">Opsi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 1. Asesi -->
+                            <tr class="align-middle border-b border-gray-200 col-span-4">
+                                <td class="px-4 py-2 font-semibold">1</td>
+                                <td class="px-4 py-2 font-semibold">Asesi</td>
+                                <td class="px-4 py-2 col-span-2">
+                                    <div id="clMAPA01no1" class="space-y-2">
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="asesi" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Hasil pelatihan dan/atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi</span>
+                                        </label>
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="asesi" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Pengalaman kerja di bidang terkait dengan kompetensi</span>
+                                        </label>
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="asesi" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Pelatihan non formal/mandiri</span>
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
 
-            <div class="my-6 px-4 space-y-6">
-                <!-- Tandatangan -->
-                <label for="tandaTanganAsesi" class="block mb-2 font-medium text-sidebar_font">Tanda Tangan</label>
-                <div class="flex flex-row justify-evenly">
-                    <!-- Tanda Tangan Asesi -->
-                    <div class="flex flex-col items-center justify-center">
-                        <p class="font-medium text-sidebar_font">16 Mei 2025</p>
-                        <img id="tandaTanganAsesi" src="{{ asset('images/contoh ttd.png') }}" alt="Tanda Tangan Asesi" class="w-60 h-40 border-b border-border_input">
-                        <p class="font-medium text-sidebar_font">Asesi</p>
-                        <p class="font-normal text-sidebar_font">Muhammad Rifai</p>
-                    </div>
-                    <!-- Tanda Tangan Asesor -->
-                    <div class="flex flex-col items-center justify-center">
-                        <p class="font-medium text-sidebar_font">16 Mei 2025</p>
-                        <img id="tandaTanganAsesor" src="{{ asset('images/contoh ttd.png') }}" alt="Tanda Tangan Asesi" class="w-60 h-40 border-b border-border_input">
-                        <p class="font-medium text-sidebar_font">Asesor</p>
-                        <p class="font-normal text-sidebar_font">Nafa Popcorn</p>
-                    </div>
-                </div>
+                            <!-- 2. Tujuan Asesmen -->
+                            <tr class="align-middle border-b border-gray-200 col-span-4">
+                                <td class="px-4 py-2 font-semibold">2</td>
+                                <td class="px-4 py-2 font-semibold">Tujuan Asesmen</td>
+                                <td class="px-4 py-2 col-span-2">
+                                    <div id="clMAPA01no2" class="space-y-2">
+                                        <label class="flex items-center space-x-2">
+                                            <input type="radio" name="tujuan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Sertifikasi</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="radio" name="tujuan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Sertifikasi Ulang</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="radio" name="tujuan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Pengakuan Kompetensi Terkini (PKT)</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="radio" name="tujuan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Rekognisi Pembelajaran Lampau (RPL)</span>
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
 
+                            <!-- 3. Konteks Asesmen -->
+                            <tr class="align-middle border-b border-gray-200 grid-rows-10 grid-cols-4">
+                                <td class="px-4 py-2 font-semibold">3</td>
+                                <td class="px-4 py-2 font-semibold">Konteks Asesmen</td>
+                                <td id="clMAPA01no3" class="px-4 py-2 font-normal">
+                                    <div id="clMAPA01Konteks1" class="grid grid-cols-2 items-center text-sidebar_font py-2 border-b border-border">
+                                        <!-- Kolom 1 (Teks Lingkungan) -->
+                                        <p class="self-center">Lingkungan</p>
+
+                                        <!-- Kolom 2 (Radio Buttons) -->
+                                        <div class="flex flex-col gap-y-1">
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="konteks" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Tempat Kerja Nyata</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="konteks" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Tempat Kerja Simulasi</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div id="clMAPA01Konteks2" class="grid grid-cols-2 items-center text-sidebar_font py-2 border-b border-border">
+                                        <!-- Kolom 1 (Teks Lingkungan) -->
+                                        <p class="self-center">Peluang untuk mengumpulkan bukti dalam sejumlah situasi</p>
+
+                                        <!-- Kolom 2 (Radio Buttons) -->
+                                        <div class="flex flex-col gap-y-1">
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="peluang" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Tersedia</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="peluang" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Terbatas</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div id="clMAPA01Konteks3" class="grid grid-cols-2 items-center text-sidebar_font py-2 border-b border-border">
+                                        <!-- Kolom 1 (Teks Lingkungan) -->
+                                        <p class="self-center">Hubungan antara standar kompetensi</p>
+
+                                        <!-- Kolom 2 (Radio Buttons) -->
+                                        <div class="flex flex-col gap-y-1">
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="hubungan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Bukti untuk mendukung asesmen / RPL </span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="hubungan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Aktivitas kerja di tempat kerja kandidat</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="hubungan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Kegiatan pembelajaran</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div id="clMAPA01Konteks4" class="grid grid-cols-2 items-center text-sidebar_font py-2">
+                                        <!-- Kolom 1 (Teks Lingkungan) -->
+                                        <p class="self-center">Siapa yang melakukan asesmen / RPL</p>
+
+                                        <!-- Kolom 2 (Radio Buttons) -->
+                                        <div class="flex flex-col gap-y-1">
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="siapa" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Lembaga Sertifikasi</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="siapa" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Organisasi pelatihan</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="siapa" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Asesor perusahaan</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- 4. Orang untuk konfirmasi -->
+                            <tr class="align-middle border-b border-gray-200 col-span-4">
+                                <td class="px-4 py-2 font-semibold">4</td>
+                                <td class="px-4 py-2 font-semibold">Orang yang relevan untuk di Konfirmasi</td>
+                                <td class="px-4 py-2 col-span-2">
+                                    <div id="clMAPA01no4" class="space-y-2">
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="orang" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Manajer sertifikasi LSP</span>
+                                        </label>
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="orang" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Master Assessor / Master Trainer / Asesor Utama Kompetensi</span>
+                                        </label>
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="orang" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Manajer pelatihan Lembaga Training terakreditasi / Lembaga Training terdaftar</span>
+                                        </label>
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="orang" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Lainnya : Manajemen sertifikasi LSP</span>
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- 5. Tolak Ukur Asesmen -->
+                            <tr class="align-middle col-span-4">
+                                <td class="px-4 py-2 font-semibold">5</td>
+                                <td class="px-4 py-2 font-semibold">Tolak Ukur Asesmen</td>
+                                <td class="px-4 py-2 col-span-2">
+                                    <div id="clMAPA01no5" class="space-y-2">
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="tolakukur" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Standar Kompetensi Kerja Nasional Indonesia (SKKNI)</span>
+                                        </label>
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="tolakukur" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Standar Khusus</span>
+                                        </label>
+                                        <label class="flex items-start space-x-2">
+                                            <input type="radio" name="tolakukur" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                            <span>Standar Internasional</span>
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <!-- Button Simpan -->
                 <div class="flex justify-end pe-4">
-                    <button id="simpanRekomendasi" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
-                        Saya Menyetujui
+                    <button id="simpanSetujui" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
+                        Simpan dan Setujui
                     </button>
                 </div>
+
+                <p class="block mt-8 mb-4 text-xl font-bold text-sidebar_font">
+                    2. Rencana Asesmen
+                </p>
+                <div class="w-full border border-border rounded-md p-2 bg-white text-sm text-sidebar_font">
+                    <table id="rencanaMAPA01" class="min-w-full bg-white overflow-hidden border border-border rounded-lg text-sm text-gray-600">
+                        <thead class="bg-bg_dashboard text-center">
+                            <!-- Header Baris Pertama -->
+                            <tr>
+                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">No</th>
+                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">Elemen</th>
+                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">Bukti-bukti(Kinerja, produk, Portfolio, dan / atau hafalan) diidentifikasi berdasarkan Elemen dan pendekatan asesmen</th>
+                                <th colspan="3" class="px-4 py-3 font-semibold border-b border-gray-200">Jenis Bukti</th>
+                                <th colspan="4" class="px-4 py-3 font-semibold border-b border-gray-200">Metode dan Perangkat Asesmen</th>
+                            </tr>
+                            <!-- Header Baris Kedua -->
+                            <tr>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">L</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">TL</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">T</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">Observasi Langsung</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">Kegiatan Terstruktur</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">Tanya Jawab</th>
+                                <th class="px-4 py-3 font-semibold border-b border-gray-200">Verifikasi Portofolio</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 text-center">
+                            <tr class="text-black">
+                                <td class="px-4 py-3">1</td>
+                                <td class="px-4 py-3 text-left">
+                                    <p>Ceklis Observasi Untuk Aktivitas di Tempat Kerja atau Tempat Kerja Simulasi</p>
+                                </td>
+                                <td class="px-4 py-3 text-left">
+                                    <p>Hasil Observasi Memproses dokumen kantor</p>
+                                </td>
+                                @for ($i = 0; $i < 3; $i++)
+                                    <td class="px-4 py-3">
+                                        <input id="disc-awal-{{ $i }}" type="radio" value="{{ $i }}" name="disc_awal"
+                                            class="w-4 h-4 text-biru bg-gray-100 border-border focus:ring-biru">
+                                    </td>
+                                @endfor
+                                @for ($i = 0; $i < 4; $i++)
+                                    <td class="px-4 py-3">
+                                        <input id="disc-lanjutan-{{ $i }}" type="radio" value="{{ $i }}" name="disc_lanjutan"
+                                            class="w-4 h-4 text-biru bg-gray-100 border-border focus:ring-biru">
+                                    </td>
+                                @endfor
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="block mt-8 mb-4 text-xl font-bold text-sidebar_font">
+                    3. Modifikasi dan Kontekstualisasi :
+                </p>
+                <form class="text-sidebar_font">
+                    <div class="mb-6">
+                        <label for="batasFisik" class="block mb-2 text-sm font-medium">3.1 Karakteristik kandidat (Keterbatasan fisik/Keterbatasan mental)</label>
+                        <input type="text" id="batasFisik" class="bg-white border border-border_input text-gray-900 text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2.5 placeholder-placeholder_input" placeholder="Tulis 'Tidak Ada' bila tidak terdapat keterbatadan fisik/mental" required />
+                    </div>
+                    <div class="mb-6">
+                        <label for="batasFisik" class="block mb-2 text-sm font-medium">3.2 Kebutuhan kontekstualisasi:</label>
+                        <input type="text" id="batasFisik" class="bg-white border border-border_input text-gray-900 text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2.5 placeholder-placeholder_input" placeholder="Tulis 'Tidak Ada' bila tidak ada kebutuhan kontekstualisasi" required />
+                    </div>
+                    <div class="mb-6">
+                        <label for="batasFisik" class="block mb-2 text-sm font-medium">3.3 Saran yang diberikan oleh paket pelatihan atau pengembang pelatihan</label>
+                        <input type="text" id="batasFisik" class="bg-white border border-border_input text-gray-900 text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2.5 placeholder-placeholder_input" placeholder="Tulis 'Tidak Ada' bila tidak ada saran" required />
+                    </div>
+                    <div class="mb-6">
+                        <label for="batasFisik" class="block mb-2 text-sm font-medium">3.4 Peluang untuk kegiatan asesmen terintegrasi dan mencatat setiap perubahan yang diperlukan untuk alat asesmen</label>
+                        <input type="text" id="batasFisik" class="bg-white border border-border_input text-gray-900 text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2.5 placeholder-placeholder_input" placeholder="Tulis 'Tidak Ada' bila tidak ada keterangan" required />
+                    </div>
+                </form>
+
+                <p class="block mt-8 mb-4 text-xl font-bold text-sidebar_font">
+                    4. Hasil
+                </p>
+                <div id="hasilMAPA01" class="space-y-4">
+                    <div class="max-w-full space-y-1">
+                        <div class="flex">
+                            <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -ms-px w-1/3">
+                                Hari / tanggal asesmen
+                            </span>
+                            <p id="tanggalAsesmen" type="text" class="peer text-sidebar_font py-1 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
+                            Rabu. 5 Maret 2025
+                            </p>
+                        </div>
+                        <div class="flex">
+                            <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                                Jam
+                            </span>
+                            <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-1 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
+                            19:30
+                            </p>
+                        </div>
+                        <div class="flex">
+                            <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                                Tempat Asesmen
+                            </span>
+                            <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-1 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
+                            TILC
+                            </p>
+                        </div>
+                    </div>
+                    <div class="max-w-full space-y-1">
+                        <div class="flex">
+                            <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font font-semibold -mt-px -ms-px w-1/3">
+                                Orang yang relevan untuk di Konfirmasi
+                            </span>
+                        </div>
+                        <div class="flex">
+                            <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                                Manajer Sertifikasi LSP
+                            </span>
+                            <p id="namaAsesor" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
+                                Nafa Popcorn
+                            </p>
+                        </div>
+                        
+                    </div>
+                </div>
+
             </div>
 
         </div>

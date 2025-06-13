@@ -3,7 +3,7 @@
 @section('title', 'Dashboard Asesi - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+<div class="min-h-screen bg-gradient-to-b from-blue-50 to-white py-24">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Welcome Header -->
 
@@ -22,7 +22,7 @@
               Detail Skema Sertifikasi
             </h2>
           </div>
-          
+
           <div class="p-6">
           @php
             $asesi = App\Models\Asesi::where('id_user', auth()->user()->id_user)->first();
@@ -31,7 +31,7 @@
             $event = $rincianAsesmen->event ?? null;
             $tuk = $event->tuk ?? null;
           @endphp
-            
+
             @if($skema)
               <div class="bg-blue-50 rounded-lg p-5 mb-6 shadow-sm border border-blue-100">
                 <h3 class="text-lg font-semibold text-blue-800 mb-4 border-b border-blue-200 pb-2">Informasi Skema</h3>
@@ -48,7 +48,7 @@
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
                     @if($event)
                     <div class="space-y-3">
@@ -98,11 +98,11 @@
                   </svg>
                   Unit Kompetensi
                 </h3>
-                
+
                 <div class="space-y-4">
                   @foreach($skema->unitKompetensi as $index => $uk)
                   <div class="border border-gray-200 rounded-lg overflow-hidden transition-all hover:border-blue-300 hover:shadow-sm">
-                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-5 py-4 flex justify-between items-center cursor-pointer" 
+                    <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-5 py-4 flex justify-between items-center cursor-pointer"
                          onclick="toggleElemen('unit-{{ $uk->id_uk }}')" aria-expanded="false" aria-controls="unit-{{ $uk->id_uk }}">
                       <div class="flex items-start space-x-3">
                         <div class="flex-shrink-0 bg-blue-600 text-white rounded-full h-8 w-8 flex items-center justify-center font-semibold text-sm">
@@ -170,24 +170,24 @@
                 Progres Asesmen
               </h2>
             </div>
-            
+
             <div class="p-6">
               <!-- Progress Steps Navigator -->
               <div class="mb-8 hidden sm:flex justify-between items-center">
                 @php
                   $progresAsesmen = App\Models\ProgresAsesmen::where('id_asesi', $asesi->id_asesi ?? null)->first();
-                  
+
                   // Define steps and their corresponding fields in ProgresAsesmen model
                   $steps = [
                     ['id' => 1, 'name' => 'Pendaftaran', 'fields' => ['apl1', 'apl02', 'ak01']],
                     ['id' => 2, 'name' => 'Prauji', 'fields' => ['konsultasi_pra_uji', 'ia01', 'ia02']],
                     ['id' => 3, 'name' => 'Pasca Uji', 'fields' => ['ia07']]
                   ];
-                  
+
                   // Function to check if a step is completed or active
                   $isStepCompleted = function($step) use ($progresAsesmen) {
                     if (!$progresAsesmen) return false;
-                    
+
                     $completed = true;
                     foreach ($step['fields'] as $field) {
                       if (empty($progresAsesmen->$field)) {
@@ -197,7 +197,7 @@
                     }
                     return $completed;
                   };
-                  
+
                   // Determine the current active step
                   $activeStep = 1;
                   foreach ($steps as $index => $step) {
@@ -209,13 +209,13 @@
                   }
                   $activeStep = min($activeStep, count($steps)); // Don't exceed total steps
                 @endphp
-                
+
                 @foreach($steps as $index => $step)
                   <div class="flex items-center space-x-2">
                     <div class="w-8 h-8 rounded-full {{ $index + 1 <= $activeStep ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700' }} flex items-center justify-center">{{ $step['id'] }}</div>
                     <span class="font-medium {{ $index + 1 <= $activeStep ? 'text-indigo-600' : 'text-gray-700' }}">{{ $step['name'] }}</span>
                   </div>
-                  
+
                   @if($index < count($steps) - 1)
                     <div class="h-0.5 w-24 bg-gray-200 relative">
                       <div class="absolute inset-0 bg-indigo-600" style="width: {{ $index + 1 < $activeStep ? '100%' : ($index + 1 == $activeStep ? '50%' : '0%') }}"></div>
@@ -223,7 +223,7 @@
                   @endif
                 @endforeach
               </div>
-              
+
               <!-- Formulir Pendaftaran -->
               <div class="mb-8">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -259,7 +259,7 @@
                             $fieldName = 'ak01';
                             $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
                           @endphp
-                          
+
                           @if($isCompleted)
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                               <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -304,7 +304,7 @@
                             $fieldName = 'apl01';
                             $isCompleted = $progresAsesmen && $progresAsesmen->apl01 == true;
                           @endphp
-                          
+
                           @if($isCompleted)
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                               <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -349,7 +349,7 @@
                             $fieldName = 'apl02';
                             $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
                           @endphp
-                          
+
                           @if($isCompleted)
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                               <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -379,7 +379,7 @@
                   </table>
                 </div>
               </div>
-              
+
               <!-- Formulir Prauji -->
               <div class="mb-8">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -415,7 +415,7 @@
                             $fieldName = 'konsultasi_pra_uji';
                             $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
                           @endphp
-                          
+
                           @if($isCompleted)
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                               <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -460,7 +460,7 @@
                             $fieldName = 'ia02';
                             $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
                           @endphp
-                          
+
                           @if($isCompleted)
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                               <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -505,7 +505,7 @@
                             $fieldName = 'ia02';
                             $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
                           @endphp
-                          
+
                           @if($isCompleted)
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                               <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -535,7 +535,7 @@
                   </table>
                 </div>
               </div>
-              
+
               <!-- Pasca Uji -->
               <div>
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -571,7 +571,7 @@
                             $fieldName = 'umpan_balik';
                             $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
                           @endphp
-                          
+
                           @if($isCompleted)
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                               <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -616,7 +616,7 @@
                             $fieldName = 'ak04';
                             $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
                           @endphp
-                          
+
                           @if($isCompleted)
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                               <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -650,7 +650,7 @@
           </section>
         @endif
       </div>
-      
+
       <!-- Right Column: Detail Asesor -->
       <div class="xl:col-span-4">
         <div class="bg-white rounded-xl shadow-sm overflow-hidden transition-all hover:shadow-md sticky top-8">
@@ -662,13 +662,13 @@
               Detail Asesor
             </h2>
           </div>
-          
+
           <div class="p-6">
             @php
               $rincianAsesmen = App\Models\RincianAsesmen::where('id_asesi', App\Models\Asesi::where('id_user', auth()->user()->id_user)->first()->id_asesi ?? null)->first();
               $asesor = $rincianAsesmen->asesor ?? null;
             @endphp
-            
+
             @if($asesor)
               <div class="flex flex-col items-center mb-6">
                 <div class="h-24 w-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden mb-3 ring-4 ring-green-100">
@@ -680,7 +680,7 @@
                 <p class="text-sm text-gray-600 bg-green-50 px-3 py-1 rounded-full mt-1">Asesor Kompetensi</p>
                 <p class="text-xs text-gray-500 mt-2">No. Registrasi: {{ $asesor->kode_registrasi }}</p>
               </div>
-              
+
               <div class="bg-gray-50 rounded-lg px-5 py-4 mb-6">
                 <h4 class="text-sm font-medium text-gray-700 mb-3 border-b border-gray-200 pb-2">Informasi Kontak</h4>
                 <div class="space-y-4">
@@ -695,7 +695,7 @@
                       <p class="text-sm font-medium text-gray-900">{{ $asesor->email }}</p>
                     </div>
                   </div>
-                  
+
                   @if($asesor->no_hp)
                   <div class="flex items-start">
                     <div class="flex-shrink-0 bg-white p-1.5 rounded-full shadow-sm">
@@ -709,7 +709,7 @@
                     </div>
                   </div>
                   @endif
-                  
+
                   @if($asesor->institusi_asal)
                   <div class="flex items-start">
                     <div class="flex-shrink-0 bg-white p-1.5 rounded-full shadow-sm">
@@ -725,7 +725,7 @@
                   @endif
                 </div>
               </div>
-              
+
               <div class="space-y-4">
                 <a href="mailto:{{ $asesor->email }}" class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all">
                   <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -733,7 +733,7 @@
                   </svg>
                   Hubungi via Email
                 </a>
-                
+
                 @if($asesor->no_hp)
                 <a href="tel:{{ $asesor->no_hp }}" class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-green-600 rounded-lg shadow-sm text-sm font-medium text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all">
                   <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -765,7 +765,7 @@
   function toggleElemen(id) {
     const element = document.getElementById(id);
     const chevron = document.getElementById('chevron-' + id);
-    
+
     if (element.classList.contains('hidden')) {
       element.classList.remove('hidden');
       chevron.classList.add('rotate-180');

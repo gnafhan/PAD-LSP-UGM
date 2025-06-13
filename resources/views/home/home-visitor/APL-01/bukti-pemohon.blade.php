@@ -3,7 +3,7 @@
 @section('title', 'Bukti Kelengkapan - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+<div class="bg-gray-100 min-h-screen py-32 px-4 sm:px-6 lg:px-8">
     <div class="bg-white rounded-xl shadow-xl max-w-4xl mx-auto overflow-hidden">
         <!-- Header Section -->
         <div class="bg-blue-600 px-6 py-4">
@@ -104,7 +104,7 @@
         <div class="p-8">
             <form id="bukti-kelengkapan-form" method="POST" action="{{ route('user.apl1.save.bukti') }}" enctype="multipart/form-data">
                 @csrf
-                
+
                 <!-- Section: Bukti Kelengkapan Pemohon -->
                 <div class="mb-8">
                     <div class="flex items-center mb-4">
@@ -115,7 +115,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800">Bukti Kelengkapan Pemohon</h3>
                     </div>
-                    
+
                     <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 ml-11">
                         <div class="flex">
                             <div class="flex-shrink-0">
@@ -146,9 +146,9 @@
                             </div>
                             <h3 class="text-lg font-semibold text-gray-800">Bukti Persyaratan Dasar Pemohon</h3>
                         </div>
-                        
+
                         <p class="text-sm text-gray-500 mb-4 ml-11">Unggah semua file dalam bentuk PDF dengan ukuran maksimal 2MB per file.</p>
-                        
+
                         <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm ml-11">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
@@ -240,7 +240,7 @@
                             </table>
                         </div>
                     </div>
-                    
+
                     <!-- Section: Bukti Administratif -->
                     <div class="mb-8">
                         <div class="flex items-center mb-4">
@@ -251,9 +251,9 @@
                             </div>
                             <h3 class="text-lg font-semibold text-gray-800">Bukti Administratif</h3>
                         </div>
-                        
+
                         <p class="text-sm text-gray-500 mb-4 ml-11">Dokumen administratif wajib dilengkapi.</p>
-                        
+
                         <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm ml-11">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
@@ -305,7 +305,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="mt-4 ml-11 bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-100">
                             <div class="flex items-start">
                                 <div class="flex-shrink-0">
@@ -322,7 +322,7 @@
                 </div>
             </form>
         </div>
-        
+
         <!-- Footer Action Buttons -->
         <div class="bg-gray-50 px-6 py-4 flex justify-between">
             <a href="{{ route('user.apl1.sertifikasi') }}" class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors flex items-center">
@@ -331,7 +331,7 @@
                 </svg>
                 Kembali
             </a>
-            
+
             <button type="button" id="btn-selanjutnya" class="px-4 py-2 rounded-md border border-transparent text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors flex items-center">
                 <span id="button-text">Simpan & Lanjutkan</span>
                 <span id="button-loading" class="hidden ml-1">
@@ -369,7 +369,7 @@
                     // Check file size (max 2MB)
                     const fileSize = this.files[0].size / 1024 / 1024; // in MB
                     const maxSize = this.accept.includes('image') ? 1 : 2; // 1MB for images, 2MB for PDFs
-                    
+
                     if (fileSize > maxSize) {
                         Swal.fire({
                             icon: 'error',
@@ -380,7 +380,7 @@
                         this.value = ''; // Reset file input
                         return;
                     }
-                    
+
                     // Add a checkmark or some visual indicator that file is selected
                     const parent = this.closest('td');
                     if (parent) {
@@ -410,31 +410,31 @@
     // Form submission handler
     document.getElementById('btn-selanjutnya').addEventListener('click', function(event) {
         event.preventDefault();
-        
+
         // Show loading state
         const buttonText = document.getElementById('button-text');
         const buttonLoading = document.getElementById('button-loading');
-        
+
         buttonText.textContent = 'Mengunggah...';
         buttonLoading.classList.remove('hidden');
         this.disabled = true;
-        
+
         // Definisi semua jenis dokumen yang perlu diperiksa
         const documentTypes = [
-            'bukti_ktp', 
-            'bukti_foto', 
+            'bukti_ktp',
+            'bukti_foto',
             'bukti_jenjang_siswa',
-            'bukti_transkrip', 
-            'bukti_pengalaman_kerja', 
+            'bukti_transkrip',
+            'bukti_pengalaman_kerja',
             'bukti_magang'
         ];
-        
+
         // Menyimpan status dokumen wajib (KTP)
         let ktpExists = false;
-        
+
         // Menyimpan status apakah ada dokumen yang dipilih/diupload
         let anyDocumentExists = false;
-        
+
         // Periksa setiap jenis dokumen
         documentTypes.forEach(docType => {
             // Periksa jika ada file baru yang diupload
@@ -445,7 +445,7 @@
                     ktpExists = true;
                 }
             }
-            
+
             // Periksa jika sudah ada file yang diupload sebelumnya
             const inputCell = input ? input.closest('td') : null;
             if (inputCell && inputCell.querySelector('.file-selected-indicator')) {
@@ -455,14 +455,14 @@
                 }
             }
         });
-        
+
         // Jika tidak ada dokumen sama sekali
         if (!anyDocumentExists) {
             // Reset button state
             buttonText.textContent = 'Simpan & Lanjutkan';
             buttonLoading.classList.add('hidden');
             this.disabled = false;
-            
+
             Swal.fire({
                 icon: 'warning',
                 title: 'Formulir Belum Lengkap',
@@ -471,14 +471,14 @@
             });
             return;
         }
-        
+
         // Khusus untuk KTP (dokumen wajib)
         if (!ktpExists) {
             // Reset button state
             buttonText.textContent = 'Simpan & Lanjutkan';
             buttonLoading.classList.add('hidden');
             this.disabled = false;
-            
+
             Swal.fire({
                 icon: 'warning',
                 title: 'Dokumen Wajib',
@@ -487,7 +487,7 @@
             });
             return;
         }
-        
+
         // Submit the form
         document.getElementById('bukti-kelengkapan-form').submit();
         });

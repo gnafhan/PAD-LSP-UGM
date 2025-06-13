@@ -3,7 +3,7 @@
 @section('title', 'Home - Asesor')
 
 @section('content')
-<div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
+<div id="backFrame" class="lg:pt-[88px] lg:pb-80 lg:px-16 md:bg-bg_dashboard lg:ml-64">
     <div id="judulPage" class="relative z-10 flex items-center mb-4 ms-4">
         <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none">
             <defs>
@@ -23,20 +23,21 @@
     <div id="frameHomeAsesor" class="relative z-10 p-8 border border-border bg-white rounded-2xl">
         <p class="pb-3 text-lg font-medium text-black">Profile</p>
         <div class="flex justify-between py-6 px-8 mb-4 bg-bg_dashboard border border-border rounded-2xl">
-            <div class="flex items-center p-3 gap-2 rounded-full border border-border bg-white">
+            <div class="flex w-fit items-center p-3 gap-2 rounded-full border border-border bg-white">
                 <img id="profilePicture" src="{{ asset('images/image 48.png') }}" alt="Profile Picture" class="m-2 w-24 h-24 rounded-full">
-                <div class="font-medium text-black pe-4">
+                <div class="font-medium text-black pe-4 ">
                     <p>Nafa Popcorn Ayuwati</p>
                     <div class="text-sm font-light text-font_desc">asesor@mail.ugm.ac.id</div>
                 </div>
             </div>
-            <div class="flex w-36 items-center justify-center p-2 rounded-2xl border border-border bg-white">
-                <div class="px-2 text-font_selesai justify-items-center items-center text-black">
-                    <p class="text-4xl font-semibold">5</p>
-                    <p class="font-medium text-center">Kompetensi Teknis</p>
-                </div>
-            </div>
+
             <div class="flex gap-4 my-4">
+                <div class="flex w-36 items-center justify-center mx-6 p-2 rounded-2xl border border-border bg-white">
+                    <div class="px-2 text-font_selesai justify-items-center items-center text-black">
+                        <p class="text-4xl font-semibold">5</p>
+                        <p class="font-medium text-center">Kompetensi Teknis</p>
+                    </div>
+                </div>
                 <div class="flex w-32 items-center justify-center p-2 rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(139,92,246,0.15)]">
                   <div class="px-2 text-font_selesai justify-items-center items-center text-font_status">
                     <p class="text-4xl font-medium">100</p>

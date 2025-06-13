@@ -3,7 +3,7 @@
 @section('title', 'Data Pribadi Pemohon - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+<div class="bg-gray-100 min-h-screen py-32 px-4 sm:px-6 lg:px-8">
     <div class="bg-white rounded-xl shadow-xl max-w-4xl mx-auto overflow-hidden">
         <!-- Header Section -->
         <div class="bg-blue-600 px-6 py-4">
@@ -52,7 +52,7 @@
                     </div>
                 </div>
             @endif
-            
+
             <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
                 <div class="flex">
                     <div class="flex-shrink-0">
@@ -73,7 +73,7 @@
         <div class="p-8">
             <form id="data-pribadi-form">
                 @csrf
-                
+
                 <!-- Section: Data Pribadi -->
                 <div class="mb-8">
                     <div class="flex items-center mb-4">
@@ -84,31 +84,31 @@
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800">Data Pribadi</h3>
                     </div>
-                    
+
                     <p class="text-sm text-gray-600 mb-6 pl-11">Pada bagian ini, cantumkan data pribadi Anda dengan lengkap dan akurat.</p>
-                    
+
                     <div class="bg-gray-50 p-6 rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="nama_user" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
                                 <input type="text" id="nama_user" name="nama_user" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->nama_user ?? old('nama_user') }}" placeholder="Masukkan nama lengkap">
                             </div>
-                            
+
                             <div>
                                 <label for="nik" class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
                                 <input type="text" id="nik" name="nik" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->nik ?? old('nik') }}" placeholder="Masukkan 16 digit NIK">
                             </div>
-                            
+
                             <div>
                                 <label for="nim" class="block text-sm font-medium text-gray-700 mb-1">NIM</label>
                                 <input type="text" id="nim" name="nim" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->nim ?? old('nim') }}" placeholder="Masukkan NIM">
                             </div>
-                            
+
                             <div>
                                 <label for="tempat_tanggal_lahir" class="block text-sm font-medium text-gray-700 mb-1">Tempat & Tanggal Lahir</label>
                                 <input type="text" id="tempat_tanggal_lahir" name="tempat_tanggal_lahir" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->tempat_tanggal_lahir ?? old('tempat_tanggal_lahir') }}" placeholder="Contoh: Yogyakarta, 01 Januari 2000">
                             </div>
-                            
+
                             <div>
                                 <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
                                 <select id="jenis_kelamin" name="jenis_kelamin" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
@@ -117,27 +117,27 @@
                                     <option value="Wanita" {{ ($pengajuan->jenis_kelamin ?? old('jenis_kelamin')) == 'Wanita' ? 'selected' : '' }}>Wanita</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label for="kebangsaan" class="block text-sm font-medium text-gray-700 mb-1">Kebangsaan</label>
                                 <input type="text" id="kebangsaan" name="kebangsaan" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->kebangsaan ?? old('kebangsaan', 'Indonesia') }}" placeholder="Masukkan kebangsaan">
                             </div>
-                            
+
                             <div class="md:col-span-2">
                                 <label for="alamat_rumah" class="block text-sm font-medium text-gray-700 mb-1">Alamat Rumah</label>
                                 <input type="text" id="alamat_rumah" name="alamat_rumah" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->alamat_rumah ?? old('alamat_rumah') }}" placeholder="Masukkan alamat lengkap">
                             </div>
-                            
+
                             <div>
                                 <label for="kota_domisili" class="block text-sm font-medium text-gray-700 mb-1">Kota Domisili</label>
                                 <input type="text" id="kota_domisili" name="kota_domisili" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->kota_domisili ?? old('kota_domisili') }}" placeholder="Masukkan kota domisili">
                             </div>
-                            
+
                             <div>
                                 <label for="no_telp" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
                                 <input type="text" id="no_telp" name="no_telp" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->no_telp ?? old('no_telp') }}" placeholder="Contoh: 081234567890">
                             </div>
-                            
+
                             <div>
                                 <label for="pendidikan_terakhir" class="block text-sm font-medium text-gray-700 mb-1">Pendidikan Terakhir</label>
                                 <input type="text" id="pendidikan_terakhir" name="pendidikan_terakhir" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->pendidikan_terakhir ?? old('pendidikan_terakhir') }}" placeholder="Contoh: S1 Teknik Informatika">
@@ -145,7 +145,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Section: Data Pekerjaan -->
                 <div class="mb-8">
                     <div class="flex items-center mb-4">
@@ -156,9 +156,9 @@
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800">Data Pekerjaan</h3>
                     </div>
-                    
+
                     <p class="text-sm text-gray-600 mb-6 pl-11">Lengkapi informasi tentang pekerjaan Anda saat ini.</p>
-                    
+
                     <div class="bg-gray-50 p-6 rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
@@ -169,28 +169,28 @@
                                     <option value="Tidak Bekerja" {{ ($pengajuan->status_pekerjaan ?? old('status_pekerjaan')) == 'Tidak Bekerja' ? 'selected' : '' }}>Tidak Bekerja</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label for="nama_perusahaan" class="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan/Institusi</label>
                                 <input type="text" id="nama_perusahaan" name="nama_perusahaan" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->nama_perusahaan ?? old('nama_perusahaan') }}" placeholder="Masukkan nama perusahaan">
                             </div>
-                            
+
                             <div>
                                 <label for="jabatan" class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
                                 <input type="text" id="jabatan" name="jabatan" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->jabatan ?? old('jabatan') }}" placeholder="Masukkan jabatan">
                             </div>
-                            
+
                             <div>
                                 <label for="no_telp_perusahaan" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon Perusahaan</label>
                                 <input type="text" id="no_telp_perusahaan" name="no_telp_perusahaan" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->no_telp_perusahaan ?? old('no_telp_perusahaan') }}" placeholder="Contoh: 021-7654321">
                             </div>
-                            
+
                             <div class="md:col-span-2">
                                 <label for="alamat_perusahaan" class="block text-sm font-medium text-gray-700 mb-1">Alamat Perusahaan</label>
                                 <input type="text" id="alamat_perusahaan" name="alamat_perusahaan" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->alamat_perusahaan ?? old('alamat_perusahaan') }}" placeholder="Masukkan alamat perusahaan">
                             </div>
                         </div>
-                        
+
                         <div class="mt-4 text-xs text-gray-500">
                             <p class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -203,7 +203,7 @@
                 </div>
             </form>
         </div>
-        
+
         <!-- Footer Action Buttons -->
         <div class="bg-gray-50 px-6 py-4 flex justify-between">
             <a href="javascript:history.back()" class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors flex items-center">
@@ -212,7 +212,7 @@
                 </svg>
                 Kembali
             </a>
-            
+
             <button type="button" id="btn-selanjutnya" class="px-4 py-2 rounded-md border border-transparent text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors flex items-center">
                 <span id="button-text">Simpan & Lanjutkan</span>
                 <span id="button-loading" class="hidden ml-1">
@@ -244,25 +244,25 @@
         // Toggle employment fields based on status
         const statusPekerjaan = document.getElementById('status_pekerjaan');
         const employmentFields = ['nama_perusahaan', 'jabatan', 'alamat_perusahaan', 'no_telp_perusahaan'];
-        
+
         function toggleEmploymentFields() {
             const isWorking = statusPekerjaan.value === 'Bekerja';
-            
+
             employmentFields.forEach(field => {
                 const fieldElement = document.getElementById(field);
                 const fieldContainer = fieldElement.closest('div');
-                
+
                 if (!isWorking) {
                     fieldElement.value = '';
                 }
-                
+
                 fieldElement.disabled = !isWorking;
                 fieldContainer.style.opacity = isWorking ? '1' : '0.5';
             });
         }
-        
+
         statusPekerjaan.addEventListener('change', toggleEmploymentFields);
-        
+
         // Initial toggle if value is set
         if (statusPekerjaan.value) {
             toggleEmploymentFields();
@@ -279,11 +279,11 @@
             // Show loading state
             const buttonText = document.getElementById('button-text');
             const buttonLoading = document.getElementById('button-loading');
-            
+
             buttonText.textContent = 'Menyimpan...';
             buttonLoading.classList.remove('hidden');
             document.getElementById('btn-selanjutnya').disabled = true;
-            
+
             // Get form data
             const formData = {
                 _token: '{{ csrf_token() }}',
@@ -310,7 +310,7 @@
                 data: formData,
                 success: function(response) {
                     console.log('Data pribadi tersimpan:', response);
-                    
+
                     Swal.fire({
                         icon: 'success',
                         title: 'Data Tersimpan!',
@@ -325,7 +325,7 @@
                     buttonText.textContent = 'Simpan & Lanjutkan';
                     buttonLoading.classList.add('hidden');
                     document.getElementById('btn-selanjutnya').disabled = false;
-                    
+
                     // Handle validation errors
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON.errors;
@@ -334,20 +334,20 @@
                         errorHtml += '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>';
                         errorHtml += '<p class="text-sm text-red-700 font-medium">Periksa kembali data yang Anda masukkan:</p>';
                         errorHtml += '</div><ul class="mt-2 text-sm text-red-700 pl-6 list-disc">';
-                        
+
                         Object.keys(errors).forEach(key => {
                             // Highlight error fields
                             $(`#${key}`).addClass('border-red-500 bg-red-50');
-                            
+
                             errors[key].forEach(message => {
                                 errorHtml += `<li>${message}</li>`;
                             });
                         });
-                        
+
                         errorHtml += '</ul></div>';
-                        
+
                         $('#message').html(errorHtml);
-                        
+
                         // Scroll to error message
                         $('html, body').animate({
                             scrollTop: $('#message').offset().top - 100
@@ -364,7 +364,7 @@
                 }
             });
         }
-        
+
         // Remove error highlighting when field is edited
         $('input, select').on('input change', function() {
             $(this).removeClass('border-red-500 bg-red-50');

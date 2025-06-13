@@ -23,7 +23,7 @@ class DataAsesorController extends Controller
 
     /**
      * Update biodata asesor
-     * 
+     *
      * @OA\Post(
      *     path="/asesor/biodata/{id}",
      *     summary="Update data asesor",
@@ -38,14 +38,14 @@ class DataAsesorController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\MediaType( 
+     *         @OA\MediaType(
      *             mediaType="multipart/form-data",
-     *             @OA\Schema( 
+     *             @OA\Schema(
      *                 required={"_method", "nama_asesor", "no_sertifikat", "no_hp", "alamat", "no_ktp",
      *                           "jenis_kelamin", "kebangsaan", "no_met", "kode_pos"},
      *                 @OA\Property(
-     *                     property="_method", 
-     *                     type="string", 
+     *                     property="_method",
+     *                     type="string",
      *                     default="PUT",
      *                     description="Method spoofing untuk Laravel"
      *                 ),
@@ -65,15 +65,15 @@ class DataAsesorController extends Controller
      *                     type="file",
      *                     format="binary"
      *                 ),
-     *                 @OA\Property( 
+     *                 @OA\Property(
      *                     property="foto_asesor",
      *                     description="Foto asesor",
      *                     type="file",
      *                     format="binary"
-     *                 ) 
-     *             ) 
-     *         ) 
-     *     ), 
+     *                 )
+     *             )
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Data asesor berhasil diupdate",
@@ -100,7 +100,7 @@ class DataAsesorController extends Controller
      *             @OA\Property(property="errors", type="object")
      *         )
      *     )
-     * ) 
+     * )
      */
     public function update_biodata(Request $request, string $id)
     {
@@ -184,7 +184,7 @@ class DataAsesorController extends Controller
                 // Simpan tanda tangan baru
                 $fileTandaTangan = $request->file('tanda_tangan');
                 $pathTandaTangan = $fileTandaTangan->store('tanda_tangan', 'public');
-                
+
                 TandaTanganAsesor::create([
                     'id_asesor' => $id,
                     'file_tanda_tangan' => basename($pathTandaTangan),
@@ -193,11 +193,11 @@ class DataAsesorController extends Controller
             }
 
             DB::commit();
-            
+
             // Load asesor dengan tanda tangan aktif
             $asesor->refresh();
             $asesor->load('tandaTanganAktif');
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data Asesor berhasil diupdate',
@@ -216,7 +216,7 @@ class DataAsesorController extends Controller
 
     /**
      * Show biodata asesor
-     * 
+     *
      * @OA\Get(
      *     path="/asesor/biodata/{id}",
      *     summary="Mendapatkan data biodata asesor",
@@ -236,7 +236,7 @@ class DataAsesorController extends Controller
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="Data Asesor ditemukan"),
      *             @OA\Property(
-     *                 property="data", 
+     *                 property="data",
      *                 type="object",
      *             )
      *         )
@@ -260,7 +260,7 @@ class DataAsesorController extends Controller
                 'message' => 'Data Asesor tidak ditemukan'
             ], 404);
         }
-        
+
         // Accessor for daftar_bidang_kompetensi will automatically convert IDs to names
         // when $asesor is serialized to JSON.
         // The tandaTanganAktif relation also needs its file_url if present.
@@ -268,7 +268,7 @@ class DataAsesorController extends Controller
             $tandaTangan = $asesor->tandaTanganAktif->first();
             $asesor->file_url_tanda_tangan = asset('storage/tanda_tangan/' . $tandaTangan->file_tanda_tangan);
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Data Asesor ditemukan',
@@ -278,7 +278,7 @@ class DataAsesorController extends Controller
 
     /**
      * Get data asesor for dashboard page
-     * 
+     *
      * @OA\Get(
      *     path="/asesor/dashboard/{id}",
      *     summary="Mendapatkan data dashboard asesor",
@@ -297,7 +297,7 @@ class DataAsesorController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="Data Asesor ditemukan"),
-     *             @OA\Property(property="data", type="object", 
+     *             @OA\Property(property="data", type="object",
      *                  @OA\Property(property="nama_asesor", type="string", example="John Doe"),
      *                  @OA\Property(property="email_asesor", type="string", example="john@example.com"),
      *                  @OA\Property(property="jumlah_asesi", type="integer", example=10),

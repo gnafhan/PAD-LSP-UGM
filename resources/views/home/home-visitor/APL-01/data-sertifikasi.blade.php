@@ -3,7 +3,7 @@
 @section('title', 'Data Sertifikasi - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+<div class="bg-gray-100 min-h-screen py-32 px-4 sm:px-6 lg:px-8">
     <div class="bg-white rounded-xl shadow-xl max-w-4xl mx-auto overflow-hidden">
         <!-- Header Section -->
         <div class="bg-blue-600 px-6 py-4">
@@ -84,13 +84,13 @@
                     </div>
                     <h3 class="text-lg font-semibold text-gray-800">Data Sertifikasi</h3>
                 </div>
-                
+
                 <p class="text-sm text-gray-600 mb-6 pl-11">Tuliskan Judul dan Nomor Skema Sertifikasi, Tujuan Asesmen serta Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi yang Anda ajukan.</p>
             </div>
 
             <form id="sertifikasiForm" method="POST" action="{{ route('user.apl1.save.data.sertifikasi') }}">
                 @csrf
-                
+
                 <!-- Certification Details -->
                 <div class="bg-gray-50 p-6 rounded-lg mb-8 border border-gray-100 shadow-sm">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -159,7 +159,7 @@
                                 <option value="lainnya" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                         </div>
-                        
+
                     </div>
                 </div>
 
@@ -173,9 +173,9 @@
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800">Daftar Unit Kompetensi</h3>
                     </div>
-                    
+
                     <p class="text-sm text-gray-600 mb-4 pl-11">Unit kompetensi akan otomatis muncul setelah memilih skema sertifikasi.</p>
-                    
+
                     <div class="bg-white overflow-hidden border border-gray-200 rounded-lg shadow-sm">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
@@ -202,7 +202,7 @@
                             </table>
                         </div>
                     </div>
-                    
+
                     <div id="empty-uk-message" class="hidden mt-3 text-sm text-gray-500 pl-11">
                         <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 mr-1 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -212,7 +212,7 @@
                 </div>
             </form>
         </div>
-        
+
         <!-- Footer Action Buttons -->
         <div class="bg-gray-50 px-6 py-4 flex justify-between">
             <a href="{{ route('user.apl1.pribadi') }}" class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors flex items-center">
@@ -221,7 +221,7 @@
                 </svg>
                 Kembali
             </a>
-            
+
             <button type="button" id="btn-selanjutnya" class="px-4 py-2 rounded-md border border-transparent text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors flex items-center">
                 <span id="button-text">Simpan & Lanjutkan</span>
                 <span id="button-loading" class="hidden ml-1">
@@ -272,7 +272,7 @@
                     </td>
                 </tr>
             `);
-            
+
             // AJAX untuk mendapatkan daftar UK berdasarkan skema
             $.get('/user/apl1/get-daftar-uk', { id_skema: idSkema }, function(response) {
                 $('#ukTableBody').empty();
@@ -326,7 +326,7 @@
             input.addEventListener('focus', function() {
                 this.classList.add('border-blue-300', 'ring-2', 'ring-blue-100');
             });
-            
+
             input.addEventListener('blur', function() {
                 this.classList.remove('border-blue-300', 'ring-2', 'ring-blue-100');
             });
@@ -335,23 +335,23 @@
         // Skema dropdown change handler
         $('#skemaDropdown').change(function() {
             const idSkema = $(this).val();
-            
+
             if (idSkema) {
                 // Get nomor skema
                 $.get('/user/apl1/get-nomor-skema', { id_skema: idSkema }, function(response) {
                     $('#nomorSkemaInput').val(response.nomor_skema || '');
                     $('#tujuan_asesmen').val(response.tujuan_asesmen || 'sertifikasi');
-                    
+
                     // Tambahkan kode untuk menampilkan dokumen SKKNI
                     if (response.dokumen_skkni) {
                         const dokumenUrl = "{{ asset('storage/') }}/" + response.dokumen_skkni;
                         const googleViewerUrl = "https://docs.google.com/viewer?url=" + encodeURIComponent(dokumenUrl) + "&embedded=true";
-                        
+
                         $('#dokumen-skkni-object').attr('data', dokumenUrl);
                         $('#dokumen-skkni-iframe').attr('src', googleViewerUrl);
                         $('#dokumen-skkni-link').attr('href', dokumenUrl);
                         $('#dokumen-skkni-fullscreen').attr('href', dokumenUrl);
-                        
+
                         $('#dokumen-skkni-placeholder').addClass('hidden');
                         $('#dokumen-skkni-viewer').removeClass('hidden');
                     } else {
@@ -368,12 +368,12 @@
                 // Reset fields when no scheme is selected
                 $('#nomorSkemaInput').val('');
                 $('#tujuan_asesmen').val('');
-                
+
                 // Reset dokumen SKKNI
                 $('#dokumen-skkni-placeholder').removeClass('hidden')
                     .find('p').text('Pilih skema terlebih dahulu untuk melihat dokumen SKKNI');
                 $('#dokumen-skkni-viewer').addClass('hidden');
-                
+
                 // Reset unit kompetensi
                 $('#ukTableBody').html(`
                     <tr>
@@ -394,24 +394,24 @@
         // Form submission handler
         $('#btn-selanjutnya').click(function(event) {
             event.preventDefault();
-            
+
             // Show loading state
             const buttonText = document.getElementById('button-text');
             const buttonLoading = document.getElementById('button-loading');
-            
+
             buttonText.textContent = 'Menyimpan...';
             buttonLoading.classList.remove('hidden');
             $('#btn-selanjutnya').prop('disabled', true);
-            
+
             // Get form values
             const skemaSertifikasi = $('#skema_sertifikasi').val();
             const skemaDropdown = $('#skemaDropdown').val();
             const nomorSkemaInput = $('#nomorSkemaInput').val();
             const tujuanAsesmen = $('#tujuan_asesmen').val();
-            
+
             // Validate form
             let errorMessage = '';
-            
+
             if (!skemaSertifikasi) {
                 errorMessage = 'Pilih jenis skema sertifikasi';
             } else if (!skemaDropdown) {
@@ -419,13 +419,13 @@
             } else if (!tujuanAsesmen) {
                 errorMessage = 'Pilih tujuan asesmen';
             }
-            
+
             if (errorMessage) {
                 // Reset button state
                 buttonText.textContent = 'Simpan & Lanjutkan';
                 buttonLoading.classList.add('hidden');
                 $('#btn-selanjutnya').prop('disabled', false);
-                
+
                 // Show error alert
                 Swal.fire({
                     icon: 'error',
@@ -433,10 +433,10 @@
                     text: errorMessage,
                     confirmButtonColor: '#3B82F6'
                 });
-                
+
                 return;
             }
-            
+
             // Submit form via AJAX
             $.ajax({
                 type: 'POST',
@@ -463,7 +463,7 @@
                     buttonText.textContent = 'Simpan & Lanjutkan';
                     buttonLoading.classList.add('hidden');
                     $('#btn-selanjutnya').prop('disabled', false);
-                    
+
                     // Handle validation errors
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON.errors;
@@ -472,17 +472,17 @@
                         errorHtml += '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>';
                         errorHtml += '<p class="text-sm text-red-700 font-medium">Periksa kembali data yang Anda masukkan:</p>';
                         errorHtml += '</div><ul class="mt-2 text-sm text-red-700 pl-6 list-disc">';
-                        
+
                         Object.keys(errors).forEach(key => {
                             errors[key].forEach(message => {
                                 errorHtml += `<li>${message}</li>`;
                             });
                         });
-                        
+
                         errorHtml += '</ul></div>';
-                        
+
                         $('#message').html(errorHtml);
-                        
+
                         // Scroll to error message
                         $('html, body').animate({
                             scrollTop: $('#message').offset().top - 100

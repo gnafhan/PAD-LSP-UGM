@@ -5,16 +5,24 @@
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
     <div id="judulPage" class="relative z-10 flex items-center mb-4 ms-4">
-        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none" class="w-8 h-8">
             <defs>
-              <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stop-color="#3B82F6" /> <!-- biru -->
-                <stop offset="100%" stop-color="#8B5CF6" /> <!-- ungu -->
-              </linearGradient>
+                <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#3B82F6" /> <!-- biru -->
+                    <stop offset="100%" stop-color="#8B5CF6" /> <!-- ungu -->
+                </linearGradient>
+                <clipPath id="clip0">
+                    <rect width="14" height="14" fill="white" transform="translate(0.214844 0.5)" />
+                </clipPath>
             </defs>
-            <path stroke="url(#icon-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z" />
+            <g clip-path="url(#clip0)">
+                <path d="M11.0079 3.41699H11.709C12.4096 3.41699 12.7596 3.41699 12.9428 3.63691C13.1254 3.85741 13.0495 4.18758 12.8973 4.84849L12.6698 5.84016C12.3262 7.32999 11.072 8.43833 9.54954 8.66699M3.42454 3.41699H2.72337C2.02279 3.41699 1.6722 3.41699 1.48962 3.63691C1.30704 3.85741 1.38287 4.18758 1.53512 4.84849L1.76262 5.84016C2.1062 7.32999 3.36037 8.43833 4.88287 8.66699M7.2162 10.417C6.2397 10.417 5.39037 11.1549 4.9517 12.2434C4.7417 12.7637 5.0427 13.3337 5.4417 13.3337H8.99012C9.3897 13.3337 9.69012 12.7637 9.4807 12.2434C9.04204 11.1549 8.1927 10.417 7.2162 10.417Z"
+                stroke="url(#icon-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" />
+                <path d="M7.21719 10.417C8.97885 10.417 10.4634 7.69749 10.9097 3.99449C11.0328 2.97133 11.0946 2.45916 10.7679 2.06308C10.4413 1.66699 9.91335 1.66699 8.8581 1.66699H5.57627C4.52044 1.66699 3.9931 1.66699 3.66644 2.06308C3.33977 2.45916 3.40219 2.97133 3.52469 3.99508C3.97094 7.69749 5.45552 10.417 7.21719 10.417Z"
+                stroke="url(#icon-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" />
+            </g>
         </svg>
+
         <span class="ms-2 text-xl font-bold text-black">Kompetensi Teknis Asesor</span>
     </div>
     <div id="bgGradient"

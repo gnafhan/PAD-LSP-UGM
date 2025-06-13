@@ -10,7 +10,7 @@
     <!-- Konten lainnya dari website kamu -->
 
     <!-- Footer -->
-    <footer class="bg-blue-300 py-6 px-4 sm:ml-64">
+    <footer class="md:bg-blue-300 md:py-6 md:px-4 md:ml-64">
     <div class="container mx-auto flex flex-col items-center text-center space-y-4">
         <!-- Logo Section -->
         <div class="flex justify-center items-center space-x-4">

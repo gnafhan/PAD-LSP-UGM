@@ -3,7 +3,7 @@
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gray-100 p-4">
+<div class="min-h-screen bg-gray-100 p-4 py-32">
     <div class="container mx-auto p-4">
         <div class="min-h-screen bg-gray-100 flex items-center justify-center">
             <div class="w-3/4 bg-white rounded-lg shadow-lg p-6">

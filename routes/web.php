@@ -348,7 +348,7 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
 //Guest (tanpa login)
 Route::get('/', function () {
     return view('home/home');
-});
+})->name('home-visitor');
 
 // Page autentikasi
 Route::get('/login', function () {
@@ -386,7 +386,7 @@ Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])
 // Page informasi
 Route::get('/panduan', function () {
     return view('home/home-visitor/panduan');
-});
+})->name('panduan');
 Route::get('/profile', function () {
     return view('home/home-visitor/profile');
 });

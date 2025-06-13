@@ -4,18 +4,19 @@
 
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
-    <div id="judulPage" class="relative z-10 flex items-center mx-4 pb-4">
-        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none">
+    <div id="judulPage" class="relative z-10 flex items-center mb-4 ms-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 15 15" fill="url(#icon-gradient)">
             <defs>
-              <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stop-color="#3B82F6" /> <!-- biru -->
-                <stop offset="100%" stop-color="#8B5CF6" /> <!-- ungu -->
-              </linearGradient>
+                <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stop-color="#3B82F6" /> <!-- Biru -->
+                    <stop offset="100%" stop-color="#8B5CF6" /> <!-- Ungu -->
+                </linearGradient>
             </defs>
-            <path stroke="url(#icon-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              d="M14.7141 15h4.268c.4043 0 .732-.3838.732-.8571V3.85714c0-.47338-.3277-.85714-.732-.85714H6.71411c-.55228 0-1 .44772-1 1v4m10.99999 7v-3h3v3h-3Zm-3 6H6.71411c-.55228 0-1-.4477-1-1 0-1.6569 1.34315-3 3-3h2.99999c1.6569 0 3 1.3431 3 3 0 .5523-.4477 1-1 1Zm-1-9.5c0 1.3807-1.1193 2.5-2.5 2.5s-2.49999-1.1193-2.49999-2.5S8.8334 9 10.2141 9s2.5 1.1193 2.5 2.5Z" />
+            <path
+                d="M10.7907 7.5L11.5257 6.765C11.7823 6.50833 12.109 6.36833 12.4648 6.33333V5.75L8.96484 2.25H3.13151C2.48401 2.25 1.96484 2.76917 1.96484 3.41667V11.5833C1.96484 11.8928 2.08776 12.1895 2.30655 12.4083C2.52534 12.6271 2.82209 12.75 3.13151 12.75H6.63151V11.6592L6.70734 11.5833H3.13151V3.41667H7.21484V7.5H10.7907ZM8.38151 3.125L11.5898 6.33333H8.38151V3.125ZM11.374 8.5675L12.564 9.7575L8.98818 13.3333H7.79818V12.1433L11.374 8.5675ZM13.544 8.7775L12.9723 9.34917L11.7823 8.15917L12.354 7.5875C12.4648 7.47083 12.6573 7.47083 12.774 7.5875L13.544 8.3575C13.6607 8.47417 13.6607 8.66667 13.544 8.7775Z"
+            />
         </svg>
-        <p class="ms-2 text-xl font-bold text-black">APL.02</p>
+        <p class="ms-2 text-xl font-bold bg-gradient-to-r from-biru to-ungu text-transparent bg-clip-text">Formulir Ajukan Permohonan Langsung 02</p>
     </div>
     <div id="breadcrumbs" class="hidden pb-4 px-6">
         <!-- Breadcrumb -->
@@ -111,6 +112,9 @@
                                 <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
                                 </svg>
+                                <svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                                </svg>
                             </div>
                         </td>
                     </tr>
@@ -169,11 +173,11 @@
             <!-- Checklist Kompeten -->
             <div id="clKompeten" class="p-4">
                 <form class="max-w-full mx-auto">
-                    <label for="pilihKompetensi" class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">Checklist Kompetensi</label>
-                    <select id="pilihKompetensi" class="border border-border_input text-sidebar_font text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2">
+                    <label for="pilihKompetensi" onchange="ubahWarnaSelect()" class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">Checklist Kompetensi</label>
+                    <select id="pilihKompetensi" class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2 bg-white text-black">
                         <option selected>Pilih Kompetensi</option>
-                        <option value="kompeten">Kompeten</option>
-                        <option value="tidak_kompeten">Tidak Kompeten</option>
+                        <option value="kompeten" class="bg-hijau_muda text-hijau">Kompeten</option>
+                        <option value="tidak_kompeten" class="bg-red-100 text-red-600">Tidak Kompeten</option>
                     </select>
                 </form>
             </div>
@@ -321,9 +325,9 @@
         const nilai = select.value;
 
         // Reset ke default
-        select.classList.remove('bg-blue-300', 'text-blue-800', 'bg-red-200', 'text-red-800');
+        select.classList.remove('bg-white', 'text-black');
         if (nilai === "kompeten") {
-            select.classList.add('bg-blue-300', 'text-blue-800');
+            select.classList.add('bg-blue-200', 'text-blue-800');
         } else if (nilai === "tidak_kompeten") {
             select.classList.add('bg-red-200', 'text-red-800');
         }

@@ -9,12 +9,12 @@
 </head>
 <body>
     <!-- Konten lainnya dari website kamu -->
-    
+
     <!-- Footer -->
     <footer class="bg-blue-300 py-6">
     <div class="container mx-auto flex flex-col items-center text-center space-y-4">
-        
-        
+
+
 
         <!-- Logo Section -->
         <div class="flex justify-center items-center space-x-4">
@@ -32,7 +32,7 @@
         </div>
 
         <!-- Social Media Links -->
-        <div class="flex space-x-4 text-white">
+        <div class="flex gap-x-6 text-white">
             <a href="https://www.instagram.com/ugm.yogyakarta" target="_blank" class="hover:text-gray-400">
                 <i class="fab fa-instagram text-2xl"></i>
             </a>

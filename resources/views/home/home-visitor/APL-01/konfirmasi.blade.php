@@ -3,7 +3,7 @@
 @section('title', 'Konfirmasi Data - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+<div class="bg-gray-100 min-h-screen py-32 px-4 sm:px-6 lg:px-8">
     <div class="bg-white rounded-xl shadow-xl max-w-4xl mx-auto overflow-hidden">
         <!-- Header Section -->
         <div class="bg-blue-600 px-6 py-4">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
             @endif
-            
+
             @if(session('success'))
                 <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
                     <div class="flex items-center">
@@ -81,7 +81,7 @@
                 <p class="text-sm font-medium text-red-500 mb-4">*diisi oleh Admin LSP</p>
 
                 <p class="mb-4 text-gray-700">Berdasarkan Ketentuan Persyaratan dasar pemohon maka pemohon:</p>
-                
+
                 <div class="mb-4">
                     @if($asesiPengajuan->status === 'needs_revision')
                         <div class="px-4 py-3 rounded-md bg-yellow-100 border border-yellow-300 text-yellow-800 flex items-center">
@@ -120,7 +120,7 @@
                         </div>
                     @endif
                 </div>
-                
+
                 <p class="text-gray-700 mb-4">sebagai peserta sertifikasi</p>
 
                 <div class="mt-4 mb-6">
@@ -165,16 +165,16 @@
                         <h4 class="text-sm font-bold text-gray-700 mb-3">Pemohon **)</h4>
                         <div class="space-y-2">
                             <p class="text-sm text-gray-700">Nama: <span class="font-medium">{{ $asesiPengajuan->nama_user }}</span></p>
-                            
+
                             <div class="flex items-center mt-3">
                                 <label for="approve-pemohon" class="flex items-center cursor-pointer">
                                     <input type="checkbox" id="approve-pemohon" class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 transition duration-150 ease-in-out">
                                     <span class="ml-2 text-sm text-gray-700">Dengan ini saya menyetujui permohonan</span>
                                 </label>
                             </div>
-                            
+
                             <div class="mt-4">
-                                <p class="text-sm text-gray-700 mb-1">TTD:</p> 
+                                <p class="text-sm text-gray-700 mb-1">TTD:</p>
                                 <div class="border border-gray-200 rounded-md p-2 bg-gray-50 h-16 flex items-center justify-center">
                                     @if(isset($asesiPengajuan->ttd_pemohon))
                                         <img src="{{ asset("/storage/".$asesiPengajuan->ttd_pemohon) }}" alt="Tanda Tangan Pemohon" class="max-h-12">
@@ -183,11 +183,11 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                             <p class="text-sm text-gray-700 mt-2">Tgl: {{ date('d-m-Y') }}</p>
                         </div>
                     </div>
-                    
+
                     <div>
                         <h4 class="text-sm font-bold text-gray-700 mb-3">Admin LSP ***)</h4>
                         <div class="space-y-2">
@@ -198,17 +198,17 @@
                                     Belum ditugaskan
                                 @endif
                             </span></p>
-                            
+
                             <div class="flex items-center mt-3">
                                 <div class="flex items-center">
-                                    <input type="checkbox" id="approve-admin" class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 transition duration-150 ease-in-out" 
+                                    <input type="checkbox" id="approve-admin" class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 transition duration-150 ease-in-out"
                                         {{ $asesiPengajuan->status_rekomendasi !== 'N/A' ? 'checked' : '' }} disabled>
                                     <span class="ml-2 text-sm text-gray-700">TTD Admin</span>
                                 </div>
                             </div>
-                            
+
                             <div class="mt-4">
-                                <p class="text-sm text-gray-700 mb-1">TTD:</p> 
+                                <p class="text-sm text-gray-700 mb-1">TTD:</p>
                                 <div class="border border-gray-200 rounded-md p-2 bg-gray-50 h-16 flex items-center justify-center">
                                     @if($asesiPengajuan->status_rekomendasi !== 'N/A')
                                         <img src="{{ asset('images/admin-signature.jpg') }}" alt="Admin Signature" class="max-h-12">
@@ -217,8 +217,8 @@
                                     @endif
                                 </div>
                             </div>
-                            
-                            <p class="text-sm text-gray-700 mt-2">Tgl: 
+
+                            <p class="text-sm text-gray-700 mt-2">Tgl:
                                 @if($asesiPengajuan->status_rekomendasi !== 'N/A')
                                     {{ date('d-m-Y', strtotime($asesiPengajuan->updated_at)) }}
                                 @else
@@ -229,7 +229,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Catatan Informasi -->
             @if($asesiPengajuan->status === 'rejected')
                 <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-8">
@@ -273,7 +273,7 @@
                 </div>
             @endif
         </div>
-        
+
         <!-- Form pengajuan final -->
         <form id="konfirmasi-form" action="{{ route('user.apl1.submit') }}" method="POST">
             @csrf
@@ -300,12 +300,12 @@
                     </button>
                 </form>
             @endif
-            
-            <button type="button" id="btn-konfirmasi" 
-                class="px-4 py-2 rounded-md border border-transparent text-white 
-                    {{ $asesiPengajuan->status === 'submitted' || $asesiPengajuan->status === 'approved' || $asesiPengajuan->status === 'revised_by_asesi' || $asesiPengajuan->status === 'rejected' ? 
-                        'bg-gray-400 cursor-not-allowed' : 
-                        ($asesiPengajuan->status === 'needs_revision' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700') }} 
+
+            <button type="button" id="btn-konfirmasi"
+                class="px-4 py-2 rounded-md border border-transparent text-white
+                    {{ $asesiPengajuan->status === 'submitted' || $asesiPengajuan->status === 'approved' || $asesiPengajuan->status === 'revised_by_asesi' || $asesiPengajuan->status === 'rejected' ?
+                        'bg-gray-400 cursor-not-allowed' :
+                        ($asesiPengajuan->status === 'needs_revision' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700') }}
                     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors flex items-center"
                 {{ $asesiPengajuan->status === 'submitted' || $asesiPengajuan->status === 'approved' || $asesiPengajuan->status === 'rejected' ? 'disabled' : '' }}>
                 <span id="button-text">
@@ -359,7 +359,7 @@
                 }
             });
         }
-        
+
         // Toggle checkbox style when checked
         checkbox.addEventListener('change', function() {
             if (this.checked) {

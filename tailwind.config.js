@@ -3,11 +3,11 @@ module.exports = {
         "./resources/views/**/*.blade.php",
         "./resources/js/**/*.js",
         "./resources/js/**/*.vue",
-        './node_modules/flyonui/dist/js/*.js',
         "./node_modules/flowbite/**/*.js",
-        "./node_modules/preline/dist/*.js"
+        "./node_modules/flowbite-datepicker/**/*.js",
     ],
     theme: {
+        darkMode: false,
         extend: {
             fontFamily: {
                 inter: ["Inter", "sans-serif"],
@@ -30,7 +30,7 @@ module.exports = {
                 placeholder_input: "#D9D9D9",
                 abu: "#A8A8A9",
                 hijau: "#35B636",
-                hijau_muda: "#E3F6ED",
+                hijau_muda: "#EDFFEB",
                 font_hijau: "#489D72",
                 font_abu:"#828282",
             },
@@ -38,8 +38,5 @@ module.exports = {
     },
     plugins: [
         require('flowbite/plugin'),
-        require('flyonui'),
-        require('flyonui/plugin'),
-        // require('preline/plugin'),
     ],
 };
