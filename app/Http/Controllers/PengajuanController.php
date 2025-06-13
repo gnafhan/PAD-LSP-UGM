@@ -363,7 +363,7 @@ class PengajuanController extends Controller
         // Data sertifikasi yang akan disimpan
         $dataSertifikasi = [
             'skema_sertifikasi' => $request->skema_sertifikasi,
-            'nama_skema' => $request->skemaDropdown,
+            'nama_skema' => $skema->nama_skema,
             'nomor_skema' => $request->nomorSkemaInput,
             'tujuan_asesmen' => $request->tujuan_asesmen,
             'id_skema' => $skema->id_skema

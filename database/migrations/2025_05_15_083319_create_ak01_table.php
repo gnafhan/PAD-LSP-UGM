@@ -24,7 +24,7 @@ return new class extends Migration
             // Waktu tanda tangan asesor
             $table->timestamp('waktu_tanda_tangan_asesor')->nullable();
             // Tanda tangan asesi
-            $table->date('waktu_tanda_tangan_asesi')->nullable();
+            $table->timestamp('waktu_tanda_tangan_asesi')->nullable();
 
             $table->timestamps();
         });

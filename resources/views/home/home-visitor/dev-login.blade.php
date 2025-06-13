@@ -16,7 +16,7 @@
     <h1 class="text-2xl font-bold text-gray-800 text-center mb-6">Login</h1>
 
     <!-- Login Form -->
-    <form action="{{ route('login.post') }}" method="POST">
+    <form action="{{ route('login.post') }}" method="POST" id="loginForm">
         @csrf
 
         <!-- Email Field -->
@@ -24,6 +24,7 @@
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
             <input type="email" id="email" name="email" placeholder="Enter Email..."
                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+            <p id="emailError" class="mt-1 text-sm text-red-600 hidden">Email harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id)</p>
         </div>
 
         <!-- Password Field -->
@@ -33,10 +34,13 @@
                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
         </div>
 
-        <!-- Remember Me Checkbox -->
-        <div class="mb-4 flex items-center">
-            <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-            <label for="remember" class="ml-2 block text-sm text-gray-700">Remember Me</label>
+        <!-- UGM Email Info -->
+        <div class="mb-6 bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-lg">
+            <p class="text-sm">Login menggunakan email UGM resmi dengan format:</p>
+            <ul class="list-disc pl-5 text-sm mt-1">
+                <li>namaanda@mail.ugm.ac.id, atau</li>
+                <li>namaanda@ugm.ac.id</li>
+            </ul>
         </div>
 
         <!-- Login Button -->
@@ -46,11 +50,6 @@
                 Login
             </button>
         </div>
-
-        <!-- Forgot Password Link -->
-        <div class="text-center mt-6">
-            <p class="text-sm text-gray-700">Lupa Password? <a href="/password/reset" class="text-indigo-600 hover:text-indigo-800 font-medium">Reset Password</a></p>
-        </div>
     </form>
 
     <!-- Register Link -->
@@ -59,4 +58,83 @@
     </div>
   </div>
 </div>
+
+<!-- Load SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Email validation function
+    function validateUGMEmail(email) {
+        const ugmEmailRegex = /^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/;
+        return ugmEmailRegex.test(email);
+    }
+
+    // Form validation
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+
+    loginForm.addEventListener('submit', function(event) {
+        const email = emailInput.value.trim();
+        
+        if (!validateUGMEmail(email)) {
+            event.preventDefault();
+            emailError.classList.remove('hidden');
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Email Tidak Valid',
+                text: 'Anda harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id)',
+                confirmButtonColor: '#4F46E5'
+            });
+        } else {
+            emailError.classList.add('hidden');
+        }
+    });
+
+    // Email input validation on change
+    emailInput.addEventListener('input', function() {
+        const email = emailInput.value.trim();
+        if (email && !validateUGMEmail(email)) {
+            emailError.classList.remove('hidden');
+        } else {
+            emailError.classList.add('hidden');
+        }
+    });
+
+    // Check for session messages and display SweetAlert notifications
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#4F46E5',
+            timer: 4000,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#4F46E5',
+            timer: 4000,
+            timerProgressBar: true
+        });
+    @endif
+
+    // Display authentication errors
+    @if($errors->has('email'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Gagal',
+            text: '{{ $errors->first('email') }}',
+            confirmButtonColor: '#4F46E5'
+        });
+    @endif
+});
+</script>
 @endsection

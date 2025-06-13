@@ -40,7 +40,7 @@ class Mapa02 extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'waktu_tanda_tangan_asesor' => 'date',
+        'waktu_tanda_tangan_asesor' => 'timestamp',
         'muk_ceklis_observasi' => 'integer',
         'muk_tugas_praktik_demonstrasi' => 'integer',
         'muk_pertanyaan_tertulis_esai' => 'integer',

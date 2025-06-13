@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa02Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak01Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa01Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KetidakberpihakkanController;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Apl02Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,5 +123,18 @@ Route::middleware('api_key')->group(function () {
         
         // Sign form
         Route::post('/sign', [KetidakberpihakkanController::class, 'signKetidakberpihakan']);
+    });
+});
+
+// Route for APL02
+Route::middleware('api_key')->group(function () {
+    Route::prefix('/v1/asesmen/apl02')->group(function () {
+        // Get data
+        Route::get('/asesor/{id_asesi}', [Apl02Controller::class, 'getApl02Asesor']);
+        Route::get('/asesi/{id_asesi}', [Apl02Controller::class, 'getApl02Asesi']);
+        
+        // Save data
+        Route::post('/asesor/save', [Apl02Controller::class, 'saveApl02Asesor']);
+        Route::post('/asesi/sign', [Apl02Controller::class, 'signApl02Asesi']);
     });
 });

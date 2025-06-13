@@ -372,10 +372,14 @@
         const adminFields = document.getElementById('admin_fields');
         const asesorFields = document.getElementById('asesor_fields');
         const form = document.getElementById('userForm');
+        const fileTandaTangan = document.getElementById('file_tanda_tangan');
         
         if (userType === 'admin') {
             adminFields.classList.remove('hidden');
             asesorFields.classList.add('hidden');
+            
+            // Enable admin required fields
+            fileTandaTangan.required = true;
             
             // Ubah action form ke route admin
             form.action = "{{ route('admin.pengguna.admin.store') }}";
@@ -386,6 +390,9 @@
         } else if (userType === 'asesor') {
             adminFields.classList.add('hidden');
             asesorFields.classList.remove('hidden');
+            
+            // Disable admin required fields
+            fileTandaTangan.required = false;
             
             // Ubah action form ke route asesor
             form.action = "{{ route('admin.pengguna.asesor.store') }}";

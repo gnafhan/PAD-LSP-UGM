@@ -153,9 +153,9 @@
                             <label for="tujuan_asesmen" class="block text-sm font-medium text-gray-700 mb-1">Tujuan Asesmen</label>
                             <select id="tujuan_asesmen" name="tujuan_asesmen" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition-colors">
                                 <option value="">Pilih Tujuan Asesmen</option>
-                                <option value="sertifikasi" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
-                                <option value="pkt" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'pkt' ? 'selected' : '' }}>Pengakuan Kompetensi Terkini (PKT)</option>
-                                <option value="rpl" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'rpl' ? 'selected' : '' }}>Rekognisi Pembelajaran Lampau (RPL)</option>
+                                <option value="Sertifikasi" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'Sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
+                                <option value="Pengakuan Kompetensi Terkini (PKT)" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'Pengakuan Kompetensi Terkini (PKT)' ? 'selected' : '' }}>Pengakuan Kompetensi Terkini (PKT)</option>
+                                <option value="Rekognisi Pembelajaran Lampau (RPL)" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'rpl' ? 'selected' : '' }}>Rekognisi Pembelajaran Lampau (RPL)</option>
                                 <option value="lainnya" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                         </div>

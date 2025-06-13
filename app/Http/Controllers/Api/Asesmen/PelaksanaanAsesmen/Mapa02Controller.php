@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen;
 
+use App\Helpers\DateTimeHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Asesi;
@@ -10,6 +11,7 @@ use App\Models\Mapa02;
 use App\Models\RincianAsesmen;
 use Carbon\Carbon;
 use App\Services\AsesmenValidationService;
+use App\Services\ProgressTrackingService;
 
 /**
  * @OA\Tag(
@@ -20,10 +22,12 @@ use App\Services\AsesmenValidationService;
 class Mapa02Controller extends Controller
 {
     protected $validationService;
-    
-    public function __construct(AsesmenValidationService $validationService)
+    protected $progressService;
+
+    public function __construct(AsesmenValidationService $validationService, ProgressTrackingService $progressService)
     {
         $this->validationService = $validationService;
+        $this->progressService = $progressService;
     }
 
     /**
@@ -54,6 +58,7 @@ class Mapa02Controller extends Controller
      *                     type="object",
      *                     @OA\Property(property="nama_asesi", type="string", example="John Doe"),
      *                     @OA\Property(property="nama_asesor", type="string", example="Jane Smith"),
+     *                     @OA\Property(property="nama_tuk", type="string", example="TILC"),
      *                     @OA\Property(property="judul_skema", type="string", example="Programmer"),
      *                     @OA\Property(property="kode_skema", type="string", example="SKM-001")
      *                 ),
@@ -66,7 +71,7 @@ class Mapa02Controller extends Controller
      *                     @OA\Property(property="muk_pertanyaan_lisan", type="integer", example=1),
      *                     @OA\Property(property="muk_ceklis_verifikasi_portfolio", type="integer", example=0),
      *                     @OA\Property(property="muk_ceklis_meninjau_materi_uji", type="integer", example=1),
-     *                     @OA\Property(property="waktu_tanda_tangan_asesor", type="string", format="date", example="2025-05-15"),
+     *                     @OA\Property(property="waktu_tanda_tangan_asesor", type="string", format="timestamp", example="2025-05-15 20:00:00 WIB"),
      *                     @OA\Property(property="tanda_tangan_asesor", type="string", format="date", example="signature/ttd_asesor.png"),
      *                 ),
      *                 @OA\Property(property="record_exists", type="boolean", example=true)
@@ -133,6 +138,7 @@ class Mapa02Controller extends Controller
         $generalInfo = [
             'nama_asesi' => $asesi->nama_asesi,
             'nama_asesor' => $asesi->rincianAsesmen->asesor->nama_asesor,
+            'nama_tuk' => $asesi->rincianAsesmen->event->tuk->nama_tuk ?? 'TUK tidak tersedia',
             'judul_skema' => $asesi->skema->nama_skema,
             'kode_skema' => $asesi->skema->nomor_skema
         ];
@@ -156,6 +162,7 @@ class Mapa02Controller extends Controller
                         'muk_ceklis_verifikasi_portfolio' => $mapa02->muk_ceklis_verifikasi_portfolio,
                         'muk_ceklis_meninjau_materi_uji' => $mapa02->muk_ceklis_meninjau_materi_uji,
                         'tanda_tangan_asesor' => $tandaTanganAsesor ? $tandaTanganAsesor->file_url : null,
+                        'waktu_tanda_tangan_asesor' => $mapa02->waktu_tanda_tangan_asesor? DateTimeHelper::toWIB($mapa02->waktu_tanda_tangan_asesor) : null,
                     ],
                     'record_exists' => true
                 ]
@@ -290,12 +297,11 @@ class Mapa02Controller extends Controller
         if ($request->boolean('is_signing')) {
             $mapa02->waktu_tanda_tangan_asesor = Carbon::now();
             
-            // Update the progres_asesmen table
-            $asesi = Asesi::find($request->id_asesi);
-            if ($asesi && $asesi->progresAsesmen) {
-                $asesi->progresAsesmen->mapa02 = true;
-                $asesi->progresAsesmen->save();
-            }
+            $this->progressService->completeStep(
+                $request->id_asesi, 
+                'mapa02', 
+                'Completed by Asesor ID: ' . $request->id_asesor
+            );
         }
 
         $mapa02->save();
