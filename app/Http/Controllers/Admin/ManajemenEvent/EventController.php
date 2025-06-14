@@ -27,8 +27,10 @@ class EventController extends Controller
             $search = $request->search;
             $eventQuery->where(function($query) use ($search) {
                 $query->where('nama_event', 'like', "%{$search}%")
-                      ->orWhere('tipe_event', 'like', "%{$search}%")
-                      ->orWhere('tuk', 'like', "%{$search}%");
+                    ->orWhere('tipe_event', 'like', "%{$search}%")
+                    ->orWhereHas('tuk', function($q) use ($search) {
+                        $q->where('nama_tuk', 'like', "%{$search}%");
+                    });
             });
         }
         
