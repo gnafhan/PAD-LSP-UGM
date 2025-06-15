@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AsesorController extends Controller
 {
@@ -37,7 +40,8 @@ class AsesorController extends Controller
                 'required',
                 'email',
                 'max:250',
-                'unique:asesor',
+                Rule::unique('users', 'email'), // Check uniqueness in users table
+                Rule::unique('asesor', 'email'), // Check uniqueness in asesor table
                 'regex:/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/'
             ],
             'no_hp_asesor' => 'required|string|max:20',
@@ -48,13 +52,15 @@ class AsesorController extends Controller
             'status_asesor' => 'required|in:Aktif,Tidak',
             'masa_berlaku' => 'required|date',
             'bidang_kompetensi' => 'required|string',
+            'no_met' => 'nullable|string|max:100',
         ], [
             'nama_asesor.required' => 'Nama asesor tidak boleh kosong',
             'email.required' => 'Email tidak boleh kosong',
             'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id).',
-            'email.unique' => 'Email sudah digunakan',
+            'email.unique' => 'Email sudah digunakan.',
             'status_asesor.required' => 'Status asesor harus dipilih',
             'masa_berlaku.required' => 'Tanggal masa berlaku wajib diisi',
+            'no_hp_asesor.required' => 'Nomor HP asesor tidak boleh kosong.',
         ]);
     
         if ($validator->fails()) {
@@ -65,18 +71,34 @@ class AsesorController extends Controller
     
         try {
             DB::beginTransaction();
+
+            // 1. Create User
+            $user = User::create([
+                'name' => $request->nama_asesor,
+                'email' => $request->email,
+                'no_hp' => $request->no_hp_asesor,
+                'password' => Hash::make(Str::random(12)), // Generate random password
+                'level' => 'asesor',
+            ]);
     
             // Proses bidang kompetensi
             $bidangKompetensiIds = [];
             if ($request->filled('bidang_kompetensi')) {
                 $bidangKompetensiIds = json_decode($request->bidang_kompetensi, true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    // Handle invalid JSON, perhaps set to empty array or throw error
+                    $bidangKompetensiIds = [];
+                    Log::warning('Invalid JSON for bidang_kompetensi during asesor store: ' . $request->bidang_kompetensi);
+                }
             }
     
             // Proses upload file sertifikat
             $fileSertifikat = $this->uploadFileSertifikat($request);
     
-            // Buat data asesor
+            // 2. Buat data asesor
+            // Assuming Asesor model's boot method handles id_asesor generation
             $asesor = Asesor::create([
+                'id_user' => $user->id_user, // Link to the created user
                 'nama_asesor' => $request->nama_asesor,
                 'email' => $request->email,
                 'no_hp' => $request->no_hp_asesor,
@@ -87,7 +109,7 @@ class AsesorController extends Controller
                 'file_sertifikat_asesor' => $fileSertifikat,
                 'status_asesor' => $request->status_asesor,
                 'masa_berlaku' => $request->masa_berlaku,
-                'alamat' => '-', // Required field with default
+                'alamat' => $request->alamat ?? '-', // Use provided alamat or default
                 'daftar_bidang_kompetensi' => json_encode($bidangKompetensiIds)
             ]);
             
@@ -97,7 +119,7 @@ class AsesorController extends Controller
                 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error creating asesor: ' . $e->getMessage());
+            Log::error('Error creating asesor: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
             
             return redirect()->back()
                 ->with('error', 'Gagal menambahkan asesor: ' . $e->getMessage())
@@ -105,32 +127,36 @@ class AsesorController extends Controller
         }
     }
 
-    /**
+
+   /**
      * Show the form for editing the asesor.
      */
     public function edit($id)
     {
-        $asesor = Asesor::findOrFail($id);
+        // ...existing code...
+        $asesor = Asesor::with('user')->findOrFail($id); // Eager load user
         
         // Konversi daftar bidang kompetensi dari JSON ke array
         if (!empty($asesor->daftar_bidang_kompetensi)) {
-            $bidangIds = json_decode($asesor->daftar_bidang_kompetensi, true);
+            $bidangIds = is_array($asesor->daftar_bidang_kompetensi) ? $asesor->daftar_bidang_kompetensi : json_decode($asesor->daftar_bidang_kompetensi, true);
             
             // Ambil data lengkap bidang kompetensi dari ID
             $bidangKompetensiData = [];
-            foreach ($bidangIds as $bidangId) {
-                $bidang = BidangKompetensi::find($bidangId);
-                if ($bidang) {
-                    $bidangKompetensiData[] = [
-                        'id' => $bidang->id_bidang_kompetensi,
-                        'nama_bidang' => $bidang->nama_bidang
-                    ];
+            if (is_array($bidangIds)) {
+                foreach ($bidangIds as $bidangId) {
+                    $bidang = BidangKompetensi::find($bidangId);
+                    if ($bidang) {
+                        $bidangKompetensiData[] = [
+                            'id' => $bidang->id_bidang_kompetensi,
+                            'nama_bidang' => $bidang->nama_bidang
+                        ];
+                    }
                 }
             }
             
-            $asesor->bidang_kompetensi = $bidangKompetensiData;
+            $asesor->bidang_kompetensi_data = $bidangKompetensiData; // Use a different property name to avoid conflict
         } else {
-            $asesor->bidang_kompetensi = [];
+            $asesor->bidang_kompetensi_data = [];
         }
         
         // Ambil semua bidang kompetensi untuk dropdown
@@ -143,18 +169,40 @@ class AsesorController extends Controller
     }
 
     /**
-     * Update asesor status.
+     * Update asesor data.
+     * 
      */
-    public function updateStatus(Request $request)
+    public function updateStatus(Request $request, Asesor $asesor) // Changed from updateStatus and uses Route Model Binding
     {
         $validator = Validator::make($request->all(), [
-            'id_asesor' => 'required|string',
+            'nama_asesor' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                'max:250',
+                Rule::unique('users', 'email')->ignore($asesor->user_id, 'id_user'),
+                Rule::unique('asesor', 'email')->ignore($asesor->id_asesor, 'id_asesor'),
+                'regex:/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/'
+            ],
+            'no_hp_asesor' => 'required|string|max:20',
             'status_asesor' => 'required|in:Aktif,Tidak',
             'masa_berlaku' => 'required|date',
-            'bidang_kompetensi' => 'required|string',
+            'bidang_kompetensi' => 'required|string', // Expecting JSON string of IDs
             'kode_registrasi' => 'nullable|string|max:100',
             'no_sertifikat' => 'nullable|string|max:100',
+            'no_met' => 'nullable|string|max:100',
             'file_sertifikat_asesor' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
+            'no_ktp' => 'nullable|string|max:20',
+            'alamat' => 'nullable|string',
+        ], [
+            'nama_asesor.required' => 'Nama asesor tidak boleh kosong.',
+            'email.required' => 'Email tidak boleh kosong.',
+            'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id).',
+            'email.unique' => 'Email sudah digunakan oleh pengguna lain.',
+            'no_hp_asesor.required' => 'Nomor HP asesor tidak boleh kosong.',
+            'status_asesor.required' => 'Status asesor harus dipilih.',
+            'masa_berlaku.required' => 'Tanggal masa berlaku wajib diisi.',
+            'bidang_kompetensi.required' => 'Bidang kompetensi tidak boleh kosong.',
         ]);
         
         if ($validator->fails()) {
@@ -166,43 +214,59 @@ class AsesorController extends Controller
         try {
             DB::beginTransaction();
             
-            // Cari asesor berdasarkan ID
-            $asesor = Asesor::find($request->id_asesor);
-            
-            if (!$asesor) {
+            // 1. Update User data
+            $user = $asesor->user; // Get the related user
+            if ($user) {
+                $user->name = $request->nama_asesor;
+                $user->email = $request->email;
+                $user->no_hp = $request->no_hp_asesor;
+                $user->save();
+            } else {
+                // Handle case where user is not found, though this indicates data inconsistency
+                DB::rollBack();
+                Log::error('User not found for Asesor ID: ' . $asesor->id_asesor . ' during update.');
                 return redirect()->route('admin.pengguna.index')
-                    ->with('error', 'Asesor tidak ditemukan');
+                    ->with('error', 'Data pengguna terkait asesor tidak ditemukan.');
             }
             
             // Update bidang kompetensi
             $bidangKompetensiIds = [];
             if ($request->filled('bidang_kompetensi')) {
                 $bidangKompetensiIds = json_decode($request->bidang_kompetensi, true);
+                 if (json_last_error() !== JSON_ERROR_NONE) {
+                    $bidangKompetensiIds = []; // or handle error
+                    Log::warning('Invalid JSON for bidang_kompetensi during asesor update: ' . $request->bidang_kompetensi);
+                }
             }
             
             // Upload file sertifikat jika ada
-            $fileSertifikat = $asesor->file_sertifikat_asesor;
+            $fileSertifikatPath = $asesor->file_sertifikat_asesor;
             if ($request->hasFile('file_sertifikat_asesor')) {
                 // Hapus file lama jika ada
-                if ($fileSertifikat && Storage::exists('public/sertifikat_asesor/' . $fileSertifikat)) {
-                    Storage::delete('public/sertifikat_asesor/' . $fileSertifikat);
+                if ($fileSertifikatPath && Storage::disk('public')->exists('sertifikat_asesor/' . $fileSertifikatPath)) {
+                    Storage::disk('public')->delete('sertifikat_asesor/' . $fileSertifikatPath);
                 }
                 
                 $file = $request->file('file_sertifikat_asesor');
                 $fileName = 'asesor_' . Str::random(10) . '_' . time() . '.' . $file->getClientOriginalExtension();
                 $file->storeAs('public/sertifikat_asesor', $fileName);
-                $fileSertifikat = $fileName;
+                $fileSertifikatPath = $fileName;
             }
             
-            // Update data asesor
-            $asesor->update([
-                'status_asesor' => $request->status_asesor,
-                'masa_berlaku' => $request->masa_berlaku,
-                'daftar_bidang_kompetensi' => json_encode($bidangKompetensiIds),
-                'kode_registrasi' => $request->kode_registrasi,
-                'no_sertifikat' => $request->no_sertifikat,
-                'file_sertifikat_asesor' => $fileSertifikat
-            ]);
+            // 2. Update data asesor
+            $asesor->nama_asesor = $request->nama_asesor;
+            $asesor->email = $request->email;
+            $asesor->no_hp = $request->no_hp_asesor;
+            $asesor->status_asesor = $request->status_asesor;
+            $asesor->masa_berlaku = $request->masa_berlaku;
+            $asesor->daftar_bidang_kompetensi = json_encode($bidangKompetensiIds);
+            $asesor->kode_registrasi = $request->kode_registrasi;
+            $asesor->no_sertifikat = $request->no_sertifikat;
+            $asesor->no_met = $request->no_met;
+            $asesor->file_sertifikat_asesor = $fileSertifikatPath;
+            $asesor->no_ktp = $request->no_ktp;
+            $asesor->alamat = $request->alamat ?? $asesor->alamat; // Keep old if not provided
+            $asesor->save();
             
             DB::commit();
             
@@ -211,10 +275,11 @@ class AsesorController extends Controller
                 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error updating asesor data: ' . $e->getMessage());
+            Log::error('Error updating asesor data: ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine());
             
-            return redirect()->route('admin.pengguna.index')
-                ->with('error', 'Gagal memperbarui data asesor: ' . $e->getMessage());
+            return redirect()->back() // Redirect back on error for correction
+                ->with('error', 'Gagal memperbarui data asesor: ' . $e->getMessage())
+                ->withInput();
         }
     }
 
@@ -240,56 +305,6 @@ class AsesorController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('admin.pengguna.index')
                 ->with('error', 'Gagal memuat detail asesor: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Delete asesor.
-     */
-    public function destroy($id)
-    {
-        try {
-            DB::beginTransaction();
-            
-            $asesor = Asesor::findOrFail($id);
-            
-            // Hapus file sertifikat asesor jika ada
-            if (!empty($asesor->file_sertifikat_asesor)) {
-                Storage::delete('public/sertifikat_asesor/' . $asesor->file_sertifikat_asesor);
-            }
-            
-            // Hapus semua kompetensi teknis terkait
-            $kompetensiTeknis = KompetensiTeknis::where('id_asesor', $id)->get();
-            foreach ($kompetensiTeknis as $kt) {
-                if (!empty($kt->file_sertifikat)) {
-                    Storage::delete('public/sertifikat/' . $kt->file_sertifikat);
-                }
-                $kt->delete();
-            }
-            
-            // Hapus semua tanda tangan terkait
-            $tandaTangan = TandaTanganAsesor::where('id_asesor', $id)->get();
-            foreach ($tandaTangan as $tt) {
-                if (!empty($tt->file_tanda_tangan)) {
-                    Storage::delete('public/tanda_tangan/' . $tt->file_tanda_tangan);
-                }
-                $tt->delete();
-            }
-            
-            // Hapus asesor
-            $asesor->delete();
-            
-            DB::commit();
-            
-            return redirect()->route('admin.pengguna.index')
-                ->with('success', 'Asesor berhasil dihapus');
-                
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error deleting asesor: ' . $e->getMessage());
-            
-            return redirect()->route('admin.pengguna.index')
-                ->with('error', 'Gagal menghapus asesor: ' . $e->getMessage());
         }
     }
 

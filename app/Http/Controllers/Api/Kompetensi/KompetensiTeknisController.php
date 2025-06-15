@@ -42,7 +42,7 @@ class KompetensiTeknisController extends Controller
      *                     @OA\Property(property="id_asesor", type="string", example="1"),
      *                     @OA\Property(property="nama_asesor", type="string", example="John Doe"),
      *                     @OA\Property(property="masa_berlaku", type="string", example="01-01-2025"),
-     *                     @OA\Property(property="no_sertifikat", type="string", example="CERT123456"),
+     *                     @OA\Property(property="no_met", type="string", example="MET123456"),
      *                     @OA\Property(property="jumlah_skema", type="integer", example=3),
      *                     @OA\Property(property="status_asesor", type="string", example="Aktif"),
      *                     @OA\Property(property="file_sertifikat", type="string", example="cert123.pdf")
@@ -105,7 +105,7 @@ class KompetensiTeknisController extends Controller
                     'id_asesor' => $asesor->id_asesor,
                     'nama_asesor' => $asesor->nama_asesor,
                     'masa_berlaku' => $this->formatTanggal($asesor->masa_berlaku), // Gunakan formatTanggal di sini
-                    'no_sertifikat' => $asesor->no_sertifikat,
+                    'no_met' => $asesor->no_met,
                     'jumlah_skema' => $jumlahSkema,
                     'status_asesor' => $asesor->status_asesor,
                     'file_sertifikat' => $asesor->file_sertifikat_asesor,
