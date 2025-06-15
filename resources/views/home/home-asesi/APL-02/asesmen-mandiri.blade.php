@@ -3,7 +3,7 @@
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gray-100 p-4">
+<div class="min-h-screen bg-gray-100 p-4 py-32">
     <div class="container mx-auto p-4">
 <!-- Kontainer Utama -->
         <div class="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -11,9 +11,9 @@
 
                 <!-- Tombol Aksi -->
                 <div class="flex flex-wrap gap-2">
-                    <a href="/assesi" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0 flex items-center">
+                    <button type="button" onclick="window.history.back()" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0 flex items-center">
                         <i class="fas fa-arrow-left"></i> <!-- Ikon Font Awesome -->
-                    </a>
+                    </button>
                     <div class="bg-green-500 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
                         FR.APL.02 ASESMEN MANDIRI
                     </div>
@@ -24,6 +24,10 @@
 
                 <!-- Struktur Tabel -->
                 <div class="border border-gray-300 rounded-lg p-4 mb-6">
+                    @php
+                        $rincianAsesmen = App\Models\RincianAsesmen::where('id_asesi', App\Models\Asesi::where('id_user', auth()->user()->id_user)->first()->id_asesi ?? null)->first();
+                        $asesor = $rincianAsesmen->asesor ?? null;
+                    @endphp
                     <table class="w-full border-collapse border border-gray-300 text-sm mb-6">
                         <tbody>
                             <tr>
@@ -42,12 +46,26 @@
                             </tr>
                             <tr>
                                 <td class="border border-gray-300 p-2 font-semibold">TUK</td>
-                                <td class="border border-gray-300 p-2">{{ $event->tuk ?? 'Tidak ditemukan' }}</td>
+                                <td class="border border-gray-300 p-2">
+                                    @if(is_string($event->tuk))
+                                        {{ $event->tuk }}
+                                    @elseif(is_object($event->tuk))
+                                        <div>
+                                            <span class="font-semibold">{{ $event->tuk->nama_tuk }}</span> ({{ $event->tuk->kode_tuk }})
+                                            <div class="text-xs text-gray-600 mt-1">{{ $event->tuk->alamat }}</div>
+                                            <div class="text-xs text-gray-500">No. Lisensi: {{ $event->tuk->no_lisensi_skkn }}</div>
+                                        </div>
+                                    @else
+                                        Tidak ditemukan
+                                    @endif
+                                </td>
                             </tr>
+                            @if($asesor)
                             <tr>
                                 <td class="border border-gray-300 p-2 font-semibold">Nama Asesor</td>
-                                <td class="border border-gray-300 p-2">{{ $asesi->asesor->nama_asesor ?? 'Tidak ditemukan' }}</td>
+                                <td class="border border-gray-300 p-2">{{ $asesor->nama_asesor ?? 'Tidak ditemukan' }} </td>
                             </tr>
+                            @endif
                             <tr>
                                 <td class="border border-gray-300 p-2 font-semibold">Nama Peserta</td>
                                 <td class="border border-gray-300 p-2">{{ $asesi->nama_asesi ?? 'Tidak ditemukan' }}</td>

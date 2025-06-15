@@ -3,14 +3,14 @@
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gray-100 p-4">
+<div class="min-h-screen bg-gray-100 p-4 py-32">
     <div class="container mx-auto p-4">
         <div class="min-h-screen bg-gray-100 flex items-center justify-center">
                 <div class="w-3/4 bg-white rounded-lg shadow-lg p-6">
                 <div class="flex flex-wrap gap-2">
-                    <a href="/assesi" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0 flex items-center">
+                    <button type="button" onclick="window.history.back()" class="bg-black hover:bg-gray-400 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0 flex items-center">
                                 <i class="fas fa-arrow-left"></i> <!-- Ikon Font Awesome -->
-                    </a>
+                    </button>
                     <div class="bg-green-500 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
                     FR.AK-01 FORMULIR PERMOHONAN SERTIFIKASI KOMPETENSI
                     </div>
@@ -30,11 +30,11 @@
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2 font-semibold">Judul Skema Sertifikasi</td>
-                            <td class="border border-gray-300 p-2">Junior Web Developer</td>
+                            <td class="border border-gray-300 p-2">{{ $asesi->skema->nama_skema ?? 'Tidak ditemukan' }}</td>
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2 font-semibold">Nomor Skema Sertifikasi</td>
-                            <td class="border border-gray-300 p-2">SKM/0317/00010/2/2019/14</td>
+                            <td class="border border-gray-300 p-2">{{ $asesi->skema->nomor_skema ?? 'Tidak ditemukan' }}</td>
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2 font-semibold">TUK</td>
@@ -50,11 +50,11 @@
 
                         <tr>
                             <td class="border border-gray-300 p-2 font-semibold">Nama Asesor</td>
-                            <td class="border border-gray-300 p-2">Imam Fahrurrozi</td>
+                            <td class="border border-gray-300 p-2">{{ $asesi->asesor->nama_asesor ?? 'Tidak ditemukan' }}</td>
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2 font-semibold">Nama Peserta</td>
-                            <td class="border border-gray-300 p-2">Ahmad Fatha Mumtaza</td>
+                            <td class="border border-gray-300 p-2">{{ $asesi->nama_asesi ?? 'Tidak ditemukan' }}</td>
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2 font-semibold">Bukti yang dikumpulkan</td>
@@ -94,14 +94,26 @@
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2">Hari/Tanggal</td>
-                            <td class="border border-gray-300 p-2" colspan="2">10 November 2024</td>
+                            <td class="border border-gray-300 p-2" colspan="2">{{ $today->translatedFormat('l, d F Y') }}</td>
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2">TUK</td>
-                            <td class="border border-gray-300 p-2" colspan="2">VOKASI UGM</td>
+                            <td class="border border-gray-300 p-2" colspan="2">
+                                @if(is_string($event->tuk))
+                                        {{ $event->tuk }}
+                                    @elseif(is_object($event->tuk))
+                                        <div>
+                                            <span class="font-semibold">{{ $event->tuk->nama_tuk }}</span> ({{ $event->tuk->kode_tuk }})
+                                            <div class="text-xs text-gray-600 mt-1">{{ $event->tuk->alamat }}</div>
+                                            <div class="text-xs text-gray-500">No. Lisensi: {{ $event->tuk->no_lisensi_skkn }}</div>
+                                        </div>
+                                    @else
+                                        Tidak ditemukan
+                                    @endif
+                            </td>
                         </tr>
                         <tr>
-                            <td class="border border-gray-300 p-2 font-semibold" colspan="2">Assesi</td>
+                            <td class="border border-gray-300 p-2 font-semibold" colspan="2">Asesi</td>
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2" colspan="2">Bahwa saya sudah mendapatkan penjelasan Hak dan Prosedur Banding Oleh Asesor</td>
@@ -125,7 +137,7 @@
                                 <label for="approve-pemohon" class="text-sm">Tanda Tangan Asesi</label>
                             </div>
                             <p class="mt-2">TTD: <img src="{{ asset('images/signature.jpg') }}" alt="Signature" class="h-6 inline"></p>
-                            <p>Tgl: 20-10-2024</p>
+                            <p>{{ $today->translatedFormat('l, d F Y') }}</p>
                         </div>
                         <div>
                             <div class="flex items-center space-x-2 mt-2">
@@ -133,12 +145,12 @@
                                 <label for="approve-admin" class="text-sm">Tanda Tangan Assesor</label>
                             </div>
                             <p class="mt-2">TTD: <img src="{{ asset('images/admin-signature.jpg') }}" alt="Asesor Signature" class="h-6 inline"></p>
-                            <p>Tgl: 20-10-2024</p>
+                            <p>{{ $today->translatedFormat('l, d F Y') }}</p>
                         </div>
                     </div>
                     <div class="flex justify-end mt-4">
-                                        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">SAVE</button>
-                                    </div>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">SAVE</button>
+                    </div>
                 </div>
             </div>
         </div>

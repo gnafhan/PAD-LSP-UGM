@@ -3,7 +3,7 @@
 @section('title', 'Home - Lembaga Sertifikasi Profesi UGM')
 
 @section('content')
-<div class="min-h-screen bg-gray-100">
+<div class="min-h-screen bg-gray-100 py-32">
   <div class="container mx-auto p-4">
     <div class="max-w-3xl mx-auto bg-white p-8 rounded-md shadow-md">
         <h1 class="text-2xl font-bold text-center mb-6">FR.APL.01 Permohonan Sertifikasi Kompetensi</h1>

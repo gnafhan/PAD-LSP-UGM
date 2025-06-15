@@ -223,6 +223,9 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     // Jadwal Uji Kompetensi
     Route::view('/jadwal-uji-kompetensi', 'home/home-asesi/APL-02/jadwal-uji-kompetensi')->name('asesi.jadwal-uji-kompetensi');
 
+    // Konsul Prauji
+    Route::view('/konsul-prauji', 'home/home-asesi/konsul-prauji')->name('asesi.konsul-prauji');
+
     // Logout asesi
     Route::post('/logout', function () {
         Auth::logout();

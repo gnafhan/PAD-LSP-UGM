@@ -215,17 +215,12 @@
                 </div>
 
             </div>
-
-
-
-                <!-- Button Simpan -->
-                <div class="flex justify-end pe-4">
-                    <button id="simpanRekomendasi" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                        Simpan dan Setujui
-                    </button>
-                </div>
+            <!-- Button Simpan -->
+            <div class="flex justify-end pe-4">
+                <button id="simpanRekomendasi" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
+                    Simpan dan Setujui
+                </button>
             </div>
-
         </div>
     </div>
     <div id="bgGradient"

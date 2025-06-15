@@ -11,10 +11,10 @@
            </button>
         </div>
         <div class="flex items-center ms-3">
-            <div id="avatarButton" type="button" data-dropdown-toggle="userDropdown" data-dropdown-placement="bottom-start" class="flex justify-end items-center gap-4 cursor-pointer" alt="User dropdown">
+            <div id="avatarButton" class="flex justify-end items-center gap-4 cursor-pointer">
                 <div class="font-medium text-right">
-                    <div class="text-blue-500 text-xl">$nama_asesor</div>
-                    <div class="text-sm font-extralight text-blue-500">$email_asesor</div>
+                    <div id="nama_asesor" class="text-blue-500 text-xl">$nama_asesor</div>
+                    <div id="email_asesor" class="text-sm font-extralight text-blue-500">$email_asesor</div>
                 </div>
                 <svg class="w-12 h-12 text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path fill-rule="evenodd" d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z" clip-rule="evenodd"/>
@@ -24,5 +24,67 @@
     </div>
 </nav>
 
-<!-- Navbar Ends -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const apiKey = "{{ env('API_KEY') }}";
 
+        // Get asesor ID dynamically from the authenticated user
+        const asesorId = @json(Auth::user()->asesor->id_asesor ?? 'ASESOR202500005');
+
+        // Stop execution if no asesor ID is found
+        if (!asesorId) {
+            console.error('No asesor ID found for the authenticated user');
+            document.getElementById('nama_asesor').textContent = 'User tidak teridentifikasi';
+            document.getElementById('email_asesor').textContent = 'Silahkan login kembali';
+            return;
+        }
+
+        // PERBAIKAN: Gunakan URL yang benar dengan string concatenation
+        const apiUrl = "{{ url('/api/v1/asesor/dashboard') }}/" + asesorId;
+
+        // Get CSRF token from meta tag
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+        // Make API request
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'API_KEY': apiKey,
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken || '',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('API Response:', result);
+
+            if (result.success && result.data) {
+                const data = result.data;
+
+                // Update profile information
+                document.getElementById('nama_asesor').textContent = data.nama_asesor || 'Nama tidak tersedia';
+                document.getElementById('email_asesor').textContent = data.email_asesor || 'Email tidak tersedia';
+            } else {
+                console.error('API returned success=false or missing data:', result);
+                document.getElementById('nama_asesor').textContent = 'Tidak dapat memuat data';
+                document.getElementById('email_asesor').textContent = result.message || 'Format respons tidak sesuai';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching asesor dashboard data:', error);
+            document.getElementById('nama_asesor').textContent = 'Error memuat data';
+            document.getElementById('email_asesor').textContent = error.message;
+        });
+    });
+</script>
+
+<!-- Navbar Ends -->

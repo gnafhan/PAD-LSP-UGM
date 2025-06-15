@@ -80,118 +80,75 @@
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[80%] rounded-full bg-biru opacity-10 blur-[80px]">
     </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get API key from environment variable
-        const apiKey = "{{ env('API_KEY') }}";
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const apiKey = "{{ env('API_KEY') }}";
 
-        // Get asesor ID dynamically from the authenticated user
-        const asesorId = @json(Auth::user()->asesor->id_asesor ?? 'ASESOR_DEFAULT_ID');
+            // Get asesor ID dynamically from the authenticated user with proper error handling
+            const asesorId = @json(Auth::user()->asesor->id_asesor ?? 'ASESOR202500005');
 
-        // Use a real asesor ID as fallback for testing
-        // const asesorId = "{{ Auth::user()->id_asesor ?? 'ASESOR202500005' }}";
-
-        // Construct the API URL using the app URL from environment
-        const apiUrl = {{ rtrim(env('APP_URL', 'http://localhost'), '/') }}/api/v1/asesor/dashboard/${asesorId};
-
-        // Get references to DOM elements we'll update
-        const asesorNameElement = document.getElementById('asesorName');
-        const asesorEmailElement = document.getElementById('asesorEmail');
-        const jumlahKompetensiTeknisElement = document.getElementById('jumlahKompetensiTeknis');
-        const jumlahAsesiElement = document.getElementById('jumlahAsesi');
-        const jumlahEventElement = document.getElementById('jumlahEvent');
-        const jumlahSkemaElement = document.getElementById('jumlahSkema');
-
-        console.log('API URL:', apiUrl);
-        console.log('API Key:', apiKey);
-        console.log('Asesor ID:', asesorId);
-        // Make API request
-        fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-API-KEY': apiKey,
-                'Accept': 'application/json'
+            // Stop execution if no asesor ID is found
+            if (!asesorId) {
+                console.error('No asesor ID found for the authenticated user');
+                document.getElementById('asesorName').textContent = 'User tidak teridentifikasi';
+                document.getElementById('asesorEmail').textContent = 'Silahkan login kembali';
+                return;
             }
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => {
-                    // Handle specific HTTP error codes
-                    if (response.status === 404) {
-                        if (asesorNameElement) asesorNameElement.textContent = 'Asesor tidak ditemukan';
-                        if (asesorEmailElement) asesorEmailElement.textContent = 'ID asesor tidak terdaftar dalam sistem';
-                    } else if (response.status === 401 || response.status === 403) {
-                        if (asesorNameElement) asesorNameElement.textContent = 'Akses tidak diizinkan';
-                        if (asesorEmailElement) asesorEmailElement.textContent = 'API key tidak valid atau akses tidak diizinkan';
-                    } else if (response.status >= 500) {
-                        if (asesorNameElement) asesorNameElement.textContent = 'Kesalahan server';
-                        if (asesorEmailElement) asesorEmailElement.textContent = 'Terjadi kesalahan pada server, coba lagi nanti';
-                    } else {
-                        if (asesorNameElement) asesorNameElement.textContent = 'Error memuat data';
-                        if (asesorEmailElement) asesorEmailElement.textContent = Error: ${err.message || response.statusText || 'Unknown error'};
-                    }
 
-                    // Set numeric fields to 'Tidak ada data' upon error
-                    if (jumlahKompetensiTeknisElement) jumlahKompetensiTeknisElement.textContent = 'N/A';
-                    if (jumlahAsesiElement) jumlahAsesiElement.textContent = 'N/A';
-                    if (jumlahEventElement) jumlahEventElement.textContent = 'N/A';
-                    if (jumlahSkemaElement) jumlahSkemaElement.textContent = 'N/A';
+            // PERBAIKAN: Gunakan URL yang benar
+            const apiUrl = "{{ url('/api/v1/asesor/dashboard') }}/" + asesorId;
 
-                    throw new Error(HTTP error ${response.status}: ${err.message || response.statusText});
-                });
-            }
-            return response.json();
-        })
-        .then(result => {
-            if (result.success && result.data) {
-                const data = result.data;
+            // Debug output
+            console.log('Fetching data for asesor ID:', asesorId);
+            console.log('API URL:', apiUrl);
 
-                // Update profile information
-                if (asesorNameElement) asesorNameElement.textContent = data.nama_asesor || 'Nama tidak tersedia';
-                if (asesorEmailElement) asesorEmailElement.textContent = data.email_asesor || 'Email tidak tersedia';
+            // Get CSRF token from meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-                // Update statistics counters
-                if (jumlahKompetensiTeknisElement) {
-                    jumlahKompetensiTeknisElement.textContent =
-                        data.jumlah_kompetensi_teknis !== undefined ? data.jumlah_kompetensi_teknis : '0';
+            // Make API request
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'API_KEY': apiKey,
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken || '',
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
-                if (jumlahAsesiElement) {
-                    jumlahAsesiElement.textContent =
-                        data.jumlah_asesi !== undefined ? data.jumlah_asesi : '0';
-                }
-                if (jumlahEventElement) {
-                    jumlahEventElement.textContent =
-                        data.jumlah_event !== undefined ? data.jumlah_event : '0';
-                }
-                if (jumlahSkemaElement) {
-                    jumlahSkemaElement.textContent =
-                        data.jumlah_skema !== undefined ? data.jumlah_skema : '0';
-                }
-            } else {
-                // Handle cases where success is false or data is not present
-                if (asesorNameElement) asesorNameElement.textContent = 'Tidak dapat memuat data';
-                if (asesorEmailElement) asesorEmailElement.textContent = result.message || 'Format respons tidak sesuai';
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
 
-                // Set numeric fields to 'Tidak ada data'
-                if (jumlahKompetensiTeknisElement) jumlahKompetensiTeknisElement.textContent = 'N/A';
-                if (jumlahAsesiElement) jumlahAsesiElement.textContent = 'N/A';
-                if (jumlahEventElement) jumlahEventElement.textContent = 'N/A';
-                if (jumlahSkemaElement) jumlahSkemaElement.textContent = 'N/A';
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log('API Response:', result);
 
-                console.error('API returned success=false or missing data:', result);
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching asesor dashboard data:', error);
+                if (result.success && result.data) {
+                    const data = result.data;
 
-            // If there's a network error that wasn't caught by previous handlers
-            if (!navigator.onLine) {
-                if (asesorNameElement) asesorNameElement.textContent = 'Tidak dapat terhubung ke server';
-                if (asesorEmailElement) asesorEmailElement.textContent = 'Periksa koneksi internet Anda';
-            }
+                    // Update profile information
+                    document.getElementById('asesorName').textContent = data.nama_asesor || 'Nama tidak tersedia';
+                    document.getElementById('asesorEmail').textContent = data.email_asesor || 'Email tidak tersedia';
+
+                    // Update statistics counters
+                    document.getElementById('jumlahKompetensiTeknis').textContent = data.jumlah_kompetensi_teknis || '0';
+                    document.getElementById('jumlahAsesi').textContent = data.jumlah_asesi || '0';
+                    document.getElementById('jumlahEvent').textContent = data.jumlah_event || '0';
+                    document.getElementById('jumlahSkema').textContent = data.jumlah_skema || '0';
+                } else {
+                    console.error('API returned success=false or missing data:', result);
+                    document.getElementById('asesorName').textContent = 'Tidak dapat memuat data';
+                    document.getElementById('asesorEmail').textContent = result.message || 'Format respons tidak sesuai';
+                }
+            })
+            .catch(error => {
+                console.error('Error details:', error);
+                document.getElementById('asesorName').textContent = 'Error: ' + (error.message || 'Unknown error');
+            });
         });
-    });
-</script>
+    </script>
 @endsection
-

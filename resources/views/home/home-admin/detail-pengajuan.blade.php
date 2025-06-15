@@ -11,27 +11,27 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         position: relative;
     }
-    
+
     .pdf-container iframe, .pdf-container embed {
         width: 100%;
         height: 100%;
         border: none;
     }
-    
+
     .document-card {
         transition: all 0.3s ease;
     }
-    
+
     .document-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
-    
+
     .status-badge {
         position: relative;
         overflow: hidden;
     }
-    
+
     .status-badge::before {
         content: '';
         position: absolute;
@@ -43,33 +43,33 @@
         background-size: 200% 200%;
         animation: shine 1.5s linear infinite;
     }
-    
+
     @keyframes shine {
         0% { background-position: 200% 0; }
         100% { background-position: -200% 0; }
     }
-    
+
     .signature-area {
         border: 1px dashed #cbd5e0;
         border-radius: 0.375rem;
         padding: 0.5rem;
         background-color: #f9fafb;
     }
-    
+
     .form-section {
         border-radius: 0.5rem;
         box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
         background-color: white;
         padding: 1.5rem;
     }
-    
+
     .section-header {
         position: relative;
         padding-bottom: 0.75rem;
         margin-bottom: 1.25rem;
         font-weight: 600;
     }
-    
+
     .section-header::after {
         content: '';
         position: absolute;
@@ -79,7 +79,7 @@
         height: 2px;
         background-color: #4F46E5;
     }
-    
+
     .btn-action {
         transition: all 0.2s ease;
         font-weight: 500;
@@ -87,18 +87,18 @@
         align-items: center;
         justify-content: center;
     }
-    
+
     .btn-action svg {
         margin-right: 0.5rem;
     }
-    
+
     .btn-action:hover {
         transform: translateY(-1px);
     }
 </style>
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-8">
+<div class="min-h-screen bg-gray-50 py-32">
     <div class="container mx-auto px-4">
         <div class="max-w-5xl mx-auto">
             <!-- Header with breadcrumbs -->
@@ -116,7 +116,7 @@
                             </ul>
                         </div>
                     </div>
-                @else    
+                @else
                 <div class="flex justify-end mt-8">
                     <button type="button" onclick="window.history.back()" class="btn-action px-5 py-2.5 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -125,7 +125,7 @@
                    </button>
                 </div>
                 @endif
-                
+
                 <!-- Status Badge -->
                 <div>
                     @if($asesiPengajuan->status_rekomendasi === 'Diterima')
@@ -157,7 +157,7 @@
                             Menunggu Persetujuan
                         </span>
                     @endif
-                    
+
                     <div class="text-xs text-gray-500 text-right mt-1">
                         ID: {{ $asesiPengajuan->id_pengajuan }}
                     </div>
@@ -260,13 +260,13 @@
         </div>
         @endif
 
-            
+
             <!-- Document information card -->
             <div class="bg-white rounded-lg shadow-md border border-gray-200 mb-8 overflow-hidden">
                 <div class="bg-indigo-50 px-6 py-4 border-b border-gray-200">
                     <h2 class="text-xl font-bold text-gray-800">FR.APL.01 Permohonan Sertifikasi Kompetensi</h2>
                 </div>
-                
+
                 <div class="p-6">
                     <form action="{{ route('admin.asesi.process', $asesiPengajuan->id_pengajuan) }}" method="POST" id="process-pengajuan-form">
                     @csrf
@@ -285,7 +285,7 @@
                                 </svg>
                                 Data Pribadi
                             </h4>
-                            
+
                             <div class="bg-gray-50 p-4 rounded-md">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                     <div>
@@ -331,7 +331,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Data Pekerjaan -->
                         <div>
                             <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
@@ -340,7 +340,7 @@
                                 </svg>
                                 Data Pekerjaan Sekarang
                             </h4>
-                            
+
                             <div class="bg-gray-50 p-4 rounded-md">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                     <div>
@@ -367,11 +367,11 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Bagian 2: Data Sertifikasi -->
                     <div class="form-section mb-8">
                         <h2 class="section-header font-semibold text-lg text-gray-800 mb-3">Bagian 2: Data Sertifikasi</h>
-                        
+
                         <div class="bg-gray-50 p-4 rounded-md">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                                 <div>
@@ -393,17 +393,17 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Bagian 3: Bukti Kelengkapan Pemohon -->
                     <div class="form-section mb-8">
                         <h2 class="section-header font-semibold text-lg text-gray-800 mb-3">Bagian 3: Bukti Kelengkapan Dokumen</h2>
-                        
+
                     @php
                         // Decode JSON string to PHP array if it's a string
-                        $fileKelengkapan = is_string($asesiPengajuan->file_kelengkapan_pemohon) 
-                            ? json_decode($asesiPengajuan->file_kelengkapan_pemohon, true) 
+                        $fileKelengkapan = is_string($asesiPengajuan->file_kelengkapan_pemohon)
+                            ? json_decode($asesiPengajuan->file_kelengkapan_pemohon, true)
                             : $asesiPengajuan->file_kelengkapan_pemohon;
-                            
+
                         // Define file type mapping - sesuaikan dengan key yang sebenarnya
                         $fileMapping = [
                             'bukti_jenjang_siswa' => 'Ijazah Pendidikan',
@@ -420,14 +420,14 @@
                             <div class="document-card bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                                 <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
                                     <h5 class="font-medium text-gray-700">{{ $label }}</h5>
-                                    
+
                                     @if(isset($fileKelengkapan[$key]) && !empty($fileKelengkapan[$key]))
                                         <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Tersedia</span>
                                     @else
                                         <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Tidak Tersedia</span>
                                     @endif
                                 </div>
-                                
+
                                 <div class="p-4">
                                     @if(isset($fileKelengkapan[$key]) && !empty($fileKelengkapan[$key]))
                                         <div class="pdf-container">
@@ -457,22 +457,22 @@
                             </div>
                         @endforeach
                     </div>
-                    
+
                     <!-- Tanda Tangan dan Persetujuan -->
                     <div class="form-section mb-8">
                         <h3 class="section-header text-lg text-gray-800">Persetujuan dan Tanda Tangan</h3>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
                             <!-- Pemohon -->
                             <div class="bg-white p-4 rounded-lg border border-gray-200">
                                 <h4 class="font-semibold text-gray-700 mb-2">Pemohon</h4>
                                 <p class="text-gray-600 mb-4 text-sm">Dengan ini saya menyetujui permohonan</p>
-                                
+
                                 <div class="mb-3">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
                                     <input type="text" value="{{ $asesiPengajuan->nama_user }}" class="w-full p-2 border border-gray-300 rounded-md bg-white text-gray-800" readonly />
                                 </div>
-                                
+
                                 <div class="signature-area flex flex-col items-center justify-center p-3 mt-2">
                                     @if($asesiPengajuan->ttd_pemohon)
                                         <img src="{{ asset('storage/' . $asesiPengajuan->ttd_pemohon) }}" alt="Tanda Tangan Pemohon" class="h-20 mb-2">
@@ -487,11 +487,11 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                             <!-- Admin LSP -->
                             <div class="bg-white p-4 rounded-lg border border-gray-200">
                                 <h4 class="font-semibold text-gray-700 mb-2">Admin LSP</h4>
-                                
+
                                 @if($asesiPengajuan->status_rekomendasi != 'Diterima' && $asesiPengajuan->status_rekomendasi != 'Ditolak')
                                     <div class="flex items-center mb-3">
                                         <input type="checkbox" id="approve-admin" name="admin_signed" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
@@ -506,7 +506,7 @@
                                         @endif
                                     </p>
                                 @endif
-                                
+
                                 <div class="mb-3">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Admin</label>
                                     @if (Auth::user()->level != 'admin')
@@ -515,13 +515,13 @@
                                     <input type="text" value="{{ Auth::user()->name ?? 'Admin LSP' }}" class="w-full p-2 border border-gray-300 rounded-md bg-white text-gray-800" readonly />
                                     @endif
                                 </div>
-                                
+
                                 <div class="signature-area flex flex-col items-center justify-center p-3 mt-2">
                                     @if (Auth::user()->level != 'admin')
                                         @php
                                             $adminTtd = Auth::user()->asesiPengajuan->admin->getTandaTanganPadaWaktu($asesiPengajuan->waktu_tanda_tangan)->first();
                                         @endphp
-                                        
+
                                         @if($adminTtd && $adminTtd->file_tanda_tangan)
                                             <img src="{{ asset('storage/' . $adminTtd->file_tanda_tangan) }}" alt="Tanda Tangan Admin" class="h-20 mb-2">
                                         @else
@@ -536,7 +536,7 @@
                                         @php
                                             $adminTtd = Auth::user()->tandaTanganAktif()->first();
                                         @endphp
-                                        
+
                                         @if($adminTtd && $adminTtd->file_tanda_tangan)
                                             <img src="{{ asset('storage/' . $adminTtd->file_tanda_tangan) }}" alt="Tanda Tangan Admin" class="h-20 mb-2">
                                         @else
@@ -547,18 +547,18 @@
                                                 <p class="mt-1 text-s text-gray-500">Tanda tangan tidak tersedia</p>
                                                 <span class="mt-1 text-sm font-bold text-gray-500">Upload data tanda tangan di halaman Pengguna!</span>
                                             </div>
-                                        @endif 
+                                        @endif
                                     @endif
-             
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Alasan Penolakan -->
                     <div id="reject-reason-container" class="form-section mb-8 {{ $asesiPengajuan->status_rekomendasi === 'Ditolak' ? '' : 'hidden' }}">
                         <h3 class="section-header text-lg text-gray-800">Alasan Penolakan</h3>
-                        
+
                         <div class="bg-gray-50 p-4 rounded-md">
                             @if($asesiPengajuan->status_rekomendasi === 'Ditolak')
                                 <p class="text-gray-700 italic">{{ $asesiPengajuan->alasan_penolakan_pengajuan }}</p>
@@ -579,7 +579,7 @@
                                 Permintaan Revisi
                             </div>
                         </h3>
-                        
+
                         <div class="bg-gray-50 p-4 rounded-md">
                             @if($asesiPengajuan->status === 'needs_revision')
                                 <div class="mb-4">
@@ -622,14 +622,14 @@
                                         </ul>
                                     </div>
                                 </div>
-                                
+
                             @else
                                 <div class="mb-4">
                                     <label for="revision_notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan Revisi</label>
                                     <textarea id="revision_notes" name="revision_notes" rows="4" class="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Jelaskan bagian apa yang perlu direvisi dan instruksi spesifik..."></textarea>
                                     <p class="text-xs text-gray-500 mt-1">Minimal 10 karakter. Berikan instruksi yang jelas kepada pemohon.</p>
                                 </div>
-                                
+
                                 <div class="mb-4">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Bagian yang Perlu Direvisi</label>
                                     <div class="space-y-2">
@@ -656,27 +656,27 @@
                             @endif
                         </div>
                     </div>
-                    
+
                     <!-- Tombol Aksi -->
                     @if(Auth::user()->level === 'admin')
                         @if($asesiPengajuan->status_rekomendasi != 'Diterima' && $asesiPengajuan->status_rekomendasi != 'Ditolak')
                             <div class="flex justify-end space-x-4 mt-8">
                                 <input type="hidden" name="action" id="form-action-input" value="">
-                                
+
                                 <button type="button" id="btn-reject" class="btn-action px-5 py-2.5 bg-white border border-red-500 text-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                     Tolak Pengajuan
                                 </button>
-                                
+
                                 <button type="button" id="btn-revise" class="btn-action px-5 py-2.5 bg-white border border-amber-500 text-amber-600 rounded-md hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                     Minta Revisi
                                 </button>
-                                
+
                                 <button type="button" id="btn-approve" class="btn-action px-5 py-2.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -721,7 +721,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const rejectReasonContainer = document.getElementById('reject-reason-container');
     const revisionSection = document.getElementById('revision-section');
     const approveAdminCheckbox = document.getElementById('approve-admin');
-    
+
     // Fix the form action field - pastikan hanya menggunakan satu field
     const actionInput = document.getElementById('form-action-input');
     const formAction = document.getElementById('form-action');
@@ -738,7 +738,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 return;
             }
-            
+
             Swal.fire({
                 title: 'Setujui Pengajuan?',
                 text: 'Apakah Anda yakin akan menyetujui pengajuan ini?',
@@ -753,11 +753,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Set form action value pada kedua field
                     actionInput.value = 'approve';
                     if (formAction) formAction.value = 'approve';
-                    
+
                     // Hide sections that shouldn't be visible
                     rejectReasonContainer.classList.add('hidden');
                     revisionSection.classList.add('hidden');
-                    
+
                     // Submit form
                     form.submit();
                 }
@@ -770,17 +770,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // Set form action pada kedua field
             actionInput.value = 'reject';
             if (formAction) formAction.value = 'reject';
-            
+
             // Show reject section, hide revision section
             rejectReasonContainer.classList.remove('hidden');
             revisionSection.classList.add('hidden');
-            
+
             // Scroll to the rejection reason field
             rejectReasonContainer.scrollIntoView({ behavior: 'smooth' });
-            
+
             // Don't submit yet, wait for user to fill in reason
             const existingButton = rejectReasonContainer.querySelector('#btn-confirm-reject');
-            
+
             if (!existingButton) {
                 // Create and add the confirm reject button
                 const submitReject = document.createElement('button');
@@ -788,10 +788,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitReject.id = 'btn-confirm-reject';
                 submitReject.className = 'mt-4 w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition flex items-center justify-center';
                 submitReject.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> Konfirmasi Penolakan';
-                
+
                 submitReject.addEventListener('click', function() {
                     const reasonField = document.getElementById('alasan_penolakan');
-                    
+
                     if (!reasonField.value || reasonField.value.length < 10) {
                         Swal.fire({
                             icon: 'error',
@@ -801,7 +801,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                         return;
                     }
-                    
+
                     Swal.fire({
                         title: 'Tolak Pengajuan?',
                         text: 'Apakah Anda yakin akan menolak pengajuan ini?',
@@ -817,24 +817,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     });
                 });
-                
+
                 // Add the button to the reject reason container
                 rejectReasonContainer.appendChild(submitReject);
             }
         });
     }
-    
+
     // New handler for revision button
     if (btnRevise) {
         btnRevise.addEventListener('click', function() {
             // Show revision form, hide reject section
             revisionSection.classList.remove('hidden');
             rejectReasonContainer.classList.add('hidden');
-            
+
             // Set the action value pada kedua field
             actionInput.value = 'revise';
             if (formAction) formAction.value = 'revise';
-            
+
             // Scroll to the revision section
             revisionSection.scrollIntoView({ behavior: 'smooth' });
         });
@@ -845,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
         confirmRevisionBtn.addEventListener('click', function() {
             const notesField = document.getElementById('revision_notes');
             const checkboxes = document.querySelectorAll('input[name="sections_to_revise[]"]:checked');
-            
+
             if (!notesField.value || notesField.value.length < 10) {
                 Swal.fire({
                     icon: 'error',
@@ -855,7 +855,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 return;
             }
-            
+
             if (checkboxes.length === 0) {
                 Swal.fire({
                     icon: 'error',
@@ -865,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 return;
             }
-            
+
             Swal.fire({
                 title: 'Kirim Permintaan Revisi?',
                 text: 'Apakah Anda yakin akan meminta asesi merevisi pengajuan ini?',
@@ -880,14 +880,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Memastikan kedua field action terisi dengan benar
                     actionInput.value = 'revise';
                     if (formAction) formAction.value = 'revise';
-                    
+
                     // Jika ada field alasan penolakan, kosongkan untuk mencegah validasi
                     const reasonField = document.getElementById('alasan_penolakan');
                     if (reasonField) {
                         // Beri nilai placeholder agar lolos validasi jika diperlukan
                         reasonField.value = "REVISI - TIDAK DIPERLUKAN";
                     }
-                    
+
                     form.submit();
                 }
             });
