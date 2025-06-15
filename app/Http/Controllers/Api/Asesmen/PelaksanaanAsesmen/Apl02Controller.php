@@ -53,7 +53,7 @@ class Apl02Controller extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(
-     *                 property="data",
+     *                 property="data", 
      *                 type="object",
      *                 @OA\Property(
      *                     property="general_info",
@@ -61,7 +61,7 @@ class Apl02Controller extends Controller
      *                     @OA\Property(property="nama_asesi", type="string", example="John Doe"),
      *                     @OA\Property(property="nama_tuk", type="string", example="TUK XYZ"),
      *                     @OA\Property(property="nama_asesor", type="string", example="Joko Wi"),
-     *                     @OA\Property(property="nama_skema", type="string", example="Programmer")
+     *                     @OA\Property(property="nama_skema", type="string", example="Programmer"),
      *                     @OA\Property(property="nomor_skema", type="string", example="SKM/0317/00010/2/2019/22")
      *                 ),
      *                 @OA\Property(property="detail_skema", type="array", @OA\Items(type="object")),

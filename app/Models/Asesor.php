@@ -34,7 +34,14 @@ class Asesor extends Model
         'kode_pos',
         'masa_berlaku',
         'daftar_bidang_kompetensi',
-        'file_sertifikat_asesor',
+        'file_sertifikat_asesor',    
+        'tempat_lahir',
+        'tanggal_lahir',
+        'provinsi',
+        'kabupaten_kota',
+
+        // Foreign key    
+        'id_user',
     ];
 
     protected $dates = ['masa_berlaku'];
@@ -43,6 +50,11 @@ class Asesor extends Model
     public function bidangKompetensi()
     {
         return $this->hasMany(BidangKompetensi::class, 'id_bidang_kompetensi', 'id_bidang_kompetensi');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 
     public function konsultasiPraUji()
