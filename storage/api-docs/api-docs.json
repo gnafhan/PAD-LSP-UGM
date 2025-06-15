@@ -98,8 +98,13 @@
                                                         },
                                                         "tanda_tangan_asesor": {
                                                             "type": "string",
-                                                            "format": "date",
-                                                            "example": "signature/ttd_asesor.png"
+                                                            "format": "string",
+                                                            "example": "tanda_tangan/ttd_asesor.png"
+                                                        },
+                                                        "tanda_tangan_asesi": {
+                                                            "type": "string",
+                                                            "format": "string",
+                                                            "example": "signature/ttd_asesi.png"
                                                         }
                                                     },
                                                     "type": "object"
@@ -400,9 +405,17 @@
                                                             "type": "string",
                                                             "example": "TUK XYZ"
                                                         },
+                                                        "nama_asesor": {
+                                                            "type": "string",
+                                                            "example": "Joko Wi"
+                                                        },
                                                         "nama_skema": {
                                                             "type": "string",
                                                             "example": "Programmer"
+                                                        },
+                                                        "nomor_skema": {
+                                                            "type": "string",
+                                                            "example": "SKM/0317/00010/2/2019/22"
                                                         }
                                                     },
                                                     "type": "object"
@@ -2301,6 +2314,10 @@
                                                             "type": "string",
                                                             "example": "Jane Smith"
                                                         },
+                                                        "nama_tuk": {
+                                                            "type": "string",
+                                                            "example": "TILC"
+                                                        },
                                                         "judul_skema": {
                                                             "type": "string",
                                                             "example": "Programmer"
@@ -2340,8 +2357,8 @@
                                                         },
                                                         "waktu_tanda_tangan_asesor": {
                                                             "type": "string",
-                                                            "format": "date",
-                                                            "example": "2025-05-15"
+                                                            "format": "timestamp",
+                                                            "example": "2025-05-15 20:00:00 WIB"
                                                         },
                                                         "tanda_tangan_asesor": {
                                                             "type": "string",
@@ -2741,6 +2758,9 @@
                                             "properties": {
                                                 "progress_asesmen": {
                                                     "type": "object"
+                                                },
+                                                "progress_summary": {
+                                                    "type": "object"
                                                 }
                                             },
                                             "type": "object"
@@ -2814,6 +2834,82 @@
                                             "example": "Data Asesor ditemukan"
                                         },
                                         "data": {
+                                            "properties": {
+                                                "id_asesor": {
+                                                    "type": "string",
+                                                    "example": "ASESOR202500001"
+                                                },
+                                                "nama_asesor": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@mail.ugm.ac.id"
+                                                },
+                                                "no_hp": {
+                                                    "type": "string",
+                                                    "example": "081234567890"
+                                                },
+                                                "alamat": {
+                                                    "type": "string",
+                                                    "example": "Jl. Contoh No. 123"
+                                                },
+                                                "no_ktp": {
+                                                    "type": "string",
+                                                    "example": "3301012345678901"
+                                                },
+                                                "jenis_kelamin": {
+                                                    "type": "string",
+                                                    "example": "Laki-laki"
+                                                },
+                                                "kebangsaan": {
+                                                    "type": "string",
+                                                    "example": "Indonesia"
+                                                },
+                                                "tempat_lahir": {
+                                                    "type": "string",
+                                                    "example": "Jakarta"
+                                                },
+                                                "tanggal_lahir": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "1990-01-01"
+                                                },
+                                                "provinsi": {
+                                                    "type": "string",
+                                                    "example": "DKI Jakarta"
+                                                },
+                                                "kabupaten_kota": {
+                                                    "type": "string",
+                                                    "example": "Jakarta Selatan"
+                                                },
+                                                "kode_pos": {
+                                                    "type": "string",
+                                                    "example": "12345"
+                                                },
+                                                "no_sertifikat": {
+                                                    "type": "string",
+                                                    "example": "CERT123456"
+                                                },
+                                                "no_met": {
+                                                    "type": "string",
+                                                    "example": "MET12345"
+                                                },
+                                                "kode_registrasi": {
+                                                    "type": "string",
+                                                    "example": "REG2024001"
+                                                },
+                                                "masa_berlaku": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2026-01-01"
+                                                },
+                                                "status_asesor": {
+                                                    "type": "string",
+                                                    "example": "Aktif"
+                                                }
+                                            },
                                             "type": "object"
                                         }
                                     },
@@ -2894,6 +2990,10 @@
                                         "type": "string",
                                         "example": "John Doe"
                                     },
+                                    "email": {
+                                        "type": "email",
+                                        "example": "johndoe@ugm.ac.id"
+                                    },
                                     "no_sertifikat": {
                                         "type": "string",
                                         "example": "CERT123456"
@@ -2929,6 +3029,23 @@
                                     "kode_registrasi": {
                                         "type": "string",
                                         "example": "REG-2025-001"
+                                    },
+                                    "tempat_lahir": {
+                                        "type": "string",
+                                        "example": "Jakarta"
+                                    },
+                                    "tanggal_lahir": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1990-01-01"
+                                    },
+                                    "provinsi": {
+                                        "type": "string",
+                                        "example": "DKI Jakarta"
+                                    },
+                                    "kabupaten_kota": {
+                                        "type": "string",
+                                        "example": "Jakarta Selatan"
                                     },
                                     "tanda_tangan": {
                                         "description": "File tanda tangan",
@@ -3168,9 +3285,9 @@
                                                             "type": "string",
                                                             "example": "01-01-2025"
                                                         },
-                                                        "no_sertifikat": {
+                                                        "no_met": {
                                                             "type": "string",
-                                                            "example": "CERT123456"
+                                                            "example": "MET123456"
                                                         },
                                                         "jumlah_skema": {
                                                             "type": "integer",

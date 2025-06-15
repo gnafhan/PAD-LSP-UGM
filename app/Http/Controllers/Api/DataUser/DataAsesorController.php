@@ -50,6 +50,7 @@ class DataAsesorController extends Controller
      *                     description="Method spoofing untuk Laravel"
      *                 ),
      *                 @OA\Property(property="nama_asesor", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="email", example="johndoe@ugm.ac.id"),
      *                 @OA\Property(property="no_sertifikat", type="string", example="CERT123456"),
      *                 @OA\Property(property="no_hp", type="string", example="081234567890"),
      *                 @OA\Property(property="alamat", type="string", example="Jl. Contoh No. 123"),
@@ -59,6 +60,10 @@ class DataAsesorController extends Controller
      *                 @OA\Property(property="no_met", type="string", example="MET12345"),
      *                 @OA\Property(property="kode_pos", type="string", example="12345"),
      *                 @OA\Property(property="kode_registrasi", type="string", example="REG-2025-001"),
+     *                 @OA\Property(property="tempat_lahir", type="string", example="Jakarta"),
+     *                 @OA\Property(property="tanggal_lahir", type="string", format="date", example="1990-01-01"),
+     *                 @OA\Property(property="provinsi", type="string", example="DKI Jakarta"),
+     *                 @OA\Property(property="kabupaten_kota", type="string", example="Jakarta Selatan"),
      *                 @OA\Property(
      *                     property="tanda_tangan",
      *                     description="File tanda tangan",
@@ -107,6 +112,7 @@ class DataAsesorController extends Controller
         // Lakukan validasi menggunakan Validator
         $validator = \Validator::make($request->all(), [
             'nama_asesor'               => 'required|string|max:255',
+            'email'                     => ['required', 'email', 'regex:/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/'],
             'no_sertifikat'             => 'required|string|max:30',
             'no_hp'                     => 'required|string|max:20',
             'no_met'                    => 'nullable|string|max:100',
@@ -116,8 +122,16 @@ class DataAsesorController extends Controller
             'kebangsaan'                => 'required|string|max:30',
             'kode_pos'                  => 'nullable|string|max:30',
             'kode_registrasi'           => 'nullable|string|max:30',
+            'tempat_lahir'              => 'nullable|string|max:100',
+            'tanggal_lahir'             => 'nullable|date',
+            'provinsi'                  => 'nullable|string|max:100',
+            'kabupaten_kota'            => 'nullable|string|max:100',
             'tanda_tangan'              => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'foto_asesor'               => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'email.required'            => 'Email tidak boleh kosong',
+            'email.email'               => 'Format email tidak valid',
+            'email.regex'               => 'Email harus menggunakan domain UGM (@mail.ugm.ac.id atau @ugm.ac.id)',
         ]);
 
         // Jika validasi gagal, kembalikan error response dengan status code 422
@@ -141,6 +155,7 @@ class DataAsesorController extends Controller
         // Persiapkan data update dari request
         $data = [
             'nama_asesor'               => $request->nama_asesor,
+            'email'                     => $request->email,
             'no_sertifikat'             => $request->no_sertifikat,
             'no_hp'                     => $request->no_hp,
             'no_met'                    => $request->no_met,
@@ -150,6 +165,10 @@ class DataAsesorController extends Controller
             'kebangsaan'                => $request->kebangsaan,
             'kode_pos'                  => $request->kode_pos,
             'kode_registrasi'           => $request->kode_registrasi,
+            'tempat_lahir'              => $request->tempat_lahir,
+            'tanggal_lahir'             => $request->tanggal_lahir,
+            'provinsi'                  => $request->provinsi,
+            'kabupaten_kota'            => $request->kabupaten_kota,
         ];
 
         // Simpan update ke database dengan error handling dan transaction
@@ -173,9 +192,19 @@ class DataAsesorController extends Controller
             // Update data asesor
             $asesor->update($data);
 
+            // Update data user terkait
+            if ($asesor->id_user) {
+                $user = \App\Models\User::find($asesor->id_user);
+                if ($user) {
+                    $user->name = $request->nama_asesor;
+                    $user->email = $request->email;
+                    $user->no_hp = $request->no_hp;
+                    $user->save();
+                }
+            }
+
             // Proses tanda tangan jika ada
             if ($request->hasFile('tanda_tangan')) {
-
                 // Nonaktifkan tanda tangan aktif yang ada
                 TandaTanganAsesor::where('id_asesor', $id)
                     ->whereNull('valid_until')
@@ -213,7 +242,6 @@ class DataAsesorController extends Controller
         }
     }
 
-
     /**
      * Show biodata asesor
      *
@@ -238,6 +266,24 @@ class DataAsesorController extends Controller
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
+     *                 @OA\Property(property="id_asesor", type="string", example="ASESOR202500001"),
+     *                 @OA\Property(property="nama_asesor", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="johndoe@mail.ugm.ac.id"),
+     *                 @OA\Property(property="no_hp", type="string", example="081234567890"),
+     *                 @OA\Property(property="alamat", type="string", example="Jl. Contoh No. 123"),
+     *                 @OA\Property(property="no_ktp", type="string", example="3301012345678901"),
+     *                 @OA\Property(property="jenis_kelamin", type="string", example="Laki-laki"),
+     *                 @OA\Property(property="kebangsaan", type="string", example="Indonesia"),
+     *                 @OA\Property(property="tempat_lahir", type="string", example="Jakarta"),
+     *                 @OA\Property(property="tanggal_lahir", type="string", format="date", example="1990-01-01"),
+     *                 @OA\Property(property="provinsi", type="string", example="DKI Jakarta"),
+     *                 @OA\Property(property="kabupaten_kota", type="string", example="Jakarta Selatan"),
+     *                 @OA\Property(property="kode_pos", type="string", example="12345"),
+     *                 @OA\Property(property="no_sertifikat", type="string", example="CERT123456"),
+     *                 @OA\Property(property="no_met", type="string", example="MET12345"),
+     *                 @OA\Property(property="kode_registrasi", type="string", example="REG2024001"),
+     *                 @OA\Property(property="masa_berlaku", type="string", format="date", example="2026-01-01"),
+     *                 @OA\Property(property="status_asesor", type="string", example="Aktif")
      *             )
      *         )
      *     ),

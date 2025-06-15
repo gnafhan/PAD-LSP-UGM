@@ -235,11 +235,25 @@
                     
                     <div class="mt-4 md:mt-0">
                         <form method="GET" action="{{ route('admin.tuk.index') }}" class="flex rounded-md shadow-sm">
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama penanggung jawab..." class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-l-md sm:text-sm border-gray-300 px-4 py-2">
+                        <!-- Menyimpan parameter pencarian TUK yang ada jika diperlukan -->
+                        @if(request()->has('tuk_search'))
+                            <input type="hidden" name="tuk_search" value="{{ request('tuk_search') }}">
+                        @endif
+                        
+                        <!-- Menyimpan parameter pagination TUK jika diperlukan -->
+                        @if(request()->has('tuk_page'))
+                            <input type="hidden" name="tuk_page" value="{{ request('tuk_page') }}">
+                        @endif
+                        
+                        <div class="relative w-full">
+                            <input type="text" name="pj_search" value="{{ request('pj_search') }}" 
+                                class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-l-md sm:text-sm border-gray-300 px-4 py-2"
+                                placeholder="Cari Penanggung Jawab...">
+                        </div>
                             <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
                                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>    
                                 Cari
                             </button>
                         </form>
@@ -319,11 +333,25 @@
                     
                     <div class="mt-4 md:mt-0">
                         <form method="GET" action="{{ route('admin.tuk.index') }}" class="flex rounded-md shadow-sm">
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama TUK..." class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-l-md sm:text-sm border-gray-300 px-4 py-2">
+                            <!-- Menyimpan parameter pencarian PJ yang ada jika diperlukan -->
+                            @if(request()->has('pj_search'))
+                                <input type="hidden" name="pj_search" value="{{ request('pj_search') }}">
+                            @endif
+                            
+                            <!-- Menyimpan parameter pagination PJ jika diperlukan -->
+                            @if(request()->has('pj_page'))
+                                <input type="hidden" name="pj_page" value="{{ request('pj_page') }}">
+                            @endif
+                            
+                            <div class="relative w-full">
+                                <input type="text" name="tuk_search" value="{{ request('tuk_search') }}" 
+                                    class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-l-md sm:text-sm border-gray-300 px-4 py-2"
+                                    placeholder="Cari TUK...">
+                            </div>
                             <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
                                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>    
                                 Cari
                             </button>
                         </form>

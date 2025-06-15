@@ -165,7 +165,6 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
             Route::get('{id}/edit', [AsesorController::class, 'edit'])->name('edit');
             Route::put('{id}/update-status', [AsesorController::class, 'updateStatus'])->name('update-status');
             Route::get('{id}', [AsesorController::class, 'show'])->name('show');
-            Route::delete('{id}', [AsesorController::class, 'destroy'])->name('destroy');
         });
 
         // Kompetensi Teknis Management

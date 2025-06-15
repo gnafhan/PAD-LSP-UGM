@@ -165,6 +165,12 @@ class User extends Authenticatable
         return $this->hasOne(Asesi::class, 'id_user', 'id_user');
     }
 
+    // asesor
+    public function asesor()
+    {
+        return $this->hasOne(Asesor::class, 'id_user', 'id_user');
+    }
+
     //asesi pengajuan
     public function asesiPengajuan()
     {

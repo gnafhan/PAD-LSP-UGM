@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Asesor;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AsesorSeeder extends Seeder
 {
@@ -13,6 +15,7 @@ class AsesorSeeder extends Seeder
      */
     public function run(): void
     {
+        // Data asesor yang akan dibuat
         $data = [
             [
                 'kode_registrasi' => 'R.57599.00.12.24',
@@ -20,7 +23,7 @@ class AsesorSeeder extends Seeder
                 'no_sertifikat' => 'SERT123456789',
                 'no_hp' => '081234567890',
                 'no_met' => 'MET12345',
-                'email' => 'budi.santoso@example.com',
+                'email' => 'budi.santoso@mail.ugm.ac.id',
                 'alamat' => 'Jl. Merdeka No. 123, Jakarta',
                 'status_asesor' => 'Aktif',
                 'foto_asesor' => 'budi.jpg',
@@ -36,7 +39,7 @@ class AsesorSeeder extends Seeder
                 'no_sertifikat' => 'SERT987654321',
                 'no_hp' => '082234567891',
                 'no_met' => 'MET67890',
-                'email' => 'siti.rahmawati@example.com',
+                'email' => 'siti.rahmawati@mail.ugm.ac.id',
                 'alamat' => 'Jl. Merdeka No. 456, Bandung',
                 'status_asesor' => 'Aktif',
                 'foto_asesor' => 'siti.jpg',
@@ -52,7 +55,7 @@ class AsesorSeeder extends Seeder
                 'no_sertifikat' => 'SERT654987321',
                 'no_hp' => '085234567892',
                 'no_met' => 'MET23456',
-                'email' => 'andi.prasetyo@example.com',
+                'email' => 'andi.prasetyo@mail.ugm.ac.id',
                 'alamat' => 'Jl. Sudirman No. 789, Surabaya',
                 'status_asesor' => 'Aktif',
                 'foto_asesor' => 'andi.jpg',
@@ -68,7 +71,7 @@ class AsesorSeeder extends Seeder
                 'no_sertifikat' => 'SERT123789654',
                 'no_hp' => '089234567893',
                 'no_met' => 'MET78901',
-                'email' => 'fitriani.kurniawati@example.com',
+                'email' => 'fitriani.kurniawati@mail.ugm.ac.id',
                 'alamat' => 'Jl. Kebon Jeruk No. 101, Jakarta',
                 'status_asesor' => 'Aktif',
                 'foto_asesor' => 'fitriani.jpg',
@@ -80,8 +83,45 @@ class AsesorSeeder extends Seeder
             ],
         ];
 
-        foreach ($data as $item) {
-            Asesor::create($item);
+        // Mulai transaksi database
+        DB::beginTransaction();
+        
+        try {
+            foreach ($data as $item) {
+                // Cek apakah user dengan email ini sudah ada
+                $user = User::where('email', $item['email'])->first();
+                
+                // Jika belum ada, buat user baru dengan level asesor
+                if (!$user) {
+                    $user = User::create([
+                        'name' => $item['nama_asesor'],
+                        'email' => $item['email'],
+                        'password' => Hash::make('password123'), // Password default
+                        'no_hp' => $item['no_hp'],
+                        'level' => 'asesor',
+                    ]);
+                } else {
+                    // Jika user sudah ada, update levelnya menjadi asesor
+                    $user->level = 'asesor';
+                    $user->name = $item['nama_asesor'];
+                    $user->save();
+                }
+                
+                // Cek apakah asesor dengan email ini sudah ada
+                $existingAsesor = Asesor::where('email', $item['email'])->first();
+                
+                if (!$existingAsesor) {
+                    // Buat data asesor dengan menggunakan id_user dari user
+                    Asesor::create(array_merge($item, [
+                        'id_user' => $user->id_user
+                    ]));
+                }
+            }
+            
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            echo "Error: " . $e->getMessage();
         }
     }
 }

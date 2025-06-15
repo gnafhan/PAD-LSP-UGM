@@ -18,35 +18,43 @@ class TukController extends Controller
     public function index(Request $request)
     {
         // Get search query
-        $search = $request->input('search');
+        // Query dasar untuk TUK
+        $tukQuery = TUK::query();
         
-        // Get TUK and PenanggungJawab data with pagination
-        $tuk = TUK::with('penanggungJawab')
-            ->when($search, function($query) use ($search) {
-                return $query->where('nama_tuk', 'like', "%{$search}%")
+        // Query dasar untuk Penanggung Jawab
+        $pjQuery = PenanggungJawab::query();
+        
+        // Terapkan filter untuk TUK saja
+        if ($request->has('tuk_search') && !empty($request->tuk_search)) {
+            $search = $request->tuk_search;
+            $tukQuery->where(function($query) use ($search) {
+                $query->where('nama_tuk', 'like', "%{$search}%")
                     ->orWhere('kode_tuk', 'like', "%{$search}%")
                     ->orWhere('alamat', 'like', "%{$search}%");
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            });
+        }
         
-        $penanggungJawab = PenanggungJawab::when($search, function($query) use ($search) {
-                return $query->where('nama_pananggung_jawab', 'like', "%{$search}%")
-                    ->orWhere('status_penanggung_jawab', 'like', "%{$search}%");
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        // Terapkan filter untuk Penanggung Jawab saja
+        if ($request->has('pj_search') && !empty($request->pj_search)) {
+            $search = $request->pj_search;
+            $pjQuery->where(function($query) use ($search) {
+                $query->where('nama_penanggung_jawab', 'like', "%{$search}%");
+            });
+        }
         
+        // Ambil data dengan filter masing-masing
+        $tuk = $tukQuery->paginate(10, ['*'], 'tuk_page');
+        $penanggungJawab = $pjQuery->paginate(10, ['*'], 'pj_page');
+            
         // Get statistics
         $totalTuk = TUK::count();
         $totalPj = PenanggungJawab::count();
         
         return view('home.home-admin.tuk.index', compact(
-            'tuk', 
-            'penanggungJawab', 
             'totalTuk', 
             'totalPj', 
-            'search'
+            'tuk',
+            'penanggungJawab'
         ));
     }
 
