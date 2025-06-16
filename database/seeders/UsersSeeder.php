@@ -64,6 +64,20 @@ class UsersSeeder extends Seeder
                 'no_hp' => '085678901226',
                 'level' => 'admin',
             ],
+
+            // Account for automation testing purposes
+            [
+                'email' => 'adminDwi@ugm.ac.id',
+                'password' => 'AdminDwi',
+                'no_hp' => '085678901226',
+                'level' => 'admin',
+            ],
+            [
+                'email' => 'adminNafa@mail.ugm.ac.id',
+                'password' => 'AdminNafa',
+                'no_hp' => '085678901226',
+                'level' => 'admin',
+            ],
         ];
 
         // Seed predefined users using the model to leverage boot method
