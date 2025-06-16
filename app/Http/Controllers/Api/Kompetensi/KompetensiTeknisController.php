@@ -45,7 +45,8 @@ class KompetensiTeknisController extends Controller
      *                     @OA\Property(property="no_met", type="string", example="MET123456"),
      *                     @OA\Property(property="jumlah_skema", type="integer", example=3),
      *                     @OA\Property(property="status_asesor", type="string", example="Aktif"),
-     *                     @OA\Property(property="file_sertifikat", type="string", example="cert123.pdf")
+     *                     @OA\Property(property="file_url_sertifikat_bnsp", type="string", example="/storage/sertifikat_asesor/asesor_5LLZtmcxXl_1750085296.pdf"),
+     *                     @OA\Property(property="file_url_foto_asesor", type="string", example="/storage/data_asesor/5LLZtmcxXl_1750085296.pdf")
      *                 ),
      *                 @OA\Property(property="kompetensi_teknis", type="array", 
      *                     @OA\Items(
@@ -93,7 +94,7 @@ class KompetensiTeknisController extends Controller
                 'skema_kompetensi' => $item->skema_kompetensi,
                 'masa_berlaku' => $this->formatTanggal($item->masa_berlaku),
                 'file_sertifikat' => $item->file_sertifikat,
-                'file_url' => asset('storage/sertifikat/' . $item->file_sertifikat)
+                'file_url' => asset('storage/sertifikat_kompetensi/' . $item->file_sertifikat)
             ];
         });
 
@@ -108,7 +109,9 @@ class KompetensiTeknisController extends Controller
                     'no_met' => $asesor->no_met,
                     'jumlah_skema' => $jumlahSkema,
                     'status_asesor' => $asesor->status_asesor,
-                    'file_sertifikat' => $asesor->file_sertifikat_asesor,
+                    'file_url_sertifikat_bnsp' => asset('storage/sertifikat_asesor/' . $asesor->file_sertifikat_asesor),
+                    'file_url_foto_asesor' => asset('storage/data_asesor/' . $asesor->foto_asesor),
+
                 ],
                 'kompetensi_teknis' => $kompetensiTeknis
             ],
