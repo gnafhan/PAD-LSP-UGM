@@ -53,6 +53,11 @@
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
     </div>
 
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4 hidden" role="alert">
+        <span>Memuat data progress...</span>
+    </div>
+
     <!-- Error Message -->
     <div id="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 hidden" role="alert">
         <span id="errorText">Terjadi kesalahan saat memuat data.</span>
@@ -185,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const apiKey = "{{ env('API_KEY') }}";
 
     // Get asesor ID dynamically from the authenticated user with proper error handling
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? 'ASESOR202500005');
+    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
 
     // Stop execution if no asesor ID is found
     if (!asesorId) {
@@ -441,75 +446,75 @@ function fetchAsesiProgressData(asesiId) {
 
 // Function to populate progress tables
 function populateProgressTables(progressData) {
-    // Populate Pelaksanaan Asesmen table
-    if (progressData.pelaksanaan && progressData.pelaksanaan.length > 0) {
-        populateTable('pelaksanaanAsesmen', progressData.pelaksanaan);
-    } else {
-        document.querySelector('#pelaksanaanAsesmen tbody').innerHTML = `
-            <tr>
-                <td colspan="5" class="px-4 py-3 text-center text-gray-500">Tidak ada data pelaksanaan asesmen</td>
-            </tr>
-        `;
-    }
+    // Get progress asesmen data from API response
+    const progressAsesmen = progressData.progress_asesmen || {};
+    const progressSummary = progressData.progress_summary || {};
 
-    // Populate Perangkat Asesmen table
-    if (progressData.perangkat && progressData.perangkat.length > 0) {
-        populateTable('perangkatAsesmen', progressData.perangkat);
-    } else {
-        document.querySelector('#perangkatAsesmen tbody').innerHTML = `
-            <tr>
-                <td colspan="5" class="px-4 py-3 text-center text-gray-500">Tidak ada data perangkat asesmen</td>
-            </tr>
-        `;
-    }
+    // Update total progress information
+    document.getElementById('totalSteps').textContent = `Total Langkah: ${progressSummary.total_steps || 0}`;
+    document.getElementById('totalProgress').textContent = `${progressSummary.progress_percentage || 0}%`;
 
-    // Populate Keputusan Asesmen table
-    if (progressData.keputusan && progressData.keputusan.length > 0) {
-        populateTable('keputusanAsesmen', progressData.keputusan);
-    } else {
-        document.querySelector('#keputusanAsesmen tbody').innerHTML = `
-            <tr>
-                <td colspan="5" class="px-4 py-3 text-center text-gray-500">Tidak ada data keputusan asesmen</td>
-            </tr>
-        `;
-    }
+    // Define step categories mapping based on the API response structure
+    const stepCategories = {
+        pelaksanaan: [
+            { key: 'apl01', name: 'APL 01 - Formulir Permohonan Sertifikat Kompetensi' },
+            { key: 'apl02', name: 'APL 02 - Asesmen Mandiri' },
+            { key: 'konsultasi_pra_uji', name: 'Konsultasi Pra Uji Kompetensi' },
+            { key: 'ak01', name: 'AK 01 - Persetujuan Asesmen dan Kerahasiaan' },
+            { key: 'mapa01', name: 'MAPA 01 - Merencanakan Aktivitas dan Proses Asesmen' }
+        ],
+        perangkat: [
+            { key: 'mapa02', name: 'MAPA 02 - Melaksanakan Asesmen' },
+            { key: 'pernyataan_ketidak_berpihakan', name: 'Pernyataan Ketidakberpihakan' },
+            { key: 'ak07', name: 'AK 07 - Banding Asesmen' },
+            { key: 'ia01', name: 'IA 01 - Instrumen Asesmen Observasi Langsung' },
+            { key: 'ia02', name: 'IA 02 - Instrumen Asesmen Portofolio' }
+        ],
+        keputusan: [
+            { key: 'hasil_asesmen', name: 'Hasil Asesmen' },
+            { key: 'ak02', name: 'AK 02 - Rekaman Asesmen Kompetensi' },
+            { key: 'umpan_balik', name: 'Umpan Balik dan Catatan Asesmen' },
+            { key: 'ak04', name: 'AK 04 - Keputusan Asesmen' }
+        ]
+    };
 
-    // Update overall progress if available
-    if (progressData.overall) {
-        document.getElementById('totalSteps').textContent = `Total Langkah: ${progressData.overall.total_steps || 0}`;
-        document.getElementById('totalProgress').textContent = `${progressData.overall.progress_percentage || 0}%`;
-    }
+    // Populate each table
+    populateTable('pelaksanaanAsesmen', stepCategories.pelaksanaan, progressAsesmen);
+    populateTable('perangkatAsesmen', stepCategories.perangkat, progressAsesmen);
+    populateTable('keputusanAsesmen', stepCategories.keputusan, progressAsesmen);
 }
 
-// Function to populate a specific table with data
-function populateTable(tableId, items) {
+// Function to populate a specific table with progress data
+function populateTable(tableId, steps, progressData) {
     const tableBody = document.querySelector(`#${tableId} tbody`);
     let tableContent = '';
 
-    items.forEach((item, index) => {
+    steps.forEach((step, index) => {
+        const stepProgress = progressData[step.key] || {};
+        const isCompleted = stepProgress.completed || false;
+        const completedAt = stepProgress.completed_at || null;
+        const progressPercent = isCompleted ? 100 : 0;
+
         // Format date if available
-        const formattedDate = item.tanggal ? formatDate(item.tanggal) : '-';
+        const formattedDate = completedAt ? formatDateFromWIB(completedAt) : '-';
 
-        // Calculate progress percentage
-        const progressPercent = item.progress_percentage || 0;
-
-        // Determine detail URL based on item type and item_id
-        const detailUrl = getDetailUrl(tableId, item.id);
+        // Determine detail URL based on step key
+        const detailUrl = getDetailUrlByStepKey(step.key);
 
         tableContent += `
             <tr>
                 <td class="px-4 py-3 text-sm text-gray-700">${index + 1}</td>
-                <td class="px-4 py-3 text-center">
+                <td class="px-4 py-3 text-center flex justify-center">
                     <a href="${detailUrl}" class="text-biru hover:text-ungu">
-                        <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        <svg class="w-6 h-6 text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                             width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd"
-                                d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v3H8a1 1 0 1 0 0 2h3v3a1 1 0 1 0 2 0v-3h3a1 1 0 1 0 0-2h-3V8Z"
+                                d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z"
                                 clip-rule="evenodd" />
                         </svg>
                     </a>
                 </td>
-                <td class="px-4 py-3 text-gray-700 text-left">${item.nama || '-'}</td>
+                <td class="px-4 py-3 text-gray-700 text-left">${step.name}</td>
                 <td class="px-4 py-3 text-gray-700 text-center">${formattedDate}</td>
                 <td class="flex px-4 py-3 justify-items-center align-middle">
                     <div class="bg-white rounded-[4px] mx-auto border-2 border-hijau w-16 h-fit relative">
@@ -523,29 +528,41 @@ function populateTable(tableId, items) {
     tableBody.innerHTML = tableContent;
 }
 
-// Function to get detail URL based on table and item ID
-function getDetailUrl(tableId, itemId) {
-    if (!itemId) return '#';
+// Function to get detail URL based on step key
+function getDetailUrlByStepKey(stepKey) {
+    // Map step keys to appropriate routes
+    const routeMapping = {
+        'apl01': '#',
+        'apl02': '{{ route('frapl02-asesor') }}',
+        'ak01': '{{ route('frak01-asesor') }}',
+        'konsultasi_pra_uji': '{{ route('konsul-prauji-asesor') }}',
+        'mapa01': '{{ route('frmapa01-asesor') }}',
+        'mapa02': '{{ route('frmapa02-asesor') }}',
+        'pernyataan_ketidak_berpihakan': '{{ route('ketidakberpihakan-asesor') }}',
+        'ak07': '{{ route('frak07-asesor') }}',
+        'ia01': '{{ route('fria01-asesor') }}',
+        'ia02': '{{ route('fria02-asesor') }}',
+        'hasil_asesmen': '{{ route('hasil-asesmen-asesor') }}',
+        'ak02': '{{ route('frak02-asesor') }}',
+        'umpan_balik': '#',
+        'ak04': '{{ route('frak04-asesor') }}'
+    };
 
-    // Determine which route to use based on the table ID
-    switch(tableId) {
-        case 'pelaksanaanAsesmen':
-            return `{{ url('/asesor/pelaksanaan-asesmen') }}/${itemId}`;
-        case 'perangkatAsesmen':
-            return `{{ url('/asesor/perangkat-asesmen') }}/${itemId}`;
-        case 'keputusanAsesmen':
-            return `{{ url('/asesor/keputusan-asesmen') }}/${itemId}`;
-        default:
-            return '#';
-    }
+    return routeMapping[stepKey] || '#';
 }
 
-// Format date function (e.g., "2025-06-15" to "15 Juni 2025")
-function formatDate(dateString) {
+// Format date function for WIB format (e.g., "16-06-2025 22:08:49 WIB" to "16 Juni 2025")
+function formatDateFromWIB(dateString) {
     if (!dateString) return '-';
 
     try {
-        const date = new Date(dateString);
+        // Parse WIB format date string (e.g., "16-06-2025 22:08:49 WIB")
+        const datePart = dateString.split(' ')[0]; // Get "16-06-2025"
+        const [day, month, year] = datePart.split('-');
+
+        // Create date object
+        const date = new Date(year, month - 1, day);
+
         if (isNaN(date.getTime())) return dateString; // Return original if invalid
 
         // Indonesian month names

@@ -205,9 +205,4 @@ class User extends Authenticatable
         });
     }
 
-    public function asesor()
-    {
-        return $this->hasOne(Asesor::class, 'id_asesor', 'id_asesor');
-    }
-
 }

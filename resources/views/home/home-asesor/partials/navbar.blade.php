@@ -29,7 +29,7 @@
         const apiKey = "{{ env('API_KEY') }}";
 
         // Get asesor ID dynamically from the authenticated user
-        const asesorId = @json(Auth::user()->asesor->id_asesor ?? 'ASESOR202500005');
+        const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
 
         // Stop execution if no asesor ID is found
         if (!asesorId) {

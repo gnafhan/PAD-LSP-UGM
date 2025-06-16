@@ -18,7 +18,7 @@ class KompetensiTeknisController extends Controller
 {
         /**
      * Get data kompetensi teknis asesor
-     * 
+     *
      * @OA\Get(
      *     path="/asesor/kompetensi_teknis/{id}",
      *     summary="Mendapatkan data kompetensi teknis asesor",
@@ -47,7 +47,7 @@ class KompetensiTeknisController extends Controller
      *                     @OA\Property(property="status_asesor", type="string", example="Aktif"),
      *                     @OA\Property(property="file_sertifikat", type="string", example="cert123.pdf")
      *                 ),
-     *                 @OA\Property(property="kompetensi_teknis", type="array", 
+     *                 @OA\Property(property="kompetensi_teknis", type="array",
      *                     @OA\Items(
      *                         @OA\Property(property="id_kompetensi_teknis", type="string", example="1"),
      *                         @OA\Property(property="lembaga_sertifikasi", type="string", example="LSP UGM"),
@@ -93,7 +93,7 @@ class KompetensiTeknisController extends Controller
                 'skema_kompetensi' => $item->skema_kompetensi,
                 'masa_berlaku' => $this->formatTanggal($item->masa_berlaku),
                 'file_sertifikat' => $item->file_sertifikat,
-                'file_url' => asset('storage/sertifikat/' . $item->file_sertifikat)
+                'file_url' => asset('storage/sertifikat_kompetensi/' . $item->file_sertifikat)
             ];
         });
 
@@ -117,7 +117,7 @@ class KompetensiTeknisController extends Controller
 
     /**
      * Format tanggal dengan penanganan berbagai tipe data
-     * 
+     *
      * @param mixed $tanggal
      * @return string
      */
@@ -126,11 +126,11 @@ class KompetensiTeknisController extends Controller
         if (empty($tanggal)) {
             return '';
         }
-        
+
         if ($tanggal instanceof \Carbon\Carbon) {
             return $tanggal->format('d-m-Y');
         }
-        
+
         // Coba convert string ke carbon
         try {
             return \Carbon\Carbon::parse($tanggal)->format('d-m-Y');

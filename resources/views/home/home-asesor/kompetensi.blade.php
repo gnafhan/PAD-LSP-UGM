@@ -33,6 +33,7 @@
         <div class="grid grid-cols-7 divide-x-2 divide-dashed gap-6 justify-center px-4 mb-4 bg-white border border-border rounded-md">
             <div class="flex col-span-3 items-center p-3 gap-2 rounded-full bg-white">
                 <img id="profilePicture" src="{{ asset('images/ronaldo.png') }}" alt="Profile Picture" class="w-40 h-40 rounded-full">
+                {{-- <img id="profile-image" src="" alt="Preview Foto Profil" class="w-40 h-40 rounded-full"> --}}
                 <div class="flex-col gap-2 pe-2">
                     <div class="flex items-center gap-2 mb-4">
                         <svg class="w-6 h-6 text-sidebar_font" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -103,12 +104,13 @@
     </div>
 </div>
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const apiKey = "{{ env('API_KEY') }}";
 
         // Get asesor ID dynamically from the authenticated user with proper error handling
-        const asesorId = @json(Auth::user()->asesor->id_asesor ?? 'ASESOR202500005');
+        const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
 
         // Stop execution if no asesor ID is found
         if (!asesorId) {
@@ -154,8 +156,9 @@
                 const kompetensiData = result.data.kompetensi_teknis;
 
                 // Update asesor information
+                document.getElementById('profilePicture').src = asesorData.file_url_foto_asesor || '{{ asset('images/ronaldo.png') }}';
                 document.getElementById('asesorName').textContent = asesorData.nama_asesor || 'Nama tidak tersedia';
-                document.getElementById('nomorMET').textContent = asesorData.no_sertifikat || 'Nomor tidak tersedia';
+                document.getElementById('nomorMET').textContent = asesorData.no_met || 'Nomor tidak tersedia';
                 document.getElementById('jumlahSkema').textContent = asesorData.jumlah_skema || '0';
                 document.getElementById('masaBerlaku').textContent = asesorData.masa_berlaku || 'Tidak tersedia';
 
@@ -174,8 +177,8 @@
 
                 // Set sertifikat link if available
                 const sertifikatLink = document.getElementById('sertifikatLink');
-                if (asesorData.file_sertifikat) {
-                    sertifikatLink.href = "{{ asset('storage/sertifikat') }}/" + asesorData.file_sertifikat;
+                if (asesorData.file_url_sertifikat_bnsp) {
+                    sertifikatLink.href = asesorData.file_url_sertifikat_bnsp;
                 } else {
                     sertifikatLink.href = "#";
                     sertifikatLink.classList.add('cursor-not-allowed', 'opacity-50');
@@ -193,11 +196,11 @@
                             <tr>
                                 <td class="px-4 py-3 text-sm text-gray-700">${index + 1}</td>
                                 <td class="px-4 py-3">${item.lembaga_sertifikasi || '-'}</td>
-                                <td class="px-4 py-3">${item.nama_sertifikasi || '-'}</td>
+                                <td class="px-4 py-3">${item.skema_kompetensi || '-'}</td>
                                 <td class="px-4 py-3">
                                     <div class="flex justify-center items-center h-full">
-                                        ${item.file_sertifikat ? `
-                                            <a href="{{ asset('storage/kompetensi') }}/${item.file_sertifikat}" target="_blank" class="text-biru hover:text-blue-700">
+                                        ${item.file_url ? `
+                                            <a href="${item.file_url}" target="_blank" class="text-biru hover:text-blue-700">
                                                 <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                                     <path fill-rule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Z" clip-rule="evenodd"/>
                                                 </svg>

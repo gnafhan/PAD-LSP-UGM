@@ -136,7 +136,7 @@
                         <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
                             Valid Mulai
                         </span>
-                        <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
+                        <p id="tanggalSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
                             16 Mei 2025
                         </p>
                     </div>
@@ -194,7 +194,7 @@
 
             <!-- Tabel 2 APL02 -->
             <div class="p-4">
-                <p id="judulTabelAPL02" class="text-sidebar_font font-semibold pb-2">
+                <p id="judulTabelKonsulPrauji" class="text-sidebar_font font-semibold pb-2">
                     Asesor agar menginformasikan hal-hal dibawah ini :
                 </p>
 
@@ -264,6 +264,156 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const apiKey = "{{ env('API_KEY') }}";
+
+    // Get asesor ID dynamically from the authenticated user with proper error handling
+    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+
+    // Stop execution if no asesor ID is found
+    if (!asesorId) {
+        console.error('No asesor ID found for the authenticated user');
+        document.querySelector('#daftarKetidakberpihakan tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">User tidak teridentifikasi, silahkan login kembali</td>
+            </tr>
+        `;
+        return;
+    }
+
+    // Construct API URL with the asesor ID
+    const apiUrl = "{{ url('/api/v1/asesor/asesis') }}/" + asesorId;
+
+    // Debug output
+    console.log('Fetching data for asesor ID:', asesorId);
+    console.log('API URL:', apiUrl);
+
+    // Get CSRF token from meta tag
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    // Make API request
+    fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'API-KEY': apiKey,
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken || '',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(result => {
+        console.log('API Response:', result);
+
+        if (result.success && result.data) {
+            const asesisData = result.data.asesis;
+            const jumlahAsesi = result.data.jumlah_asesi;
+
+            // Update the table with asesi data
+            const tableBody = document.querySelector('#daftarKonsul tbody');
+
+            if (asesisData && asesisData.length > 0) {
+                let tableContent = '';
+
+                asesisData.forEach((asesi, index) => {
+                // Calculate progress percentage for display
+                const progressPercent = asesi.progress_percentage || 0;
+
+                // Determine if there's any progress (completed steps > 0)
+                const hasProgress = asesi.completed_steps > 0;
+
+                // Select appropriate icon based on progress
+                const statusIcon = hasProgress
+                    ? `<svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                    </svg>`
+                    : `<svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                    </svg>`;
+
+                tableContent += `
+                    <tr>
+                        <td class="px-4 py-3 text-sm text-gray-700">${index + 1}</td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="showSummary('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${asesi.progress_percentage}, ${asesi.completed_steps}, ${asesi.total_steps})" class="">
+                                <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                        d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <button onclick="showDocument('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${asesi.progress_percentage}, ${asesi.completed_steps}, ${asesi.total_steps})" class="">
+                                <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        </td>
+                        <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_asesi}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_skema}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">${asesi.nomor_skema}</td>
+                        <td class="flex px-4 py-3 justify-center items-center">
+                            ${statusIcon}
+
+                        </td>
+                    </tr>
+                `;
+            });
+
+                tableBody.innerHTML = tableContent;
+            } else {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data asesi</td>
+                    </tr>
+                `;
+            }
+
+            // Implementasi pencarian
+            const searchInput = document.getElementById('searchKonsul');
+            searchInput.addEventListener('keyup', function() {
+                const searchValue = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#daftarKonsul tbody tr');
+
+                rows.forEach(row => {
+                    const nama = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+                    const skema = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
+                    const kode = row.querySelector('td:nth-child(5)')?.textContent.toLowerCase() || '';
+
+                    if (nama.includes(searchValue) || skema.includes(searchValue) || kode.includes(searchValue)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+        } else {
+            console.error('API returned success=false or missing data:', result);
+            document.querySelector('#daftarKonsul tbody').innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
+                </tr>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error details:', error);
+        document.querySelector('#daftarKonsul tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
+            </tr>
+        `;
+    });
+});
 function showSummary() {
     // Sembunyikan elemen pencarian utama
     document.getElementById('searchKonsul').classList.add('hidden');
