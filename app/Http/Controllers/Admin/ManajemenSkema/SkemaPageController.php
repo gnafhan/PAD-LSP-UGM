@@ -100,6 +100,14 @@ class SkemaPageController extends Controller
     public function storeDataSkema(Request $request)
     {
         $idUKsInput = json_decode($request->daftar_id_uk, true);
+        
+        // Validate that at least one UK is selected
+        if (empty($idUKsInput)) {
+            return redirect()->back()
+                ->withErrors(['daftar_id_uk' => 'Minimal 1 Unit Kompetensi harus dipilih.'])
+                ->withInput();
+        }
+        
         $idUKs = [];
 
         foreach ($idUKsInput as $idUK) {

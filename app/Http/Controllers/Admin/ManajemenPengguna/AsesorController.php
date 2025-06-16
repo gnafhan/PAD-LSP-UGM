@@ -172,34 +172,17 @@ class AsesorController extends Controller
      * Update asesor data.
      * 
      */
-    public function updateStatus(Request $request, Asesor $asesor) // Changed from updateStatus and uses Route Model Binding
+    public function updateStatus(Request $request) // Changed from updateStatus and uses Route Model Binding
     {
         $validator = Validator::make($request->all(), [
-            'nama_asesor' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                'max:250',
-                Rule::unique('users', 'email')->ignore($asesor->user_id, 'id_user'),
-                Rule::unique('asesor', 'email')->ignore($asesor->id_asesor, 'id_asesor'),
-                'regex:/^[a-zA-Z0-9._%+-]+@(mail\.ugm\.ac\.id|ugm\.ac\.id)$/'
-            ],
-            'no_hp_asesor' => 'required|string|max:20',
+            'id_asesor' => 'required|string',
             'status_asesor' => 'required|in:Aktif,Tidak',
             'masa_berlaku' => 'required|date',
             'bidang_kompetensi' => 'required|string', // Expecting JSON string of IDs
             'kode_registrasi' => 'nullable|string|max:100',
             'no_sertifikat' => 'nullable|string|max:100',
-            'no_met' => 'nullable|string|max:100',
             'file_sertifikat_asesor' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
-            'no_ktp' => 'nullable|string|max:20',
-            'alamat' => 'nullable|string',
         ], [
-            'nama_asesor.required' => 'Nama asesor tidak boleh kosong.',
-            'email.required' => 'Email tidak boleh kosong.',
-            'email.regex' => 'Email harus menggunakan email resmi UGM (@mail.ugm.ac.id atau @ugm.ac.id).',
-            'email.unique' => 'Email sudah digunakan oleh pengguna lain.',
-            'no_hp_asesor.required' => 'Nomor HP asesor tidak boleh kosong.',
             'status_asesor.required' => 'Status asesor harus dipilih.',
             'masa_berlaku.required' => 'Tanggal masa berlaku wajib diisi.',
             'bidang_kompetensi.required' => 'Bidang kompetensi tidak boleh kosong.',
@@ -213,20 +196,13 @@ class AsesorController extends Controller
         
         try {
             DB::beginTransaction();
-            
-            // 1. Update User data
-            $user = $asesor->user; // Get the related user
-            if ($user) {
-                $user->name = $request->nama_asesor;
-                $user->email = $request->email;
-                $user->no_hp = $request->no_hp_asesor;
-                $user->save();
-            } else {
-                // Handle case where user is not found, though this indicates data inconsistency
-                DB::rollBack();
-                Log::error('User not found for Asesor ID: ' . $asesor->id_asesor . ' during update.');
-                return redirect()->route('admin.pengguna.index')
-                    ->with('error', 'Data pengguna terkait asesor tidak ditemukan.');
+
+            $asesor = Asesor::find($request->id_asesor);
+
+            if (!$asesor) {
+                return redirect()->back()
+                    ->with('error', 'Asesor tidak ditemukan.')
+                    ->withInput();
             }
             
             // Update bidang kompetensi
@@ -254,19 +230,14 @@ class AsesorController extends Controller
             }
             
             // 2. Update data asesor
-            $asesor->nama_asesor = $request->nama_asesor;
-            $asesor->email = $request->email;
-            $asesor->no_hp = $request->no_hp_asesor;
-            $asesor->status_asesor = $request->status_asesor;
-            $asesor->masa_berlaku = $request->masa_berlaku;
-            $asesor->daftar_bidang_kompetensi = json_encode($bidangKompetensiIds);
-            $asesor->kode_registrasi = $request->kode_registrasi;
-            $asesor->no_sertifikat = $request->no_sertifikat;
-            $asesor->no_met = $request->no_met;
-            $asesor->file_sertifikat_asesor = $fileSertifikatPath;
-            $asesor->no_ktp = $request->no_ktp;
-            $asesor->alamat = $request->alamat ?? $asesor->alamat; // Keep old if not provided
-            $asesor->save();
+            $asesor->update([
+                'status_asesor' => $request->status_asesor,
+                'masa_berlaku' => $request->masa_berlaku,
+                'daftar_bidang_kompetensi' => json_encode($bidangKompetensiIds),
+                'kode_registrasi' => $request->kode_registrasi,
+                'no_sertifikat' => $request->no_sertifikat,
+                'file_sertifikat_asesor' => $fileSertifikatPath
+            ]);
             
             DB::commit();
             

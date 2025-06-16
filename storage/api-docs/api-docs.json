@@ -3297,9 +3297,13 @@
                                                             "type": "string",
                                                             "example": "Aktif"
                                                         },
-                                                        "file_sertifikat": {
+                                                        "file_url_sertifikat_bnsp": {
                                                             "type": "string",
-                                                            "example": "cert123.pdf"
+                                                            "example": "/storage/sertifikat_asesor/asesor_5LLZtmcxXl_1750085296.pdf"
+                                                        },
+                                                        "file_url_foto_asesor": {
+                                                            "type": "string",
+                                                            "example": "/storage/data_asesor/5LLZtmcxXl_1750085296.pdf"
                                                         }
                                                     },
                                                     "type": "object"

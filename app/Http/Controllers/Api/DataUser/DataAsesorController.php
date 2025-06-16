@@ -315,10 +315,23 @@ class DataAsesorController extends Controller
             $asesor->file_url_tanda_tangan = asset('storage/tanda_tangan/' . $tandaTangan->file_tanda_tangan);
         }
 
+        // File_sertifikat_asesor
+        if ($asesor->file_sertifikat_asesor) {
+            $asesor->file_url_sertifikat_bnsp = asset('storage/sertifikat_asesor/' . $asesor->file_sertifikat_asesor);
+        } else {
+            $asesor->file_url_sertifikat_bnsp = null;
+        }
+
+        $foto_asesor_url = $asesor->foto_asesor
+            ? asset('storage/data_asesor/' . $asesor->foto_asesor)
+            : null;
+
+        $asesor->foto_asesor_url = $foto_asesor_url;
+
         return response()->json([
             'success' => true,
             'message' => 'Data Asesor ditemukan',
-            'data'    => $asesor->makeHidden(['created_at', 'updated_at', 'tanda_tangan']),
+            'data'    => $asesor->makeHidden(['created_at', 'updated_at', 'tanda_tangan', 'file_sertifikat_asesor']),
         ], 200);
     }
 
