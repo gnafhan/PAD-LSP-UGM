@@ -25,7 +25,7 @@ class Ak01Controller extends Controller
     protected $validationService;
     protected $progressService;
 
-    
+
     public function __construct(AsesmenValidationService $validationService, ProgressTrackingService $progressService)
     {
         $this->validationService = $validationService;
@@ -35,7 +35,7 @@ class Ak01Controller extends Controller
 
     /**
      * Get AK01 data for an Asesi
-     * 
+     *
      * @OA\Get(
      *     path="/asesmen/ak01/{id_asesi}",
      *     summary="Mendapatkan data formulir AK01 untuk asesi",
@@ -94,16 +94,16 @@ class Ak01Controller extends Controller
     {
         // Validate Asesi exists
         $asesiResult = $this->validationService->validateAsesiExists(
-            $id_asesi, 
+            $id_asesi,
             ['skema', 'rincianAsesmen.asesor', 'rincianAsesmen.event.tuk']
         );
-        
+
         if (isset($asesiResult['error'])) {
             return response()->json($asesiResult, $asesiResult['code']);
         }
-        
+
         $asesi = $asesiResult;
-        
+
         // Validate Asesi has RincianAsesmen
         $rincianResult = $this->validationService->validateRincianAsesmen($asesi);
         if ($rincianResult) {
@@ -112,7 +112,7 @@ class Ak01Controller extends Controller
 
         $asesor = $asesi->rincianAsesmen->asesor;
         $id_asesor = $asesor->id_asesor;
-        
+
         // Get AK01 data if it exists
         $ak01 = Ak01::where('id_asesi', $id_asesi)
             ->where('id_asesor', $id_asesor)
@@ -146,9 +146,9 @@ class Ak01Controller extends Controller
                     'general_info' => $generalInfo,
                     'ak01' => [
                         'hasil_yang_akan_dikumpulkan' => $hasilItems,
-                        'waktu_tanda_tangan_asesi' => DateTimeHelper::toWIB($ak01->waktu_tanda_tangan_asesi),                        
+                        'waktu_tanda_tangan_asesi' => DateTimeHelper::toWIB($ak01->waktu_tanda_tangan_asesi),
                         'tanda_tangan_asesi' => $asesi->ttd_pemohon ? $asesi->ttd_pemohon = asset('storage/' . $asesi->ttd_pemohon) : null,
-                        'waktu_tanda_tangan_asesor' => DateTimeHelper::toWIB($ak01->waktu_tanda_tangan_asesor),                        
+                        'waktu_tanda_tangan_asesor' => DateTimeHelper::toWIB($ak01->waktu_tanda_tangan_asesor),
                         'tanda_tangan_asesor' => $tandaTanganAsesor ? $tandaTanganAsesor->file_url : "null",
                     ],
                     'record_exists' => true
@@ -168,7 +168,7 @@ class Ak01Controller extends Controller
 
     /**
      * Create or update AK01 data for Asesi
-     * 
+     *
      * @OA\Post(
      *     path="/asesmen/ak01/asesi/save",
      *     summary="Menyimpan tanda tangan Asesi pada formulir AK01",
@@ -233,10 +233,10 @@ class Ak01Controller extends Controller
         if (isset($asesiResult['error'])) {
             return response()->json($asesiResult, $asesiResult['code']);
         }
-        
+
         // Validate Asesi-Asesor pair
         $pairResult = $this->validationService->validateAsesiAsesorPair(
-            $request->id_asesi, 
+            $request->id_asesi,
             $request->id_asesor
         );
         if ($pairResult) {
@@ -265,8 +265,8 @@ class Ak01Controller extends Controller
                 'timestamp' => Carbon::now()->format('d-m-Y H:i:s')
             ]);
             $this->progressService->completeStep(
-                $request->id_asesi, 
-                'ak01', 
+                $request->id_asesi,
+                'ak01',
                 'Completed by Asesi ID: ' . $request->id_asesi . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
             );
         }
@@ -280,7 +280,7 @@ class Ak01Controller extends Controller
 
     /**
      * Create or update AK01 data for Asesor
-     * 
+     *
      * @OA\Post(
      *     path="/asesmen/ak01/asesor/save",
      *     summary="Menyimpan data formulir AK01 oleh Asesor",
@@ -292,7 +292,7 @@ class Ak01Controller extends Controller
      *             required={"id_asesi", "id_asesor", "hasil_yang_akan_dikumpulkan"},
      *             @OA\Property(property="id_asesi", type="string", example="ASESI2025XXXXX"),
      *             @OA\Property(property="id_asesor", type="string", example="ASESOR2025XXXXX"),
-     *             @OA\Property(property="hasil_yang_akan_dikumpulkan", type="array", 
+     *             @OA\Property(property="hasil_yang_akan_dikumpulkan", type="array",
      *                @OA\Items(type="string", example="Hasil Observasi Langsung")),
      *             @OA\Property(property="is_signing", type="boolean", example=true, description="Set to true if the asesor is signing the form")
      *         )
@@ -324,10 +324,10 @@ class Ak01Controller extends Controller
         if (isset($asesiResult['error'])) {
             return response()->json($asesiResult, $asesiResult['code']);
         }
-        
+
         // Validate Asesi-Asesor pair
         $pairResult = $this->validationService->validateAsesiAsesorPair(
-            $request->id_asesi, 
+            $request->id_asesi,
             $request->id_asesor
         );
         if ($pairResult) {
@@ -345,7 +345,7 @@ class Ak01Controller extends Controller
             // check if asesor has a signature
             $tanda_tangan_asesor = TandaTanganAsesor::where('id_asesor', $request->id_asesor)->first();
             if ($tanda_tangan_asesor) {
-                $ak01->waktu_tanda_tangan_asesor = now();                
+                $ak01->waktu_tanda_tangan_asesor = now();
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -372,8 +372,8 @@ class Ak01Controller extends Controller
         if ($ak01->waktu_tanda_tangan_asesi && $ak01->waktu_tanda_tangan_asesor) {
             // Update the progres_asesmen table
             $this->progressService->completeStep(
-                $request->id_asesi, 
-                'ak01', 
+                $request->id_asesi,
+                'ak01',
                 'Completed by Asesor ID: ' . $request->id_asesor . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
             );
             log::info('AK01 completed by Asesor', [

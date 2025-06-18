@@ -21,58 +21,99 @@
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
     </div>
     <div id="frameHomeAsesor" class="relative z-10 p-8 border border-border bg-white rounded-2xl">
-        <p class="pb-3 text-lg font-medium text-black">Profile</p>
-        <div class="flex justify-between py-6 px-8 mb-4 bg-bg_dashboard border border-border rounded-2xl">
-            <div class="flex w-fit items-center p-3 gap-2 rounded-full border border-border bg-white">
-                <img id="profilePicture" src="{{ asset('images/image 48.png') }}" alt="Profile Picture" class="m-2 w-24 h-24 rounded-full">
-                <div class="font-medium text-black pe-4 ">
-                    <p id="asesorName">Nama Asesor</p>
-                    <div id="asesorEmail" class="text-sm font-light text-font_desc">Email Asesor</div>
-                </div>
+        <!-- Loading State Indicator -->
+        <div id="loadingState" class="w-full flex flex-col items-center justify-center py-8">
+            <div class="flex items-center space-x-2 mb-4">
+                <svg class="animate-spin h-8 w-8 text-biru" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-lg font-medium text-gray-700">Memuat data asesor...</span>
             </div>
+            <div class="text-sm text-gray-500 text-center max-w-md">
+                Sistem sedang mengambil informasi profil dan statistik asesor dari server. Mohon tunggu sebentar.
+            </div>
+        </div>
 
-            <div class="flex gap-4 my-4">
-                <div class="flex w-36 items-center justify-center mx-6 p-2 rounded-2xl border border-border bg-white">
-                    <div class="px-2 text-font_selesai justify-items-center items-center text-black">
-                        <p id="jumlahKompetensiTeknis" class="text-4xl font-semibold">0</p>
-                        <p class="font-medium text-center">Kompetensi Teknis</p>
+        <!-- Content (hidden until loaded) -->
+        <div id="contentState" class="hidden">
+            <p class="pb-3 text-lg font-medium text-black">Profile</p>
+            <div class="flex justify-between py-6 px-8 mb-4 bg-bg_dashboard border border-border rounded-2xl">
+                <div class="flex w-fit items-center p-3 gap-2 rounded-full border border-border bg-white">
+                    <img id="profilePicture" src="{{ asset('images/ronaldo.png') }}" alt="Profile Picture" class="w-40 h-40 object-cover rounded-full">
+                    <div class="font-medium text-black pe-4 ">
+                        <p id="asesorName">Nama Asesor</p>
+                        <div id="asesorEmail" class="text-sm font-light text-font_desc">Email Asesor</div>
                     </div>
                 </div>
-                <div class="flex w-32 items-center justify-center p-2 rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(139,92,246,0.15)]">
-                  <div class="px-2 text-font_selesai justify-items-center items-center text-font_status">
-                    <p id="jumlahAsesi" class="text-4xl font-medium">0</p>
-                    <p class="font-medium">Asesi</p>
-                  </div>
+
+                <div class="flex gap-4 my-4">
+                    <div class="flex w-36 items-center justify-center mx-6 p-2 rounded-2xl border border-border bg-white">
+                        <div class="px-2 text-font_selesai justify-items-center items-center text-black">
+                            <p id="jumlahKompetensiTeknis" class="text-4xl font-semibold">0</p>
+                            <p class="font-medium text-center">Kompetensi Teknis</p>
+                        </div>
+                    </div>
+                    <div class="flex w-32 items-center justify-center p-2 rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(139,92,246,0.15)]">
+                      <div class="px-2 text-font_selesai justify-items-center items-center text-font_status">
+                        <p id="jumlahAsesi" class="text-4xl font-medium">0</p>
+                        <p class="font-medium">Asesi</p>
+                      </div>
+                    </div>
+                    <div class="flex w-32 items-center justify-center rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(59,130,246,0.15)]">
+                      <div class="px-2 text-font_progress justify-items-center items-center text-font_status">
+                        <p id="jumlahEvent" class="text-4xl font-medium">0</p>
+                        <p class="font-medium">Event</p>
+                      </div>
+                    </div>
+                    <div class="flex w-32 items-center justify-center rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(139,92,246,0.15)]">
+                      <div class="px-2 text-font_pending justify-items-center items-center text-font_status">
+                        <p id="jumlahSkema" class="text-4xl font-medium">0</p>
+                        <p class="font-medium">Skema</p>
+                      </div>
+                    </div>
                 </div>
-                <div class="flex w-32 items-center justify-center rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(59,130,246,0.15)]">
-                  <div class="px-2 text-font_progress justify-items-center items-center text-font_status">
-                    <p id="jumlahEvent" class="text-4xl font-medium">0</p>
-                    <p class="font-medium">Event</p>
-                  </div>
-                </div>
-                <div class="flex w-32 items-center justify-center rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(139,92,246,0.15)]">
-                  <div class="px-2 text-font_pending justify-items-center items-center text-font_status">
-                    <p id="jumlahSkema" class="text-4xl font-medium">0</p>
-                    <p class="font-medium">Skema</p>
-                  </div>
+            </div>
+            <p class="pt-4 pb-3 text-lg font-medium text-black">Informasi</p>
+            <div class="flex w-80 gap-3 p-4 items-center rounded-2xl bg-white border border-border">
+                <svg class="w-16 h-16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="url(#icon-gradient)">
+                  <defs>
+                    <linearGradient id="icon-gradient" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#3B82F6" />
+                      <stop offset="100%" stop-color="#8B5CF6" />
+                    </linearGradient>
+                  </defs>
+                  <path fill-rule="evenodd" d="M6 2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 1 0 0-2h-2v-2h2a1 1 0 0 0 1-1V4a2 2 0 0 0-2-2h-8v16h5v2H7a1 1 0 1 1 0-2h1V2H6Z" clip-rule="evenodd" />
+                </svg>
+
+                <div class="font-medium">
+                  <p class="text-2xl text-black">Pedoman</p>
+                  <div class="text-sm font-light text-font_desc">Tata cara dan flow sertifikasi</div>
                 </div>
             </div>
         </div>
-        <p class="pt-4 pb-3 text-lg font-medium text-black">Informasi</p>
-        <div class="flex w-80 gap-3 p-4 items-center rounded-2xl bg-white border border-border">
-            <svg class="w-16 h-16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="url(#icon-gradient)">
-              <defs>
-                <linearGradient id="icon-gradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stop-color="#3B82F6" />
-                  <stop offset="100%" stop-color="#8B5CF6" />
-                </linearGradient>
-              </defs>
-              <path fill-rule="evenodd" d="M6 2a2 2 0 0 0-2 2v15a3 3 0 0 0 3 3h12a1 1 0 1 0 0-2h-2v-2h2a1 1 0 0 0 1-1V4a2 2 0 0 0-2-2h-8v16h5v2H7a1 1 0 1 1 0-2h1V2H6Z" clip-rule="evenodd" />
-            </svg>
 
-            <div class="font-medium">
-              <p class="text-2xl text-black">Pedoman</p>
-              <div class="text-sm font-light text-font_desc">Tata cara dan flow sertifikasi</div>
+        <!-- Error State -->
+        <div id="errorState" class="hidden w-full py-8">
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800" id="errorTitle">Gagal memuat data</h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            <p id="errorMessage">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</p>
+                        </div>
+                        <div class="mt-4">
+                            <button type="button" onclick="location.reload()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                Coba Lagi
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -87,11 +128,37 @@
             // Get asesor ID dynamically from the authenticated user with proper error handling
             const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
 
+            // Function to show loading state
+            function showLoadingState() {
+                document.getElementById('loadingState').classList.remove('hidden');
+                document.getElementById('contentState').classList.add('hidden');
+                document.getElementById('errorState').classList.add('hidden');
+            }
+
+            // Function to show content state
+            function showContentState() {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('contentState').classList.remove('hidden');
+                document.getElementById('errorState').classList.add('hidden');
+            }
+
+            // Function to show error state
+            function showErrorState(title, message) {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('contentState').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+
+                document.getElementById('errorTitle').textContent = title || 'Gagal memuat data';
+                document.getElementById('errorMessage').textContent = message || 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.';
+            }
+
+            // Show loading state initially
+            showLoadingState();
+
             // Stop execution if no asesor ID is found
             if (!asesorId) {
                 console.error('No asesor ID found for the authenticated user');
-                document.getElementById('asesorName').textContent = 'User tidak teridentifikasi';
-                document.getElementById('asesorEmail').textContent = 'Silahkan login kembali';
+                showErrorState('User Tidak Teridentifikasi', 'ID Asesor tidak ditemukan. Silakan login kembali.');
                 return;
             }
 
@@ -104,6 +171,51 @@
 
             // Get CSRF token from meta tag
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            // Function untuk menangani foto profil
+            function setupProfilePicture(asesorData) {
+                const profilePictureElement = document.getElementById('profilePicture');
+                const defaultImage = '{{ asset('images/default-profile.png') }}';
+                const imageContainer = profilePictureElement.parentElement;
+
+                // Reset kelas dan konten sebelumnya
+                imageContainer.classList.remove('relative');
+                const existingOverlay = imageContainer.querySelector('.profile-overlay');
+                if (existingOverlay) {
+                    existingOverlay.remove();
+                }
+
+                // Cek apakah URL foto valid
+                if (asesorData.file_url_foto_asesor &&
+                    asesorData.file_url_foto_asesor !== '/storage/data_asesor' &&
+                    asesorData.file_url_foto_asesor !== '/storage/data_asesor/') {
+
+                    console.log('URL foto ditemukan:', asesorData.file_url_foto_asesor);
+                    profilePictureElement.src = asesorData.file_url_foto_asesor;
+
+                    // Tambahkan error handler jika gambar gagal dimuat
+                    profilePictureElement.onerror = function() {
+                        console.log('Gagal memuat foto, menggunakan placeholder');
+                        showNoPhotoOverlay(profilePictureElement, imageContainer);
+                    };
+                } else {
+                    console.log('URL foto tidak tersedia');
+                    showNoPhotoOverlay(profilePictureElement, imageContainer);
+                }
+            }
+
+            // Function untuk menampilkan overlay "Tidak ada foto"
+            function showNoPhotoOverlay(imgElement, container) {
+                // Gunakan gambar default
+                imgElement.src = '{{ asset('images/default-profile.png') }}';
+
+                // Tambahkan overlay dengan teks
+                container.classList.add('relative');
+                const overlay = document.createElement('div');
+                overlay.className = 'profile-overlay absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70 rounded-full';
+                overlay.innerHTML = '<span class="text-white text-center font-medium px-2">Tidak ada foto</span>';
+                container.appendChild(overlay);
+            }
 
             // Make API request
             fetch(apiUrl, {
@@ -139,15 +251,17 @@
                     document.getElementById('jumlahAsesi').textContent = data.jumlah_asesi || '0';
                     document.getElementById('jumlahEvent').textContent = data.jumlah_event || '0';
                     document.getElementById('jumlahSkema').textContent = data.jumlah_skema || '0';
+
+                    // Show content after data is loaded
+                    showContentState();
                 } else {
                     console.error('API returned success=false or missing data:', result);
-                    document.getElementById('asesorName').textContent = 'Tidak dapat memuat data';
-                    document.getElementById('asesorEmail').textContent = result.message || 'Format respons tidak sesuai';
+                    showErrorState('Data Tidak Tersedia', result.message || 'Format respons tidak sesuai');
                 }
             })
             .catch(error => {
                 console.error('Error details:', error);
-                document.getElementById('asesorName').textContent = 'Error: ' + (error.message || 'Unknown error');
+                showErrorState('Terjadi Kesalahan', 'Error: ' + (error.message || 'Unknown error'));
             });
         });
     </script>

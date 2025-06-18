@@ -172,478 +172,397 @@
             </div>
 
             <div class="p-6">
-              <!-- Progress Steps Navigator -->
-              <div class="mb-8 hidden sm:flex justify-between items-center">
-                @php
-                  $progresAsesmen = App\Models\ProgresAsesmen::where('id_asesi', $asesi->id_asesi ?? null)->first();
+              <!-- Loading Indicator -->
+              <div id="progressLoading" class="text-center py-8">
+                <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-indigo-500 transition ease-in-out duration-150">
+                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Memuat progres asesmen...
+                </div>
+              </div>
 
-                  // Define steps and their corresponding fields in ProgresAsesmen model
-                  $steps = [
-                    ['id' => 1, 'name' => 'Pendaftaran', 'fields' => ['apl1', 'apl02', 'ak01']],
-                    ['id' => 2, 'name' => 'Prauji', 'fields' => ['konsultasi_pra_uji', 'ia01', 'ia02']],
-                    ['id' => 3, 'name' => 'Pasca Uji', 'fields' => ['ia07']]
-                  ];
+              <!-- Error Message -->
+              <div id="progressError" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <span id="progressErrorText">Terjadi kesalahan saat memuat data progres.</span>
+              </div>
 
-                  // Function to check if a step is completed or active
-                  $isStepCompleted = function($step) use ($progresAsesmen) {
-                    if (!$progresAsesmen) return false;
+              <!-- Progress Content -->
+              <div id="progressContent" class="hidden">
+                <!-- Progress Steps Navigator -->
+                <div id="progressSteps" class="mb-8 hidden sm:flex justify-between items-center">
+                  <!-- Will be populated dynamically -->
+                </div>
 
-                    $completed = true;
-                    foreach ($step['fields'] as $field) {
-                      if (empty($progresAsesmen->$field)) {
-                        $completed = false;
-                        break;
-                      }
-                    }
-                    return $completed;
-                  };
-
-                  // Determine the current active step
-                  $activeStep = 1;
-                  foreach ($steps as $index => $step) {
-                    if ($isStepCompleted($step)) {
-                      $activeStep = $index + 2; // Move to next step
-                    } else {
-                      break;
-                    }
-                  }
-                  $activeStep = min($activeStep, count($steps)); // Don't exceed total steps
-                @endphp
-
-                @foreach($steps as $index => $step)
-                  <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 rounded-full {{ $index + 1 <= $activeStep ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700' }} flex items-center justify-center">{{ $step['id'] }}</div>
-                    <span class="font-medium {{ $index + 1 <= $activeStep ? 'text-indigo-600' : 'text-gray-700' }}">{{ $step['name'] }}</span>
-                  </div>
-
-                  @if($index < count($steps) - 1)
-                    <div class="h-0.5 w-24 bg-gray-200 relative">
-                      <div class="absolute inset-0 bg-indigo-600" style="width: {{ $index + 1 < $activeStep ? '100%' : ($index + 1 == $activeStep ? '50%' : '0%') }}"></div>
+                <!-- Progress Summary Card -->
+                <div id="progressSummary" class="mb-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-4 text-white">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h4 class="text-lg font-semibold">Progress Keseluruhan</h4>
+                      <p class="text-indigo-100 text-sm">Total langkah yang telah diselesaikan</p>
                     </div>
-                  @endif
-                @endforeach
-              </div>
-
-              <!-- Formulir Pendaftaran -->
-              <div class="mb-8">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                  <div class="flex-shrink-0 bg-indigo-100 text-indigo-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">1</div>
-                  Formulir Pendaftaran
-                </h3>
-                <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr>
-                        <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
-                        <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center">
-                              <svg class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                            </div>
-                            <div class="ml-3">
-                              <div class="text-sm font-medium text-gray-900">Formulir AK.01</div>
-                              <div class="text-xs text-gray-500">Formulir Permohonan Sertifikasi</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          @php
-                            $fieldName = 'ak01';
-                            $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
-                          @endphp
-
-                          @if($isCompleted)
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                              </svg>
-                              Selesai
-                            </span>
-                          @else
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              Belum Selesai
-                            </span>
-                          @endif
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap text-sm">
-                          <a href="{{ route('asesi.fr.ak1') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                            <span>Detail</span>
-                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center">
-                              <svg class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                            </div>
-                            <div class="ml-3">
-                              <div class="text-sm font-medium text-gray-900">Formulir APL.01</div>
-                              <div class="text-xs text-gray-500">Permohonan Sertifikasi Kompetensi</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          @php
-                            $fieldName = 'apl01';
-                            $isCompleted = $progresAsesmen && $progresAsesmen->apl01 == true;
-                          @endphp
-
-                          @if($isCompleted)
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                              </svg>
-                              Selesai
-                            </span>
-                          @else
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              Belum Selesai
-                            </span>
-                          @endif
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap text-sm">
-                          <a href="{{ route('asesi.apl1-detail', auth()->user()->id_user) }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                            <span>Detail</span>
-                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center">
-                              <svg class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                            </div>
-                            <div class="ml-3">
-                              <div class="text-sm font-medium text-gray-900">Formulir APL.02</div>
-                              <div class="text-xs text-gray-500">Asesmen Mandiri</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          @php
-                            $fieldName = 'apl02';
-                            $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
-                          @endphp
-
-                          @if($isCompleted)
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                              </svg>
-                              Selesai
-                            </span>
-                          @else
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              Belum Selesai
-                            </span>
-                          @endif
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap text-sm">
-                          <a href="{{ route('asesi.asesmen.mandiri') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                            <span>Detail</span>
-                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                    <div class="text-right">
+                      <div class="text-2xl font-bold" id="progressPercentage">0%</div>
+                      <div class="text-sm text-indigo-100" id="progressStepsCount">0 dari 0 langkah</div>
+                    </div>
+                  </div>
+                  <div class="mt-3">
+                    <div class="bg-white bg-opacity-20 rounded-full h-2">
+                      <div id="progressBar" class="bg-white rounded-full h-2 transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <!-- Formulir Prauji -->
-              <div class="mb-8">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                  <div class="flex-shrink-0 bg-indigo-100 text-indigo-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">2</div>
-                  Formulir Prauji
-                </h3>
-                <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr>
-                        <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
-                        <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center">
-                              <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                <!-- Formulir Pendaftaran -->
+                <div class="mb-8">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <div class="flex-shrink-0 bg-indigo-100 text-indigo-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">1</div>
+                    Formulir Pendaftaran
+                  </h3>
+                  <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead>
+                        <tr>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Selesai</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- AK.01 -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Formulir AK.01</div>
+                                <div class="text-xs text-gray-500">Formulir Permohonan Sertifikasi</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-ak01" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                               </svg>
-                            </div>
-                            <div class="ml-3">
-                              <div class="text-sm font-medium text-gray-900">Konsultasi Prauji</div>
-                              <div class="text-xs text-gray-500">Diskusi dengan asesor sebelum asesmen</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          @php
-                            $fieldName = 'konsultasi_pra_uji';
-                            $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
-                          @endphp
+                              Memuat...
+                            </span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-ak01">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ route('asesi.fr.ak1') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          </td>
+                        </tr>
 
-                          @if($isCompleted)
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                              </svg>
-                              Selesai
-                            </span>
-                          @else
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              Belum Selesai
-                            </span>
-                          @endif
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap text-sm">
-                          <a href="asesi.konsul-prauji" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                            <span>Detail</span>
-                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center">
-                              <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                              </svg>
+                        <!-- APL.01 -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Formulir APL.01</div>
+                                <div class="text-xs text-gray-500">Permohonan Sertifikasi Kompetensi</div>
+                              </div>
                             </div>
-                            <div class="ml-3">
-                              <div class="text-sm font-medium text-gray-900">Formulir IA.02</div>
-                              <div class="text-xs text-gray-500">Tugas Praktik & Observasi</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          @php
-                            $fieldName = 'ia02';
-                            $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
-                          @endphp
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-apl01" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              </svg>
+                              Memuat...
+                            </span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-apl01">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ route('asesi.apl1-detail', auth()->user()->id_user) }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          </td>
+                        </tr>
 
-                          @if($isCompleted)
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                              </svg>
-                              Selesai
-                            </span>
-                          @else
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              Belum Selesai
-                            </span>
-                          @endif
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap text-sm">
-                          <a href="{{ route('asesi.fr.ia2') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                            <span>Detail</span>
-                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center">
-                              <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
+                        <!-- APL.02 -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Formulir APL.02</div>
+                                <div class="text-xs text-gray-500">Asesmen Mandiri</div>
+                              </div>
                             </div>
-                            <div class="ml-3">
-                              <div class="text-sm font-medium text-gray-900">Tugas Peserta</div>
-                              <div class="text-xs text-gray-500">Penugasan dari asesor</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          @php
-                            $fieldName = 'ia02';
-                            $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
-                          @endphp
-
-                          @if($isCompleted)
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-apl02" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                               </svg>
-                              Selesai
+                              Memuat...
                             </span>
-                          @else
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-apl02">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ route('asesi.asesmen.mandiri') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                               </svg>
-                              Belum Selesai
-                            </span>
-                          @endif
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap text-sm">
-                          <a href="" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                            <span>Detail</span>
-                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
 
-              <!-- Pasca Uji -->
-              <div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                  <div class="flex-shrink-0 bg-indigo-100 text-indigo-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">3</div>
-                  Pasca Uji
-                </h3>
-                <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead>
-                      <tr>
-                        <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
-                        <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-purple-100 flex items-center justify-center">
-                              <svg class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                <!-- Formulir Prauji -->
+                <div class="mb-8">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <div class="flex-shrink-0 bg-indigo-100 text-indigo-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">2</div>
+                    Formulir Prauji
+                  </h3>
+                  <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead>
+                        <tr>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Selesai</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Konsultasi Prauji -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Konsultasi Prauji</div>
+                                <div class="text-xs text-gray-500">Diskusi dengan asesor sebelum asesmen</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-konsultasi_pra_uji" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                               </svg>
-                            </div>
-                            <div class="ml-3">
-                              <div class="text-sm font-medium text-gray-900">Umpan Balik</div>
-                              <div class="text-xs text-gray-500">Umpan balik dari peserta</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          @php
-                            $fieldName = 'umpan_balik';
-                            $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
-                          @endphp
+                              Memuat...
+                            </span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-konsultasi_pra_uji">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="asesi.konsul-prauji" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          </td>
+                        </tr>
 
-                          @if($isCompleted)
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                              </svg>
-                              Selesai
-                            </span>
-                          @else
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              Belum Selesai
-                            </span>
-                          @endif
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap text-sm">
-                          <a href="#" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                            <span>Detail</span>
-                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="flex-shrink-0 h-9 w-9 rounded-full bg-purple-100 flex items-center justify-center">
-                              <svg class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
+                        <!-- IA.01 -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Formulir IA.01</div>
+                                <div class="text-xs text-gray-500">Rencana & Instrumen Asesmen</div>
+                              </div>
                             </div>
-                            <div class="ml-3">
-                              <div class="text-sm font-medium text-gray-900">Formulir AK.04</div>
-                              <div class="text-xs text-gray-500">Keputusan dan Umpan Balik Asesmen</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap">
-                          @php
-                            $fieldName = 'ak04';
-                            $isCompleted = $progresAsesmen && !empty($progresAsesmen->$fieldName);
-                          @endphp
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-ia01" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              </svg>
+                              Memuat...
+                            </span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-ia01">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          </td>
+                        </tr>
 
-                          @if($isCompleted)
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        <!-- IA.02 -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Formulir IA.02</div>
+                                <div class="text-xs text-gray-500">Tugas Praktik & Observasi</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-ia02" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                               </svg>
-                              Selesai
+                              Memuat...
                             </span>
-                          @else
-                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                              <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-ia02">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ route('asesi.fr.ia2') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                               </svg>
-                              Belum Selesai
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Pasca Uji -->
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <div class="flex-shrink-0 bg-indigo-100 text-indigo-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">3</div>
+                    Pasca Uji
+                  </h3>
+                  <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead>
+                        <tr>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Selesai</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Umpan Balik -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-purple-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Umpan Balik</div>
+                                <div class="text-xs text-gray-500">Umpan balik dari peserta</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-umpan_balik" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              </svg>
+                              Memuat...
                             </span>
-                          @endif
-                        </td>
-                        <td class="px-5 py-4 whitespace-nowrap text-sm">
-                          <a href="#" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                            <span>Detail</span>
-                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-umpan_balik">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          </td>
+                        </tr>
+
+                        <!-- AK.04 -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-purple-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Formulir AK.04</div>
+                                <div class="text-xs text-gray-500">Keputusan dan Umpan Balik Asesmen</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-ak04" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              </svg>
+                              Memuat...
+                            </span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-ak04">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -762,6 +681,214 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const apiKey = "{{ env('API_KEY') }}";
+    const asesiId = @json($asesi->id_asesi ?? null);
+
+    // CSRF token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    // API Headers
+    const apiHeaders = {
+        'Content-Type': 'application/json',
+        'API-KEY': apiKey,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': csrfToken || '',
+        'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    if (!asesiId) {
+        showError('ID Asesi tidak ditemukan');
+        return;
+    }
+
+    // Progress mapping for steps
+    const progressSteps = [
+        {
+            id: 1,
+            name: 'Pendaftaran',
+            fields: ['ak01', 'apl01', 'apl02']
+        },
+        {
+            id: 2,
+            name: 'Prauji',
+            fields: ['konsultasi_pra_uji', 'ia01', 'ia02']
+        },
+        {
+            id: 3,
+            name: 'Pasca Uji',
+            fields: ['umpan_balik', 'ak04']
+        }
+    ];
+
+    // Load progress data
+    function loadProgressData() {
+        const apiUrl = `{{ url('/api/v1/asesor/progressAsesi') }}/${asesiId}`;
+
+        console.log('Loading progress from:', apiUrl);
+
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: apiHeaders
+        })
+        .then(response => {
+            console.log('Progress Response Status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('Progress Result:', result);
+
+            if (result.success && result.data) {
+                updateProgressDisplay(result.data);
+                hideLoading();
+            } else {
+                showError(result.message || 'Gagal memuat data progres');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading progress:', error);
+            showError('Error memuat data progres: ' + error.message);
+        });
+    }
+
+    // Update progress display
+    function updateProgressDisplay(data) {
+        const progressAsesmen = data.progress_asesmen;
+        const progressSummary = data.progress_summary;
+
+        // Update summary
+        document.getElementById('progressPercentage').textContent = progressSummary.progress_percentage + '%';
+        document.getElementById('progressStepsCount').textContent =
+            `${progressSummary.completed_steps} dari ${progressSummary.total_steps} langkah`;
+        document.getElementById('progressBar').style.width = progressSummary.progress_percentage + '%';
+
+        // Update progress steps navigator
+        updateProgressSteps(progressAsesmen);
+
+        // Update individual status for each document
+        Object.keys(progressAsesmen).forEach(field => {
+            const statusElement = document.getElementById(`status-${field}`);
+            const dateElement = document.getElementById(`date-${field}`);
+
+            if (statusElement) {
+                const isCompleted = progressAsesmen[field].completed;
+                const completedAt = progressAsesmen[field].completed_at;
+
+                if (isCompleted) {
+                    statusElement.innerHTML = `
+                        <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Selesai
+                    `;
+                    statusElement.className = 'px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800';
+                } else {
+                    statusElement.innerHTML = `
+                        <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Belum Selesai
+                    `;
+                    statusElement.className = 'px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800';
+                }
+
+                if (dateElement) {
+                    dateElement.textContent = completedAt || '-';
+                }
+            }
+        });
+    }
+
+    // Update progress steps navigator
+    function updateProgressSteps(progressAsesmen) {
+        const stepsContainer = document.getElementById('progressSteps');
+        let stepsHtml = '';
+
+        progressSteps.forEach((step, index) => {
+            // Check if step is completed
+            const stepCompleted = step.fields.every(field =>
+                progressAsesmen[field] && progressAsesmen[field].completed
+            );
+
+            // Determine if step is active (current step or completed)
+            let stepActive = false;
+            for (let i = 0; i <= index; i++) {
+                const prevStepCompleted = progressSteps[i].fields.every(field =>
+                    progressAsesmen[field] && progressAsesmen[field].completed
+                );
+                if (!prevStepCompleted) {
+                    stepActive = (i === index);
+                    break;
+                } else if (i === index) {
+                    stepActive = true;
+                }
+            }
+
+            const stepClass = stepCompleted || stepActive ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700';
+            const textClass = stepCompleted || stepActive ? 'text-indigo-600' : 'text-gray-700';
+
+            stepsHtml += `
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full ${stepClass} flex items-center justify-center">${step.id}</div>
+                    <span class="font-medium ${textClass}">${step.name}</span>
+                </div>
+            `;
+
+            // Add connector line
+            if (index < progressSteps.length - 1) {
+                const lineProgress = stepCompleted ? '100%' : (stepActive ? '50%' : '0%');
+                stepsHtml += `
+                    <div class="h-0.5 w-24 bg-gray-200 relative">
+                        <div class="absolute inset-0 bg-indigo-600 transition-all duration-300" style="width: ${lineProgress}"></div>
+                    </div>
+                `;
+            }
+        });
+
+        stepsContainer.innerHTML = stepsHtml;
+    }
+
+    // Utility functions
+    function showError(message) {
+        console.error('Error:', message);
+        document.getElementById('progressErrorText').textContent = message;
+        document.getElementById('progressError').classList.remove('hidden');
+        document.getElementById('progressLoading').classList.add('hidden');
+        document.getElementById('progressContent').classList.add('hidden');
+    }
+
+    function hideLoading() {
+        document.getElementById('progressLoading').classList.add('hidden');
+        document.getElementById('progressError').classList.add('hidden');
+        document.getElementById('progressContent').classList.remove('hidden');
+    }
+
+    // Initialize
+    console.log('Debug Info:', {
+        asesiId: asesiId,
+        csrfToken: csrfToken ? 'Present' : 'Missing',
+        apiKey: apiKey ? 'Present' : 'Missing'
+    });
+
+    // Load data on page load
+    loadProgressData();
+});
+
+function toggleElemen(id) {
+    const element = document.getElementById(id);
+    const chevron = document.getElementById('chevron-' + id);
+
+    if (element.classList.contains('hidden')) {
+        element.classList.remove('hidden');
+        chevron.classList.add('rotate-180');
+    } else {
+        element.classList.add('hidden');
+        chevron.classList.remove('rotate-180');
+    }
+}
   function toggleElemen(id) {
     const element = document.getElementById(id);
     const chevron = document.getElementById('chevron-' + id);

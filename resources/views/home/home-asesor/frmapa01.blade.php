@@ -18,8 +18,8 @@
         </svg>
         <p class="ms-2 text-xl font-bold bg-gradient-to-r from-biru to-ungu text-transparent bg-clip-text">Formulir Merencanakan Aktivitas dan Proses Asesmen 01</p>
     </div>
+
     <div id="breadcrumbs" class="hidden pb-4 px-6">
-        <!-- Breadcrumb -->
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -37,27 +37,29 @@
                         </a>
                     </div>
                 </li>
-                <!-- Memanggil data nama asesi -->
                 <li aria-current="page">
                     <div class="flex items-center">
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 9l4-4-4-4"/>
                         </svg>
-                        <span class="ms-1 text-sm font-medium text-black">Muhammad Rifai</span>
+                        <span id="breadcrumbAsesiName" class="ms-1 text-sm font-medium text-black">-</span>
                     </div>
                 </li>
             </ol>
         </nav>
     </div>
+
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
     </div>
+
     <div id="frameMAPA01" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir MAPA.01 Merencanakan Aktifitas & Proses Asesmen</p>
+
         <!-- Search Form -->
         <form id="searchMAPA01" class="max-w-md mb-4 rounded-xl">
             <div class="relative">
-            <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
+                <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
                 <button type="submit" class="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
                     <svg class="w-4 h-4 text-biru" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -65,6 +67,7 @@
                 </button>
             </div>
         </form>
+
         <div class="overflow-x-auto shadow-md rounded-lg">
             <table id="daftarMAPA01" class="min-w-full bg-white overflow-hidden">
                 <thead class="bg-bg_dashboard text-center">
@@ -79,286 +82,210 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 text-black text-center">
                     <tr>
-                        <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="showSummary()" class="">
-                                <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd"
-                                        d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <button onclick="showDocument()" class="">
-                                <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
-                                </svg>
-                            </button>
-                        </td>
-                        <td class="px-4 py-3 text-gray-700 text-left">Muhammad Rifai</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">Sertifikasi Frontend</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">SK1234567890</td>
-                        <td class="px-4 py-0">
-                            <div class="flex px-4 py-3 justify-center items-center">
-                                <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                                </svg>
-                                <svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                        </td>
+                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">Memuat data asesi...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
         <div id="detailMAPA01" class="hidden pt-0 p-4 text-black">
             <div id="FRMAPA01" class="p-4 space-y-6">
-                <div class="max-w-full space-y-1">
-                    <div class="flex">
-                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -ms-px w-1/3">
-                            Judul Sertifikasi
-                        </span>
-                        <p id="judulSertifikasi" type="text" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Sertifikasi Frontend
-                        </p>
-                    </div>
-                    <div class="flex">
-                        <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            Nomor Sertifikasi
-                        </span>
-                        <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        SKM/1602/00023/2/19
-                        </p>
-                    </div>
-                </div>
-                <div class="max-w-full space-y-1">
-                    <div class="flex">
-                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            Nama Peserta Sertifikasi
-                        </span>
-                        <p id="namaPeserta" type="text" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Muhammad Rifai
-                        </p>
-                    </div>
-                    <div class="flex">
-                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            Nama Asesor
-                        </span>
-                        <p id="namaAsesor" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            Nafa Popcorn
-                        </p>
-                    </div>
-                    <div class="flex">
-                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            TUK
-                        </span>
-                        <p id="tuk" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Satu Web
-                        </p>
-                    </div>
+                <!-- Loading content -->
+                <div class="flex justify-center items-center py-8">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-biru"></div>
                 </div>
             </div>
 
-            <!-- Checklist Hasil Pengumpulan -->
-            <div class="px-4 pb-16">
+            <!-- Form MAPA01 -->
+            <div id="mapa01FormContainer" class="hidden px-4 pb-16">
                 <p class="block mb-4 text-xl font-bold text-sidebar_font">
                     1. Pendekatan Asesmen
                 </p>
-                <div class="w-full border border-border rounded-md p-2 bg-white text-sm text-sidebar_font">
-                    <table id="pendekatanAsesMAPA01" class="min-w-full bg-white overflow-hidden border border-gray-200 rounded-lg text-sm text-gray-600">
-                        <thead class="bg-bg_dashboard text-center">
-                            <tr>
-                                <th class="px-4 py-2 text-center">No</th>
-                                <th class="px-4 py-2 text-center w-1/4">Pendekatan Asesmen</th>
-                                <th class="px-4 py-2 text-center">Opsi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- 1. Asesi -->
-                            <tr class="align-middle border-b border-gray-200 col-span-4">
-                                <td class="px-4 py-2 font-semibold">1</td>
-                                <td class="px-4 py-2 font-semibold">Asesi</td>
-                                <td class="px-4 py-2 col-span-2">
-                                    <div id="clMAPA01no1" class="space-y-2">
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="asesi" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Hasil pelatihan dan/atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi</span>
-                                        </label>
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="asesi" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Pengalaman kerja di bidang terkait dengan kompetensi</span>
-                                        </label>
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="asesi" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Pelatihan non formal/mandiri</span>
-                                        </label>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- 2. Tujuan Asesmen -->
-                            <tr class="align-middle border-b border-gray-200 col-span-4">
-                                <td class="px-4 py-2 font-semibold">2</td>
-                                <td class="px-4 py-2 font-semibold">Tujuan Asesmen</td>
-                                <td class="px-4 py-2 col-span-2">
-                                    <div id="clMAPA01no2" class="space-y-2">
-                                        <label class="flex items-center space-x-2">
-                                            <input type="radio" name="tujuan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Sertifikasi</span>
-                                        </label>
-                                        <label class="flex items-center space-x-2">
-                                            <input type="radio" name="tujuan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Sertifikasi Ulang</span>
-                                        </label>
-                                        <label class="flex items-center space-x-2">
-                                            <input type="radio" name="tujuan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Pengakuan Kompetensi Terkini (PKT)</span>
-                                        </label>
-                                        <label class="flex items-center space-x-2">
-                                            <input type="radio" name="tujuan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Rekognisi Pembelajaran Lampau (RPL)</span>
-                                        </label>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- 3. Konteks Asesmen -->
-                            <tr class="align-middle border-b border-gray-200 grid-rows-10 grid-cols-4">
-                                <td class="px-4 py-2 font-semibold">3</td>
-                                <td class="px-4 py-2 font-semibold">Konteks Asesmen</td>
-                                <td id="clMAPA01no3" class="px-4 py-2 font-normal">
-                                    <div id="clMAPA01Konteks1" class="grid grid-cols-2 items-center text-sidebar_font py-2 border-b border-border">
-                                        <!-- Kolom 1 (Teks Lingkungan) -->
-                                        <p class="self-center">Lingkungan</p>
-
-                                        <!-- Kolom 2 (Radio Buttons) -->
-                                        <div class="flex flex-col gap-y-1">
-                                            <label class="flex items-center space-x-2">
-                                                <input type="radio" name="konteks" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Tempat Kerja Nyata</span>
+                <form id="mapa01Form">
+                    <div class="w-full border border-border rounded-md p-2 bg-white text-sm text-sidebar_font">
+                        <table id="pendekatanAsesMAPA01" class="min-w-full bg-white overflow-hidden border border-gray-200 rounded-lg text-sm text-gray-600">
+                            <thead class="bg-bg_dashboard text-center">
+                                <tr>
+                                    <th class="px-4 py-2 text-center">No</th>
+                                    <th class="px-4 py-2 text-center w-1/4">Pendekatan Asesmen</th>
+                                    <th class="px-4 py-2 text-center">Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 1. Asesi -->
+                                <tr class="align-middle border-b border-gray-200 col-span-4">
+                                    <td class="px-4 py-2 font-semibold">1</td>
+                                    <td class="px-4 py-2 font-semibold">Asesi</td>
+                                    <td class="px-4 py-2 col-span-2">
+                                        <div id="clMAPA01no1" class="space-y-2">
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="pendekatan_asesmen_asesi" value="Hasil pelatihan dan/atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Hasil pelatihan dan/atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi</span>
                                             </label>
-                                            <label class="flex items-center space-x-2">
-                                                <input type="radio" name="konteks" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Tempat Kerja Simulasi</span>
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="pendekatan_asesmen_asesi" value="Pekerja Berpengalaman, dimana berasal dari industri/tempat kerja yang dalam operasionalnya mampu telusur dengan standar kompetensi" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Pekerja Berpengalaman, dimana berasal dari industri/tempat kerja yang dalam operasionalnya mampu telusur dengan standar kompetensi</span>
+                                            </label>
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="pendekatan_asesmen_asesi" value="Pelatihan non formal/mandiri" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Pelatihan non formal/mandiri</span>
                                             </label>
                                         </div>
-                                    </div>
-                                    <div id="clMAPA01Konteks2" class="grid grid-cols-2 items-center text-sidebar_font py-2 border-b border-border">
-                                        <!-- Kolom 1 (Teks Lingkungan) -->
-                                        <p class="self-center">Peluang untuk mengumpulkan bukti dalam sejumlah situasi</p>
+                                    </td>
+                                </tr>
 
-                                        <!-- Kolom 2 (Radio Buttons) -->
-                                        <div class="flex flex-col gap-y-1">
+                                <!-- 2. Tujuan Asesmen -->
+                                <tr class="align-middle border-b border-gray-200 col-span-4">
+                                    <td class="px-4 py-2 font-semibold">2</td>
+                                    <td class="px-4 py-2 font-semibold">Tujuan Asesmen</td>
+                                    <td class="px-4 py-2 col-span-2">
+                                        <div id="clMAPA01no2" class="space-y-2">
                                             <label class="flex items-center space-x-2">
-                                                <input type="radio" name="peluang" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Tersedia</span>
+                                                <input type="radio" name="tujuan_asesmen" value="Sertifikasi" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Sertifikasi</span>
                                             </label>
                                             <label class="flex items-center space-x-2">
-                                                <input type="radio" name="peluang" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Terbatas</span>
+                                                <input type="radio" name="tujuan_asesmen" value="Sertifikasi Ulang" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Sertifikasi Ulang</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="tujuan_asesmen" value="Pengakuan Kompetensi Terkini (PKT)" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Pengakuan Kompetensi Terkini (PKT)</span>
+                                            </label>
+                                            <label class="flex items-center space-x-2">
+                                                <input type="radio" name="tujuan_asesmen" value="Rekognisi Pembelajaran Lampau (RPL)" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Rekognisi Pembelajaran Lampau (RPL)</span>
                                             </label>
                                         </div>
-                                    </div>
-                                    <div id="clMAPA01Konteks3" class="grid grid-cols-2 items-center text-sidebar_font py-2 border-b border-border">
-                                        <!-- Kolom 1 (Teks Lingkungan) -->
-                                        <p class="self-center">Hubungan antara standar kompetensi</p>
+                                    </td>
+                                </tr>
 
-                                        <!-- Kolom 2 (Radio Buttons) -->
-                                        <div class="flex flex-col gap-y-1">
-                                            <label class="flex items-center space-x-2">
-                                                <input type="radio" name="hubungan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Bukti untuk mendukung asesmen / RPL </span>
+                                <!-- 3. Konteks Asesmen -->
+                                <tr class="align-middle border-b border-gray-200">
+                                    <td class="px-4 py-2 font-semibold">3</td>
+                                    <td class="px-4 py-2 font-semibold">Konteks Asesmen</td>
+                                    <td id="clMAPA01no3" class="px-4 py-2 font-normal">
+                                        <div id="clMAPA01Konteks1" class="grid grid-cols-2 items-center text-sidebar_font py-2 border-b border-border">
+                                            <p class="self-center">Lingkungan</p>
+                                            <div class="flex flex-col gap-y-1">
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="lingkungan" value="Tempat kerja nyata" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Tempat Kerja Nyata</span>
+                                                </label>
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="lingkungan" value="Tempat kerja simulasi" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Tempat Kerja Simulasi</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div id="clMAPA01Konteks2" class="grid grid-cols-2 items-center text-sidebar_font py-2 border-b border-border">
+                                            <p class="self-center">Peluang untuk mengumpulkan bukti dalam sejumlah situasi</p>
+                                            <div class="flex flex-col gap-y-1">
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="peluang_untuk_mengumpulkan_bukti" value="Tersedia" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Tersedia</span>
+                                                </label>
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="peluang_untuk_mengumpulkan_bukti" value="Terbatas" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Terbatas</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div id="clMAPA01Konteks3" class="grid grid-cols-2 items-center text-sidebar_font py-2 border-b border-border">
+                                            <p class="self-center">Hubungan antara standar kompetensi</p>
+                                            <div class="flex flex-col gap-y-1">
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="hubungan_antara_standar_kompetensi" value="Bukti untuk mendukung asesmen / RPL" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Bukti untuk mendukung asesmen / RPL</span>
+                                                </label>
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="hubungan_antara_standar_kompetensi" value="Aktivitas kerja di tempat kerja kandidat" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Aktivitas kerja di tempat kerja kandidat</span>
+                                                </label>
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="hubungan_antara_standar_kompetensi" value="Kegiatan pembelajaran" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Kegiatan pembelajaran</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div id="clMAPA01Konteks4" class="grid grid-cols-2 items-center text-sidebar_font py-2">
+                                            <p class="self-center">Siapa yang melakukan asesmen / RPL</p>
+                                            <div class="flex flex-col gap-y-1">
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="pelaksana_asesmen" value="Oleh Lembaga Sertifikasi" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Lembaga Sertifikasi</span>
+                                                </label>
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="pelaksana_asesmen" value="Organisasi pelatihan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Organisasi pelatihan</span>
+                                                </label>
+                                                <label class="flex items-center space-x-2">
+                                                    <input type="radio" name="pelaksana_asesmen" value="Asesor perusahaan" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                    <span>Asesor perusahaan</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- 4. Orang untuk konfirmasi -->
+                                <tr class="align-middle border-b border-gray-200 col-span-4">
+                                    <td class="px-4 py-2 font-semibold">4</td>
+                                    <td class="px-4 py-2 font-semibold">Orang yang relevan untuk di Konfirmasi</td>
+                                    <td class="px-4 py-2 col-span-2">
+                                        <div id="clMAPA01no4" class="space-y-2">
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="pihak_yang_relevan_untuk_dikonfirmasi" value="Manajer sertifikasi LSP" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Manajer sertifikasi LSP</span>
                                             </label>
-                                            <label class="flex items-center space-x-2">
-                                                <input type="radio" name="hubungan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Aktivitas kerja di tempat kerja kandidat</span>
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="pihak_yang_relevan_untuk_dikonfirmasi" value="Master Assessor / Master Trainer / Asesor Utama Kompetensi" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Master Assessor / Master Trainer / Asesor Utama Kompetensi</span>
                                             </label>
-                                            <label class="flex items-center space-x-2">
-                                                <input type="radio" name="hubungan" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Kegiatan pembelajaran</span>
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="pihak_yang_relevan_untuk_dikonfirmasi" value="Manajer pelatihan Lembaga Training terakreditasi / Lembaga Training terdaftar" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Manajer pelatihan Lembaga Training terakreditasi / Lembaga Training terdaftar</span>
+                                            </label>
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="pihak_yang_relevan_untuk_dikonfirmasi" value="Lainnya : Manajemen sertifikasi LSP" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Lainnya : Manajemen sertifikasi LSP</span>
                                             </label>
                                         </div>
-                                    </div>
-                                    <div id="clMAPA01Konteks4" class="grid grid-cols-2 items-center text-sidebar_font py-2">
-                                        <!-- Kolom 1 (Teks Lingkungan) -->
-                                        <p class="self-center">Siapa yang melakukan asesmen / RPL</p>
+                                    </td>
+                                </tr>
 
-                                        <!-- Kolom 2 (Radio Buttons) -->
-                                        <div class="flex flex-col gap-y-1">
-                                            <label class="flex items-center space-x-2">
-                                                <input type="radio" name="siapa" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Lembaga Sertifikasi</span>
+                                <!-- 5. Tolak Ukur Asesmen -->
+                                <tr class="align-middle col-span-4">
+                                    <td class="px-4 py-2 font-semibold">5</td>
+                                    <td class="px-4 py-2 font-semibold">Tolak Ukur Asesmen</td>
+                                    <td class="px-4 py-2 col-span-2">
+                                        <div id="clMAPA01no5" class="space-y-2">
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="tolak_ukur_asesmen" value="Standar Kompetensi Kerja Nasional Indonesia (SKKNI)" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Standar Kompetensi Kerja Nasional Indonesia (SKKNI)</span>
                                             </label>
-                                            <label class="flex items-center space-x-2">
-                                                <input type="radio" name="siapa" class="w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Organisasi pelatihan</span>
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="tolak_ukur_asesmen" value="Standar Khusus" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Standar Khusus</span>
                                             </label>
-                                            <label class="flex items-center space-x-2">
-                                                <input type="radio" name="siapa" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                                <span>Asesor perusahaan</span>
+                                            <label class="flex items-start space-x-2">
+                                                <input type="radio" name="tolak_ukur_asesmen" value="Standar Internasional" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
+                                                <span>Standar Internasional</span>
                                             </label>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                            <!-- 4. Orang untuk konfirmasi -->
-                            <tr class="align-middle border-b border-gray-200 col-span-4">
-                                <td class="px-4 py-2 font-semibold">4</td>
-                                <td class="px-4 py-2 font-semibold">Orang yang relevan untuk di Konfirmasi</td>
-                                <td class="px-4 py-2 col-span-2">
-                                    <div id="clMAPA01no4" class="space-y-2">
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="orang" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Manajer sertifikasi LSP</span>
-                                        </label>
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="orang" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Master Assessor / Master Trainer / Asesor Utama Kompetensi</span>
-                                        </label>
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="orang" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Manajer pelatihan Lembaga Training terakreditasi / Lembaga Training terdaftar</span>
-                                        </label>
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="orang" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Lainnya : Manajemen sertifikasi LSP</span>
-                                        </label>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- 5. Tolak Ukur Asesmen -->
-                            <tr class="align-middle col-span-4">
-                                <td class="px-4 py-2 font-semibold">5</td>
-                                <td class="px-4 py-2 font-semibold">Tolak Ukur Asesmen</td>
-                                <td class="px-4 py-2 col-span-2">
-                                    <div id="clMAPA01no5" class="space-y-2">
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="tolakukur" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Standar Kompetensi Kerja Nasional Indonesia (SKKNI)</span>
-                                        </label>
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="tolakukur" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Standar Khusus</span>
-                                        </label>
-                                        <label class="flex items-start space-x-2">
-                                            <input type="radio" name="tolakukur" class="mt-1 w-4 h-4 text-biru border-gray-300 focus:ring-biru">
-                                            <span>Standar Internasional</span>
-                                        </label>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Button Simpan -->
-                <div class="flex justify-end pe-4">
-                    <button id="simpanSetujui" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
-                        Simpan dan Setujui
-                    </button>
-                </div>
+                    <!-- Button Simpan -->
+                    <div class="flex justify-end pe-4">
+                        <button id="simpanSetujui" type="button" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
+                            Simpan dan Setujui
+                        </button>
+                    </div>
+                </form>
 
                 <p class="block mt-8 mb-4 text-xl font-bold text-sidebar_font">
                     2. Rencana Asesmen
@@ -366,247 +293,245 @@
                 <div class="w-full border border-border rounded-md p-2 bg-white text-sm text-sidebar_font">
                     <table id="rencanaMAPA01" class="min-w-full bg-white overflow-hidden border border-border rounded-lg text-sm text-gray-600">
                         <thead class="bg-bg_dashboard text-center">
-                            <!-- Header Baris Pertama -->
                             <tr>
-                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">No</th>
+                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">Unit Kompetensi</th>
                                 <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">Elemen</th>
-                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">Bukti-bukti(Kinerja, produk, Portfolio, dan / atau hafalan) diidentifikasi berdasarkan Elemen dan pendekatan asesmen</th>
+                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">Bukti-bukti</th>
                                 <th colspan="3" class="px-4 py-3 font-semibold border-b border-gray-200">Jenis Bukti</th>
-                                <th colspan="4" class="px-4 py-3 font-semibold border-b border-gray-200">Metode dan Perangkat Asesmen</th>
+                                <th rowspan="2" class="px-4 py-3 font-semibold border-b border-gray-200">Metode Asesmen</th>
                             </tr>
-                            <!-- Header Baris Kedua -->
                             <tr>
                                 <th class="px-4 py-3 font-semibold border-b border-gray-200">L</th>
                                 <th class="px-4 py-3 font-semibold border-b border-gray-200">TL</th>
                                 <th class="px-4 py-3 font-semibold border-b border-gray-200">T</th>
-                                <th class="px-4 py-3 font-semibold border-b border-gray-200">Observasi Langsung</th>
-                                <th class="px-4 py-3 font-semibold border-b border-gray-200">Kegiatan Terstruktur</th>
-                                <th class="px-4 py-3 font-semibold border-b border-gray-200">Tanya Jawab</th>
-                                <th class="px-4 py-3 font-semibold border-b border-gray-200">Verifikasi Portofolio</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 text-center">
-                            <tr class="text-black">
-                                <td class="px-4 py-3">1</td>
-                                <td class="px-4 py-3 text-left">
-                                    <p>Ceklis Observasi Untuk Aktivitas di Tempat Kerja atau Tempat Kerja Simulasi</p>
-                                </td>
-                                <td class="px-4 py-3 text-left">
-                                    <p>Hasil Observasi Memproses dokumen kantor</p>
-                                </td>
-                                @for ($i = 0; $i < 3; $i++)
-                                    <td class="px-4 py-3">
-                                        <input id="disc-awal-{{ $i }}" type="radio" value="{{ $i }}" name="disc_awal"
-                                            class="w-4 h-4 text-biru bg-gray-100 border-border focus:ring-biru">
-                                    </td>
-                                @endfor
-                                @for ($i = 0; $i < 4; $i++)
-                                    <td class="px-4 py-3">
-                                        <input id="disc-lanjutan-{{ $i }}" type="radio" value="{{ $i }}" name="disc_lanjutan"
-                                            class="w-4 h-4 text-biru bg-gray-100 border-border focus:ring-biru">
-                                    </td>
-                                @endfor
-
+                        <tbody id="rencanaAsesmenTableBody" class="divide-y divide-gray-200 text-center">
+                            <tr>
+                                <td colspan="7" class="px-4 py-3 text-center text-gray-500">Memuat data rencana asesmen...</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
-                <p class="block mt-8 mb-4 text-xl font-bold text-sidebar_font">
-                    3. Modifikasi dan Kontekstualisasi :
-                </p>
-                <form class="text-sidebar_font">
-                    <div class="mb-6">
-                        <label for="batasFisik" class="block mb-2 text-sm font-medium">3.1 Karakteristik kandidat (Keterbatasan fisik/Keterbatasan mental)</label>
-                        <input type="text" id="batasFisik" class="bg-white border border-border_input text-gray-900 text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2.5 placeholder-placeholder_input" placeholder="Tulis 'Tidak Ada' bila tidak terdapat keterbatadan fisik/mental" required />
-                    </div>
-                    <div class="mb-6">
-                        <label for="batasFisik" class="block mb-2 text-sm font-medium">3.2 Kebutuhan kontekstualisasi:</label>
-                        <input type="text" id="batasFisik" class="bg-white border border-border_input text-gray-900 text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2.5 placeholder-placeholder_input" placeholder="Tulis 'Tidak Ada' bila tidak ada kebutuhan kontekstualisasi" required />
-                    </div>
-                    <div class="mb-6">
-                        <label for="batasFisik" class="block mb-2 text-sm font-medium">3.3 Saran yang diberikan oleh paket pelatihan atau pengembang pelatihan</label>
-                        <input type="text" id="batasFisik" class="bg-white border border-border_input text-gray-900 text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2.5 placeholder-placeholder_input" placeholder="Tulis 'Tidak Ada' bila tidak ada saran" required />
-                    </div>
-                    <div class="mb-6">
-                        <label for="batasFisik" class="block mb-2 text-sm font-medium">3.4 Peluang untuk kegiatan asesmen terintegrasi dan mencatat setiap perubahan yang diperlukan untuk alat asesmen</label>
-                        <input type="text" id="batasFisik" class="bg-white border border-border_input text-gray-900 text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2.5 placeholder-placeholder_input" placeholder="Tulis 'Tidak Ada' bila tidak ada keterangan" required />
-                    </div>
-                </form>
-
-                <p class="block mt-8 mb-4 text-xl font-bold text-sidebar_font">
-                    4. Hasil
-                </p>
-                <div id="hasilMAPA01" class="space-y-4">
-                    <div class="max-w-full space-y-1">
-                        <div class="flex">
-                            <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -ms-px w-1/3">
-                                Hari / tanggal asesmen
-                            </span>
-                            <p id="tanggalAsesmen" type="text" class="peer text-sidebar_font py-1 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            Rabu. 5 Maret 2025
-                            </p>
-                        </div>
-                        <div class="flex">
-                            <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                                Jam
-                            </span>
-                            <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-1 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            19:30
-                            </p>
-                        </div>
-                        <div class="flex">
-                            <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                                Tempat Asesmen
-                            </span>
-                            <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-1 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            TILC
-                            </p>
-                        </div>
-                    </div>
-                    <div class="max-w-full space-y-1">
-                        <div class="flex">
-                            <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font font-semibold -mt-px -ms-px w-1/3">
-                                Orang yang relevan untuk di Konfirmasi
-                            </span>
-                        </div>
-                        <div class="flex">
-                            <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                                Manajer Sertifikasi LSP
-                            </span>
-                            <p id="namaAsesor" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                                Nafa Popcorn
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-
             </div>
+        </div>
+    </div>
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Berhasil!</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500">Formulir MAPA01 berhasil ditandatangani.</p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="closeSuccessModal" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Error Modal -->
+    <div id="errorModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Error!</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p id="errorMessage" class="text-sm text-gray-500">Terjadi kesalahan.</p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="closeErrorModal" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">OK</button>
+                </div>
+            </div>
         </div>
     </div>
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
     </div>
 </div>
+@endsection
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const apiKey = "{{ env('API_KEY') }}";
-
-    // Get asesor ID dynamically from the authenticated user with proper error handling
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
-
-    // Stop execution if no asesor ID is found
-    if (!asesorId) {
-        console.error('No asesor ID found for the authenticated user');
-        document.querySelector('#daftarAK01 tbody').innerHTML = `
-            <tr>
-                <td colspan="6" class="px-4 py-3 text-center text-gray-500">User tidak teridentifikasi, silahkan login kembali</td>
-            </tr>
-        `;
-        return;
-    }
-
-    // Construct API URL with the asesor ID
-    const apiUrl = "{{ url('/api/v1/asesor/asesis') }}/" + asesorId;
-
-    // Debug output
-    console.log('Fetching data for asesor ID:', asesorId);
-    console.log('API URL:', apiUrl);
-
-    // Get CSRF token from meta tag
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-    // Make API request
-    fetch(apiUrl, {
-        method: 'GET',
+    // Configuration
+    const API_CONFIG = {
+        key: "{{ env('API_KEY') }}",
+        baseUrl: "{{ url('/api/v1') }}",
         headers: {
             'Content-Type': 'application/json',
-            'API-KEY': apiKey,
+            'API-KEY': "{{ env('API_KEY') }}",
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken || '',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
             'X-Requested-With': 'XMLHttpRequest'
         }
-    })
-    .then(response => {
-        console.log('Response status:', response.status);
+    };
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    // Global variables
+    let currentAsesiData = null;
+    let currentAsesiId = null;
+    let currentAsesorId = null;
+    let recordExists = false;
+
+    // Initialize
+    init();
+
+    function init() {
+        // Get asesor ID from authenticated user
+        currentAsesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+
+        if (!currentAsesorId) {
+            showTableError('User tidak teridentifikasi sebagai asesor, silahkan login kembali');
+            return;
         }
-        return response.json();
-    })
-    .then(result => {
-        console.log('API Response:', result);
 
-        if (result.success && result.data) {
-            const asesisData = result.data.asesis;
-            const jumlahAsesi = result.data.jumlah_asesi;
+        // Load asesi list
+        loadAsesiList();
 
-            // Update the table with asesi data
-            const tableBody = document.querySelector('#daftarMAPA01 tbody');
+        // Setup search functionality
+        setupSearch();
 
-            if (asesisData && asesisData.length > 0) {
-                let tableContent = '';
+        // Setup modal event listeners
+        setupModals();
+    }
 
-                asesisData.forEach((asesi, index) => {
-                // Calculate progress percentage for display
-                const progressPercent = asesi.progress_percentage || 0;
-
-                // Determine if there's any progress (completed steps > 0)
-                const hasProgress = asesi.completed_steps > 0;
-
-                // Select appropriate icon based on progress
-                const statusIcon = hasProgress
-                    ? `<svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                    </svg>`
-                    : `<svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
-                    </svg>`;
-
-                tableContent += `
-                    <tr>
-                        <td class="px-4 py-3 text-sm text-gray-700">${index + 1}</td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="showSummary('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${asesi.progress_percentage}, ${asesi.completed_steps}, ${asesi.total_steps})" class="">
-                                <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd"
-                                        d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <button onclick="showDocument('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${asesi.progress_percentage}, ${asesi.completed_steps}, ${asesi.total_steps})" class="">
-                                <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
-                                </svg>
-                            </button>
-                        </td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_asesi}</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_skema}</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${asesi.nomor_skema}</td>
-                        <td class="flex px-4 py-3 justify-center items-center">
-                            ${statusIcon}
-
-                        </td>
-                    </tr>
-                `;
+    async function loadAsesiList() {
+        try {
+            const response = await fetch(`${API_CONFIG.baseUrl}/asesor/asesis/${currentAsesorId}`, {
+                method: 'GET',
+                headers: API_CONFIG.headers
             });
 
-                tableBody.innerHTML = tableContent;
-            } else {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data asesi</td>
-                    </tr>
-                `;
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            // Implementasi pencarian
-            const searchInput = document.getElementById('searchMAPA01');
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                // Load progress for each asesi and then populate table
+                loadAsesiProgress(result.data.asesis);
+            } else {
+                showTableError(result.message || 'Gagal memuat data asesi');
+            }
+        } catch (error) {
+            console.error('Error loading asesi list:', error);
+            showTableError(`Error memuat data: ${error.message}`);
+        }
+    }
+
+    async function loadAsesiProgress(asesisData) {
+    try {
+        // Load progress for each asesi
+        const asesisWithProgress = await Promise.all(
+            asesisData.map(async (asesi) => {
+                try {
+                    const progressResponse = await fetch(`${API_CONFIG.baseUrl}/asesor/progressAsesi/${asesi.id_asesi}`, {
+                        method: 'GET',
+                        headers: API_CONFIG.headers
+                    });
+
+                    if (progressResponse.ok) {
+                        const progressResult = await progressResponse.json();
+                        if (progressResult.success && progressResult.data) {
+                            asesi.progress_data = progressResult.data;
+                            asesi.mapa01_completed = progressResult.data.progress_asesmen?.mapa01?.completed || false;
+                            asesi.mapa01_completed_at = progressResult.data.progress_asesmen?.mapa01?.completed_at || null;
+                        } else {
+                            asesi.mapa01_completed = false;
+                            asesi.mapa01_completed_at = null;
+                        }
+                    } else {
+                        console.warn(`Failed to load progress for asesi ${asesi.id_asesi}`);
+                        asesi.mapa01_completed = false;
+                        asesi.mapa01_completed_at = null;
+                    }
+                } catch (error) {
+                    console.error(`Error loading progress for asesi ${asesi.id_asesi}:`, error);
+                    asesi.mapa01_completed = false;
+                    asesi.mapa01_completed_at = null;
+                }
+                return asesi;
+            })
+        );
+
+        populateAsesiTable(asesisWithProgress);
+    } catch (error) {
+        console.error('Error loading asesi progress:', error);
+        showTableError(`Error memuat progress asesi: ${error.message}`);
+    }
+}
+
+    function populateAsesiTable(asesisData) {
+        const tableBody = document.querySelector('#daftarMAPA01 tbody');
+
+        if (!asesisData || asesisData.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data asesi</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let tableContent = '';
+        asesisData.forEach((asesi, index) => {
+            // Use the MAPA01 completion status from progress API
+            const hasProgress = asesi.mapa01_completed === true;
+
+            const statusIcon = hasProgress
+                ? `<svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                </svg>`
+                : `<svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                </svg>`;
+
+            // Calculate overall progress
+            const progressPercent = asesi.progress_data?.progress_summary?.progress_percentage || 0;
+            const completedSteps = asesi.progress_data?.progress_summary?.completed_steps || 0;
+            const totalSteps = asesi.progress_data?.progress_summary?.total_steps || 0;
+
+            tableContent += `
+                <tr>
+                    <td class="px-4 py-3 text-sm text-gray-700">${index + 1}</td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="showSummary('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${progressPercent}, ${completedSteps}, ${totalSteps})" class="mr-2">
+                            <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <button onclick="showDocument('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${progressPercent}, ${completedSteps}, ${totalSteps}, ${hasProgress})" class="">
+                            <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </td>
+                    <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_asesi}</td>
+                    <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_skema}</td>
+                    <td class="px-4 py-3 text-gray-700 text-left">${asesi.nomor_skema}</td>
+                    <td class="flex px-4 py-3 justify-center items-center">
+                        ${statusIcon}
+                    </td>
+                </tr>
+            `;
+        });
+
+        tableBody.innerHTML = tableContent;
+    }
+
+    function setupSearch() {
+        const searchInput = document.getElementById('default-search');
+        if (searchInput) {
             searchInput.addEventListener('keyup', function() {
                 const searchValue = this.value.toLowerCase();
                 const rows = document.querySelectorAll('#daftarMAPA01 tbody tr');
@@ -623,42 +548,359 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             });
-
-        } else {
-            console.error('API returned success=false or missing data:', result);
-            document.querySelector('#daftarMAPA01 tbody').innerHTML = `
-                <tr>
-                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
-                </tr>
-            `;
         }
-    })
-    .catch(error => {
-        console.error('Error details:', error);
-        document.querySelector('#daftarMAP01 tbody').innerHTML = `
+    }
+
+    function setupModals() {
+        // Success modal
+        document.getElementById('closeSuccessModal')?.addEventListener('click', function() {
+            document.getElementById('successModal')?.classList.add('hidden');
+        });
+
+        // Error modal
+        document.getElementById('closeErrorModal')?.addEventListener('click', function() {
+            document.getElementById('errorModal')?.classList.add('hidden');
+        });
+    }
+
+    function showTableError(message) {
+        document.querySelector('#daftarMAPA01 tbody').innerHTML = `
             <tr>
-                <td colspan="6" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">${message}</td>
             </tr>
         `;
-    });
+    }
+
+    function showLoading() {
+        const loadingHTML = `
+            <div class="flex justify-center items-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-biru"></div>
+            </div>
+        `;
+        document.getElementById('FRMAPA01').innerHTML = loadingHTML;
+    }
+
+    function showError(message) {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorModal').classList.remove('hidden');
+    }
+
+    function showSuccess() {
+        document.getElementById('successModal').classList.remove('hidden');
+    }
+
+    window.showSummary = function(id_asesi, nama_asesi, nama_skema, progress_percentage, completed_steps, total_steps, mapa01_completed = false) {
+        currentAsesiId = id_asesi;
+
+        // Hide search and table
+        document.getElementById('searchMAPA01').classList.add('hidden');
+        document.getElementById('daftarMAPA01').classList.add('hidden');
+
+        // Show breadcrumbs and detail
+        document.getElementById('breadcrumbs').classList.remove('hidden');
+        document.getElementById('detailMAPA01').classList.remove('hidden');
+
+        // Update breadcrumb
+        const breadcrumbAsesi = document.getElementById('breadcrumbAsesiName');
+        if (breadcrumbAsesi) {
+            breadcrumbAsesi.textContent = nama_asesi;
+        }
+
+        // Load MAPA01 data
+        loadMapa01Data(id_asesi);
+
+        // Scroll to detail
+        document.getElementById('detailMAPA01').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    function loadMapa01Data(id_asesi) {
+        const apiUrl = `${API_CONFIG.baseUrl}/asesmen/mapa01/${id_asesi}`;
+
+        showLoading();
+
+        fetch(apiUrl, {
+            method: 'GET',
+            headers: API_CONFIG.headers
+        })
+        .then(response => {
+            console.log('MAPA01 Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('MAPA01 API Response:', result);
+
+            if (result.status === 'success' && result.data) {
+                currentAsesiData = result.data;
+                recordExists = result.data.record_exists;
+                populateMapa01Form(result.data);
+            } else {
+                showError(result.message || 'Gagal memuat data MAPA01');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading MAPA01 data:', error);
+            showError(`Error memuat data: ${error.message}`);
+        });
+    }
+
+    function populateMapa01Form(data) {
+        // Update general info
+        const generalInfoHTML = `
+            <div class="p-4 space-y-6">
+                <div class="max-w-full space-y-1">
+                    <div class="flex">
+                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -ms-px w-1/3">
+                            Judul Sertifikasi
+                        </span>
+                        <p class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input">
+                            ${data.general_info.judul_skema}
+                        </p>
+                    </div>
+                    <div class="flex">
+                        <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                            Nomor Sertifikasi
+                        </span>
+                        <p class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input">
+                            ${data.general_info.kode_skema}
+                        </p>
+                    </div>
+                </div>
+                <div class="max-w-full space-y-1">
+                    <div class="flex">
+                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                            Nama Peserta Sertifikasi
+                        </span>
+                        <p class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input">
+                            ${data.general_info.nama_asesi}
+                        </p>
+                    </div>
+                    <div class="flex">
+                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                            Nama Asesor
+                        </span>
+                        <p class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input">
+                            ${data.general_info.nama_asesor}
+                        </p>
+                    </div>
+                    <div class="flex">
+                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                            TUK
+                        </span>
+                        <p class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input">
+                            ${data.general_info.nama_tuk}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('FRMAPA01').innerHTML = generalInfoHTML;
+
+        // Show form container
+        document.getElementById('mapa01FormContainer').classList.remove('hidden');
+
+        // Populate existing data if record exists
+        if (recordExists && data.mapa01) {
+            populateRadioButtons(data.mapa01);
+
+            // Check if already signed and disable button
+            const submitButton = document.getElementById('simpanSetujui');
+            if (data.mapa01.is_signed && submitButton) {
+                submitButton.textContent = 'Sudah Ditandatangani';
+                submitButton.disabled = true;
+                submitButton.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru');
+                submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+            }
+        }
+
+        // Populate rencana asesmen table
+        populateRencanaAsesmenTable(data.rencana_asesmen);
+
+        // Setup form submission
+        setupFormSubmission();
+    }
+
+    function populateRadioButtons(mapa01Data) {
+        const radioGroups = [
+            'pendekatan_asesmen_asesi',
+            'tujuan_asesmen',
+            'lingkungan',
+            'peluang_untuk_mengumpulkan_bukti',
+            'hubungan_antara_standar_kompetensi',
+            'pelaksana_asesmen',
+            'pihak_yang_relevan_untuk_dikonfirmasi',
+            'tolak_ukur_asesmen'
+        ];
+
+        radioGroups.forEach(groupName => {
+            if (mapa01Data[groupName]) {
+                const radio = document.querySelector(`input[name="${groupName}"][value="${mapa01Data[groupName]}"]`);
+                if (radio) {
+                    radio.checked = true;
+                }
+            }
+        });
+    }
+
+    function populateRencanaAsesmenTable(rencanaData) {
+        const tableBody = document.getElementById('rencanaAsesmenTableBody');
+
+        if (!rencanaData || rencanaData.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="px-4 py-3 text-center text-gray-500">Tidak ada data rencana asesmen</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let tableContent = '';
+        rencanaData.forEach(uk => {
+            uk.rencana.forEach((rencana, index) => {
+                const isFirstRow = index === 0;
+                const rowSpan = isFirstRow ? uk.rencana.length : 0;
+
+                tableContent += `
+                    <tr class="text-black">
+                        ${isFirstRow ? `<td rowspan="${rowSpan}" class="px-4 py-3 text-left align-top border-r border-gray-200">
+                            <div class="font-semibold">${uk.kode_uk}</div>
+                            <div class="text-sm text-gray-600">${uk.nama_uk}</div>
+                        </td>` : ''}
+                        <td class="px-4 py-3 text-left">${rencana.elemen}</td>
+                        <td class="px-4 py-3 text-left">${rencana.bukti_bukti}</td>
+                        <td class="px-4 py-3">
+                            ${rencana.jenis_bukti === 'L' ? '✓' : ''}
+                        </td>
+                        <td class="px-4 py-3">
+                            ${rencana.jenis_bukti === 'TL' ? '✓' : ''}
+                        </td>
+                        <td class="px-4 py-3">
+                            ${rencana.jenis_bukti === 'T' ? '✓' : ''}
+                        </td>
+                        <td class="px-4 py-3 text-left">${rencana.metode_label}</td>
+                    </tr>
+                `;
+            });
+        });
+
+        tableBody.innerHTML = tableContent;
+    }
+
+    function setupFormSubmission() {
+        const submitButton = document.getElementById('simpanSetujui');
+        if (submitButton && !submitButton.disabled) {
+            // Remove existing event listeners
+            submitButton.replaceWith(submitButton.cloneNode(true));
+
+            // Add new event listener
+            document.getElementById('simpanSetujui').addEventListener('click', handleFormSubmit);
+        }
+    }
+
+    function collectFormData() {
+        const formData = {
+            id_asesi: currentAsesiId,
+            id_asesor: currentAsesorId,
+            is_signing: true
+        };
+
+        const radioGroups = [
+            'pendekatan_asesmen_asesi',
+            'tujuan_asesmen',
+            'lingkungan',
+            'peluang_untuk_mengumpulkan_bukti',
+            'hubungan_antara_standar_kompetensi',
+            'pelaksana_asesmen',
+            'pihak_yang_relevan_untuk_dikonfirmasi',
+            'tolak_ukur_asesmen'
+        ];
+
+        radioGroups.forEach(groupName => {
+            const checkedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
+            if (checkedRadio) {
+                formData[groupName] = checkedRadio.value;
+            }
+        });
+
+        return formData;
+    }
+
+    function handleFormSubmit() {
+        const formData = collectFormData();
+
+        // Validate required fields
+        const requiredFields = [
+            'pendekatan_asesmen_asesi',
+            'tujuan_asesmen',
+            'lingkungan',
+            'peluang_untuk_mengumpulkan_bukti',
+            'hubungan_antara_standar_kompetensi',
+            'pelaksana_asesmen',
+            'pihak_yang_relevan_untuk_dikonfirmasi',
+            'tolak_ukur_asesmen'
+        ];
+
+        const missingFields = requiredFields.filter(field => !formData[field]);
+
+        if (missingFields.length > 0) {
+            showError('Harap lengkapi semua field yang diperlukan sebelum menyimpan.');
+            return;
+        }
+
+        // Show loading state
+        const submitButton = document.getElementById('simpanSetujui');
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Menyimpan...';
+        submitButton.disabled = true;
+
+        // Submit data
+        saveMapa01Data(formData, submitButton, originalText);
+    }
+
+    function saveMapa01Data(formData, submitButton, originalText) {
+        const apiUrl = `${API_CONFIG.baseUrl}/asesmen/mapa01/save`;
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: API_CONFIG.headers,
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            console.log('Save Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('Save API Response:', result);
+
+            if (result.status === 'success') {
+                showSuccess();
+
+                // Reload data to show updated signature and reload asesi list
+                setTimeout(() => {
+                    loadMapa01Data(currentAsesiId);
+                    loadAsesiList();
+                }, 1000);
+            } else {
+                throw new Error(result.message || 'Gagal menyimpan data');
+            }
+        })
+        .catch(error => {
+            console.error('Error saving MAPA01 data:', error);
+            showError(`Error menyimpan data: ${error.message}`);
+        })
+        .finally(() => {
+            // Restore button state if not successful
+            if (submitButton && !submitButton.classList.contains('bg-gray-400')) {
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        });
+    }
 });
-function showSummary() {
-
-    // Sembunyikan elemen pencarian utama
-    document.getElementById('searchMAPA01').classList.add('hidden');
-
-    // Sembunyikan elemen daftar asesi
-    document.getElementById('daftarMAPA01').classList.add('hidden');
-
-    // Tampilkan bagian breadcrumbs
-    document.getElementById('breadcrumbs').classList.remove('hidden');
-
-    // Tampilkan bagian detail asesi
-    document.getElementById('detailMAPA01').classList.remove('hidden');
-
-    // Optional: scroll ke bagian detail
-    document.getElementById('detailMAPA01').scrollIntoView({ behavior: 'smooth' });
-}
 </script>
-
-@endsection

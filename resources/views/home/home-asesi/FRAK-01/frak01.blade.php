@@ -94,22 +94,12 @@
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2">Hari/Tanggal</td>
-                            <td class="border border-gray-300 p-2" colspan="2">{{ $today->translatedFormat('l, d F Y') }}</td>
+                            <td class="border border-gray-300 p-2" colspan="2">tanggal</td>
                         </tr>
                         <tr>
                             <td class="border border-gray-300 p-2">TUK</td>
                             <td class="border border-gray-300 p-2" colspan="2">
-                                @if(is_string($event->tuk))
-                                        {{ $event->tuk }}
-                                    @elseif(is_object($event->tuk))
-                                        <div>
-                                            <span class="font-semibold">{{ $event->tuk->nama_tuk }}</span> ({{ $event->tuk->kode_tuk }})
-                                            <div class="text-xs text-gray-600 mt-1">{{ $event->tuk->alamat }}</div>
-                                            <div class="text-xs text-gray-500">No. Lisensi: {{ $event->tuk->no_lisensi_skkn }}</div>
-                                        </div>
-                                    @else
-                                        Tidak ditemukan
-                                    @endif
+                                tuk
                             </td>
                         </tr>
                         <tr>
@@ -137,7 +127,7 @@
                                 <label for="approve-pemohon" class="text-sm">Tanda Tangan Asesi</label>
                             </div>
                             <p class="mt-2">TTD: <img src="{{ asset('images/signature.jpg') }}" alt="Signature" class="h-6 inline"></p>
-                            <p>{{ $today->translatedFormat('l, d F Y') }}</p>
+                            <p>tanggal</p>
                         </div>
                         <div>
                             <div class="flex items-center space-x-2 mt-2">
@@ -145,7 +135,7 @@
                                 <label for="approve-admin" class="text-sm">Tanda Tangan Assesor</label>
                             </div>
                             <p class="mt-2">TTD: <img src="{{ asset('images/admin-signature.jpg') }}" alt="Asesor Signature" class="h-6 inline"></p>
-                            <p>{{ $today->translatedFormat('l, d F Y') }}</p>
+                            <p>tanggal</p>
                         </div>
                     </div>
                     <div class="flex justify-end mt-4">

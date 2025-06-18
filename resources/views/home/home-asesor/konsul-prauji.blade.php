@@ -2,6 +2,9 @@
 
 @section('title', 'Konsultasi Pra Uji - Asesor')
 
+<!-- Meta CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
     <div id="judulPage" class="relative z-10 flex items-center mx-4 pb-4">
@@ -17,12 +20,47 @@
         </svg>
         <p class="ms-2 text-xl font-bold bg-gradient-to-r from-biru to-ungu text-transparent bg-clip-text">Konsultasi Pra Uji</p>
     </div>
+
+    <!-- Loading, Error, and Success Messages -->
+    <div id="messageContainer" class="mb-4">
+        <div id="loadingMessage" class="hidden p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50" role="alert">
+            <div class="flex items-center">
+                <svg class="w-4 h-4 me-2 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span id="loadingText">Memuat data...</span>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="hidden p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50" role="alert">
+            <div class="flex items-center">
+                <svg class="w-4 h-4 me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+                <span id="errorText">Terjadi kesalahan.</span>
+            </div>
+        </div>
+
+        <div id="successMessage" class="hidden p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
+            <div class="flex items-center">
+                <svg class="w-4 h-4 me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span id="successText">Data berhasil disimpan.</span>
+            </div>
+        </div>
+    </div>
+
     <div id="breadcrumbs" class="hidden pb-4 px-6">
         <!-- Breadcrumb -->
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
                     <a href="{{ route('home-asesor') }}" class="inline-flex items-center text-sm font-medium text-black hover:text-sidebar_font">
+                        <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                        </svg>
                         Home
                     </a>
                 </li>
@@ -36,27 +74,29 @@
                         </a>
                     </div>
                 </li>
-                <!-- Memanggil data nama asesi -->
                 <li aria-current="page">
                     <div class="flex items-center">
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 9l4-4-4-4"/>
                         </svg>
-                        <span class="ms-1 text-sm font-medium text-black">Muhammad Rifai</span>
+                        <span id="breadcrumbAsesiName" class="ms-1 text-sm font-medium text-black">Detail Konsultasi</span>
                     </div>
                 </li>
             </ol>
         </nav>
     </div>
+
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
     </div>
+
     <div id="frameKonsul" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Konsultasi Pra Uji</p>
+
         <!-- Search Form -->
         <form id="searchKonsul" class="max-w-md mb-4 rounded-xl">
             <div class="relative">
-            <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
+                <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi atau Nama Peserta" />
                 <button type="submit" class="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
                     <svg class="w-4 h-4 text-biru" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -64,6 +104,7 @@
                 </button>
             </div>
         </form>
+
         <div class="overflow-x-auto shadow-md rounded-lg">
             <table id="daftarKonsul" class="min-w-full bg-white overflow-hidden">
                 <thead class="bg-bg_dashboard text-center">
@@ -78,202 +119,319 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 text-black text-center">
                     <tr>
-                        <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="showSummary()" class="">
-                                <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd"
-                                        d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z"
-                                        clip-rule="evenodd" />
+                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">
+                            <div class="flex justify-center items-center space-x-2">
+                                <svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                            </button>
-                            <button onclick="showDocument()" class="">
-                                <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
-                                </svg>
-                            </button>
-                        </td>
-                        <td class="px-4 py-3 text-gray-700 text-left">Muhammad Rifai</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">Sertifikasi Frontend</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">SK1234567890</td>
-                        <td class="px-4 py-0">
-                            <div class="flex px-4 py-3 justify-center items-center">
-                                <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                                </svg>
-                                <svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
-                                </svg>
+                                <span>Memuat data asesi...</span>
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
         <div id="detailKonsul" class="hidden pt-0 p-4 text-black">
-            <!-- Input Formulir APL.02 -->
-            <div id="KonsulPrauji" class="p-4 space-y-6">
-                <p id="judulDetail" class="text-lg font-semibold text-sidebar_font">FORMULIR KONSULTASI PRA UJI OKUPASI PEMANDU MUSEUM</p>
-                <div class="max-w-full space-y-1">
-                    <div class="flex">
-                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -ms-px w-1/3">
-                            Referensi
-                        </span>
-                        <p id="judulSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            FOR 21.2019
-                        </p>
+            <!-- Input Formulir Konsultasi Pra Uji -->
+            <form id="formKonsulPrauji">
+                <div id="KonsulPrauji" class="p-4 space-y-6">
+                    <p id="judulDetail" class="text-lg font-semibold text-sidebar_font">FORMULIR KONSULTASI PRA UJI</p>
+                    <div class="max-w-full space-y-1">
+                        <div class="flex">
+                            <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -ms-px w-1/3">
+                                Skema Sertifikasi
+                            </span>
+                            <p id="judulSertifikasi" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none">
+                                Memuat...
+                            </p>
+                        </div>
+                        <div class="flex">
+                            <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                                Nomor Skema
+                            </span>
+                            <p id="nomorSertifikasi" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none">
+                                Memuat...
+                            </p>
+                        </div>
+                        <div class="flex">
+                            <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                                Tanggal Asesmen
+                            </span>
+                            <p id="tanggalAsesmen" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none">
+                                Memuat...
+                            </p>
+                        </div>
                     </div>
-                    <div class="flex">
-                        <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            Revisi
-                        </span>
-                        <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            00
-                        </p>
-                    </div>
-                    <div class="flex">
-                        <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            Valid Mulai
-                        </span>
-                        <p id="tanggalSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            16 Mei 2025
-                        </p>
-                    </div>
-                </div>
-                <div class="max-w-full space-y-1">
-                    <div class="flex">
-                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            Nama Peserta Sertifikasi
-                        </span>
-                        <p id="namaPeserta" type="text" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            Muhammad Rifai
-                        </p>
-                    </div>
-                    <div class="flex">
-                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            Nama Asesor
-                        </span>
-                        <p id="namaAsesor" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            Nafa Popcorn
-                        </p>
-                    </div>
-                    <div class="flex">
-                        <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
-                            TUK
-                        </span>
-                        <p id="tuk" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Satu Web
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tabel 1 Skema Konsul -->
-            <div class="p-4">
-                <p id="judulTabelKonsul" class="text-sidebar_font font-semibold pb-2">Skema Sertifikat Okupasi Pemandu Museum</p>
-                <div class="overflow-x-auto shadow-md rounded-lg mb-4">
-                    <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
-                        <thead class="bg-bg_dashboard text-center">
-                            <tr>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Kode Unit</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Judul Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 text-black text-center items-center">
-                            <tr>
-                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">R.93KPW00.011.2</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">Mengikuti Prosedur Kesehatan, Keselamatan dan Keamanan di Tempat Kerja</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Tabel 2 APL02 -->
-            <div class="p-4">
-                <p id="judulTabelKonsulPrauji" class="text-sidebar_font font-semibold pb-2">
-                    Asesor agar menginformasikan hal-hal dibawah ini :
-                </p>
-
-                <div class="overflow-x-auto shadow-md rounded-lg mb-4">
-                    <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
-                        <thead class="bg-bg_dashboard text-center">
-                            <tr>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Situasi</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 text-black text-center items-center">
-                            <tr>
-                                <td class="px-4 py-3 text-sm text-black">1</td>
-                                <td class="px-4 py-3 text-black text-left">
-                                    Pembukaan : Salam, menyampaikan tujuan pertemuan hari ini.
-                                    <ul class="list-disc pl-5">
-                                        <li>Memperkenalkan diri</li>
-                                        <li>Menanyakan nama dan asal peserta</li>
-                                        <li>Percakapan sederhana (Informal)</li>
-                                        <li>Menjelaskan maksud dilaksanakannya konsultasi pra asesmen</li>
-                                    </ul>
-                                </td>
-
-                                <td class="flex px-4 py-3 justify-center">
-                                    <form id="ddKompetensi" class="w-40">
-                                        <select id="selectKompetensi" onchange="ubahWarnaSelect()"
-                                            class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
-                                            <option selected value="">Pilih</option>
-                                            <option value="kompeten">Ya</option>
-                                            <option value="tidak_kompeten">Tidak</option>
-                                        </select>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Tandatangan -->
-            <div class="my-6 px-4 space-y-6">
-                <div class="flex flex-row justify-end">
-                    <!-- Tanda Tangan Asesor -->
-                    <div class="flex flex-col items-center justify-center">
-                        <p class="font-medium text-sidebar_font">16 Mei 2025</p>
-                        <img id="tandaTanganAsesor" src="{{ asset('images/contoh ttd.png') }}" alt="Tanda Tangan Asesi" class="w-60 h-40 border-b border-border_input">
-                        <p class="font-medium text-sidebar_font">Asesor</p>
-                        <p class="font-normal text-sidebar_font">Nafa Popcorn</p>
+                    <div class="max-w-full space-y-1">
+                        <div class="flex">
+                            <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                                Nama Asesor
+                            </span>
+                            <p id="namaAsesor" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none">
+                                Memuat...
+                            </p>
+                        </div>
+                        <div class="flex">
+                            <span class="py-1 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
+                                TUK
+                            </span>
+                            <p id="tuk" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none">
+                                Memuat...
+                            </p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Button Simpan -->
-                <div class="flex justify-end pe-4">
-                    <button id="simpanRekomendasi" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
-                        Saya Menyetujui
-                    </button>
+                <!-- Tabel Unit Kompetensi -->
+                <div class="p-4">
+                    <p id="judulTabelKonsul" class="text-sidebar_font font-semibold pb-2">Unit Kompetensi</p>
+                    <div class="overflow-x-auto shadow-md rounded-lg mb-4">
+                        <table id="unitKompetensiTable" class="min-w-full bg-white overflow-hidden">
+                            <thead class="bg-bg_dashboard text-center">
+                                <tr>
+                                    <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">No</th>
+                                    <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Kode Unit</th>
+                                    <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Judul Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 text-black text-center items-center">
+                                <tr>
+                                    <td colspan="3" class="px-4 py-3 text-center text-gray-500">
+                                        <div class="flex justify-center items-center space-x-2">
+                                            <svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <span>Memuat unit kompetensi...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
 
+                <!-- Tabel Checklist Konsultasi Pra Uji -->
+                <div class="p-4">
+                    <p id="judulTabelKonsulPrauji" class="text-sidebar_font font-semibold pb-2">
+                        Asesor agar menginformasikan hal-hal dibawah ini:
+                    </p>
+
+                    <div class="overflow-x-auto shadow-md rounded-lg mb-4">
+                        <table id="checklistTable" class="min-w-full bg-white overflow-hidden">
+                            <thead class="bg-bg_dashboard text-center">
+                                <tr>
+                                    <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider" style="width: 10%">No</th>
+                                    <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider" style="width: 70%">Situasi</th>
+                                    <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider" style="width: 20%">Jawaban</th>
+                                </tr>
+                            </thead>
+                            <tbody id="checklistTableBody" class="divide-y divide-gray-200 text-black">
+                                <!-- Checklist items will be dynamically populated -->
+                                <tr>
+                                    <td colspan="3" class="px-4 py-3 text-center text-gray-500">
+                                        <div class="flex justify-center items-center space-x-2">
+                                            <svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <span>Memuat checklist...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tanda Tangan Section -->
+                <div class="my-6 px-4 space-y-6">
+                    <div class="flex flex-row justify-end">
+                        <!-- Tanda Tangan Asesor dengan Checkbox untuk Persetujuan -->
+                        <div class="flex flex-col items-center justify-center">
+                            <!-- Tampilkan tanggal otomatis -->
+                            <p id="tanggalTandaTangan" class="font-medium text-sidebar_font"></p>
+
+                            <!-- Container untuk tanda tangan -->
+                            <div id="tandaTanganContainer" class="w-60 h-40 border-b border-border_input flex items-center justify-center">
+                                <p id="tandaTanganPlaceholder" class="text-gray-400 text-center">Tanda tangan akan ditampilkan setelah menyimpan formulir</p>
+                                <img id="tandaTanganAsesor" src="" alt="Tanda Tangan Asesor" class="w-full h-full object-contain hidden">
+                            </div>
+
+                            <!-- Checkbox untuk tanda tangan -->
+                            <div class="mt-3 flex items-center">
+                                <input id="is_asesor_signing" name="is_asesor_signing" type="checkbox" value="true" class="w-4 h-4 text-biru bg-gray-100 border-gray-300 rounded focus:ring-biru">
+                                <label for="is_asesor_signing" class="ms-2 text-sm font-medium text-sidebar_font">Saya setuju menandatangani formulir ini</label>
+                            </div>
+
+                            <p class="font-medium text-sidebar_font mt-2">Asesor</p>
+                            <p id="namaAsesorTTD" class="font-normal text-sidebar_font">Memuat nama asesor...</p>
+                        </div>
+                    </div>
+
+                    <!-- Button Simpan -->
+                    <div class="flex justify-end pe-4">
+                        <button id="btnKembali" type="button" class="inline-flex justify-center rounded-md bg-gray-200 text-gray-700 px-6 py-2 text-sm/6 font-medium hover:bg-gray-300 focus:outline-none mt-6 me-3">
+                            Kembali
+                        </button>
+                        <button id="btnSimpan" type="submit" class="inline-flex justify-center items-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
+                            Saya Menyetujui
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-    <div id="bgGradient"
+
+    <div id="bgGradient2"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
     </div>
 </div>
 
+<!-- CSS untuk Upload Area -->
+<style>
+.upload-area:hover {
+    border-color: #3B82F6;
+    background-color: #EFF6FF;
+}
+
+.upload-area.dragover {
+    border-color: #3B82F6;
+    background-color: #EFF6FF;
+    transform: scale(1.02);
+}
+
+#tandaTanganAsesor {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #3B82F6;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Styling untuk checkbox radio buttons */
+.radio-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.radio-option input[type="radio"] {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+}
+
+/* Animasi transisi untuk detail */
+.fade-enter {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.fade-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 300ms, transform 300ms;
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const apiKey = "{{ env('API_KEY') }}";
+    // Configuration
+    const config = {
+        apiKey: "{{ env('API_KEY') }}",
+        csrfToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+        baseUrl: "{{ url('/api/v1') }}",
+        headers: {}
+    };
 
-    // Get asesor ID dynamically from the authenticated user with proper error handling
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+    // Set up headers
+    config.headers = {
+        'Content-Type': 'application/json',
+        'API-KEY': config.apiKey,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': config.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    // State management
+    const state = {
+        currentAsesiId: null,
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        asesiData: [],
+        searchTerm: '',
+        isSubmitting: false,
+        checklist: {
+            point_1: { jawaban_asesor: null },
+            point_2: { jawaban_asesor: null },
+            point_3: { jawaban_asesor: null },
+            point_4: { jawaban_asesor: null },
+            point_5: { jawaban_asesor: null },
+            point_6: { jawaban_asesor: null },
+            point_7: { jawaban_asesor: null },
+            point_8: { jawaban_asesor: null },
+            point_9: { jawaban_asesor: null }
+        },
+        consultationData: null
+    };
+
+    // DOM elements
+    const elements = {
+        breadcrumbs: document.getElementById('breadcrumbs'),
+        searchForm: document.getElementById('searchKonsul'),
+        asesiTable: document.getElementById('daftarKonsul'),
+        detailView: document.getElementById('detailKonsul'),
+        consultationForm: document.getElementById('formKonsulPrauji'),
+        backButton: document.getElementById('btnKembali'),
+        submitButton: document.getElementById('btnSimpan'),
+        checklistTableBody: document.getElementById('checklistTableBody'),
+        unitKompetensiTable: document.getElementById('unitKompetensiTable').querySelector('tbody'),
+        breadcrumbAsesiName: document.getElementById('breadcrumbAsesiName'),
+        signingCheckbox: document.getElementById('is_asesor_signing'),
+        tandaTanganPlaceholder: document.getElementById('tandaTanganPlaceholder'),
+        tandaTanganAsesor: document.getElementById('tandaTanganAsesor'),
+        // Form fields
+        namaAsesor: document.getElementById('namaAsesor'),
+        namaAsesorTTD: document.getElementById('namaAsesorTTD'),
+        namaPeserta: document.getElementById('namaPeserta'),
+        judulSertifikasi: document.getElementById('judulSertifikasi'),
+        nomorSertifikasi: document.getElementById('nomorSertifikasi'),
+        tanggalAsesmen: document.getElementById('tanggalAsesmen'),
+        tuk: document.getElementById('tuk'),
+        tanggalTandaTangan: document.getElementById('tanggalTandaTangan')
+    };
 
     // Stop execution if no asesor ID is found
-    if (!asesorId) {
+    if (!state.asesorId) {
         console.error('No asesor ID found for the authenticated user');
-        document.querySelector('#daftarKetidakberpihakan tbody').innerHTML = `
+        showMessage('error', 'User tidak teridentifikasi, silahkan login kembali');
+        document.querySelector('#daftarKonsul tbody').innerHTML = `
             <tr>
                 <td colspan="6" class="px-4 py-3 text-center text-gray-500">User tidak teridentifikasi, silahkan login kembali</td>
             </tr>
@@ -281,154 +439,634 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // Construct API URL with the asesor ID
-    const apiUrl = "{{ url('/api/v1/asesor/asesis') }}/" + asesorId;
+    // Utility function to show messages
+    function showMessage(type, message, duration = 5000) {
+        // Hide all messages first
+        document.getElementById('loadingMessage').classList.add('hidden');
+        document.getElementById('errorMessage').classList.add('hidden');
+        document.getElementById('successMessage').classList.add('hidden');
 
-    // Debug output
-    console.log('Fetching data for asesor ID:', asesorId);
-    console.log('API URL:', apiUrl);
+        // Show appropriate message
+        const messageElement = document.getElementById(`${type}Message`);
+        const textElement = document.getElementById(`${type}Text`);
 
-    // Get CSRF token from meta tag
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (messageElement && textElement) {
+            textElement.textContent = message;
+            messageElement.classList.remove('hidden');
 
-    // Make API request
-    fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'API-KEY': apiKey,
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken || '',
-            'X-Requested-With': 'XMLHttpRequest'
+            // Auto-hide after duration (if specified)
+            if (duration > 0) {
+                setTimeout(() => {
+                    messageElement.classList.add('hidden');
+                }, duration);
+            }
         }
-    })
-    .then(response => {
-        console.log('Response status:', response.status);
+    }
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    // Format date to Indonesian format
+    function formatDate(dateString) {
+        if (!dateString) return '';
+
+        // If the date is already in DD-MM-YYYY format
+        if (dateString.includes('-') && dateString.split('-').length === 3) {
+            const [day, month, year] = dateString.split('-');
+            const months = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+                'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+            return `${day} ${months[parseInt(month) - 1]} ${year}`;
         }
-        return response.json();
-    })
-    .then(result => {
-        console.log('API Response:', result);
 
-        if (result.success && result.data) {
-            const asesisData = result.data.asesis;
-            const jumlahAsesi = result.data.jumlah_asesi;
+        // Otherwise, parse as ISO date
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return dateString; // Return original if invalid
 
-            // Update the table with asesi data
-            const tableBody = document.querySelector('#daftarKonsul tbody');
+        const day = date.getDate();
+        const month = date.getMonth();
+        const year = date.getFullYear();
 
-            if (asesisData && asesisData.length > 0) {
-                let tableContent = '';
+        const months = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+            'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
 
-                asesisData.forEach((asesi, index) => {
-                // Calculate progress percentage for display
-                const progressPercent = asesi.progress_percentage || 0;
+        return `${day} ${months[month]} ${year}`;
+    }
 
-                // Determine if there's any progress (completed steps > 0)
-                const hasProgress = asesi.completed_steps > 0;
+    // Set today's date
+    function setTodayDate() {
+        const today = new Date();
+        elements.tanggalTandaTangan.textContent = formatDate(today.toISOString().split('T')[0]);
+    }
 
-                // Select appropriate icon based on progress
-                const statusIcon = hasProgress
-                    ? `<svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                    </svg>`
-                    : `<svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
-                    </svg>`;
+    // Load asesi data from API
+    async function loadAsesiData() {
+        try {
+            showMessage('loading', 'Memuat data asesi...', 0);
 
-                tableContent += `
-                    <tr>
-                        <td class="px-4 py-3 text-sm text-gray-700">${index + 1}</td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="showSummary('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${asesi.progress_percentage}, ${asesi.completed_steps}, ${asesi.total_steps})" class="">
-                                <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd"
-                                        d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <button onclick="showDocument('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${asesi.progress_percentage}, ${asesi.completed_steps}, ${asesi.total_steps})" class="">
-                                <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
-                                </svg>
-                            </button>
-                        </td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_asesi}</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_skema}</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${asesi.nomor_skema}</td>
-                        <td class="flex px-4 py-3 justify-center items-center">
-                            ${statusIcon}
-
-                        </td>
-                    </tr>
-                `;
+            const response = await fetch(`${config.baseUrl}/asesor/asesis/${state.asesorId}`, {
+                method: 'GET',
+                headers: config.headers
             });
 
-                tableBody.innerHTML = tableContent;
-            } else {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data asesi</td>
-                    </tr>
-                `;
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            // Implementasi pencarian
-            const searchInput = document.getElementById('searchKonsul');
-            searchInput.addEventListener('keyup', function() {
-                const searchValue = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#daftarKonsul tbody tr');
+            const result = await response.json();
 
-                rows.forEach(row => {
-                    const nama = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
-                    const skema = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
-                    const kode = row.querySelector('td:nth-child(5)')?.textContent.toLowerCase() || '';
-
-                    if (nama.includes(searchValue) || skema.includes(searchValue) || kode.includes(searchValue)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-
-        } else {
-            console.error('API returned success=false or missing data:', result);
+            if (result.success && result.data) {
+                state.asesiData = result.data.asesis || [];
+                // Load progress for each asesi
+                await loadAsesiProgress(state.asesiData);
+                renderAsesiTable();
+                showMessage('success', 'Data asesi berhasil dimuat', 3000);
+            } else {
+                console.error('API returned success=false or missing data:', result);
+                document.querySelector('#daftarKonsul tbody').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
+                    </tr>
+                `;
+                showMessage('error', `Gagal memuat data: ${result.message || 'Terjadi kesalahan'}`);
+            }
+        } catch (error) {
+            console.error('Error loading asesi data:', error);
             document.querySelector('#daftarKonsul tbody').innerHTML = `
                 <tr>
-                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
+                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
                 </tr>
             `;
+            showMessage('error', `Error memuat data: ${error.message}`);
         }
-    })
-    .catch(error => {
-        console.error('Error details:', error);
-        document.querySelector('#daftarKonsul tbody').innerHTML = `
-            <tr>
-                <td colspan="6" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
-            </tr>
+    }
+
+    // Load progress for each asesi
+    async function loadAsesiProgress(asesisData) {
+        try {
+            // Load progress for each asesi
+            const asesisWithProgress = await Promise.all(
+                asesisData.map(async (asesi) => {
+                    try {
+                        const progressResponse = await fetch(`${config.baseUrl}/asesor/progressAsesi/${asesi.id_asesi}`, {
+                            method: 'GET',
+                            headers: config.headers
+                        });
+
+                        if (progressResponse.ok) {
+                            const progressResult = await progressResponse.json();
+                            if (progressResult.success && progressResult.data) {
+                                asesi.progress_data = progressResult.data;
+                                asesi.konsultasi_pra_uji_completed = progressResult.data.progress_asesmen?.konsultasi_pra_uji?.completed || false;
+                                asesi.konsultasi_pra_uji_completed_at = progressResult.data.progress_asesmen?.konsultasi_pra_uji?.completed_at || null;
+                                asesi.progress_percentage = progressResult.data.progress_summary?.progress_percentage || 0;
+                                asesi.completed_steps = progressResult.data.progress_summary?.completed_steps || 0;
+                                asesi.total_steps = progressResult.data.progress_summary?.total_steps || 0;
+                            } else {
+                                asesi.konsultasi_pra_uji_completed = false;
+                                asesi.konsultasi_pra_uji_completed_at = null;
+                                asesi.progress_percentage = 0;
+                                asesi.completed_steps = 0;
+                                asesi.total_steps = 0;
+                            }
+                        } else {
+                            console.warn(`Failed to load progress for asesi ${asesi.id_asesi}`);
+                            asesi.konsultasi_pra_uji_completed = false;
+                            asesi.konsultasi_pra_uji_completed_at = null;
+                            asesi.progress_percentage = 0;
+                            asesi.completed_steps = 0;
+                            asesi.total_steps = 0;
+                        }
+                    } catch (error) {
+                        console.error(`Error loading progress for asesi ${asesi.id_asesi}:`, error);
+                        asesi.konsultasi_pra_uji_completed = false;
+                        asesi.konsultasi_pra_uji_completed_at = null;
+                        asesi.progress_percentage = 0;
+                        asesi.completed_steps = 0;
+                        asesi.total_steps = 0;
+                    }
+                    return asesi;
+                })
+            );
+
+            // Update state with progress data
+            state.asesiData = asesisWithProgress;
+        } catch (error) {
+            console.error('Error loading asesi progress:', error);
+            showMessage('error', `Error memuat progress asesi: ${error.message}`);
+        }
+    }
+
+    // Render asesi table with search and filter
+    function renderAsesiTable() {
+        const tableBody = document.querySelector('#daftarKonsul tbody');
+        if (!tableBody) return;
+
+        if (state.asesiData.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data asesi</td>
+                </tr>
+            `;
+            return;
+        }
+
+        // Filter data based on search term
+        const filteredData = state.asesiData.filter(asesi => {
+            if (!state.searchTerm) return true;
+
+            const searchTerm = state.searchTerm.toLowerCase();
+            return (
+                (asesi.nama_asesi || '').toLowerCase().includes(searchTerm) ||
+                (asesi.nama_skema || '').toLowerCase().includes(searchTerm) ||
+                (asesi.nomor_skema || '').toLowerCase().includes(searchTerm)
+            );
+        });
+
+        if (filteredData.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data yang sesuai dengan pencarian</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let tableContent = '';
+        filteredData.forEach((asesi, index) => {
+            // Use the konsultasi_pra_uji completion status from progress API
+            const hasProgress = asesi.konsultasi_pra_uji_completed === true;
+            const progressPercent = asesi.progress_percentage || 0;
+            const completedSteps = asesi.completed_steps || 0;
+            const totalSteps = asesi.total_steps || 0;
+
+            // Select appropriate icon based on konsultasi_pra_uji completion
+            const statusIcon = hasProgress
+                ? `<svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                </svg>`
+                : `<svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                </svg>`;
+
+            tableContent += `
+                <tr>
+                    <td class="px-4 py-3 text-sm text-gray-700">${index + 1}</td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="showSummary('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${progressPercent}, ${completedSteps}, ${totalSteps})" class="mr-2">
+                            <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <button onclick="showDocument('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${progressPercent}, ${completedSteps}, ${totalSteps}, ${hasProgress})" class="">
+                            <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </td>
+                    <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_asesi || 'N/A'}</td>
+                    <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_skema || 'N/A'}</td>
+                    <td class="px-4 py-3 text-gray-700 text-left">${asesi.nomor_skema || 'N/A'}</td>
+                    <td class="flex px-4 py-3 justify-center items-center">
+                        ${statusIcon}
+                    </td>
+                </tr>
+            `;
+        });
+
+        tableBody.innerHTML = tableContent;
+    }
+
+    // Load consultation data for specific asesi
+    async function loadConsultationData(asesiId) {
+        try {
+            showMessage('loading', 'Memuat data konsultasi pra uji...', 0);
+
+            const response = await fetch(`${config.baseUrl}/asesmen/konsultasi-prauji/${asesiId}`, {
+                method: 'GET',
+                headers: config.headers
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.status === 'success' && result.data) {
+                state.consultationData = result.data;
+                state.checklist = result.data.konsultasi_pra_uji.jawaban_checklist || state.checklist;
+                renderConsultationForm(result.data);
+                showMessage('success', 'Data konsultasi pra uji berhasil dimuat', 3000);
+            } else {
+                console.error('API returned success=false or missing data:', result);
+                showMessage('error', `Gagal memuat data konsultasi pra uji: ${result.message || 'Terjadi kesalahan'}`);
+            }
+        } catch (error) {
+            console.error('Error loading consultation data:', error);
+            showMessage('error', `Error memuat data konsultasi pra uji: ${error.message}`);
+        }
+    }
+
+    // Render consultation form with data
+    function renderConsultationForm(data) {
+        if (!data) return;
+
+        const generalInfo = data.general_info;
+        const konsultasiPraUji = data.konsultasi_pra_uji;
+
+        // Set form values
+        if (generalInfo) {
+            elements.judulSertifikasi.textContent = generalInfo.skema?.nama_skema || 'N/A';
+            elements.nomorSertifikasi.textContent = generalInfo.skema?.nomor_skema || 'N/A';
+            elements.namaAsesor.textContent = generalInfo.nama_asesor || 'N/A';
+            elements.namaAsesorTTD.textContent = generalInfo.nama_asesor || 'N/A';
+            elements.tuk.textContent = konsultasiPraUji.tempat_uji || 'N/A';
+
+            // Format and set tanggal asesmen
+            elements.tanggalAsesmen.textContent = formatDate(konsultasiPraUji.tanggal_asesmen_disepakati) || 'N/A';
+        }
+
+        // Render unit kompetensi table
+        if (generalInfo && generalInfo.unit_kompetensi) {
+            renderUnitKompetensiTable(generalInfo.unit_kompetensi);
+        }
+
+        // Render checklist table
+        renderChecklistTable();
+
+        // Set tanggal tanda tangan
+        setTodayDate();
+
+        // Show tanda tangan if exists and disable form if already signed
+        if (konsultasiPraUji.ttd_asesor) {
+            elements.tandaTanganPlaceholder.classList.add('hidden');
+            elements.tandaTanganAsesor.src = konsultasiPraUji.ttd_asesor;
+            elements.tandaTanganAsesor.classList.remove('hidden');
+            elements.signingCheckbox.checked = true;
+            elements.signingCheckbox.disabled = true;
+
+            // Disable all radio buttons
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.disabled = true;
+            });
+
+            // Update button text and disable
+            elements.submitButton.textContent = 'Sudah Disetujui';
+            elements.submitButton.disabled = true;
+            elements.submitButton.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru');
+            elements.submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+        } else {
+            elements.tandaTanganPlaceholder.classList.remove('hidden');
+            elements.tandaTanganAsesor.classList.add('hidden');
+            elements.signingCheckbox.checked = false;
+            elements.signingCheckbox.disabled = false;
+
+            // Enable all radio buttons
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.disabled = false;
+            });
+
+            // Reset button
+            elements.submitButton.textContent = 'Saya Menyetujui';
+            elements.submitButton.disabled = false;
+            elements.submitButton.classList.add('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru');
+            elements.submitButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+        }
+    }
+
+    // Render unit kompetensi table
+    function renderUnitKompetensiTable(unitKompetensiList) {
+        if (!unitKompetensiList || unitKompetensiList.length === 0) {
+            elements.unitKompetensiTable.innerHTML = `
+                <tr>
+                    <td colspan="3" class="px-4 py-3 text-center text-gray-500">Tidak ada data unit kompetensi</td>
+                </tr>
+            `;
+            return;
+        }
+
+        let tableContent = '';
+        unitKompetensiList.forEach((uk, index) => {
+            tableContent += `
+                <tr>
+                    <td class="px-4 py-3 text-sm text-black">${index + 1}</td>
+                    <td class="px-4 py-3 text-black text-left">${uk.kode_uk || 'N/A'}</td>
+                    <td class="px-4 py-3 text-black text-left">${uk.nama_uk || 'N/A'}</td>
+                </tr>
+            `;
+        });
+
+        elements.unitKompetensiTable.innerHTML = tableContent;
+    }
+
+    // Render checklist table
+    function renderChecklistTable() {
+        const checklistItems = [
+            {
+                id: 'point_1',
+                text: 'Pembukaan : Salam, menyampaikan tujuan pertemuan hari ini.<ul class="list-disc pl-5"><li>Memperkenalkan diri</li><li>Menanyakan nama dan asal peserta</li><li>Percakapan sederhana (Informal)</li><li>Menjelaskan maksud dilaksanakannya konsultasi pra asesmen</li></ul>'
+            },
+            {
+                id: 'point_2',
+                text: 'Proses asesmen dilaksanakan berdasarkan bukti atau evidence.'
+            },
+            {
+                id: 'point_3',
+                text: 'Kualifikasi Asesor, SKM (Skema Sertifikasi) yang akan diassesmenkan, Lembaga Sertifikasi Profesi Okupasi Pemandu Museum, Kementerian Pendidikan dan Kebudayaan.'
+            },
+            {
+                id: 'point_4',
+                text: 'Unit Kompetensi yang akan diujikan seperti tertera pada halaman depan.'
+            },
+            {
+                id: 'point_5',
+                text: 'Aturan bukti (valid, asli, terkini, dan memadai) yang perlu dikumpulkan oleh peserta.'
+            },
+            {
+                id: 'point_6',
+                text: 'Proses asesmen mencakup : <ul class="list-disc pl-5"><li>Mengumpulkan bukti (portofolio dan asesmen dari bank soal, simulasi/demonstrasi/praktek), bila memerlukan klarifikasi, asesor melakukan wawancara dan observasi langsung.</li></ul>'
+            },
+            {
+                id: 'point_7',
+                text: 'Sumber daya asesmen yang akan digunakan termasuk : Pertanyaan lisan, tes tertulis, simulasi tugas, dan praktek.'
+            },
+            {
+                id: 'point_8',
+                text: 'Formulir yang digunakan adalah : <ul class="list-disc pl-5"><li>APL-01 : Formulir Permohonan Sertifikasi Kompetensi</li><li>APL-02 : Formulir Asesmen Mandiri</li><li>FR.AK-01 : Formulir Persetujuan Asesmen dan Kerahasiaan</li><li>FR.MAPA-01 : Merencanakan Aktifitas & Proses Asesmen</li><li>FR.MAPA-02 : Formulir Peta Instrumen Asesmen Hasil Pendekatan Asesmen & Perencanaan Asesmen</li><li>FR.IA-01 : Formulir Ceklis Observasi (langsung/tidak langsung)</li><li>FR.IA-04 : Pertanyaan Untuk Mendukung Observasi</li><li>FR.IA-05 : Formulir Pertanyaan Tertulis</li><li>FR.IA-07 : Formulir Penilaian Praktek Simulasi</li><li>FR.AK-02 : Formulir Banding Asesmen</li><li>FR.AK-03 : Formulir Umpan Balik dari Asesi</li><li>FR.AK-04 : Keputusan & Umpan Balik Asesmen</li></ul>'
+            },
+            {
+                id: 'point_9',
+                text: 'Perencanaan Asesmen dan Kegiatan Pengembangan.'
+            }
+        ];
+
+        let tableContent = '';
+        checklistItems.forEach((item, index) => {
+            const jawaban = state.checklist[item.id]?.jawaban_asesor || null;
+
+            tableContent += `
+                <tr>
+                    <td class="px-4 py-3 text-sm text-black text-center">${index + 1}</td>
+                    <td class="px-4 py-3 text-black text-left">${item.text}</td>
+                    <td class="px-4 py-3">
+                        <div class="flex justify-center">
+                            <div class="w-full">
+                                <div class="radio-option">
+                                    <input type="radio" id="${item.id}_ya" name="${item.id}" value="Ya" ${jawaban === 'Ya' ? 'checked' : ''}>
+                                    <label for="${item.id}_ya" class="text-sm text-sidebar_font">Ya</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="${item.id}_tidak" name="${item.id}" value="Tidak" ${jawaban === 'Tidak' ? 'checked' : ''}>
+                                    <label for="${item.id}_tidak" class="text-sm text-sidebar_font">Tidak</label>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        elements.checklistTableBody.innerHTML = tableContent;
+    }
+
+    // Handle form submission
+    async function submitForm(event) {
+        event.preventDefault();
+
+        if (state.isSubmitting) return;
+
+        if (!state.currentAsesiId) {
+            showMessage('error', 'ID Asesi tidak ditemukan');
+            return;
+        }
+
+        // Check if checkbox is checked
+        if (!elements.signingCheckbox.checked) {
+            showMessage('error', 'Silakan setujui untuk menandatangani formulir');
+            return;
+        }
+
+        // Collect form data
+        const formData = {
+            id_asesi: state.currentAsesiId,
+            id_asesor: state.asesorId,
+            jawaban_checklist: {},
+            is_asesor_signing: elements.signingCheckbox.checked
+        };
+
+        // Get all the checklist answers
+        for (let i = 1; i <= 9; i++) {
+            const pointId = `point_${i}`;
+            const selectedRadio = document.querySelector(`input[name="${pointId}"]:checked`);
+
+            if (selectedRadio) {
+                formData.jawaban_checklist[pointId] = {
+                    jawaban_asesor: selectedRadio.value
+                };
+            } else {
+                showMessage('error', `Silakan pilih jawaban untuk poin ${i}`);
+                return;
+            }
+        }
+
+        // Disable the form during submission
+        state.isSubmitting = true;
+        elements.submitButton.disabled = true;
+        elements.submitButton.innerHTML = `
+            <span class="loading-spinner mr-2"></span>
+            <span>Menyimpan...</span>
         `;
-    });
+
+        showMessage('loading', 'Menyimpan data konsultasi pra uji...', 0);
+
+        try {
+            const response = await fetch(`${config.baseUrl}/asesmen/konsultasi-prauji/asesor/save`, {
+                method: 'POST',
+                headers: config.headers,
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                showMessage('success', 'Data konsultasi pra uji berhasil disimpan');
+
+                // Reload the consultation data to show the updated values
+                setTimeout(() => {
+                    loadConsultationData(state.currentAsesiId);
+                    // Also reload the asesi list to update the progress status
+                    loadAsesiData();
+                }, 1000);
+            } else {
+                console.error('API returned success=false:', result);
+                showMessage('error', `Gagal menyimpan data: ${result.message || 'Terjadi kesalahan'}`);
+            }
+        } catch (error) {
+            console.error('Error saving consultation data:', error);
+            showMessage('error', `Error menyimpan data: ${error.message}`);
+        } finally {
+            // Re-enable the form
+            state.isSubmitting = false;
+            elements.submitButton.disabled = false;
+            elements.submitButton.innerHTML = 'Saya Menyetujui';
+        }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Search functionality
+        const searchInput = document.getElementById('default-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                state.searchTerm = this.value.trim().toLowerCase();
+                renderAsesiTable();
+            });
+        }
+
+        // Form submission
+        if (elements.consultationForm) {
+            elements.consultationForm.addEventListener('submit', submitForm);
+        }
+
+        // Back button
+        if (elements.backButton) {
+            elements.backButton.addEventListener('click', function() {
+                // Hide detail view
+                elements.detailView.classList.add('hidden');
+                elements.breadcrumbs.classList.add('hidden');
+
+                // Show list view
+                elements.searchForm.classList.remove('hidden');
+                elements.asesiTable.classList.remove('hidden');
+
+                // Reset current asesi
+                state.currentAsesiId = null;
+            });
+        }
+    }
+
+    // Initialize
+    function init() {
+        // Load initial data
+        loadAsesiData();
+
+        // Setup event listeners
+        setupEventListeners();
+    }
+
+    // Start the application
+    init();
+
+    // Make showConsultationDetail available globally
+    window.showSummary = function(asesiId, asesiName, skemaName, progressPercent, completedSteps, totalSteps, konsultasiPraUjiCompleted = false) {
+        // Update state
+        state.currentAsesiId = asesiId;
+
+        // Update breadcrumb
+        elements.breadcrumbAsesiName.textContent = asesiName || 'Detail Konsultasi';
+
+        // Hide list view
+        elements.searchForm.classList.add('hidden');
+        elements.asesiTable.classList.add('hidden');
+
+        // Show detail view
+        elements.breadcrumbs.classList.remove('hidden');
+        elements.detailView.classList.remove('hidden');
+
+        // Load consultation data
+        loadConsultationData(asesiId);
+
+        // Scroll to detail
+        elements.detailView.scrollIntoView({ behavior: 'smooth' });
+    };
 });
-function showSummary() {
-    // Sembunyikan elemen pencarian utama
-    document.getElementById('searchKonsul').classList.add('hidden');
 
-    // Sembunyikan elemen daftar asesi
-    document.getElementById('daftarKonsul').classList.add('hidden');
+// Table sorting function (global for onclick handler)
+function sortTable(columnIndex) {
+    const table = document.getElementById('daftarKonsul');
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
 
-    // Tampilkan bagian breadcrumbs
-    document.getElementById('breadcrumbs').classList.remove('hidden');
+    // Skip if there are less than 2 rows or the rows don't have enough cells
+    if (rows.length < 2 || rows[0].querySelectorAll('td').length <= columnIndex) {
+        return;
+    }
 
-    // Tampilkan bagian detail asesi
-    document.getElementById('detailKonsul').classList.remove('hidden');
+    // Determine the current sort direction
+    const th = table.querySelector(`th:nth-child(${columnIndex + 1})`);
+    const currentDirection = th.classList.contains('sorted-asc') ? 'desc' : 'asc';
 
-    // Optional: scroll ke bagian detail
-    document.getElementById('detailKonsul').scrollIntoView({ behavior: 'smooth' });
+    // Remove sorted classes from all headers
+    table.querySelectorAll('th').forEach(header => {
+        header.classList.remove('sorted-asc', 'sorted-desc');
+    });
+
+    // Add the appropriate class to the current header
+    th.classList.add(`sorted-${currentDirection}`);
+
+    // Sort the rows
+    rows.sort((a, b) => {
+        const aValue = a.querySelectorAll('td')[columnIndex]?.textContent.trim() || '';
+        const bValue = b.querySelectorAll('td')[columnIndex]?.textContent.trim() || '';
+
+        // Compare values based on direction
+        if (currentDirection === 'asc') {
+            return aValue.localeCompare(bValue, undefined, { numeric: true });
+        } else {
+            return bValue.localeCompare(aValue, undefined, { numeric: true });
+        }
+    });
+
+    // Re-append the sorted rows to the tbody
+    tbody.innerHTML = '';
+    rows.forEach(row => tbody.appendChild(row));
 }
 </script>
 
