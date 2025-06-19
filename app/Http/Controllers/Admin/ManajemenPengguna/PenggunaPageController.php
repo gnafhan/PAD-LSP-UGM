@@ -51,7 +51,8 @@ class PenggunaPageController extends Controller
             
             foreach ($allAsesors as $asesor) {
                 if (!empty($asesor->daftar_bidang_kompetensi)) {
-                    $bidangIds = json_decode($asesor->daftar_bidang_kompetensi, true);
+                    // Tidak perlu json_decode karena accessor sudah mengembalikan array
+                    $bidangIds = $asesor->daftar_bidang_kompetensi;
                     if (is_array($bidangIds) && in_array($request->filter_bidang, $bidangIds)) {
                         $filteredIds[] = $asesor->id_asesor;
                     }
@@ -78,6 +79,7 @@ class PenggunaPageController extends Controller
             $bidangKompetensiList = [];
             
             if (!empty($asesor->daftar_bidang_kompetensi)) {
+                // Tidak perlu json_decode karena accessor sudah mengembalikan array
                 $bidangIds = $asesor->daftar_bidang_kompetensi;                
                 foreach ($bidangIds as $idBidang) {
                     if (isset($bidangKompetensiData[$idBidang])) {
