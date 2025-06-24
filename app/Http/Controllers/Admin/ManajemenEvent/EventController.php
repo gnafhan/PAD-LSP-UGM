@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Asesi;
 use App\Models\Skema;
-use App\Models\Tuk;
+use App\Models\TUK;
 use App\Models\Asesor;
 use App\Models\RincianAsesmen;
 use Carbon\Carbon;

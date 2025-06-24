@@ -53,7 +53,7 @@ class Event extends Model
     //tuk
     public function tuk(): BelongsTo
     {
-        return $this->belongsTo(Tuk::class, 'id_tuk', 'id_tuk');
+        return $this->belongsTo(TUK::class, 'id_tuk', 'id_tuk');
     }
 
     //has many rincian asesmen

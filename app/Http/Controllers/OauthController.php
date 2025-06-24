@@ -74,7 +74,7 @@ class OauthController extends Controller
             \Log::error('Google OAuth error: ' . $e->getMessage());
 
             return redirect()->route('login')
-                ->with('error', 'Terjadi kesalahan saat login dengan Google. Silakan coba lagi.');
+                ->with('error', 'Terjadi kesalahan saat login dengan Google. Silakan coba lagi: ' . $e->getMessage());
         }
     }
 }
