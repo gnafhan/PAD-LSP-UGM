@@ -22,18 +22,23 @@
         </svg>
         <span class="ms-2 text-xl font-bold text-black">Biodata Asesor</span>
     </div>
-    <!-- Dynamic Message Card (untuk pesan dari JavaScript) -->
-    <div id="dynamicMessageCard" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-        <strong id="dynamicMessageTitle" class="font-bold">Error!</strong>
-        <span id="dynamicMessageText" class="block sm:inline">Pesan error akan muncul di sini.</span>
-        <button id="closeMessageBtn" type="button" class="absolute top-0 right-0 px-4 py-3" aria-label="close">
-            <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M14.354 5.646a.5.5 0 10-.708-.708L10 9.293 5.354 4.646a.5.5 0 10-.708.708L9.293 10l-4.647 4.646a.5.5 0 00.708.708L10 10.707l4.646 4.647a.5.5 0 00.708-.708L10.707 10l4.647-4.646z" clip-rule="evenodd" />
-            </svg>
-        </button>
-    </div>
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
+    </div>
+    <!-- Loading State Indicator -->
+    <div id="loadingDataState" class="relative z-10 p-8 border border-border bg-white rounded-2xl mb-4">
+        <div class="w-full flex flex-col items-center justify-center py-8">
+            <div class="flex items-center space-x-2 mb-4">
+                <svg class="animate-spin h-8 w-8 text-biru" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-lg font-medium text-gray-700">Memuat data biodata...</span>
+            </div>
+            <div class="text-sm text-gray-500 text-center max-w-md">
+                Sistem sedang mengambil informasi biodata asesor dari server. Mohon tunggu sebentar.
+            </div>
+        </div>
     </div>
 
     <div id="frameBiodatasesor" class="relative z-10 p-8 border border-border bg-white rounded-2xl">
@@ -366,28 +371,6 @@
             <div class="flex justify-end">
                 <button id="simpanBiodata" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">Simpan</button>
             </div>
-            <!-- Modal Konfirmasi Simpan -->
-            <div id="confirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 flex justify-center items-center hidden">
-                <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-4">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-medium text-gray-900">Konfirmasi Simpan Data</h3>
-                        <button id="closeModal" class="text-gray-400 hover:text-gray-500">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                    <p class="text-gray-700 mb-4">Apakah Anda yakin ingin menyimpan perubahan pada biodata? Pastikan data yang dimasukkan sudah benar.</p>
-                    <div class="flex justify-end gap-3">
-                        <button id="cancelSave" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
-                            Batal
-                        </button>
-                        <button id="confirmSave" class="px-4 py-2 bg-gradient-to-r from-biru to-ungu text-white rounded-md hover:opacity-90">
-                            Simpan Data
-                        </button>
-                    </div>
-                </div>
-            </div>
             <div id="biodataMessage" class="mt-4 text-sm"></div>
         </form>
     </div>
@@ -398,31 +381,6 @@
 
 <!-- CSS untuk Upload Area -->
 <style>
-/* Kelas dasar untuk input, label, dan grup form */
-.input-field {
-    @apply block w-full rounded-md bg-white px-3 py-1.5 text-base text-black border border-border_input outline-1 placeholder-placeholder_input focus:outline-2 focus:-outline-offset-2 focus:outline-biru sm:text-sm/6;
-    transition: all 0.2s ease-in-out;
-}
-
-.form-group {
-    @apply mb-4;
-}
-
-.form-label {
-    @apply block text-sm/6 font-medium text-sidebar_font mb-1;
-}
-
-.required-field::after {
-    content: "*";
-    @apply text-red-500 ml-1;
-}
-
-/* Upload Area Styling */
-.upload-area {
-    min-height: 200px;
-    transition: all 0.2s ease-in-out;
-}
-
 .upload-area:hover {
     border-color: #3B82F6;
     background-color: #EFF6FF;
@@ -447,224 +405,31 @@
     background: white;
 }
 
-#profile-preview, #signature-preview {
-    width: 100%;
-}
-
-/* Loading Spinner */
 .loading-spinner {
     display: inline-block;
     width: 20px;
     height: 20px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
     border-radius: 50%;
-    border-top-color: white;
-    animation: spinner 0.8s ease-in-out infinite;
+    animation: spin 2s linear infinite;
 }
 
-@keyframes spinner {
-    to {
-        transform: rotate(360deg);
-    }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* Card animations */
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out forwards;
+/* Fix untuk flex layout pada upload area */
+.upload-area {
+    min-height: 200px;
 }
 
-.fade-out {
-    animation: fadeOut 0.3s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-}
-
-/* Pulse animation */
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.6;
-    }
-}
-
-.animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Modal animations */
-.modal-fade-out {
-    animation: modalFadeOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes modalFadeOut {
-    from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.95);
-    }
-}
-
-#confirmModal:not(.hidden) {
-    animation: modalFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* Unsaved changes badge */
-#unsavedBadge {
-    white-space: nowrap;
-    font-size: 10px;
-    border: 1px solid #fef08a;
-    padding: 2px 8px;
-    border-radius: 9999px;
-    display: inline-flex;
-    align-items: center;
-}
-
-#unsavedBadge::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: #f59e0b;
-    margin-right: 4px;
-}
-
-/* Form changed indicator */
-.form-changed {
-    border-color: #fbbf24 !important;
-    animation: highlight 2s ease-in-out;
-}
-
-.form-changed:focus {
-    outline-color: #f59e0b !important;
-}
-
-@keyframes highlight {
-    0%, 100% {
-        border-color: #fbbf24;
-    }
-    50% {
-        border-color: #f59e0b;
-    }
-}
-
-/* Tooltip styles */
-.tooltip {
-    position: relative;
-    display: inline-block;
-}
-
-.tooltip .tooltip-text {
-    visibility: hidden;
-    width: 180px;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 12px;
-}
-
-.tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* Message card transitions */
-#dynamicMessageCard {
-    transition: opacity 0.3s ease-in-out;
-}
-
-.opacity-0 {
-    opacity: 0;
-}
-
-/* Button animations */
-button {
-    transition: all 0.2s ease-in-out;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-    #frameBiodatasesor {
-        padding: 1rem;
-    }
-
-    .upload-area {
-        min-height: 150px;
-        padding: 1rem;
-    }
-
-    #confirmModal .bg-white {
-        width: 90%;
-        margin: 0 auto;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-}
-
-/* No image overlay */
-.no-image-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(55, 65, 81, 0.7);
-    border-radius: 0.5rem;
-    color: white;
-    font-weight: 500;
+#profile-preview, #signature-preview {
+    width: 100%;
 }
 </style>
 
-<!-- JavaScript Lengkap -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Datepicker jika tersedia
@@ -672,21 +437,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (datepickerEl && typeof Datepicker !== 'undefined') {
         new Datepicker(datepickerEl, {
             autohide: true,
-            format: 'dd/mm/yyyy',
+            format: 'mm/dd/yyyy',
         });
     }
 
     const form = document.getElementById('biodataForm');
     const message = document.getElementById('biodataMessage');
-    const dynamicMessageCard = document.getElementById('dynamicMessageCard');
-    const dynamicMessageTitle = document.getElementById('dynamicMessageTitle');
-    const dynamicMessageText = document.getElementById('dynamicMessageText');
-    const confirmModal = document.getElementById('confirmModal');
-
-    // Variabel untuk melacak status perubahan form
-    let formChanged = false;
-    let originalFormData = {};
-    let formInitialized = false;
+    const loadingDataState = document.getElementById('loadingDataState');
+    const frameBiodatasesor = document.getElementById('frameBiodatasesor');
 
     // API configuration
     const apiKey = "{{ env('API_KEY') }}";
@@ -696,278 +454,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!asesorId) {
         console.error('Asesor ID tidak ditemukan');
-        showMessageCard('Asesor ID tidak ditemukan', 'error');
+        showMessage('Asesor ID tidak ditemukan', 'error');
+        hideLoadingState();
         return;
     }
 
-    // Gunakan URL API yang dinamis
-    const apiUrl = "{{ url('/api/v1/asesor/biodata') }}/" + asesorId;
+    const apiUrl = `http://localhost:8000/api/v1/asesor/biodata/${asesorId}`;
     const headers = {
         'accept': 'application/json',
         'API_KEY': apiKey,
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 'GEehkbzds4sVRLNO9Prq2t2mna8QbXnHItVq2iYx'
     };
 
-    // Fetch dengan timeout
-    const fetchWithTimeout = (url, options, timeout = 30000) => {
-        return Promise.race([
-            fetch(url, options),
-            new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Request timeout')), timeout)
-            )
-        ]);
-    };
-
-    // Function to save form state to localStorage
-    function saveFormState() {
-        const formState = {};
-        const inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
-
-        inputs.forEach(input => {
-            if (input.id && !input.disabled) {
-                formState[input.id] = input.value;
-            }
-        });
-
-        localStorage.setItem('biodataFormState', JSON.stringify(formState));
-        console.log('Form state saved to localStorage');
-    }
-
-    // Function to load form state from localStorage
-    function loadFormState() {
-        const formState = localStorage.getItem('biodataFormState');
-        if (formState) {
-            try {
-                const state = JSON.parse(formState);
-                for (const [id, value] of Object.entries(state)) {
-                    const element = document.getElementById(id);
-                    if (element && !element.disabled) {
-                        element.value = value;
-                    }
-                }
-                console.log('Form state restored from localStorage');
-                showMessageCard('Perubahan terakhir telah dipulihkan', 'info', 5000);
-                localStorage.removeItem('biodataFormState');
-
-                // Check for changes after loading saved state
-                setTimeout(checkFormChanged, 500);
-            } catch (e) {
-                console.error('Error loading form state:', e);
-            }
+    // Loading state management
+    function showLoadingState() {
+        if (loadingDataState) {
+            loadingDataState.classList.remove('hidden');
+        }
+        if (frameBiodatasesor) {
+            frameBiodatasesor.style.opacity = '0.5';
+            frameBiodatasesor.style.pointerEvents = 'none';
         }
     }
 
-    // Fungsi untuk menyimpan nilai awal form
-    function captureFormState() {
-        originalFormData = {};
-        const inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
-
-        inputs.forEach(input => {
-            if (input.id && !input.disabled) {
-                originalFormData[input.id] = input.value;
-            }
-        });
-
-        console.log('Original form state captured');
-        formChanged = false;
-        updateUnsavedChangesIndicator();
-        formInitialized = true;
-    }
-
-    // Fungsi untuk memeriksa apakah form telah berubah
-    function checkFormChanged() {
-        if (!formInitialized || Object.keys(originalFormData).length === 0) return false;
-
-        const inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
-        let changed = false;
-
-        inputs.forEach(input => {
-            if (input.id && !input.disabled) {
-                if (originalFormData[input.id] !== input.value) {
-                    changed = true;
-                    // Highlight changed field
-                    input.classList.add('form-changed');
-                } else {
-                    // Remove highlight from unchanged field
-                    input.classList.remove('form-changed');
-                }
-            }
-        });
-
-        // Check if file inputs have changed
-        if (document.getElementById('file_profile').files.length > 0 ||
-            document.getElementById('file_tanda_tangan').files.length > 0) {
-            changed = true;
+    function hideLoadingState() {
+        if (loadingDataState) {
+            loadingDataState.classList.add('hidden');
         }
-
-        formChanged = changed;
-        updateUnsavedChangesIndicator();
-        return changed;
-    }
-
-    // Function to update unsaved changes indicator
-    function updateUnsavedChangesIndicator() {
-        // Add or remove unsaved badge next to title
-        const unsavedBadge = document.getElementById('unsavedBadge');
-
-        if (formChanged) {
-            if (!unsavedBadge) {
-                const badge = document.createElement('span');
-                badge.id = 'unsavedBadge';
-                badge.className = 'ml-2 px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full animate-pulse';
-                badge.textContent = 'Perubahan belum tersimpan';
-
-                const pageTitle = document.querySelector('#judulPage span');
-                if (pageTitle) {
-                    pageTitle.appendChild(badge);
-                }
-            }
-
-            // Show warning message in card
-            showMessageCard('Ada perubahan yang belum tersimpan. Klik "Simpan" untuk menyimpan perubahan.', 'warning', 0);
-
-            // Add tooltip to save button
-            const saveButton = document.getElementById('simpanBiodata');
-            if (saveButton && !saveButton.classList.contains('highlight-save')) {
-                saveButton.classList.add('highlight-save', 'animate-pulse', 'bg-yellow-500');
-            }
-        } else {
-            if (unsavedBadge) {
-                unsavedBadge.remove();
-            }
-
-            // Hide warning message card
-            const warningCard = document.getElementById('dynamicMessageCard');
-            if (warningCard && warningCard.classList.contains('bg-yellow-100')) {
-                warningCard.classList.add('hidden');
-            }
-
-            // Remove highlight from save button
-            const saveButton = document.getElementById('simpanBiodata');
-            if (saveButton) {
-                saveButton.classList.remove('highlight-save', 'animate-pulse', 'bg-yellow-500');
-            }
+        if (frameBiodatasesor) {
+            frameBiodatasesor.style.opacity = '1';
+            frameBiodatasesor.style.pointerEvents = 'auto';
         }
     }
 
-    // Setup change detection
-    function setupChangeDetection() {
-        const inputs = form.querySelectorAll('input, select, textarea');
-
-        inputs.forEach(input => {
-            // Remove any existing listeners to prevent duplicates
-            input.removeEventListener('change', handleInputChange);
-            input.removeEventListener('keyup', handleInputChange);
-
-            // Add new listeners
-            input.addEventListener('change', handleInputChange);
-
-            // For text inputs, also detect keyup events
-            if (input.type === 'text' || input.type === 'email' || input.type === 'number' || input.tagName === 'TEXTAREA') {
-                input.addEventListener('keyup', handleInputChange);
-            }
-        });
-
-        // Add beforeunload handler
-        window.addEventListener('beforeunload', handleBeforeUnload);
-    }
-
-    // Handler for input changes
-    function handleInputChange() {
-        checkFormChanged();
-    }
-
-    // Handler for beforeunload event
-    function handleBeforeUnload(e) {
-        if (formChanged) {
-            // Standard message (actual text is controlled by browser)
-            const message = 'Ada perubahan yang belum tersimpan. Yakin ingin meninggalkan halaman ini?';
-            e.returnValue = message;
-            return message;
-        }
-    }
-
-    // Fungsi pendukung untuk update konten message card
-    function updateMessageCardContent(text, type) {
-        dynamicMessageText.textContent = text;
-
-        const titles = {
-            'success': 'Berhasil!',
-            'error': 'Error!',
-            'warning': 'Perhatian!',
-            'info': 'Informasi'
-        };
-        dynamicMessageTitle.textContent = titles[type] || titles.info;
-
-        // Reset class
-        dynamicMessageCard.className = 'mb-6 px-4 py-3 rounded relative border transition-opacity duration-300';
-
-        // Add appropriate styling based on type
-        const typeClasses = {
-            'success': 'bg-green-100 border-green-400 text-green-700',
-            'error': 'bg-red-100 border-red-400 text-red-700',
-            'warning': 'bg-yellow-100 border-yellow-400 text-yellow-700',
-            'info': 'bg-blue-100 border-blue-400 text-blue-700'
-        };
-
-        dynamicMessageCard.classList.add(...typeClasses[type].split(' '));
-    }
-
-    // Enhanced Message display helper (displays in both card and inline)
-    function showMessageCard(text, type = 'info', duration = 0) {
-        // Update the inline message for backward compatibility
-        if (message) {
-            message.textContent = text;
-            const typeClasses = {
-                'success': 'text-green-600',
-                'error': 'text-red-600',
-                'warning': 'text-yellow-600',
-                'info': 'text-blue-600'
-            };
-            message.className = `mt-4 text-sm ${typeClasses[type] || typeClasses.info}`;
-        }
-
-        // Update card UI with improved animation
-        if (dynamicMessageCard && dynamicMessageText && dynamicMessageTitle) {
-            // If card is already visible, fade out first
-            if (!dynamicMessageCard.classList.contains('hidden')) {
-                dynamicMessageCard.classList.add('opacity-0');
-                setTimeout(() => {
-                    updateMessageCardContent(text, type);
-                    dynamicMessageCard.classList.remove('opacity-0');
-                }, 150);
-            } else {
-                updateMessageCardContent(text, type);
-                dynamicMessageCard.classList.remove('hidden');
-                // Small delay to trigger fade-in animation
-                setTimeout(() => dynamicMessageCard.classList.add('fade-in'), 10);
-            }
-
-            // Smooth scroll to message if error or warning
-            if (type === 'error' || type === 'warning') {
-                const topPos = dynamicMessageCard.offsetTop - 20;
-                window.scrollTo({
-                    top: topPos,
-                    behavior: 'smooth'
-                });
-            }
-        }
-
-        // Auto-hide with fade animation
-        if (duration > 0) {
-            setTimeout(() => {
-                if (dynamicMessageCard) {
-                    dynamicMessageCard.classList.add('opacity-0');
-                    setTimeout(() => {
-                        dynamicMessageCard.classList.add('hidden');
-                        dynamicMessageCard.classList.remove('opacity-0');
-                    }, 300);
-                }
-            }, duration);
-        }
-    }
-
-    // Original message display helper (kept for backward compatibility)
+    // Message display helper
     function showMessage(text, type = 'info', duration = 5000) {
         if (!message) return;
 
@@ -1046,9 +566,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (file) {
                 handleFileSelection(file);
             }
-
-            // Check for form changes when file is selected
-            checkFormChanged();
         });
 
         // Remove button handler
@@ -1056,55 +573,25 @@ document.addEventListener('DOMContentLoaded', function() {
             removeButton.addEventListener('click', function(e) {
                 e.stopPropagation();
                 clearPreview();
-
-                // Check for form changes when file is removed
-                checkFormChanged();
             });
-        }
-
-        // Handler untuk error gambar
-        function handleImageError(imageElement, containerElement) {
-            // Remove any existing overlays
-            const existingOverlay = containerElement.querySelector('.no-image-overlay');
-            if (existingOverlay) {
-                existingOverlay.remove();
-            }
-
-            // Create overlay
-            containerElement.classList.add('relative');
-            const overlay = document.createElement('div');
-            overlay.className = 'no-image-overlay';
-            overlay.innerHTML = '<span>Tidak ada foto</span>';
-            containerElement.appendChild(overlay);
-
-            // Set default image if available
-            imageElement.src = '{{ asset("images/default-profile.png") }}';
         }
 
         function handleFileSelection(file) {
             // Validate file type
             const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
             if (!allowedTypes.includes(file.type)) {
-                showMessageCard('File harus berformat PNG, JPG, atau JPEG', 'error');
+                showMessage('File harus berformat PNG, JPG, atau JPEG', 'error');
                 return;
             }
 
             // Validate file size (10MB)
             const maxSize = 10 * 1024 * 1024;
             if (file.size > maxSize) {
-                showMessageCard('Ukuran file maksimal 10MB', 'error');
+                showMessage('Ukuran file maksimal 10MB', 'error');
                 return;
             }
 
-            // Show preview with better loading state
-            showMessageCard('Memproses gambar...', 'info', 3000);
-
-            // Remove any existing overlay
-            const existingOverlay = preview.querySelector('.no-image-overlay');
-            if (existingOverlay) {
-                existingOverlay.remove();
-            }
-
+            // Show preview
             const reader = new FileReader();
             reader.onload = function(e) {
                 image.src = e.target.result;
@@ -1119,7 +606,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Preview berhasil ditampilkan untuk:', inputId);
             };
             reader.onerror = function() {
-                showMessageCard('Gagal membaca file', 'error');
+                showMessage('Gagal membaca file', 'error');
             };
             reader.readAsDataURL(file);
         }
@@ -1129,13 +616,6 @@ document.addEventListener('DOMContentLoaded', function() {
             content.classList.remove('hidden');
             preview.classList.add('hidden');
             input.value = '';
-
-            // Remove any overlay
-            const overlay = preview.querySelector('.no-image-overlay');
-            if (overlay) {
-                overlay.remove();
-            }
-
             console.log('Preview dihapus untuk:', inputId);
         }
 
@@ -1149,27 +629,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         image.src = url;
                         content.classList.add('hidden');
                         preview.classList.remove('hidden');
-
-                        // Remove any existing overlay
-                        const existingOverlay = preview.querySelector('.no-image-overlay');
-                        if (existingOverlay) {
-                            existingOverlay.remove();
-                        }
-
                         console.log('Preview set dari URL:', url);
                     };
                     testImg.onerror = function() {
                         console.warn('Gagal memuat gambar dari URL:', url);
-                        handleImageError(image, preview);
-                        content.classList.add('hidden');
-                        preview.classList.remove('hidden');
                     };
                     testImg.src = url;
-                } else {
-                    // No URL provided, show default state
-                    handleImageError(image, preview);
-                    content.classList.add('hidden');
-                    preview.classList.remove('hidden');
                 }
             },
             clearPreview: clearPreview,
@@ -1227,19 +692,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fetch and populate form data
     function loadBiodataData() {
-        showMessageCard('Memuat data biodata...', 'info', 0);
+        console.log('Memulai proses loading biodata...');
+        showLoadingState();
+        showMessage('Memuat data biodata...', 'info', 0);
 
-        fetchWithTimeout(apiUrl, {
+        fetch(apiUrl, {
             method: 'GET',
             headers: headers
         })
         .then(response => {
+            console.log('Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(res => {
+            console.log('API Response:', res);
             if (res.success && res.data) {
                 const data = res.data;
 
@@ -1292,108 +761,35 @@ document.addEventListener('DOMContentLoaded', function() {
                     signatureUpload.setPreviewFromUrl(signatureUrl);
                 }
 
-                // Check if there are saved changes to restore
-                loadFormState();
-
-                // After form is populated and any saved state is restored,
-                // capture the initial state for change detection
-                setTimeout(() => {
-                    captureFormState();
-                    setupChangeDetection();
-                }, 500);
-
-                showMessageCard('Data berhasil dimuat', 'success', 5000);
+                showMessage('Data berhasil dimuat', 'success', 3000);
+                console.log('Data biodata berhasil dimuat dan form telah diisi');
             } else {
-                showMessageCard('Data tidak ditemukan', 'warning');
-
-                // Still try to load saved form state if any
-                loadFormState();
+                showMessage('Data tidak ditemukan', 'warning');
+                console.warn('Data tidak ditemukan dalam response');
             }
         })
         .catch(err => {
-            showMessageCard(`Gagal memuat data biodata: ${err.message}`, 'error');
-
-            // Still try to load saved form state if any
-            loadFormState();
+            console.error('Error loading biodata:', err);
+            showMessage(`Gagal memuat data biodata: ${err.message}`, 'error');
+        })
+        .finally(() => {
+            // Hide loading state setelah selesai (berhasil atau gagal)
+            setTimeout(() => {
+                hideLoadingState();
+                console.log('Loading state dihilangkan');
+            }, 500); // Delay sedikit untuk smooth transition
         });
     }
 
     // Load data when page loads
+    console.log('Page loaded, mulai loading biodata...');
     loadBiodataData();
 
-    // Fungsi untuk mengelola modal dengan lebih baik
-    function showConfirmModal(message, onConfirm) {
-        const modal = document.getElementById('confirmModal');
-        const modalMessage = document.querySelector('#confirmModal p');
-        const confirmButton = document.getElementById('confirmSave');
-
-        // Set pesan yang custom
-        if (message) {
-            modalMessage.textContent = message;
-        } else {
-            modalMessage.textContent = 'Apakah Anda yakin ingin menyimpan perubahan pada biodata? Pastikan data yang dimasukkan sudah benar.';
-        }
-
-        // Reset any previous handlers
-        const newConfirmButton = confirmButton.cloneNode(true);
-        confirmButton.parentNode.replaceChild(newConfirmButton, confirmButton);
-
-        // Add new handler
-        newConfirmButton.addEventListener('click', function() {
-            closeModalWithAnimation();
-
-            // Call the provided callback with slight delay
-            setTimeout(() => {
-                if (typeof onConfirm === 'function') {
-                    onConfirm();
-                }
-            }, 100);
-        });
-
-        // Show modal
-        modal.classList.remove('hidden');
-    }
-
-    // Setup modal event handlers
-    if (document.getElementById('closeMessageBtn')) {
-        document.getElementById('closeMessageBtn').addEventListener('click', function() {
-            dynamicMessageCard.classList.add('opacity-0');
-            setTimeout(() => {
-                dynamicMessageCard.classList.add('hidden');
-                dynamicMessageCard.classList.remove('opacity-0');
-            }, 300);
-        });
-    }
-
-    // Tambahkan fungsi untuk menutup modal dengan animasi
-    function closeModalWithAnimation() {
-        // Tambahkan kelas animasi fade-out
-        confirmModal.classList.add('modal-fade-out');
-
-        // Tunggu animasi selesai sebelum menyembunyikan modal
-        setTimeout(() => {
-            confirmModal.classList.remove('modal-fade-out');
-            confirmModal.classList.add('hidden');
-        }, 300);
-    }
-
-    // Modifikasi event handler untuk tombol tutup
-    if (document.getElementById('closeModal')) {
-        document.getElementById('closeModal').addEventListener('click', function() {
-            closeModalWithAnimation();
-        });
-    }
-
-    // Modifikasi event handler untuk tombol batal
-    if (document.getElementById('cancelSave')) {
-        document.getElementById('cancelSave').addEventListener('click', function() {
-            closeModalWithAnimation();
-        });
-    }
-
-    // Modified form submission handler - now just validates and shows confirmation modal
+    // Form submission handler
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+
+        showMessage('Menyimpan data...', 'info', 0);
 
         // Validate required fields
         const requiredFields = [
@@ -1409,7 +805,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (const field of requiredFields) {
             const element = document.getElementById(field.id);
             if (!element || !element.value.trim()) {
-                showMessageCard(`${field.name} wajib diisi`, 'error');
+                showMessage(`${field.name} wajib diisi`, 'error');
                 element?.focus();
                 return;
             }
@@ -1420,31 +816,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const kelaminSelect = document.getElementById('kelamin');
 
         if (!kebangsaanSelect.value || kebangsaanSelect.selectedIndex === 0) {
-            showMessageCard('Kebangsaan wajib dipilih', 'error');
+            showMessage('Kebangsaan wajib dipilih', 'error');
             kebangsaanSelect.focus();
             return;
         }
 
         if (!kelaminSelect.value || kelaminSelect.selectedIndex === 0) {
-            showMessageCard('Jenis Kelamin wajib dipilih', 'error');
+            showMessage('Jenis Kelamin wajib dipilih', 'error');
             kelaminSelect.focus();
             return;
         }
-
-        // Save form state in case user cancels or error occurs
-        saveFormState();
-
-        // Show custom message based on form state
-        if (formChanged) {
-            showConfirmModal('Ada perubahan pada data biodata Anda. Lanjutkan menyimpan?', saveFormData);
-        } else {
-            showConfirmModal('Tidak ada perubahan terdeteksi. Tetap ingin menyimpan data?', saveFormData);
-        }
-    });
-
-    // Function to handle actual form data submission
-    function saveFormData() {
-        showMessageCard('Menyimpan data...', 'info', 0);
 
         // Create FormData sesuai dengan API documentation
         const formData = new FormData();
@@ -1468,7 +849,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Handle jenis kelamin - convert kembali ke format API
-        const kelaminSelect = document.getElementById('kelamin');
         const selectedKelamin = kelaminSelect.options[kelaminSelect.selectedIndex];
         let kelaminValue = selectedKelamin.value;
         if (kelaminValue === 'Pria') {
@@ -1479,7 +859,6 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('jenis_kelamin', kelaminValue);
 
         // Handle kebangsaan
-        const kebangsaanSelect = document.getElementById('kebangsaan');
         const selectedKebangsaan = kebangsaanSelect.options[kebangsaanSelect.selectedIndex];
         formData.append('kebangsaan', selectedKebangsaan.value);
 
@@ -1507,7 +886,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tanggalLahir) {
             const parts = tanggalLahir.split('/');
             if (parts.length === 3) {
-                const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                const formattedDate = `${parts[2]}-${parts[0]}-${parts[1]}`;
                 formData.append('tanggal_lahir', formattedDate);
             }
         }
@@ -1530,7 +909,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const putHeaders = {
             'accept': 'application/json',
             'API_KEY': apiKey,
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 'GEehkbzds4sVRLNO9Prq2t2mna8QbXnHItVq2iYx'
         };
 
         // Debug: Log formData contents
@@ -1545,11 +924,11 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.disabled = true;
         submitButton.innerHTML = '<span class="loading-spinner mr-2"></span>Menyimpan...';
 
-        fetchWithTimeout(apiUrl, {
+        fetch(apiUrl, {
             method: 'POST', // Gunakan POST dengan _method=PUT untuk Laravel
             headers: putHeaders,
             body: formData
-        }, 60000) // 60 detik timeout untuk upload file
+        })
         .then(response => {
             console.log('Update response status:', response.status);
             return response.json();
@@ -1557,20 +936,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => {
             console.log('Update response:', res);
             if (res.success) {
-                // Clear saved form state since update was successful
-                localStorage.removeItem('biodataFormState');
-
-                // Reset form changed state and highlight
-                formChanged = false;
-                const inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
-                inputs.forEach(input => {
-                    input.classList.remove('form-changed');
-                });
-
-                // Update original form data
-                captureFormState();
-
-                showMessageCard(res.message || 'Biodata berhasil diupdate!', 'success');
+                showMessage(res.message || 'Biodata berhasil diupdate!', 'success');
 
                 // Reload data setelah update berhasil
                 setTimeout(() => {
@@ -1584,25 +950,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else if (res.message) {
                     errorMessage += ': ' + res.message;
                 }
-                showMessageCard(errorMessage, 'error');
-
-                // Keep form state saved in localStorage for later recovery
-                saveFormState();
+                showMessage(errorMessage, 'error');
             }
         })
         .catch(err => {
             console.error('Error updating data:', err);
-            showMessageCard(`Gagal mengupdate biodata: ${err.message}`, 'error');
-
-            // Keep form state saved in localStorage for later recovery
-            saveFormState();
+            showMessage(`Gagal mengupdate biodata: ${err.message}`, 'error');
         })
         .finally(() => {
             // Re-enable submit button
             submitButton.disabled = false;
             submitButton.textContent = originalText;
         });
-    }
+    });
 });
 </script>
 

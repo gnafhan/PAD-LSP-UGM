@@ -205,60 +205,42 @@
                 <div class="flex flex-row justify-evenly gap-6">
                     <!-- Tanda Tangan Asesi (Read-only) -->
                     <div class="flex flex-col items-center justify-center w-1/2">
-                        <p id="tanggalTtdAsesi" class="font-medium text-sidebar_font mb-2">-</p>
+                        <p id="tanggalTtdAsesi" class="font-medium text-sidebar_font mb-2">Tanggal TTD</p>
 
                         <!-- Signature display for asesi -->
                         <div id="asesiSignatureDisplay" class="w-60 h-40 border border-border_input rounded-lg flex items-center justify-center bg-gray-50">
                             <img id="tandaTanganAsesi" src="" alt="Tanda Tangan Asesi" class="max-w-full max-h-full rounded hidden">
-                            <span id="noTtdAsesi" class="text-gray-400 text-center px-4">Menunggu tanda tangan dari asesi</span>
                         </div>
+                        <span id="noTtdAsesi" class="mt-2 text-gray-400 text-center px-4">Menunggu tanda tangan dari asesi</span>
 
                         <p class="font-medium text-sidebar_font mt-2">Asesi</p>
-                        <p id="namaAsesiTtd" class="font-normal text-sidebar_font">-</p>
+                        <p id="namaAsesiTtd" class="font-normal text-sidebar_font">Nama Asesi</p>
                     </div>
 
                     <!-- Tanda Tangan Asesor -->
                     <div class="flex flex-col items-center justify-center w-1/2">
-                        <p id="tanggalTtdAsesor" class="font-medium text-sidebar_font mb-2">-</p>
+                        <p id="tanggalTtdAsesor" class="font-medium text-sidebar_font mb-2">Tanggal TTD</p>
 
-                        <!-- Existing signature display -->
+                        <!-- Existing signature display from biodata -->
                         <div id="asesorExistingSignature" class="w-60 h-40 border border-border_input rounded-lg items-center justify-center bg-gray-50 hidden">
                             <img id="tandaTanganAsesorExisting" src="" alt="Tanda Tangan Asesor" class="max-w-full max-h-full rounded">
                         </div>
 
-                        <!-- Upload area for asesor signature -->
-                        <div id="asesor-signature-upload-area" class="w-60 h-40 flex flex-col items-center justify-center rounded-lg border border-dashed border-border_input cursor-pointer hover:border-biru transition-colors upload-area bg-white">
-                            <div class="text-center" id="asesor-signature-content">
-                                <svg class="mx-auto h-8 w-8 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                    <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
-                                </svg>
-                                <div class="mt-2 flex text-xs leading-5 text-gray-600 justify-center">
-                                    <span class="font-semibold text-biru">Upload tanda tangan</span>
-                                </div>
-                                <p class="text-xs leading-4 text-gray-500">PNG, JPG, JPEG maks 2MB</p>
-                            </div>
-                            <!-- Preview Image -->
-                            <div id="asesor-signature-preview" class="hidden text-center">
-                                <img id="asesor-signature-image" src="" alt="Preview Tanda Tangan Asesor" class="max-h-36 w-auto rounded mx-auto">
-                                <div class="mt-2 text-center">
-                                    <button type="button" id="remove-asesor-signature" class="text-red-500 text-xs hover:text-red-700">
-                                        Hapus tanda tangan
-                                    </button>
-                                </div>
-                            </div>
+                        <!-- No signature message -->
+                        <div id="noAsesorSignature" class="w-60 h-40 border border-border_input rounded-lg items-center justify-center bg-gray-50 hidden">
+                            <span class="text-gray-400 text-center px-4">Tanda tangan belum tersedia</span>
                         </div>
 
-                        <!-- Button to use existing signature or clear existing -->
-                        <div id="asesorSignatureButtons" class="mt-2 text-center hidden">
-                            <button type="button" id="hapus-ttd-existing" class="text-red-500 text-xs hover:text-red-700 mr-4">
-                                Hapus & Upload Baru
-                            </button>
+                        <!-- Checkbox untuk persetujuan -->
+                        <div id="asesorApprovalSection" class="mt-4 items-center space-x-2 hidden">
+                            <input type="checkbox" id="asesorApprovalCheckbox" class="h-4 w-4 text-biru focus:ring-biru border-gray-300 rounded">
+                            <label for="asesorApprovalCheckbox" class="text-sm text-gray-700">
+                                Data yang saya masukkan sudah benar dan saya menyetujui formulir APL02 ini
+                            </label>
                         </div>
-
-                        <input type="file" id="file_tanda_tangan_asesor" class="hidden" accept="image/png,image/jpeg,image/jpg">
 
                         <p class="font-medium text-sidebar_font mt-2">Asesor</p>
-                        <p id="namaAsesorTtd" class="font-normal text-sidebar_font">-</p>
+                        <p id="namaAsesorTtd" class="font-normal text-sidebar_font">Nama Asesor</p>
                     </div>
                 </div>
             </div>
@@ -391,7 +373,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentAsesiId = null;
     let currentApl02Data = null;
     let kompetensiData = [];
-    let asesorSignatureUpload = null;
     let asesiProgressData = {}; // Store progress data for each asesi
 
     // CSRF token
@@ -416,6 +397,225 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         return;
     }
+
+    // Modal functions
+    function showNotificationModal(title, message, type = 'info') {
+        const modal = document.getElementById('notificationModal');
+        const titleElement = document.getElementById('notificationTitle');
+        const messageElement = document.getElementById('notificationMessage');
+        const iconElement = document.getElementById('notificationIcon');
+
+        titleElement.textContent = title;
+        messageElement.textContent = message;
+
+        // Set icon based on type
+        let iconHtml = '';
+        let iconBgClass = '';
+
+        switch(type) {
+            case 'success':
+                iconBgClass = 'bg-green-100';
+                iconHtml = `<svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>`;
+                break;
+            case 'error':
+                iconBgClass = 'bg-red-100';
+                iconHtml = `<svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>`;
+                break;
+            case 'warning':
+                iconBgClass = 'bg-yellow-100';
+                iconHtml = `<svg class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>`;
+                break;
+            default:
+                iconBgClass = 'bg-blue-100';
+                iconHtml = `<svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>`;
+        }
+
+        iconElement.className = `mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10 ${iconBgClass}`;
+        iconElement.innerHTML = iconHtml;
+
+        modal.classList.remove('hidden');
+    }
+
+    function hideNotificationModal() {
+        document.getElementById('notificationModal').classList.add('hidden');
+    }
+
+    function showConfirmationModal(title, message, onConfirm, onCancel = null) {
+        const modal = document.getElementById('confirmationModal');
+        const titleElement = document.getElementById('confirmationTitle');
+        const messageElement = document.getElementById('confirmationMessage');
+        const yesBtn = document.getElementById('confirmYesBtn');
+        const noBtn = document.getElementById('confirmNoBtn');
+
+        titleElement.textContent = title;
+        messageElement.textContent = message;
+
+        // Remove existing event listeners
+        const newYesBtn = yesBtn.cloneNode(true);
+        const newNoBtn = noBtn.cloneNode(true);
+        yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+        noBtn.parentNode.replaceChild(newNoBtn, noBtn);
+
+        // Add new event listeners
+        newYesBtn.addEventListener('click', function() {
+            hideConfirmationModal();
+            if (onConfirm) onConfirm();
+        });
+
+        newNoBtn.addEventListener('click', function() {
+            hideConfirmationModal();
+            if (onCancel) onCancel();
+        });
+
+        modal.classList.remove('hidden');
+    }
+
+    function hideConfirmationModal() {
+        document.getElementById('confirmationModal').classList.add('hidden');
+    }
+
+    // Setup modal close handlers
+    document.getElementById('notificationCloseBtn').addEventListener('click', hideNotificationModal);
+
+    // Utility function to show messages
+    function showMessage(message, type = 'info', duration = 5000) {
+        const messageElement = document.getElementById(`${type}Message`);
+        const textElement = document.getElementById(`${type}Text`);
+
+        if (messageElement && textElement) {
+            textElement.textContent = message;
+            messageElement.classList.remove('hidden');
+
+            if (duration > 0) {
+                setTimeout(() => {
+                    messageElement.classList.add('hidden');
+                }, duration);
+            }
+        }
+    }
+
+    // Load APL02 progress for each asesi
+    async function loadApl02Progress(asesisData) {
+        try {
+            const asesisWithApl02Progress = await Promise.all(
+                asesisData.map(async (asesi) => {
+                    try {
+                        // Call APL02 API to get progress status
+                        const apl02Response = await fetch(`{{ url('/api/v1/asesmen/apl02/asesor') }}/${asesi.id_asesi}`, {
+                            method: 'GET',
+                            headers: apiHeaders
+                        });
+
+                        if (apl02Response.ok) {
+                            const apl02Result = await apl02Response.json();
+                            if (apl02Result.status === 'success' && apl02Result.data.record_exists) {
+                                const detailApl02 = apl02Result.data.detail_apl02;
+
+                                // Set APL02 progress based on signature status
+                                asesi.apl02_asesor_signed = !!(detailApl02.waktu_tanda_tangan_asesor && detailApl02.ttd_asesor);
+                                asesi.apl02_asesi_signed = !!(detailApl02.waktu_tanda_tangan_asesi && detailApl02.ttd_asesi);
+                                asesi.apl02_completed = asesi.apl02_asesor_signed && asesi.apl02_asesi_signed;
+                                asesi.apl02_created_at = detailApl02.waktu_tanda_tangan_asesor || null;
+
+                                // Store APL02 data for potential use
+                                asesi.apl02_data = apl02Result.data;
+                            } else {
+                                // APL02 not created yet
+                                asesi.apl02_asesor_signed = false;
+                                asesi.apl02_asesi_signed = false;
+                                asesi.apl02_completed = false;
+                                asesi.apl02_created_at = null;
+                                asesi.apl02_data = null;
+                            }
+                        } else {
+                            console.warn(`Failed to load APL02 progress for asesi ${asesi.id_asesi}`);
+                            asesi.apl02_asesor_signed = false;
+                            asesi.apl02_asesi_signed = false;
+                            asesi.apl02_completed = false;
+                            asesi.apl02_created_at = null;
+                            asesi.apl02_data = null;
+                        }
+                    } catch (error) {
+                        console.error(`Error loading APL02 progress for asesi ${asesi.id_asesi}:`, error);
+                        asesi.apl02_asesor_signed = false;
+                        asesi.apl02_asesi_signed = false;
+                        asesi.apl02_completed = false;
+                        asesi.apl02_created_at = null;
+                        asesi.apl02_data = null;
+                    }
+                    return asesi;
+                })
+            );
+
+            return asesisWithApl02Progress;
+        } catch (error) {
+            console.error('Error loading APL02 progress:', error);
+            return asesisData;
+        }
+    }
+
+    // Load progress for each asesi (original function for other progress)
+    async function loadAsesiProgress(asesisData) {
+        try {
+            const asesisWithProgress = await Promise.all(
+                asesisData.map(async (asesi) => {
+                    try {
+                        const progressResponse = await fetch(`{{ url('/api/v1/asesor/progressAsesi') }}/${asesi.id_asesi}`, {
+                            method: 'GET',
+                            headers: apiHeaders
+                        });
+
+                        if (progressResponse.ok) {
+                            const progressResult = await progressResponse.json();
+                            if (progressResult.success && progressResult.data) {
+                                asesi.progress_data = progressResult.data;
+                                asesi.ak01_completed = progressResult.data.progress_asesmen?.ak01?.completed || false;
+                                asesi.ak01_completed_at = progressResult.data.progress_asesmen?.ak01?.completed_at || null;
+                                asesi.progress_percentage = progressResult.data.progress_summary?.progress_percentage || 0;
+                                asesi.completed_steps = progressResult.data.progress_summary?.completed_steps || 0;
+                                asesi.total_steps = progressResult.data.progress_summary?.total_steps || 0;
+                            } else {
+                                asesi.ak01_completed = false;
+                                asesi.ak01_completed_at = null;
+                                asesi.progress_percentage = 0;
+                                asesi.completed_steps = 0;
+                                asesi.total_steps = 0;
+                            }
+                        } else {
+                            console.warn(`Failed to load progress for asesi ${asesi.id_asesi}`);
+                            asesi.ak01_completed = false;
+                            asesi.ak01_completed_at = null;
+                            asesi.progress_percentage = 0;
+                            asesi.completed_steps = 0;
+                            asesi.total_steps = 0;
+                        }
+                    } catch (error) {
+                        console.error(`Error loading progress for asesi ${asesi.id_asesi}:`, error);
+                        asesi.ak01_completed = false;
+                        asesi.ak01_completed_at = null;
+                        asesi.progress_percentage = 0;
+                        asesi.completed_steps = 0;
+                        asesi.total_steps = 0;
+                    }
+                    return asesi;
+                })
+            );
+
+            return asesisWithProgress;
+        } catch (error) {
+            console.error('Error loading asesi progress:', error);
+            return asesisData;
+        }
+    }
+
     // Load data asesi
     async function loadAsesiData() {
         try {
@@ -425,7 +625,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const response = await fetch(apiUrl, {
                 method: 'GET',
-                headers: headers
+                headers: apiHeaders
             });
 
             if (!response.ok) {
@@ -437,8 +637,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (result.success && result.data) {
                 let asesisData = result.data.asesis;
 
-                // Load progress for each asesi
+                // Load both general progress and APL02 progress
                 asesisData = await loadAsesiProgress(asesisData);
+                asesisData = await loadApl02Progress(asesisData);
 
                 const tableBody = document.querySelector('#daftarAPL02 tbody');
 
@@ -446,20 +647,33 @@ document.addEventListener('DOMContentLoaded', function () {
                     let tableContent = '';
 
                     asesisData.forEach((asesi, index) => {
-                        // Use the ak01 completion status from progress API
-                        const hasProgress = asesi.ak01_completed === true;
+                        // Determine progress status - simplified to only 2 statuses
+                        let statusIcon = '';
+                        let tanggalInput = '-';
+
+                        if (asesi.apl02_completed) {
+                            // Both asesor and asesi have signed - completed (Green)
+                            statusIcon = `<svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                            </svg>`;
+                            tanggalInput = asesi.apl02_created_at ? formatTanggalFromAPI(asesi.apl02_created_at) : '-';
+                        } else {
+                            // APL02 not completed yet - use general progress or show not completed (Red)
+                            statusIcon = `<svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                            </svg>`;
+
+                            // Use AK01 completion date if available, otherwise use APL02 creation date
+                            if (asesi.apl02_created_at) {
+                                tanggalInput = formatTanggalFromAPI(asesi.apl02_created_at);
+                            } else if (asesi.ak01_completed_at) {
+                                tanggalInput = formatTanggalFromAPI(asesi.ak01_completed_at);
+                            }
+                        }
+
                         const progressPercent = asesi.progress_percentage || 0;
                         const completedSteps = asesi.completed_steps || 0;
                         const totalSteps = asesi.total_steps || 0;
-
-                        // Select appropriate icon based on ak01 completion
-                        const statusIcon = hasProgress
-                            ? `<svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                            </svg>`
-                            : `<svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
-                            </svg>`;
 
                         tableContent += `
                             <tr>
@@ -473,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 clip-rule="evenodd" />
                                         </svg>
                                     </button>
-                                    <button onclick="showDocument('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${progressPercent}, ${completedSteps}, ${totalSteps}, ${hasProgress})" class="">
+                                    <button onclick="loadAPL02Detail('${asesi.id_asesi}')" class="">
                                         <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                             <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
                                         </svg>
@@ -482,6 +696,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_asesi}</td>
                                 <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_skema}</td>
                                 <td class="px-4 py-3 text-gray-700 text-left">${asesi.nomor_skema}</td>
+                                <td class="px-4 py-3 text-gray-700">${tanggalInput}</td>
                                 <td class="flex px-4 py-3 justify-center items-center">
                                     ${statusIcon}
                                 </td>
@@ -494,10 +709,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     tableBody.innerHTML = `
                         <tr>
-                            <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data asesi</td>
+                            <td colspan="7" class="px-4 py-3 text-center text-gray-500">Tidak ada data asesi</td>
                         </tr>
                     `;
-                    showMessage('Tidak ada data asesi', 'error');
+                    showNotificationModal('Informasi', 'Tidak ada data asesi yang tersedia', 'warning');
                 }
 
                 // Implementasi pencarian
@@ -523,194 +738,93 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('API returned success=false or missing data:', result);
                 document.querySelector('#daftarAPL02 tbody').innerHTML = `
                     <tr>
-                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
+                        <td colspan="7" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
                     </tr>
                 `;
-                showMessage(`Gagal memuat data: ${result.message || 'Terjadi kesalahan'}`, 'error');
+                showNotificationModal('Error', `Gagal memuat data: ${result.message || 'Terjadi kesalahan'}`, 'error');
             }
         } catch (error) {
             console.error('Error details:', error);
             document.querySelector('#daftarAPL02 tbody').innerHTML = `
                 <tr>
-                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
+                    <td colspan="7" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
                 </tr>
             `;
-            showMessage(`Error memuat data: ${error.message}`, 'error');
+            showNotificationModal('Error', `Error memuat data: ${error.message}`, 'error');
         }
     }
 
-    // Function to get progress icon HTML
-    function getProgressIcon(isCompleted) {
-        if (isCompleted) {
-            return `<svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                    </svg>`;
-        } else {
-            return `<svg class="w-6 h-6 text-logout" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
-                    </svg>`;
+    // Fungsi untuk memformat tanggal dari API
+    function formatTanggalFromAPI(tanggalString) {
+        if (!tanggalString) return '-';
+
+        try {
+            // Format dari API: "23-06-2025 17:20:39 WIB"
+            // Split tanggal dan waktu
+            const [tanggalPart, waktuPart, timezone] = tanggalString.split(' ');
+            const [hari, bulan, tahun] = tanggalPart.split('-');
+            const [jam, menit] = waktuPart.split(':');
+
+            // Array nama bulan dalam bahasa Indonesia
+            const namaBulan = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+
+            // Konversi ke format yang diinginkan
+            const bulanIndo = namaBulan[parseInt(bulan) - 1];
+
+            // Return format: "23 Juni 2025, 17:20 WIB"
+            return `${parseInt(hari)} ${bulanIndo} ${tahun}, ${jam}:${menit} ${timezone}`;
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return tanggalString; // Return original jika gagal format
         }
     }
 
-    // Function to fetch progress data for a specific asesi
-    function fetchAsesiProgress(asesiId) {
-        return fetch(`{{ url('/api/v1/asesor/progressAsesi') }}/${asesiId}`, {
-            method: 'GET',
-            headers: apiHeaders
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(result => {
-            if (result.success && result.data) {
-                return result.data.progress_asesmen;
-            }
-            return null;
-        })
-        .catch(error => {
-            console.error('Error fetching progress for asesi:', asesiId, error);
-            return null;
-        });
-    }
-
-    // Setup signature upload untuk asesor
-    function setupAsesorSignatureUpload() {
-        const config = {
-            inputId: 'file_tanda_tangan_asesor',
-            uploadAreaId: 'asesor-signature-upload-area',
-            contentId: 'asesor-signature-content',
-            previewId: 'asesor-signature-preview',
-            imageId: 'asesor-signature-image',
-            removeButtonId: 'remove-asesor-signature'
-        };
-
-        const input = document.getElementById(config.inputId);
-        const uploadArea = document.getElementById(config.uploadAreaId);
-        const content = document.getElementById(config.contentId);
-        const preview = document.getElementById(config.previewId);
-        const image = document.getElementById(config.imageId);
-        const removeButton = document.getElementById(config.removeButtonId);
-
-        if (!input || !uploadArea || !content || !preview || !image) {
-            console.error('Asesor signature upload elements not found');
-            return null;
-        }
-
-        // Click handler untuk upload area
-        uploadArea.addEventListener('click', function(e) {
-            if (e.target !== removeButton && !removeButton?.contains(e.target)) {
-                input.click();
-            }
-        });
-
-        // Drag and drop handlers
-        uploadArea.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            uploadArea.classList.add('dragover', 'border-biru', 'bg-blue-50');
-        });
-
-        uploadArea.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover', 'border-biru', 'bg-blue-50');
-        });
-
-        uploadArea.addEventListener('drop', function(e) {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover', 'border-biru', 'bg-blue-50');
-
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFileSelection(files[0]);
-            }
-        });
-
-        // File input change handler
-        input.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                handleFileSelection(file);
-            }
-        });
-
-        // Remove button handler
-        if (removeButton) {
-            removeButton.addEventListener('click', function(e) {
-                e.stopPropagation();
-                clearPreview();
+    // Load asesor signature from biodata
+    async function loadAsesorSignatureFromBiodata() {
+        try {
+            const response = await fetch(`{{ url('/api/v1/asesor/biodata') }}/${asesorId}`, {
+                method: 'GET',
+                headers: apiHeaders
             });
-        }
 
-        function handleFileSelection(file) {
-            // Validate file type
-            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-            if (!allowedTypes.includes(file.type)) {
-                showAlert('File harus berformat PNG, JPG, atau JPEG', 'error');
-                return;
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success && result.data && result.data.file_url_tanda_tangan) {
+                    // Show signature from biodata
+                    const fullImageUrl = "{{ url('') }}" + result.data.file_url_tanda_tangan;
+                    document.getElementById('tandaTanganAsesorExisting').src = fullImageUrl;
+                    document.getElementById('asesorExistingSignature').classList.remove('hidden');
+                    document.getElementById('noAsesorSignature').classList.add('hidden');
+
+                    // Show approval checkbox
+                    document.getElementById('asesorApprovalSection').classList.remove('hidden');
+
+                    console.log('Asesor signature loaded from biodata');
+                    return true;
+                } else {
+                    // No signature found
+                    document.getElementById('asesorExistingSignature').classList.add('hidden');
+                    document.getElementById('noAsesorSignature').classList.remove('hidden');
+                    document.getElementById('asesorApprovalSection').classList.add('hidden');
+
+                    console.log('No asesor signature found in biodata');
+                    return false;
+                }
+            } else {
+                console.warn('Failed to load asesor biodata');
+                return false;
             }
-
-            // Validate file size (2MB)
-            const maxSize = 2 * 1024 * 1024;
-            if (file.size > maxSize) {
-                showAlert('Ukuran file maksimal 2MB', 'error');
-                return;
-            }
-
-            // Show preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                image.src = e.target.result;
-                content.classList.add('hidden');
-                preview.classList.remove('hidden');
-
-                // Update input files
-                const dt = new DataTransfer();
-                dt.items.add(file);
-                input.files = dt.files;
-
-                console.log('Asesor signature preview set');
-            };
-            reader.onerror = function() {
-                showAlert('Gagal membaca file tanda tangan', 'error');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function clearPreview() {
-            image.src = '';
-            content.classList.remove('hidden');
-            preview.classList.add('hidden');
-            input.value = '';
-            console.log('Asesor signature preview cleared');
-        }
-
-        return {
-            clearPreview: clearPreview,
-            hasFile: function() {
-                return input.files && input.files.length > 0;
-            },
-            getFile: function() {
-                return input.files && input.files.length > 0 ? input.files[0] : null;
-            }
-        };
-    }
-
-    // Initialize asesor signature upload
-    asesorSignatureUpload = setupAsesorSignatureUpload();
-
-    // Handle existing signature deletion
-    document.getElementById('hapus-ttd-existing')?.addEventListener('click', function() {
-        if (confirm('Apakah Anda yakin ingin menghapus tanda tangan yang tersimpan dan mengunggah yang baru?')) {
-            // Hide existing signature display
+        } catch (error) {
+            console.error('Error loading asesor signature from biodata:', error);
             document.getElementById('asesorExistingSignature').classList.add('hidden');
-            document.getElementById('asesorSignatureButtons').classList.add('hidden');
-
-            // Show upload area
-            document.getElementById('asesor-signature-upload-area').classList.remove('hidden');
+            document.getElementById('noAsesorSignature').classList.remove('hidden');
+            document.getElementById('asesorApprovalSection').classList.add('hidden');
+            return false;
         }
-    });
+    }
 
     // Utility functions
     function showAlert(message, type = 'info') {
@@ -744,128 +858,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Load Asesi List with Progress Data
-    function loadAsesiList() {
-        const apiUrl = "{{ url('/api/v1/asesor/asesis') }}/" + asesorId;
-
-        fetch(apiUrl, {
-            method: 'GET',
-            headers: apiHeaders
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(result => {
-            if (result.success && result.data) {
-                const asesisData = result.data.asesis;
-                const tableBody = document.querySelector('#daftarAPL02 tbody');
-
-                if (asesisData && asesisData.length > 0) {
-                    // Create promises for fetching progress data for each asesi
-                    const progressPromises = asesisData.map(asesi =>
-                        fetchAsesiProgress(asesi.id_asesi)
-                            .then(progressData => {
-                                asesiProgressData[asesi.id_asesi] = progressData;
-                                return { asesi, progressData };
-                            })
-                    );
-
-                    // Wait for all progress data to be fetched
-                    Promise.all(progressPromises).then(results => {
-                        let tableContent = '';
-
-                        results.forEach(({ asesi, progressData }, index) => {
-                            // Check APL02 progress status
-                            const apl02Completed = progressData?.apl02?.completed || false;
-                            const apl02Date = progressData?.apl02?.completed_at || '';
-
-                            const progressIcon = getProgressIcon(apl02Completed);
-
-                            // Format date for display
-                            const formattedDate = apl02Date ?
-                                new Date(apl02Date.split(' ')[0].split('-').reverse().join('-')).toLocaleDateString('id-ID') :
-                                '-';
-
-                            tableContent += `
-                                <tr>
-                                    <td class="px-4 py-3 text-sm text-gray-700">${index + 1}</td>
-                                    <td class="px-4 py-3 text-center">
-                                        <button onclick="loadAPL02Detail('${asesi.id_asesi}')" class="mr-2">
-                                            <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                <path fill-rule="evenodd"
-                                                    d="M21.707 21.707a1 1 0 0 1-1.414 0l-3.5-3.5a1 1 0 0 1 1.414-1.414l3.5 3.5a1 1 0 0 1 0 1.414ZM2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm9-3a1 1 0 1 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0-2h-2V7Z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                        <button onclick="showDocument('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${asesi.progress_percentage}, ${asesi.completed_steps}, ${asesi.total_steps})" class="">
-                                            <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </button>
-                                    </td>
-                                    <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_asesi}</td>
-                                    <td class="px-4 py-3 text-gray-700 text-left">${asesi.nama_skema}</td>
-                                    <td class="px-4 py-3 text-gray-700 text-left">${asesi.nomor_skema}</td>
-                                    <td class="px-4 py-3 text-gray-700">${formattedDate}</td>
-                                    <td class="flex px-4 py-3 justify-center items-center">
-                                        ${progressIcon}
-                                    </td>
-                                </tr>
-                            `;
-                        });
-
-                        tableBody.innerHTML = tableContent;
-                    });
-                } else {
-                    tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="7" class="px-4 py-3 text-center text-gray-500">Tidak ada data asesi</td>
-                        </tr>
-                    `;
-                }
-
-                // Setup search functionality
-                const searchInput = document.getElementById('default-search');
-                searchInput.addEventListener('keyup', function() {
-                    const searchValue = this.value.toLowerCase();
-                    const rows = document.querySelectorAll('#daftarAPL02 tbody tr');
-
-                    rows.forEach(row => {
-                        const nama = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
-                        const skema = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
-                        const kode = row.querySelector('td:nth-child(5)')?.textContent.toLowerCase() || '';
-
-                        if (nama.includes(searchValue) || skema.includes(searchValue) || kode.includes(searchValue)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                });
-
-            } else {
-                console.error('API returned success=false or missing data:', result);
-                document.querySelector('#daftarAPL02 tbody').innerHTML = `
-                    <tr>
-                        <td colspan="7" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
-                    </tr>
-                `;
-            }
-        })
-        .catch(error => {
-            console.error('Error details:', error);
-            document.querySelector('#daftarAPL02 tbody').innerHTML = `
-                <tr>
-                    <td colspan="7" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
-                </tr>
-            `;
-        });
-    }
-
     // Load APL02 Detail
     window.loadAPL02Detail = function(idAsesi) {
         currentAsesiId = idAsesi;
@@ -896,13 +888,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentApl02Data = result.data;
                 populateAPL02Form(result.data);
             } else {
-                showAlert('Gagal memuat data APL02: ' + (result.message || 'Terjadi kesalahan'), 'error');
+                showNotificationModal('Error', 'Gagal memuat data APL02: ' + (result.message || 'Terjadi kesalahan'), 'error');
             }
         })
         .catch(error => {
             showLoading(false);
             console.error('Error loading APL02 detail:', error);
-            showAlert('Error memuat data APL02: ' + error.message, 'error');
+            showNotificationModal('Error', 'Error memuat data APL02: ' + error.message, 'error');
         });
     };
 
@@ -935,6 +927,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Update signature section
             updateSignatureSection(detailApl02, generalInfo);
+        } else {
+            // No existing APL02 record, load asesor signature from biodata
+            updateSignatureSection(null, generalInfo);
         }
 
         // Update hasil kompetensi automatically
@@ -1058,37 +1053,50 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update names
         document.getElementById('namaAsesiTtd').textContent = generalInfo.nama_asesi;
         document.getElementById('namaAsesorTtd').textContent = generalInfo.nama_asesor;
-        document.getElementById('tanggalTtdAsesor').textContent = generalInfo.waktu_tanda_tangan_asesor;
 
-        // Update asesor signature
-        if (detailApl02.waktu_tanda_tangan_asesor) {
-            document.getElementById('tanggalTtdAsesor').textContent = new Date(detailApl02.waktu_tanda_tangan_asesor);
+        // Update asesor signature and date
+        if (detailApl02 && detailApl02.waktu_tanda_tangan_asesor) {
+            // Format tanggal dari API (format: "23-06-2025 17:20:39 WIB")
+            const tanggalAsesor = formatTanggalFromAPI(detailApl02.waktu_tanda_tangan_asesor);
+            document.getElementById('tanggalTtdAsesor').textContent = tanggalAsesor;
+
             if (detailApl02.ttd_asesor) {
-                // Show existing signature
-                document.getElementById('tandaTanganAsesorExisting').src = detailApl02.ttd_asesor;
+                // Show existing signature from APL02 (already signed)
+                const fullImageUrl = "{{ url('') }}" + detailApl02.ttd_asesor;
+                document.getElementById('tandaTanganAsesorExisting').src = fullImageUrl;
                 document.getElementById('asesorExistingSignature').classList.remove('hidden');
-                document.getElementById('asesorSignatureButtons').classList.remove('hidden');
-                document.getElementById('asesor-signature-upload-area').classList.add('hidden');
+                document.getElementById('noAsesorSignature').classList.add('hidden');
+
+                // Hide approval section if already signed
+                document.getElementById('asesorApprovalSection').classList.add('hidden');
             }
         } else {
-            // Show upload area
-            document.getElementById('asesorExistingSignature').classList.add('hidden');
-            document.getElementById('asesorSignatureButtons').classList.add('hidden');
-            document.getElementById('asesor-signature-upload-area').classList.remove('hidden');
+            // Reset tanggal jika belum ada tanda tangan
+            document.getElementById('tanggalTtdAsesor').textContent = '-';
+
+            // Load asesor signature from biodata
+            loadAsesorSignatureFromBiodata();
         }
 
-        // Update asesi signature
-        if (detailApl02.waktu_tanda_tangan_asesi) {
-            document.getElementById('tanggalTtdAsesi').textContent = new Date(detailApl02.waktu_tanda_tangan_asesi).toLocaleDateString('id-ID');
+        // Update asesi signature and date
+        if (detailApl02 && detailApl02.waktu_tanda_tangan_asesi) {
+            // Format tanggal dari API
+            const tanggalAsesi = formatTanggalFromAPI(detailApl02.waktu_tanda_tangan_asesi);
+            document.getElementById('tanggalTtdAsesi').textContent = tanggalAsesi;
+
             if (detailApl02.ttd_asesi) {
-                document.getElementById('tandaTanganAsesi').src = detailApl02.ttd_asesi;
+                const fullImageUrl = "{{ url('') }}" + detailApl02.ttd_asesi;
+                document.getElementById('tandaTanganAsesi').src = fullImageUrl;
                 document.getElementById('tandaTanganAsesi').classList.remove('hidden');
                 document.getElementById('noTtdAsesi').textContent = 'Sudah ditandatangani';
                 document.getElementById('noTtdAsesi').classList.add('text-green-600');
             }
         } else {
+            // Reset tanggal dan status jika belum ada tanda tangan asesi
+            document.getElementById('tanggalTtdAsesi').textContent = '-';
             document.getElementById('noTtdAsesi').textContent = 'Menunggu tanda tangan dari asesi';
             document.getElementById('noTtdAsesi').classList.remove('text-green-600');
+            document.getElementById('tandaTanganAsesi').classList.add('hidden');
         }
     }
 
@@ -1128,12 +1136,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const rekomendasi = document.getElementById('rekomendasi').value.trim();
 
         if (!metodeUji) {
-            showAlert('Metode uji harus diisi', 'error');
+            showNotificationModal('Error', 'Metode uji harus diisi', 'error');
             return;
         }
 
         if (!rekomendasi) {
-            showAlert('Rekomendasi harus diisi', 'error');
+            showNotificationModal('Error', 'Rekomendasi harus diisi', 'error');
             return;
         }
 
@@ -1151,28 +1159,39 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (hasUnassessed) {
-                showAlert('Semua elemen kompetensi harus dinilai sebelum menandatangani', 'error');
+                showNotificationModal('Error', 'Semua elemen kompetensi harus dinilai sebelum menandatangani', 'error');
                 return;
             }
 
-            // Check if asesor has signature (either uploaded now or existing)
-            const hasUploadedSignature = asesorSignatureUpload && asesorSignatureUpload.hasFile();
+            // Check if asesor has approved the form
+            const approvalCheckbox = document.getElementById('asesorApprovalCheckbox');
+            const approvalSection = document.getElementById('asesorApprovalSection');
+
+            if (approvalSection && !approvalSection.classList.contains('hidden')) {
+                if (!approvalCheckbox || !approvalCheckbox.checked) {
+                    showNotificationModal('Error', 'Anda harus menyetujui formulir ini untuk menandatangani', 'error');
+                    return;
+                }
+            }
+
+            // Check if asesor signature is available (from biodata or already signed)
             const hasExistingSignature = !document.getElementById('asesorExistingSignature').classList.contains('hidden');
 
-            if (!hasUploadedSignature && !hasExistingSignature) {
-                showAlert('Anda harus mengunggah tanda tangan atau memiliki tanda tangan tersimpan untuk menandatangani', 'error');
+            if (!hasExistingSignature) {
+                showNotificationModal('Error', 'Tanda tangan asesor tidak tersedia. Silakan update biodata Anda terlebih dahulu.', 'error');
                 return;
             }
         }
 
-        // Prepare data for API - Use the correct endpoint format
+        // Prepare data for API
         const postData = {
             id_asesi: currentAsesiId,
             id_asesor: asesorId,
             rekomendasi: rekomendasi,
             metode_uji: metodeUji,
             detail_kompetensi: detailKompetensi,
-            is_signing: isSigning
+            is_signing: isSigning,
+            asesor_approval: isSigning ? true : false
         };
 
         const apiUrl = `{{ url('/api/v1/asesmen/apl02/asesor/save') }}`;
@@ -1194,31 +1213,29 @@ document.addEventListener('DOMContentLoaded', function () {
             showLoading(false);
 
             if (result.status === 'success') {
-                showAlert(result.message || 'Data APL02 berhasil disimpan', 'success');
+                showNotificationModal('Sukses', result.message || 'Data APL02 berhasil disimpan', 'success');
 
                 if (isSigning) {
-                    // Update signature display
-                    document.getElementById('tanggalTtdAsesor').textContent = new Date().toLocaleDateString('id-ID');
-
-                    // Clear upload preview and show existing signature
-                    if (asesorSignatureUpload) {
-                        asesorSignatureUpload.clearPreview();
+                    // Reset checkbox
+                    const approvalCheckbox = document.getElementById('asesorApprovalCheckbox');
+                    if (approvalCheckbox) {
+                        approvalCheckbox.checked = false;
                     }
                 }
 
-                // Reload the detail to get updated data
+                // Reload the detail to get updated data including timestamp from API
                 setTimeout(() => {
                     loadAPL02Detail(currentAsesiId);
                 }, 1000);
 
             } else {
-                showAlert('Gagal menyimpan data: ' + (result.message || 'Terjadi kesalahan'), 'error');
+                showNotificationModal('Error', 'Gagal menyimpan data: ' + (result.message || 'Terjadi kesalahan'), 'error');
             }
         })
         .catch(error => {
             showLoading(false);
             console.error('Error saving APL02:', error);
-            showAlert('Error menyimpan data: ' + error.message, 'error');
+            showNotificationModal('Error', 'Error menyimpan data: ' + error.message, 'error');
         });
     }
 
@@ -1228,9 +1245,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('simpanDanTandaTangan').addEventListener('click', function() {
-        if (confirm('Apakah Anda yakin ingin menyimpan dan menandatangani APL02 ini?')) {
-            saveAPL02(true);
-        }
+        showConfirmationModal(
+            'Konfirmasi Tanda Tangan',
+            'Apakah Anda yakin ingin menyimpan dan menandatangani APL02 ini? Setelah ditandatangani, data tidak dapat diubah lagi.',
+            function() {
+                saveAPL02(true);
+            }
+        );
     });
 
     document.getElementById('kembaliKeList').addEventListener('click', function() {
@@ -1249,8 +1270,16 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('alertMessages').classList.add('hidden');
     });
 
+    // Make showSummary available globally (for summary modal if needed)
+    window.showSummary = function(asesiId, asesiName, skemaName, progressPercent, completedSteps, totalSteps) {
+        // This can be implemented to show summary modal if needed
+        console.log('Show summary for:', asesiId, asesiName, skemaName);
+        // For now, redirect to document detail
+        loadAPL02Detail(asesiId);
+    };
+
     // Initialize page
-    loadAsesiList();
+    loadAsesiData();
 });
 
 // Table sorting function

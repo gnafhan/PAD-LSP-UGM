@@ -140,7 +140,9 @@
                     </a>
                 </li>
             </li>
-            <li class="py-2">
+            <!-- batas pengerjaan kelompok 5 pad2 lsp ugm -->
+            
+            {{-- <li class="py-2">
                 <span class="text-sidebar_font font-normal text-sm">Perangkat Asesmen</span>
                 <li>
                     <a href="{{ route('frak07-asesor') }}" class="flex items-center p-2 rounded-lg group
@@ -272,7 +274,7 @@
                         <span class="ms-3">FR.AK.04</span>
                     </a>
                 </li>
-            </li>
+            </li> --}}
             <li class="py-2">
                 <span class="text-sidebar_font font-normal text-sm">Logout</span>
                 <li>

@@ -40,8 +40,13 @@
             <p class="pb-3 text-lg font-medium text-black">Profile</p>
             <div class="flex justify-between py-6 px-8 mb-4 bg-bg_dashboard border border-border rounded-2xl">
                 <div class="flex w-fit items-center p-3 gap-2 rounded-full border border-border bg-white">
-                    <img id="profilePicture" src="{{ asset('images/ronaldo.png') }}" alt="Profile Picture" class="w-40 h-40 object-cover rounded-full">
-                    <div class="font-medium text-black pe-4 ">
+                    <div class="relative">
+                        <img id="profilePicture" src="{{ asset('images/default-profile.png') }}" alt="Profile Picture" class="w-40 h-40 object-cover rounded-full">
+                        <div id="profileOverlay" class="absolute inset-0 hidden items-center justify-center bg-gray-800 bg-opacity-70 rounded-full">
+                            <span class="text-white text-center font-medium text-sm px-2">Tidak ada foto</span>
+                        </div>
+                    </div>
+                    <div class="font-medium text-black pe-4">
                         <p id="asesorName">Nama Asesor</p>
                         <div id="asesorEmail" class="text-sm font-light text-font_desc">Email Asesor</div>
                     </div>
@@ -124,8 +129,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const apiKey = "{{ env('API_KEY') }}";
-
-            // Get asesor ID dynamically from the authenticated user with proper error handling
             const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
 
             // Function to show loading state
@@ -152,6 +155,51 @@
                 document.getElementById('errorMessage').textContent = message || 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.';
             }
 
+            // Function to setup profile picture
+            function setupProfilePicture(biodataAsesor) {
+                const profilePictureElement = document.getElementById('profilePicture');
+                const profileOverlay = document.getElementById('profileOverlay');
+
+                // Reset overlay first
+                profileOverlay.classList.add('hidden');
+                profileOverlay.classList.remove('flex');
+
+                // Check if foto_asesor_url exists and is valid
+                if (biodataAsesor.foto_asesor_url &&
+                    biodataAsesor.foto_asesor_url !== '/storage/data_asesor' &&
+                    biodataAsesor.foto_asesor_url !== '/storage/data_asesor/') {
+
+                    console.log('URL foto ditemukan:', biodataAsesor.foto_asesor_url);
+
+                    // Set the photo URL with full domain
+                    const fullPhotoUrl = "{{ url('') }}" + biodataAsesor.foto_asesor_url;
+                    profilePictureElement.src = fullPhotoUrl;
+
+                    // Add error handler if image fails to load
+                    profilePictureElement.onerror = function() {
+                        console.log('Gagal memuat foto, menampilkan overlay');
+                        showNoPhotoOverlay();
+                    };
+
+                    // Add load handler to confirm image loaded successfully
+                    profilePictureElement.onload = function() {
+                        console.log('Foto berhasil dimuat');
+                    };
+                } else {
+                    console.log('URL foto tidak tersedia atau tidak valid');
+                    showNoPhotoOverlay();
+                }
+
+                function showNoPhotoOverlay() {
+                    // Use default image
+                    profilePictureElement.src = '{{ asset("images/default-profile.png") }}';
+
+                    // Show overlay with "No photo" text
+                    profileOverlay.classList.remove('hidden');
+                    profileOverlay.classList.add('flex');
+                }
+            }
+
             // Show loading state initially
             showLoadingState();
 
@@ -162,107 +210,96 @@
                 return;
             }
 
-            // PERBAIKAN: Gunakan URL yang benar
-            const apiUrl = "{{ url('/api/v1/asesor/dashboard') }}/" + asesorId;
-
-            // Debug output
-            console.log('Fetching data for asesor ID:', asesorId);
-            console.log('API URL:', apiUrl);
-
             // Get CSRF token from meta tag
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-            // Function untuk menangani foto profil
-            function setupProfilePicture(asesorData) {
-                const profilePictureElement = document.getElementById('profilePicture');
-                const defaultImage = '{{ asset('images/default-profile.png') }}';
-                const imageContainer = profilePictureElement.parentElement;
+            // API Headers configuration
+            const apiHeaders = {
+                'Content-Type': 'application/json',
+                'API_KEY': apiKey,
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken || '',
+                'X-Requested-With': 'XMLHttpRequest'
+            };
 
-                // Reset kelas dan konten sebelumnya
-                imageContainer.classList.remove('relative');
-                const existingOverlay = imageContainer.querySelector('.profile-overlay');
-                if (existingOverlay) {
-                    existingOverlay.remove();
-                }
+            // Load dashboard data and biodata in parallel
+            async function loadAsesorData() {
+                try {
+                    const dashboardUrl = "{{ url('/api/v1/asesor/dashboard') }}/" + asesorId;
+                    const biodataUrl = "{{ url('/api/v1/asesor/biodata') }}/" + asesorId;
 
-                // Cek apakah URL foto valid
-                if (asesorData.file_url_foto_asesor &&
-                    asesorData.file_url_foto_asesor !== '/storage/data_asesor' &&
-                    asesorData.file_url_foto_asesor !== '/storage/data_asesor/') {
+                    console.log('Fetching data for asesor ID:', asesorId);
+                    console.log('Dashboard API URL:', dashboardUrl);
+                    console.log('Biodata API URL:', biodataUrl);
 
-                    console.log('URL foto ditemukan:', asesorData.file_url_foto_asesor);
-                    profilePictureElement.src = asesorData.file_url_foto_asesor;
+                    // Fetch both APIs in parallel
+                    const [dashboardResponse, biodataResponse] = await Promise.all([
+                        fetch(dashboardUrl, {
+                            method: 'GET',
+                            headers: apiHeaders
+                        }),
+                        fetch(biodataUrl, {
+                            method: 'GET',
+                            headers: apiHeaders
+                        })
+                    ]);
 
-                    // Tambahkan error handler jika gambar gagal dimuat
-                    profilePictureElement.onerror = function() {
-                        console.log('Gagal memuat foto, menggunakan placeholder');
-                        showNoPhotoOverlay(profilePictureElement, imageContainer);
-                    };
-                } else {
-                    console.log('URL foto tidak tersedia');
-                    showNoPhotoOverlay(profilePictureElement, imageContainer);
-                }
-            }
+                    console.log('Dashboard response status:', dashboardResponse.status);
+                    console.log('Biodata response status:', biodataResponse.status);
 
-            // Function untuk menampilkan overlay "Tidak ada foto"
-            function showNoPhotoOverlay(imgElement, container) {
-                // Gunakan gambar default
-                imgElement.src = '{{ asset('images/default-profile.png') }}';
+                    // Check if both responses are OK
+                    if (!dashboardResponse.ok) {
+                        throw new Error(`Dashboard API error! status: ${dashboardResponse.status}`);
+                    }
 
-                // Tambahkan overlay dengan teks
-                container.classList.add('relative');
-                const overlay = document.createElement('div');
-                overlay.className = 'profile-overlay absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70 rounded-full';
-                overlay.innerHTML = '<span class="text-white text-center font-medium px-2">Tidak ada foto</span>';
-                container.appendChild(overlay);
-            }
+                    if (!biodataResponse.ok) {
+                        throw new Error(`Biodata API error! status: ${biodataResponse.status}`);
+                    }
 
-            // Make API request
-            fetch(apiUrl, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'API_KEY': apiKey,
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken || '',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
+                    // Parse both responses
+                    const [dashboardResult, biodataResult] = await Promise.all([
+                        dashboardResponse.json(),
+                        biodataResponse.json()
+                    ]);
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(result => {
-                console.log('API Response:', result);
+                    console.log('Dashboard API Response:', dashboardResult);
+                    console.log('Biodata API Response:', biodataResult);
 
-                if (result.success && result.data) {
-                    const data = result.data;
+                    // Check if both APIs returned success
+                    if (!dashboardResult.success || !dashboardResult.data) {
+                        throw new Error('Dashboard API returned error: ' + (dashboardResult.message || 'Unknown error'));
+                    }
 
-                    // Update profile information
-                    document.getElementById('asesorName').textContent = data.nama_asesor || 'Nama tidak tersedia';
-                    document.getElementById('asesorEmail').textContent = data.email_asesor || 'Email tidak tersedia';
+                    if (!biodataResult.success || !biodataResult.data) {
+                        throw new Error('Biodata API returned error: ' + (biodataResult.message || 'Unknown error'));
+                    }
+
+                    // Update dashboard information
+                    const dashboardData = dashboardResult.data;
+                    document.getElementById('asesorName').textContent = dashboardData.nama_asesor || 'Nama tidak tersedia';
+                    document.getElementById('asesorEmail').textContent = dashboardData.email_asesor || 'Email tidak tersedia';
 
                     // Update statistics counters
-                    document.getElementById('jumlahKompetensiTeknis').textContent = data.jumlah_kompetensi_teknis || '0';
-                    document.getElementById('jumlahAsesi').textContent = data.jumlah_asesi || '0';
-                    document.getElementById('jumlahEvent').textContent = data.jumlah_event || '0';
-                    document.getElementById('jumlahSkema').textContent = data.jumlah_skema || '0';
+                    document.getElementById('jumlahKompetensiTeknis').textContent = dashboardData.jumlah_kompetensi_teknis || '0';
+                    document.getElementById('jumlahAsesi').textContent = dashboardData.jumlah_asesi || '0';
+                    document.getElementById('jumlahEvent').textContent = dashboardData.jumlah_event || '0';
+                    document.getElementById('jumlahSkema').textContent = dashboardData.jumlah_skema || '0';
 
-                    // Show content after data is loaded
+                    // Setup profile picture from biodata
+                    const biodataAsesor = biodataResult.data;
+                    setupProfilePicture(biodataAsesor);
+
+                    // Show content after all data is loaded
                     showContentState();
-                } else {
-                    console.error('API returned success=false or missing data:', result);
-                    showErrorState('Data Tidak Tersedia', result.message || 'Format respons tidak sesuai');
+
+                } catch (error) {
+                    console.error('Error loading asesor data:', error);
+                    showErrorState('Terjadi Kesalahan', 'Error: ' + (error.message || 'Unknown error'));
                 }
-            })
-            .catch(error => {
-                console.error('Error details:', error);
-                showErrorState('Terjadi Kesalahan', 'Error: ' + (error.message || 'Unknown error'));
-            });
+            }
+
+            // Start loading data
+            loadAsesorData();
         });
     </script>
 @endsection

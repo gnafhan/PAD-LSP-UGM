@@ -118,7 +118,7 @@
                         <tr>
                             <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0, 'pelaksanaanAsesmen')">No</th>
                             <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1, 'pelaksanaanAsesmen')">Aksi</th>
-                            <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2, 'pelaksanaanAsesmen')">Pelaksaan Asesmen</th>
+                            <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2, 'pelaksanaanAsesmen')">Pelaksanaan Asesmen</th>
                             <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(3, 'pelaksanaanAsesmen')">Tanggal Asesi</th>
                             <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(4, 'pelaksanaanAsesmen')">Progress</th>
                         </tr>

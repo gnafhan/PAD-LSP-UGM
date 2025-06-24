@@ -199,7 +199,7 @@
                                     <div class="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
                                         <span class="font-semibold text-abu">Diisi oleh Asesi</span>
                                     </div>
-                                    <p class="text-xs leading-5 text-gray-500">Tanda tangan akan muncul setelah asesi melengkapi formulir</p>
+                                    <p class="text-xs leading-5 text-gray-500">Tanda tangan dilakukan oleh asesi untuk melengkapi formulir</p>
                                 </div>
                                 <!-- Preview Image Asesi -->
                                 <div id="asesi-signature-preview" class="hidden">
@@ -239,7 +239,7 @@
                                 <input id="is_asesor_signing" name="is_asesor_signing" type="checkbox" value="true"
                                        class="w-4 h-4 text-biru bg-gray-100 border-gray-300 rounded focus:ring-biru focus:ring-2">
                                 <label for="is_asesor_signing" class="ms-2 text-sm font-medium text-sidebar_font">
-                                    Saya setuju menandatangani formulir ini
+                                    Data yang saya masukkan sudah benar dan saya menyetujui formulir AK01 ini
                                 </label>
                             </div>
                         </div>
@@ -247,7 +247,7 @@
 
                 <!-- Button Simpan -->
                 <div class="flex justify-end pe-4">
-                    <button id="simpanAK01" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
+                    <button id="simpanAK01" type="button" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
                         Saya Menyetujui
                     </button>
                 </div>
@@ -256,6 +256,37 @@
     </div>
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
+    </div>
+</div>
+
+<!-- Modal Konfirmasi -->
+<div id="confirmationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                <svg class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4" id="confirmationTitle">Konfirmasi Persetujuan</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500" id="confirmationMessage">
+                    Apakah Anda yakin ingin menyetujui dan menandatangani formulir FR.AK-01 ini?
+                    <br><br>
+                    <strong class="text-red-600">Perhatian:</strong> Data yang sudah disetujui dan ditandatangani tidak dapat diubah lagi.
+                    <br><br>
+                    Pastikan semua informasi sudah benar sebelum melanjutkan.
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="confirmYesBtn" class="px-4 py-2 bg-gradient-to-r from-biru to-ungu text-white text-base font-medium rounded-md w-20 mr-2 hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    Ya
+                </button>
+                <button id="confirmNoBtn" class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-20 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Batal
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -323,6 +354,41 @@ document.addEventListener('DOMContentLoaded', function () {
         'X-Requested-With': 'XMLHttpRequest'
     };
 
+    // Modal functions
+    function showConfirmationModal(title, message, onConfirm, onCancel = null) {
+        const modal = document.getElementById('confirmationModal');
+        const titleElement = document.getElementById('confirmationTitle');
+        const messageElement = document.getElementById('confirmationMessage');
+        const yesBtn = document.getElementById('confirmYesBtn');
+        const noBtn = document.getElementById('confirmNoBtn');
+
+        titleElement.textContent = title;
+        messageElement.innerHTML = message;
+
+        // Remove existing event listeners
+        const newYesBtn = yesBtn.cloneNode(true);
+        const newNoBtn = noBtn.cloneNode(true);
+        yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+        noBtn.parentNode.replaceChild(newNoBtn, noBtn);
+
+        // Add new event listeners
+        newYesBtn.addEventListener('click', function() {
+            hideConfirmationModal();
+            if (onConfirm) onConfirm();
+        });
+
+        newNoBtn.addEventListener('click', function() {
+            hideConfirmationModal();
+            if (onCancel) onCancel();
+        });
+
+        modal.classList.remove('hidden');
+    }
+
+    function hideConfirmationModal() {
+        document.getElementById('confirmationModal').classList.add('hidden');
+    }
+
     // Message helper functions
     function showMessage(message, type = 'info', duration = 5000) {
         const messageElements = {
@@ -371,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(result => {
             if (result.success && result.data?.file_url_tanda_tangan) {
-                asesorSignatureUrl = result.data.file_url_tanda_tangan;
+                asesorSignatureUrl = "{{ url('') }}" + result.data.file_url_tanda_tangan;
                 console.log('Asesor signature loaded:', asesorSignatureUrl);
             } else {
                 console.warn('Asesor belum memiliki tanda tangan di biodata');
@@ -601,23 +667,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Show existing signatures if available
                 if (recordExists && data.ak01) {
-                    // Show asesi signature if available
-                    if (data.ak01.tanda_tangan_asesi && data.ak01.tanda_tangan_asesi !== "null") {
-                        const asesiImage = document.getElementById('asesi-signature-image');
-                        const asesiContent = document.getElementById('asesi-signature-content');
-                        const asesiPreview = document.getElementById('asesi-signature-preview');
-                        const tanggalAsesi = document.getElementById('tanggalTandaTanganAsesi');
+                    // // Show asesi signature if available
+                    // if (data.ak01.tanda_tangan_asesi && data.ak01.tanda_tangan_asesi !== "null") {
+                    //     const asesiImage = document.getElementById('asesi-signature-image');
+                    //     const asesiContent = document.getElementById('asesi-signature-content');
+                    //     const asesiPreview = document.getElementById('asesi-signature-preview');
+                    //     const tanggalAsesi = document.getElementById('tanggalTandaTanganAsesi');
 
-                        if (asesiImage && asesiContent && asesiPreview) {
-                            asesiImage.src = data.ak01.tanda_tangan_asesi;
-                            asesiContent.classList.add('hidden');
-                            asesiPreview.classList.remove('hidden');
+                    //     if (asesiImage && asesiContent && asesiPreview) {
+                    //         asesiImage.src = data.ak01.tanda_tangan_asesi;
+                    //         asesiContent.classList.add('hidden');
+                    //         asesiPreview.classList.remove('hidden');
 
-                            if (tanggalAsesi && data.ak01.waktu_tanda_tangan_asesi) {
-                                tanggalAsesi.textContent = `Tanggal: ${data.ak01.waktu_tanda_tangan_asesi}`;
-                            }
-                        }
-                    }
+                    //         if (tanggalAsesi && data.ak01.waktu_tanda_tangan_asesi) {
+                    //             tanggalAsesi.textContent = `Tanggal: ${data.ak01.waktu_tanda_tangan_asesi}`;
+                    //         }
+                    //     }
+                    // }
 
                     // Show asesor signature if available and disable form
                     if (data.ak01.tanda_tangan_asesor && data.ak01.tanda_tangan_asesor !== "null") {
@@ -725,10 +791,8 @@ document.addEventListener('DOMContentLoaded', function () {
         container.innerHTML = checkboxContent;
     }
 
-    // Form submission handler
-    document.getElementById('ak01Form')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-
+    // Function to save AK01 data
+    function saveAK01Data() {
         if (!currentAsesiId) {
             showMessage('ID Asesi tidak ditemukan', 'error');
             return;
@@ -805,6 +869,28 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error saving AK01 data:', error);
             showMessage('Error menyimpan data AK01: ' + error.message, 'error');
         });
+    }
+
+    // Button click handler with confirmation modal
+    document.getElementById('simpanAK01')?.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        showConfirmationModal(
+            'Konfirmasi Persetujuan',
+            `Apakah Anda yakin ingin menyetujui dan menandatangani formulir FR.AK-01 ini?
+            <br><br>
+            <strong class="text-red-600">Perhatian:</strong> Data yang sudah disetujui dan ditandatangani tidak dapat diubah lagi.
+            <br><br>
+            Pastikan semua informasi sudah benar sebelum melanjutkan.`,
+            function() {
+                // User confirmed, proceed with saving
+                saveAK01Data();
+            },
+            function() {
+                // User cancelled
+                console.log('User cancelled the confirmation');
+            }
+        );
     });
 
     // Load initial data
@@ -827,6 +913,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // Scroll to detail
         document.getElementById('detailAK01').scrollIntoView({ behavior: 'smooth' });
     };
+
+    // Global function alias for showDocument (if needed)
+    window.showDocument = window.showSummary;
 });
 
 // Table sorting function
