@@ -73,180 +73,248 @@
 </nav>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const apiKey = "{{ env('API_KEY') }}";
+document.addEventListener('DOMContentLoaded', function () {
+    const apiKey = "{{ env('API_KEY') }}";
+    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
 
-        // Get asesor ID dynamically from the authenticated user
-        const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+    // Cache keys
+    const CACHE_KEYS = {
+        DASHBOARD: `asesor_dashboard_${asesorId}`,
+        BIODATA: `asesor_biodata_${asesorId}`,
+        CACHE_TIMESTAMP: `asesor_cache_timestamp_${asesorId}`
+    };
 
-        // Navbar state elements
-        const navbarLoadingState = document.getElementById('navbarLoadingState');
-        const navbarContentState = document.getElementById('navbarContentState');
-        const navbarErrorState = document.getElementById('navbarErrorState');
+    // Cache expiration time (30 minutes)
+    const CACHE_EXPIRATION = 30 * 60 * 1000; // 30 minutes in milliseconds
 
-        // Navbar state management functions
-        function showNavbarLoading() {
-            navbarLoadingState.classList.remove('hidden');
-            navbarContentState.classList.add('hidden');
-            navbarErrorState.classList.add('hidden');
+    // Navbar state elements
+    const navbarLoadingState = document.getElementById('navbarLoadingState');
+    const navbarContentState = document.getElementById('navbarContentState');
+    const navbarErrorState = document.getElementById('navbarErrorState');
+
+    // Cache management functions
+    function isCacheValid() {
+        const timestamp = localStorage.getItem(CACHE_KEYS.CACHE_TIMESTAMP);
+        if (!timestamp) return false;
+
+        const now = Date.now();
+        const cacheTime = parseInt(timestamp);
+        return (now - cacheTime) < CACHE_EXPIRATION;
+    }
+
+    function setCacheData(dashboardData, biodataData) {
+        try {
+            localStorage.setItem(CACHE_KEYS.DASHBOARD, JSON.stringify(dashboardData));
+            localStorage.setItem(CACHE_KEYS.BIODATA, JSON.stringify(biodataData));
+            localStorage.setItem(CACHE_KEYS.CACHE_TIMESTAMP, Date.now().toString());
+            console.log('Data cached successfully');
+        } catch (error) {
+            console.error('Error caching data:', error);
         }
+    }
 
-        function showNavbarContent() {
-            navbarLoadingState.classList.add('hidden');
-            navbarContentState.classList.remove('hidden');
-            navbarErrorState.classList.add('hidden');
+    function getCachedData() {
+        try {
+            const dashboardData = localStorage.getItem(CACHE_KEYS.DASHBOARD);
+            const biodataData = localStorage.getItem(CACHE_KEYS.BIODATA);
+
+            if (dashboardData && biodataData) {
+                return {
+                    dashboard: JSON.parse(dashboardData),
+                    biodata: JSON.parse(biodataData)
+                };
+            }
+            return null;
+        } catch (error) {
+            console.error('Error reading cached data:', error);
+            return null;
         }
+    }
 
-        function showNavbarError() {
-            navbarLoadingState.classList.add('hidden');
-            navbarContentState.classList.add('hidden');
-            navbarErrorState.classList.remove('hidden');
+    function clearCache() {
+        localStorage.removeItem(CACHE_KEYS.DASHBOARD);
+        localStorage.removeItem(CACHE_KEYS.BIODATA);
+        localStorage.removeItem(CACHE_KEYS.CACHE_TIMESTAMP);
+        console.log('Cache cleared');
+    }
+
+    // Navbar state management functions
+    function showNavbarLoading() {
+        navbarLoadingState.classList.remove('hidden');
+        navbarContentState.classList.add('hidden');
+        navbarErrorState.classList.add('hidden');
+    }
+
+    function showNavbarContent() {
+        navbarLoadingState.classList.add('hidden');
+        navbarContentState.classList.remove('hidden');
+        navbarErrorState.classList.add('hidden');
+    }
+
+    function showNavbarError() {
+        navbarLoadingState.classList.add('hidden');
+        navbarContentState.classList.add('hidden');
+        navbarErrorState.classList.remove('hidden');
+    }
+
+    // Function to update navbar with data
+    function updateNavbarContent(dashboardData, biodataData) {
+        // Update profile information
+        document.getElementById('nama_asesor').textContent = dashboardData.nama_asesor || 'Nama tidak tersedia';
+        document.getElementById('email_asesor').textContent = dashboardData.email_asesor || 'Email tidak tersedia';
+
+        // Setup profile photo
+        setupProfilePhoto(biodataData);
+
+        // Show content
+        showNavbarContent();
+    }
+
+    // Function to setup profile photo
+    function setupProfilePhoto(biodataAsesor) {
+        const profilePhotoElement = document.getElementById('profilePhoto');
+        const defaultIconElement = document.getElementById('defaultProfileIcon');
+
+        if (biodataAsesor.foto_asesor_url &&
+            biodataAsesor.foto_asesor_url !== '/storage/data_asesor' &&
+            biodataAsesor.foto_asesor_url !== '/storage/data_asesor/') {
+
+            console.log('URL foto ditemukan:', biodataAsesor.foto_asesor_url);
+
+            const fullPhotoUrl = "{{ url('') }}" + biodataAsesor.foto_asesor_url;
+            profilePhotoElement.src = fullPhotoUrl;
+
+            profilePhotoElement.onload = function() {
+                console.log('Foto berhasil dimuat');
+                defaultIconElement.classList.add('hidden');
+                profilePhotoElement.classList.remove('hidden');
+            };
+
+            profilePhotoElement.onerror = function() {
+                console.log('Gagal memuat foto, menggunakan icon default');
+                profilePhotoElement.classList.add('hidden');
+                defaultIconElement.classList.remove('hidden');
+            };
+        } else {
+            console.log('URL foto tidak tersedia atau tidak valid');
+            profilePhotoElement.classList.add('hidden');
+            defaultIconElement.classList.remove('hidden');
         }
+    }
 
-        // Show loading state initially
-        showNavbarLoading();
-
-        // Stop execution if no asesor ID is found
+    // Check if we have valid cached data first
+    function loadAsesorDataFromCacheOrAPI() {
         if (!asesorId) {
             console.error('No asesor ID found for the authenticated user');
-            document.getElementById('nama_asesor').textContent = 'User tidak teridentifikasi';
-            document.getElementById('email_asesor').textContent = 'Silahkan login kembali';
             showNavbarError();
             return;
         }
 
-        // Get CSRF token from meta tag
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-        // API Headers configuration
-        const apiHeaders = {
-            'Content-Type': 'application/json',
-            'API_KEY': apiKey,
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken || '',
-            'X-Requested-With': 'XMLHttpRequest'
-        };
-
-        // Function to setup profile photo
-        function setupProfilePhoto(biodataAsesor) {
-            const profilePhotoElement = document.getElementById('profilePhoto');
-            const defaultIconElement = document.getElementById('defaultProfileIcon');
-
-            // Check if foto_asesor_url exists and is valid
-            if (biodataAsesor.foto_asesor_url &&
-                biodataAsesor.foto_asesor_url !== '/storage/data_asesor' &&
-                biodataAsesor.foto_asesor_url !== '/storage/data_asesor/') {
-
-                console.log('URL foto ditemukan:', biodataAsesor.foto_asesor_url);
-
-                // Set the photo URL with full domain
-                const fullPhotoUrl = "{{ url('') }}" + biodataAsesor.foto_asesor_url;
-                profilePhotoElement.src = fullPhotoUrl;
-
-                // Add load handler to show photo when successfully loaded
-                profilePhotoElement.onload = function() {
-                    console.log('Foto berhasil dimuat');
-                    defaultIconElement.classList.add('hidden');
-                    profilePhotoElement.classList.remove('hidden');
-                };
-
-                // Add error handler if image fails to load
-                profilePhotoElement.onerror = function() {
-                    console.log('Gagal memuat foto, menggunakan icon default');
-                    profilePhotoElement.classList.add('hidden');
-                    defaultIconElement.classList.remove('hidden');
-                };
-            } else {
-                console.log('URL foto tidak tersedia atau tidak valid');
-                // Keep default icon visible
-                profilePhotoElement.classList.add('hidden');
-                defaultIconElement.classList.remove('hidden');
+        // Check cache first
+        if (isCacheValid()) {
+            const cachedData = getCachedData();
+            if (cachedData) {
+                console.log('Loading data from cache');
+                updateNavbarContent(cachedData.dashboard, cachedData.biodata);
+                return;
             }
         }
 
-        // Load dashboard data and biodata in parallel
-        async function loadAsesorData() {
-            try {
-                const dashboardUrl = "{{ url('/api/v1/asesor/dashboard') }}/" + asesorId;
-                const biodataUrl = "{{ url('/api/v1/asesor/biodata') }}/" + asesorId;
+        // If no valid cache, load from API
+        console.log('Loading data from API');
+        showNavbarLoading();
+        loadAsesorDataFromAPI();
+    }
 
-                console.log('Fetching data for asesor ID:', asesorId);
-                console.log('Dashboard API URL:', dashboardUrl);
-                console.log('Biodata API URL:', biodataUrl);
+    // Load data from API
+    async function loadAsesorDataFromAPI() {
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-                // Fetch both APIs in parallel
-                const [dashboardResponse, biodataResponse] = await Promise.all([
-                    fetch(dashboardUrl, {
-                        method: 'GET',
-                        headers: apiHeaders
-                    }),
-                    fetch(biodataUrl, {
-                        method: 'GET',
-                        headers: apiHeaders
-                    })
-                ]);
+            const apiHeaders = {
+                'Content-Type': 'application/json',
+                'API_KEY': apiKey,
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken || '',
+                'X-Requested-With': 'XMLHttpRequest'
+            };
 
-                console.log('Dashboard response status:', dashboardResponse.status);
-                console.log('Biodata response status:', biodataResponse.status);
+            const dashboardUrl = "{{ url('/api/v1/asesor/dashboard') }}/" + asesorId;
+            const biodataUrl = "{{ url('/api/v1/asesor/biodata') }}/" + asesorId;
 
-                // Check if both responses are OK
-                if (!dashboardResponse.ok) {
-                    throw new Error(`Dashboard API error! status: ${dashboardResponse.status}`);
-                }
+            console.log('Fetching data for asesor ID:', asesorId);
 
-                if (!biodataResponse.ok) {
-                    throw new Error(`Biodata API error! status: ${biodataResponse.status}`);
-                }
+            // Fetch both APIs in parallel
+            const [dashboardResponse, biodataResponse] = await Promise.all([
+                fetch(dashboardUrl, {
+                    method: 'GET',
+                    headers: apiHeaders
+                }),
+                fetch(biodataUrl, {
+                    method: 'GET',
+                    headers: apiHeaders
+                })
+            ]);
 
-                // Parse both responses
-                const [dashboardResult, biodataResult] = await Promise.all([
-                    dashboardResponse.json(),
-                    biodataResponse.json()
-                ]);
-
-                console.log('Dashboard API Response:', dashboardResult);
-                console.log('Biodata API Response:', biodataResult);
-
-                // Check if both APIs returned success
-                if (!dashboardResult.success || !dashboardResult.data) {
-                    throw new Error('Dashboard API returned error: ' + (dashboardResult.message || 'Unknown error'));
-                }
-
-                if (!biodataResult.success || !biodataResult.data) {
-                    throw new Error('Biodata API returned error: ' + (biodataResult.message || 'Unknown error'));
-                }
-
-                // Update profile information from dashboard data
-                const dashboardData = dashboardResult.data;
-                document.getElementById('nama_asesor').textContent = dashboardData.nama_asesor || 'Nama tidak tersedia';
-                document.getElementById('email_asesor').textContent = dashboardData.email_asesor || 'Email tidak tersedia';
-
-                // Setup profile photo from biodata
-                const biodataAsesor = biodataResult.data;
-                setupProfilePhoto(biodataAsesor);
-
-                // Show content after successful load
-                showNavbarContent();
-
-            } catch (error) {
-                console.error('Error loading asesor data:', error);
-
-                // Show error state
-                showNavbarError();
-
-                // Set error message in content state as fallback
-                document.getElementById('nama_asesor').textContent = 'Error memuat data';
-                document.getElementById('email_asesor').textContent = error.message;
-
-                // Keep default icon visible on error
-                document.getElementById('profilePhoto').classList.add('hidden');
-                document.getElementById('defaultProfileIcon').classList.remove('hidden');
+            if (!dashboardResponse.ok) {
+                throw new Error(`Dashboard API error! status: ${dashboardResponse.status}`);
             }
-        }
 
-        // Start loading data
-        loadAsesorData();
-    });
+            if (!biodataResponse.ok) {
+                throw new Error(`Biodata API error! status: ${biodataResponse.status}`);
+            }
+
+            const [dashboardResult, biodataResult] = await Promise.all([
+                dashboardResponse.json(),
+                biodataResponse.json()
+            ]);
+
+            if (!dashboardResult.success || !dashboardResult.data) {
+                throw new Error('Dashboard API returned error: ' + (dashboardResult.message || 'Unknown error'));
+            }
+
+            if (!biodataResult.success || !biodataResult.data) {
+                throw new Error('Biodata API returned error: ' + (biodataResult.message || 'Unknown error'));
+            }
+
+            const dashboardData = dashboardResult.data;
+            const biodataData = biodataResult.data;
+
+            // Cache the data
+            setCacheData(dashboardData, biodataData);
+
+            // Update navbar
+            updateNavbarContent(dashboardData, biodataData);
+
+        } catch (error) {
+            console.error('Error loading asesor data:', error);
+            showNavbarError();
+
+            document.getElementById('nama_asesor').textContent = 'Error memuat data';
+            document.getElementById('email_asesor').textContent = error.message;
+        }
+    }
+
+    // Start loading data (cache first, then API if needed)
+    loadAsesorDataFromCacheOrAPI();
+
+    // Global function to refresh cache (can be called from other pages)
+    window.refreshAsesorCache = function() {
+        console.log('Refreshing asesor cache...');
+        clearCache();
+        showNavbarLoading();
+        loadAsesorDataFromAPI();
+    };
+
+    // Global function to get cached biodata (can be used by other pages)
+    window.getCachedAsesorBiodata = function() {
+        if (isCacheValid()) {
+            const cachedData = getCachedData();
+            return cachedData ? cachedData.biodata : null;
+        }
+        return null;
+    };
+});
 </script>
 
 <!-- Navbar Ends -->
