@@ -1251,7 +1251,7 @@
                                                             "type": "string",
                                                             "example": "JTTC"
                                                         },
-                                                        "ttd_asesi": {
+                                                        "tanda_tangan_asesi": {
                                                             "type": "boolean",
                                                             "example": true
                                                         },

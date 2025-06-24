@@ -87,7 +87,7 @@ class KonsultasiPraUjiController extends Controller
      *                     @OA\Property(property="tanggal_asesmen_disepakati", type="string", format="date", example="2025-05-06"),
      *                     @OA\Property(property="waktu_pelaksanaan", type="string", example="09:00"),
      *                     @OA\Property(property="tempat_uji", type="string", example="JTTC"),
-     *                     @OA\Property(property="ttd_asesi", type="boolean", example=true),
+     *                     @OA\Property(property="tanda_tangan_asesi", type="boolean", example=true),
      *                     @OA\Property(property="tanda_tangan_asesor", type="string", nullable=true, example="signature/ttd_asesor.png"),
      *                     @OA\Property(
      *                         property="jawaban_checklist",
@@ -252,8 +252,8 @@ class KonsultasiPraUjiController extends Controller
                         'tanggal_asesmen_disepakati' => DateTimeHelper::toWIB($konsultasi->tanggal_konsultasi),
                         'waktu_pelaksanaan' => $konsultasi->waktu_pelaksanaan,
                         'tempat_uji' => $konsultasi->tempat_uji,
-                        'ttd_asesi' => $asesi->ttd_pemohon,
-                        'ttd_asesor' => $tandaTanganAsesor->file_url ?? null,
+                        'tanda_tangan_asesi' => $konsultasi->jawaban_checklist['point_1']['jawaban_asesi'] == 'Ya' ? $asesi->ttd_pemohon = asset('storage/' . $asesi->ttd_pemohon) : null,
+                        'tanda_tangan_asesor' => $tandaTanganAsesor->file_url ?? null,
                         'jawaban_checklist' => $konsultasi->jawaban_checklist,
                     ],
                     'record_exists' => true
@@ -295,7 +295,7 @@ class KonsultasiPraUjiController extends Controller
                         'tanggal_asesmen_disepakati' => $tanggalAsesmenDisepakati,
                         'waktu_pelaksanaan' => null,
                         'tempat_uji' => $tempatUji,
-                        'ttd_asesi' => false,
+                        'tanda_tangan_asesi' => false,
                         'waktu_tanda_tangan_asesor' => null,
                         'jawaban_checklist' => $defaultChecklist,
                     ],
