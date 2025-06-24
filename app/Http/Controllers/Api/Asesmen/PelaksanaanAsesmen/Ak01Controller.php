@@ -149,7 +149,7 @@ class Ak01Controller extends Controller
                         'waktu_tanda_tangan_asesi' => DateTimeHelper::toWIB($ak01->waktu_tanda_tangan_asesi),
                         'tanda_tangan_asesi' => $ak01->waktu_tanda_tangan_asesi ? $asesi->ttd_pemohon = asset('storage/' . $asesi->ttd_pemohon) : null,
                         'waktu_tanda_tangan_asesor' => DateTimeHelper::toWIB($ak01->waktu_tanda_tangan_asesor),
-                        'tanda_tangan_asesor' => $tandaTanganAsesor ? $tandaTanganAsesor->file_url : "null",
+                        'tanda_tangan_asesor' => $tandaTanganAsesor ? $tandaTanganAsesor->file_url : null,
                     ],
                     'record_exists' => true
                 ]
