@@ -248,16 +248,61 @@
 
                 <!-- Tanda Tangan Section -->
                 <div class="my-6 px-4 space-y-6">
-                    <div class="flex flex-row justify-end">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Tanda Tangan Asesi (Read-only) -->
+                        <div class="flex flex-col items-center justify-center">
+                            <label class="block text-sm/6 font-medium text-sidebar_font text-center mb-2">Tanda Tangan Asesi</label>
+
+                            <!-- Container untuk tanda tangan asesi -->
+                            <div class="w-full flex flex-col items-center justify-center rounded-lg border border-dashed border-border_input px-6 py-10 bg-gray-50 cursor-default min-h-[200px]">
+                                <div class="text-center" id="asesi-signature-content">
+                                    <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                                    </svg>
+                                    <div class="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
+                                        <span class="font-semibold text-abu">Diisi oleh Asesi</span>
+                                    </div>
+                                    <p class="text-xs leading-5 text-gray-500">Tanda tangan dilakukan oleh asesi untuk melengkapi formulir</p>
+                                </div>
+                                <!-- Preview Image Asesi -->
+                                <div id="asesi-signature-preview" class="hidden">
+                                    <img id="asesi-signature-image" src="" alt="Tanda Tangan Asesi" class="max-h-48 w-auto mx-auto rounded-lg p-2 border border-gray-200 bg-white shadow-sm">
+                                    <p class="text-xs text-center mt-2 text-gray-500">Tanda tangan asesi</p>
+                                    <p id="tanggalTandaTanganAsesi" class="text-xs text-center text-gray-500">Tanggal: -</p>
+                                </div>
+                            </div>
+
+                            <p class="font-medium text-sidebar_font mt-2">Asesi</p>
+                            <p id="namaAsesiTTD" class="font-normal text-sidebar_font">Memuat nama asesi...</p>
+                        </div>
+
                         <!-- Tanda Tangan Asesor dengan Checkbox untuk Persetujuan -->
                         <div class="flex flex-col items-center justify-center">
-                            <!-- Tampilkan tanggal otomatis -->
-                            <p id="tanggalTandaTangan" class="font-medium text-sidebar_font"></p>
+                            <label for="is_asesor_signing" class="block text-sm/6 font-medium text-sidebar_font text-center mb-2">
+                                Tanda Tangan Asesor
+                                <span class="text-red-500">*</span>
+                            </label>
 
-                            <!-- Container untuk tanda tangan -->
-                            <div id="tandaTanganContainer" class="w-60 h-40 border-b border-border_input flex items-center justify-center">
-                                <p id="tandaTanganPlaceholder" class="text-gray-400 text-center">Tanda tangan akan ditampilkan setelah menyimpan formulir</p>
-                                <img id="tandaTanganAsesor" src="" alt="Tanda Tangan Asesor" class="w-full h-full object-contain hidden">
+                            <!-- Tampilkan tanggal otomatis -->
+                            <p id="tanggalTandaTangan" class="font-medium text-sidebar_font mb-2"></p>
+
+                            <!-- Container untuk tanda tangan asesor -->
+                            <div id="tandaTanganContainer" class="w-full flex flex-col items-center justify-center rounded-lg border border-dashed border-border_input px-6 py-10 hover:bg-blue-50 cursor-pointer min-h-[200px]">
+                                <div class="text-center" id="asesor-signature-content">
+                                    <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                                    </svg>
+                                    <div class="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
+                                        <span class="font-semibold text-biru">Tanda Tangan dari Biodata</span>
+                                    </div>
+                                    <p class="text-xs leading-5 text-gray-500">Akan menggunakan tanda tangan dari biodata</p>
+                                </div>
+                                <!-- Preview Image Asesor -->
+                                <div id="asesor-signature-preview" class="hidden">
+                                    <img id="tandaTanganAsesor" src="" alt="Tanda Tangan Asesor" class="max-h-48 w-auto mx-auto rounded-lg p-2 border border-gray-200 bg-white shadow-sm">
+                                    <p class="text-xs text-center mt-2 text-gray-500">Tanda tangan asesor dari biodata</p>
+                                    <p id="tanggalTandaTanganAsesor" class="text-xs text-center text-gray-500">Tanggal: -</p>
+                                </div>
                             </div>
 
                             <!-- Checkbox untuk tanda tangan -->
@@ -284,6 +329,100 @@
             </form>
         </div>
     </div>
+    <!-- Modal Konfirmasi Tanda Tangan -->
+    <div id="signatureModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+            <div class="p-6">
+                <!-- Header Modal -->
+                <div class="flex items-center mb-4">
+                    <div class="rounded-full bg-yellow-100 p-3 mr-3">
+                        <svg class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Tanda Tangan Digital</h3>
+                </div>
+
+                <!-- Content Modal -->
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">
+                        Anda akan menandatangani formulir <strong>Konsultasi Pra Uji</strong> secara digital.
+                    </p>
+
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                        <div class="flex">
+                            <svg class="h-5 w-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <h4 class="text-sm font-medium text-red-800 mb-1">Perhatian Penting:</h4>
+                                <p class="text-sm text-red-700">
+                                    Setelah menandatangani, Anda <strong>tidak dapat mengubah</strong> atau membatalkan persetujuan ini. Pastikan semua checklist sudah diisi dengan benar.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <svg class="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            <p class="text-sm text-gray-600">Saya telah melakukan konsultasi pra uji dengan asesi</p>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            <p class="text-sm text-gray-600">Semua poin checklist telah saya sampaikan kepada asesi</p>
+                        </div>
+                        <div class="flex items-start">
+                            <svg class="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            <p class="text-sm text-gray-600">Data yang saya masukkan sudah benar dan lengkap</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Modal -->
+                <div class="flex justify-end space-x-3">
+                    <button id="cancelSignature" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+                        Batal
+                    </button>
+                    <button id="confirmSignature" type="button" class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-biru to-ungu border border-transparent rounded-md hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 flex items-center">
+                        <span id="confirmSignatureText">Ya, Tandatangani</span>
+                        <div id="confirmSignatureLoading" class="hidden animate-spin rounded-full h-4 w-4 border-b-2 border-white ml-2"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sukses -->
+    <div id="successSignatureModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+            <div class="p-6 text-center">
+                <!-- Icon Success -->
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+
+                <!-- Content -->
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Berhasil Ditandatangani!</h3>
+                <p class="text-gray-600 mb-6">
+                    Formulir Konsultasi Pra Uji telah berhasil ditandatangani dan disimpan. Tanda tangan digital Anda telah terekam dalam sistem.
+                </p>
+
+                <!-- Button -->
+                <button id="closeSuccessSignatureModal" type="button" class="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div id="bgGradient2"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
@@ -303,9 +442,21 @@
     transform: scale(1.02);
 }
 
-#tandaTanganAsesor {
+#tandaTanganAsesor,
+#asesi-signature-image {
     max-width: 100%;
     max-height: 100%;
+}
+
+#asesor-signature-preview img,
+#asesi-signature-preview img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    padding: 8px;
+    background: white;
 }
 
 .loading-spinner {
@@ -335,6 +486,11 @@
     width: 1rem;
     height: 1rem;
     margin-right: 0.5rem;
+}
+
+/* Fix untuk flex layout pada upload area */
+.upload-area {
+    min-height: 200px;
 }
 
 /* Animasi transisi untuk detail */
@@ -398,10 +554,12 @@ document.addEventListener('DOMContentLoaded', function () {
             point_8: { jawaban_asesor: null },
             point_9: { jawaban_asesor: null }
         },
-        consultationData: null
+        consultationData: null,
+        asesorSignatureUrl: null,
+        isFormCompleted: false // Added to track form completion
     };
 
-    // DOM elements
+    // DOM elements (Updated with signature elements)
     const elements = {
         breadcrumbs: document.getElementById('breadcrumbs'),
         searchForm: document.getElementById('searchKonsul'),
@@ -414,8 +572,20 @@ document.addEventListener('DOMContentLoaded', function () {
         unitKompetensiTable: document.getElementById('unitKompetensiTable').querySelector('tbody'),
         breadcrumbAsesiName: document.getElementById('breadcrumbAsesiName'),
         signingCheckbox: document.getElementById('is_asesor_signing'),
-        tandaTanganPlaceholder: document.getElementById('tandaTanganPlaceholder'),
         tandaTanganAsesor: document.getElementById('tandaTanganAsesor'),
+
+        // Signature elements for Asesi
+        asesiSignatureContent: document.getElementById('asesi-signature-content'),
+        asesiSignaturePreview: document.getElementById('asesi-signature-preview'),
+        asesiSignatureImage: document.getElementById('asesi-signature-image'),
+        tanggalTandaTanganAsesi: document.getElementById('tanggalTandaTanganAsesi'),
+        namaAsesiTTD: document.getElementById('namaAsesiTTD'),
+
+        // Signature elements for Asesor
+        asesorSignatureContent: document.getElementById('asesor-signature-content'),
+        asesorSignaturePreview: document.getElementById('asesor-signature-preview'),
+        tanggalTandaTanganAsesor: document.getElementById('tanggalTandaTanganAsesor'),
+
         // Form fields
         namaAsesor: document.getElementById('namaAsesor'),
         namaAsesorTTD: document.getElementById('namaAsesorTTD'),
@@ -424,7 +594,16 @@ document.addEventListener('DOMContentLoaded', function () {
         nomorSertifikasi: document.getElementById('nomorSertifikasi'),
         tanggalAsesmen: document.getElementById('tanggalAsesmen'),
         tuk: document.getElementById('tuk'),
-        tanggalTandaTangan: document.getElementById('tanggalTandaTangan')
+        tanggalTandaTangan: document.getElementById('tanggalTandaTangan'),
+
+        // Modal elements
+        signatureModal: document.getElementById('signatureModal'),
+        successSignatureModal: document.getElementById('successSignatureModal'),
+        cancelSignature: document.getElementById('cancelSignature'),
+        confirmSignature: document.getElementById('confirmSignature'),
+        confirmSignatureText: document.getElementById('confirmSignatureText'),
+        confirmSignatureLoading: document.getElementById('confirmSignatureLoading'),
+        closeSuccessSignatureModal: document.getElementById('closeSuccessSignatureModal')
     };
 
     // Stop execution if no asesor ID is found
@@ -437,6 +616,30 @@ document.addEventListener('DOMContentLoaded', function () {
             </tr>
         `;
         return;
+    }
+
+    // Load asesor signature from biodata
+    async function loadAsesorSignature() {
+        try {
+            const biodataApiUrl = `${config.baseUrl}/asesor/biodata/${state.asesorId}`;
+
+            const response = await fetch(biodataApiUrl, {
+                method: 'GET',
+                headers: config.headers
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success && result.data?.file_url_tanda_tangan) {
+                    state.asesorSignatureUrl = "{{ url('') }}" + result.data.file_url_tanda_tangan;
+                    console.log('Asesor signature loaded:', state.asesorSignatureUrl);
+                } else {
+                    console.warn('Asesor belum memiliki tanda tangan di biodata');
+                }
+            }
+        } catch (error) {
+            console.error('Error loading asesor signature:', error);
+        }
     }
 
     // Utility function to show messages
@@ -497,6 +700,43 @@ document.addEventListener('DOMContentLoaded', function () {
     function setTodayDate() {
         const today = new Date();
         elements.tanggalTandaTangan.textContent = formatDate(today.toISOString().split('T')[0]);
+    }
+
+    // Modal functions
+    function showSignatureModal() {
+        elements.signatureModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        // Force center positioning
+        setTimeout(() => {
+            elements.signatureModal.style.display = 'flex';
+            elements.signatureModal.style.alignItems = 'center';
+            elements.signatureModal.style.justifyContent = 'center';
+        }, 10);
+    }
+
+    function hideSignatureModal() {
+        elements.signatureModal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        elements.signatureModal.style.display = '';
+    }
+
+    function showSuccessSignatureModal() {
+        elements.successSignatureModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        // Force center positioning
+        setTimeout(() => {
+            elements.successSignatureModal.style.display = 'flex';
+            elements.successSignatureModal.style.alignItems = 'center';
+            elements.successSignatureModal.style.justifyContent = 'center';
+        }, 10);
+    }
+
+    function hideSuccessSignatureModal() {
+        elements.successSignatureModal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        elements.successSignatureModal.style.display = '';
     }
 
     // Load asesi data from API
@@ -708,7 +948,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Render consultation form with data
+    // Updated function renderConsultationForm untuk handle tanda tangan asesi
     function renderConsultationForm(data) {
         if (!data) return;
 
@@ -721,6 +961,7 @@ document.addEventListener('DOMContentLoaded', function () {
             elements.nomorSertifikasi.textContent = generalInfo.skema?.nomor_skema || 'N/A';
             elements.namaAsesor.textContent = generalInfo.nama_asesor || 'N/A';
             elements.namaAsesorTTD.textContent = generalInfo.nama_asesor || 'N/A';
+            elements.namaAsesiTTD.textContent = generalInfo.nama_asesi || 'N/A';
             elements.tuk.textContent = konsultasiPraUji.tempat_uji || 'N/A';
 
             // Format and set tanggal asesmen
@@ -738,11 +979,51 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set tanggal tanda tangan
         setTodayDate();
 
-        // Show tanda tangan if exists and disable form if already signed
+        // Handle signatures using new function
+        handleSignatures(konsultasiPraUji);
+    }
+
+    // New function untuk handle signatures - FIXED VERSION
+    function handleSignatures(konsultasiPraUji) {
+        // Handle Asesi Signature
+        if (konsultasiPraUji.ttd_asesi) {
+            const signatureUrl = konsultasiPraUji.ttd_asesi.startsWith('http')
+                ? konsultasiPraUji.ttd_asesi
+                : `{{ url('') }}${konsultasiPraUji.ttd_asesi}`;
+
+            elements.asesiSignatureImage.src = signatureUrl;
+            elements.asesiSignatureContent.classList.add('hidden');
+            elements.asesiSignaturePreview.classList.remove('hidden');
+
+            if (konsultasiPraUji.waktu_ttd_asesi) {
+                elements.tanggalTandaTanganAsesi.textContent = `Tanggal: ${formatDate(konsultasiPraUji.waktu_ttd_asesi)}`;
+            }
+        } else {
+            // Show placeholder for asesi signature
+            elements.asesiSignatureContent.classList.remove('hidden');
+            elements.asesiSignaturePreview.classList.add('hidden');
+        }
+
+        // Handle Asesor Signature - CRITICAL SECTION
         if (konsultasiPraUji.ttd_asesor) {
-            elements.tandaTanganPlaceholder.classList.add('hidden');
-            elements.tandaTanganAsesor.src = konsultasiPraUji.ttd_asesor;
-            elements.tandaTanganAsesor.classList.remove('hidden');
+            // FORM SUDAH COMPLETE - SET STATE
+            state.isFormCompleted = true;
+
+            // Show existing asesor signature and disable form
+            const signatureUrl = konsultasiPraUji.ttd_asesor.startsWith('http')
+                ? konsultasiPraUji.ttd_asesor
+                : `{{ url('') }}${konsultasiPraUji.ttd_asesor}`;
+
+            elements.tandaTanganAsesor.src = signatureUrl;
+            elements.asesorSignatureContent.classList.add('hidden');
+            elements.asesorSignaturePreview.classList.remove('hidden');
+            elements.tandaTanganAsesor.style.opacity = '1'; // Full opacity for completed
+
+            if (konsultasiPraUji.waktu_ttd_asesor) {
+                elements.tanggalTandaTanganAsesor.textContent = `Tanggal: ${formatDate(konsultasiPraUji.waktu_ttd_asesor)}`;
+            }
+
+            // SET FINAL COMPLETED STATE
             elements.signingCheckbox.checked = true;
             elements.signingCheckbox.disabled = true;
 
@@ -752,14 +1033,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 radio.disabled = true;
             });
 
-            // Update button text and disable
+            // FINALIZE BUTTON STATE - COMPLETED
             elements.submitButton.textContent = 'Sudah Disetujui';
             elements.submitButton.disabled = true;
             elements.submitButton.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru');
             elements.submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+
+            // Reset submitting state since it's completed
+            state.isSubmitting = false;
+
         } else {
-            elements.tandaTanganPlaceholder.classList.remove('hidden');
-            elements.tandaTanganAsesor.classList.add('hidden');
+            // FORM BELUM COMPLETE
+            state.isFormCompleted = false;
+
+            // Show signature preview from biodata if available
+            if (state.asesorSignatureUrl) {
+                elements.tandaTanganAsesor.src = state.asesorSignatureUrl;
+                elements.asesorSignatureContent.classList.add('hidden');
+                elements.asesorSignaturePreview.classList.remove('hidden');
+                elements.tandaTanganAsesor.style.opacity = '0.5'; // Show as preview
+            } else {
+                elements.asesorSignatureContent.classList.remove('hidden');
+                elements.asesorSignaturePreview.classList.add('hidden');
+            }
+
             elements.signingCheckbox.checked = false;
             elements.signingCheckbox.disabled = false;
 
@@ -769,11 +1066,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 radio.disabled = false;
             });
 
-            // Reset button
+            // RESET BUTTON TO ACTIVE STATE
             elements.submitButton.textContent = 'Saya Menyetujui';
             elements.submitButton.disabled = false;
             elements.submitButton.classList.add('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru');
             elements.submitButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+
+            // Reset submitting state
+            state.isSubmitting = false;
         }
     }
 
@@ -872,21 +1172,203 @@ document.addEventListener('DOMContentLoaded', function () {
         elements.checklistTableBody.innerHTML = tableContent;
     }
 
-    // Handle form submission
-    async function submitForm(event) {
-        event.preventDefault();
-
-        if (state.isSubmitting) return;
-
-        if (!state.currentAsesiId) {
-            showMessage('error', 'ID Asesi tidak ditemukan');
+    // Handle checkbox signing - UPDATED
+    function handleSigningCheckbox(checkbox) {
+        // Prevent changes if form is already completed
+        if (state.isFormCompleted) {
+            checkbox.checked = true; // Keep it checked
             return;
         }
 
-        // Check if checkbox is checked
-        if (!elements.signingCheckbox.checked) {
-            showMessage('error', 'Silakan setujui untuk menandatangani formulir');
+        if (state.isSubmitting) {
+            checkbox.checked = !checkbox.checked;
             return;
+        }
+
+        if (checkbox.checked) {
+            // Show signature confirmation modal
+            showSignatureModal();
+        }
+    }
+
+    // Setup event listeners - UPDATED
+    function setupEventListeners() {
+        // Search functionality
+        const searchInput = document.getElementById('default-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                state.searchTerm = this.value.trim().toLowerCase();
+                renderAsesiTable();
+            });
+        }
+
+        // Form submission - UPDATED
+        if (elements.consultationForm) {
+            elements.consultationForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // Prevent submission if already completed
+                if (state.isFormCompleted) {
+                    showMessage('error', 'Formulir sudah ditandatangani dan tidak dapat diubah');
+                    return;
+                }
+
+                // Show confirmation modal instead of direct submission
+                if (!elements.signingCheckbox.checked) {
+                    showMessage('error', 'Silakan setujui untuk menandatangani formulir');
+                    return;
+                }
+
+                showSignatureModal();
+            });
+        }
+
+        // Back button
+        if (elements.backButton) {
+            elements.backButton.addEventListener('click', function() {
+                // Reset state when going back
+                state.currentAsesiId = null;
+                state.isFormCompleted = false;
+
+                // Hide detail view
+                elements.detailView.classList.add('hidden');
+                elements.breadcrumbs.classList.add('hidden');
+
+                // Show list view
+                elements.searchForm.classList.remove('hidden');
+                elements.asesiTable.classList.remove('hidden');
+            });
+        }
+
+        // Signing checkbox - UPDATED
+        if (elements.signingCheckbox) {
+            elements.signingCheckbox.addEventListener('change', function() {
+                handleSigningCheckbox(this);
+            });
+        }
+
+        // Modal event listeners - UPDATED
+        if (elements.cancelSignature) {
+            elements.cancelSignature.addEventListener('click', function() {
+                hideSignatureModal();
+
+                // Only reset if not completed
+                if (!state.isFormCompleted) {
+                    elements.signingCheckbox.checked = false;
+                    elements.signingCheckbox.disabled = false;
+
+                    // Reset submit button only if not completed
+                    if (elements.submitButton.textContent !== 'Sudah Disetujui') {
+                        elements.submitButton.disabled = false;
+                        elements.submitButton.innerHTML = 'Saya Menyetujui';
+                    }
+                }
+
+                state.isSubmitting = false;
+            });
+        }
+
+        if (elements.confirmSignature) {
+            elements.confirmSignature.addEventListener('click', async function() {
+                await processSignature();
+            });
+        }
+
+        if (elements.closeSuccessSignatureModal) {
+            elements.closeSuccessSignatureModal.addEventListener('click', function() {
+                hideSuccessSignatureModal();
+            });
+        }
+
+        // Close modal when clicking outside
+        if (elements.signatureModal) {
+            elements.signatureModal.addEventListener('click', function(e) {
+                if (e.target === elements.signatureModal) {
+                    elements.cancelSignature.click();
+                }
+            });
+        }
+
+        if (elements.successSignatureModal) {
+            elements.successSignatureModal.addEventListener('click', function(e) {
+                if (e.target === elements.successSignatureModal) {
+                    elements.closeSuccessSignatureModal.click();
+                }
+            });
+        }
+
+        // Escape key to close modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (!elements.signatureModal.classList.contains('hidden')) {
+                    elements.cancelSignature.click();
+                }
+                if (!elements.successSignatureModal.classList.contains('hidden')) {
+                    elements.closeSuccessSignatureModal.click();
+                }
+            }
+        });
+    }
+
+    // Process signature - UPDATED
+    async function processSignature() {
+        if (state.isSubmitting || state.isFormCompleted) {
+            return;
+        }
+
+        try {
+            state.isSubmitting = true;
+
+            // Update confirm button state
+            elements.confirmSignature.disabled = true;
+            elements.confirmSignatureText.textContent = 'Menandatangani...';
+            elements.confirmSignatureLoading.classList.remove('hidden');
+
+            // DISABLE SUBMIT BUTTON IMMEDIATELY
+            elements.submitButton.disabled = true;
+            elements.submitButton.innerHTML = `
+                <span class="loading-spinner mr-2"></span>
+                <span>Menyimpan...</span>
+            `;
+
+            // Process the signature by submitting the form
+            await submitFormData();
+
+        } catch (error) {
+            console.error('Error processing signature:', error);
+
+            // Reset states only if not completed
+            if (!state.isFormCompleted) {
+                elements.signingCheckbox.checked = false;
+                elements.signingCheckbox.disabled = false;
+
+                // Reset submit button
+                elements.submitButton.disabled = false;
+                elements.submitButton.innerHTML = 'Saya Menyetujui';
+            }
+
+            // Hide modal and show error
+            hideSignatureModal();
+            showMessage('error', 'Gagal memproses tanda tangan: ' + error.message);
+        } finally {
+            // Reset confirm button state
+            elements.confirmSignature.disabled = false;
+            elements.confirmSignatureText.textContent = 'Ya, Tandatangani';
+            elements.confirmSignatureLoading.classList.add('hidden');
+
+            state.isSubmitting = false;
+        }
+    }
+
+    // Submit form data (extracted from submitForm) - UPDATED
+    async function submitFormData() {
+        if (!state.currentAsesiId) {
+            throw new Error('ID Asesi tidak ditemukan');
+        }
+
+        // Check if asesor has signature
+        if (!state.asesorSignatureUrl) {
+            throw new Error('Anda belum memiliki tanda tangan di biodata. Silakan upload tanda tangan di halaman biodata terlebih dahulu.');
         }
 
         // Collect form data
@@ -907,88 +1389,69 @@ document.addEventListener('DOMContentLoaded', function () {
                     jawaban_asesor: selectedRadio.value
                 };
             } else {
-                showMessage('error', `Silakan pilih jawaban untuk poin ${i}`);
-                return;
+                throw new Error(`Silakan pilih jawaban untuk poin ${i}`);
             }
         }
-
-        // Disable the form during submission
-        state.isSubmitting = true;
-        elements.submitButton.disabled = true;
-        elements.submitButton.innerHTML = `
-            <span class="loading-spinner mr-2"></span>
-            <span>Menyimpan...</span>
-        `;
 
         showMessage('loading', 'Menyimpan data konsultasi pra uji...', 0);
 
-        try {
-            const response = await fetch(`${config.baseUrl}/asesmen/konsultasi-prauji/asesor/save`, {
-                method: 'POST',
-                headers: config.headers,
-                body: JSON.stringify(formData)
+        const response = await fetch(`${config.baseUrl}/asesmen/konsultasi-prauji/asesor/save`, {
+            method: 'POST',
+            headers: config.headers,
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            // MARK AS COMPLETED IMMEDIATELY
+            state.isFormCompleted = true;
+
+            showMessage('success', 'Data konsultasi pra uji berhasil disimpan');
+
+            // Hide signature modal and show success modal
+            hideSignatureModal();
+            showSuccessSignatureModal();
+
+            // SET FINAL BUTTON STATE IMMEDIATELY - DON'T WAIT FOR RELOAD
+            elements.submitButton.textContent = 'Sudah Disetujui';
+            elements.submitButton.disabled = true;
+            elements.submitButton.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru');
+            elements.submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+
+            // Lock checkbox permanently
+            elements.signingCheckbox.checked = true;
+            elements.signingCheckbox.disabled = true;
+
+            // Disable all radio buttons
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.disabled = true;
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            // Update signature display immediately
+            if (state.asesorSignatureUrl) {
+                elements.tandaTanganAsesor.src = state.asesorSignatureUrl;
+                elements.tandaTanganAsesor.style.opacity = '1'; // Full opacity for completed
+
+                // Update date
+                const today = new Date();
+                elements.tanggalTandaTanganAsesor.textContent = `Tanggal: ${formatDate(today.toISOString().split('T')[0])}`;
             }
 
-            const result = await response.json();
+            // Reload the consultation data to show the updated values after a delay
+            setTimeout(() => {
+                loadConsultationData(state.currentAsesiId);
+                // Also reload the asesi list to update the progress status
+                loadAsesiData();
+            }, 1500); // Increased delay to ensure server has processed
 
-            if (result.status === 'success') {
-                showMessage('success', 'Data konsultasi pra uji berhasil disimpan');
-
-                // Reload the consultation data to show the updated values
-                setTimeout(() => {
-                    loadConsultationData(state.currentAsesiId);
-                    // Also reload the asesi list to update the progress status
-                    loadAsesiData();
-                }, 1000);
-            } else {
-                console.error('API returned success=false:', result);
-                showMessage('error', `Gagal menyimpan data: ${result.message || 'Terjadi kesalahan'}`);
-            }
-        } catch (error) {
-            console.error('Error saving consultation data:', error);
-            showMessage('error', `Error menyimpan data: ${error.message}`);
-        } finally {
-            // Re-enable the form
-            state.isSubmitting = false;
-            elements.submitButton.disabled = false;
-            elements.submitButton.innerHTML = 'Saya Menyetujui';
-        }
-    }
-
-    // Setup event listeners
-    function setupEventListeners() {
-        // Search functionality
-        const searchInput = document.getElementById('default-search');
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                state.searchTerm = this.value.trim().toLowerCase();
-                renderAsesiTable();
-            });
-        }
-
-        // Form submission
-        if (elements.consultationForm) {
-            elements.consultationForm.addEventListener('submit', submitForm);
-        }
-
-        // Back button
-        if (elements.backButton) {
-            elements.backButton.addEventListener('click', function() {
-                // Hide detail view
-                elements.detailView.classList.add('hidden');
-                elements.breadcrumbs.classList.add('hidden');
-
-                // Show list view
-                elements.searchForm.classList.remove('hidden');
-                elements.asesiTable.classList.remove('hidden');
-
-                // Reset current asesi
-                state.currentAsesiId = null;
-            });
+        } else {
+            throw new Error(result.message || 'Terjadi kesalahan');
         }
     }
 
@@ -996,6 +1459,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function init() {
         // Load initial data
         loadAsesiData();
+        loadAsesorSignature();
 
         // Setup event listeners
         setupEventListeners();
@@ -1006,8 +1470,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Make showConsultationDetail available globally
     window.showSummary = function(asesiId, asesiName, skemaName, progressPercent, completedSteps, totalSteps, konsultasiPraUjiCompleted = false) {
-        // Update state
+        // Reset state for new asesi
         state.currentAsesiId = asesiId;
+        state.isFormCompleted = false; // Reset completion state
 
         // Update breadcrumb
         elements.breadcrumbAsesiName.textContent = asesiName || 'Detail Konsultasi';
@@ -1026,6 +1491,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // Scroll to detail
         elements.detailView.scrollIntoView({ behavior: 'smooth' });
     };
+
+    // Alias for compatibility
+    window.showDocument = window.showSummary;
 });
 
 // Table sorting function (global for onclick handler)

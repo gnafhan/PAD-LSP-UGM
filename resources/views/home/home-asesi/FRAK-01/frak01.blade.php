@@ -22,12 +22,18 @@
 
                 <!-- Loading indicator -->
                 <div id="loading" class="text-center py-4">
-                    <p>Loading data...</p>
+                    <div class="flex items-center justify-center">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                        <p class="ml-2">Loading data...</p>
+                    </div>
                 </div>
 
                 <!-- Error message -->
                 <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     <p id="error-text"></p>
+                    <button onclick="retryLoad()" class="mt-2 bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">
+                        Coba Lagi
+                    </button>
                 </div>
 
                 <!-- Main content -->
@@ -100,29 +106,31 @@
                     <div class="flex justify-between">
                         <div>
                             <div class="flex items-center space-x-2 mt-2">
-                                {{-- <input type="checkbox" id="approve-admin" class="h-4 w-4 text-blue-600 border-gray-300 rounded" disabled> --}}
-                                <p class="text-sm">Tanda Tangan Asesor</p>
+                                <p class="text-sm font-semibold">Tanda Tangan Asesor</p>
                             </div>
                             <div class="mt-2">
-                                <p>TTD: <span id="ttd-asesor-container">-</span></p>
-                                <p id="tanggal-ttd-asesor">Tanggal TTD Asesor</p>
+                                <span id="ttd-asesor-container">-</span></p>
+                                <p class="text-xs text-gray-600" id="tanggal-ttd-asesor">-</p>
                             </div>
                         </div>
                         <div>
-                            <p class="text-sm">Tanda Tangan Asesi</p>
+                            <p class="text-sm font-semibold">Tanda Tangan Asesi</p>
                             <div class="flex items-center space-x-2 mt-2">
                                 <input type="checkbox" id="approve-pemohon" class="h-4 w-4 text-blue-600 border-gray-300 rounded" onchange="handleAsesiSignature(this)">
                                 <label for="approve-pemohon" class="text-sm">Saya selaku asesi menyetujui data ini</label>
                             </div>
                             <div class="mt-2">
-                                <p>TTD: <span id="ttd-asesi-container">-</span></p>
-                                <p id="tanggal-ttd-asesi">Tanggal TTD Asesi</p>
+                                <span id="ttd-asesi-container">-</span></p>
+                                <p class="text-xs text-gray-600" id="tanggal-ttd-asesi">-</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="flex justify-end mt-4">
-                        <button id="save-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700" onclick="saveAk01Asesi()">SAVE</button>
+                        <button id="save-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200" onclick="saveAk01Asesi()">
+                            <span id="save-btn-text">SAVE</span>
+                            <div id="save-btn-loading" class="hidden animate-spin rounded-full h-4 w-4 border-b-2 border-white ml-2"></div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -130,8 +138,103 @@
     </div>
 </div>
 
+<!-- Modal Konfirmasi Tanda Tangan -->
+<div id="signature-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+        <div class="p-6">
+            <!-- Header Modal -->
+            <div class="flex items-center mb-4">
+                <div class="rounded-full bg-yellow-100 p-3 mr-3">
+                    <svg class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Tanda Tangan Digital</h3>
+            </div>
+
+            <!-- Content Modal -->
+            <div class="mb-6">
+                <p class="text-gray-700 mb-4">
+                    Anda akan menandatangani formulir <strong>FR.AK-01 Permohonan Sertifikasi Kompetensi</strong> secara digital.
+                </p>
+
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                    <div class="flex">
+                        <svg class="h-5 w-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                            <h4 class="text-sm font-medium text-red-800 mb-1">Perhatian Penting:</h4>
+                            <p class="text-sm text-red-700">
+                                Setelah menandatangani, Anda <strong>tidak dapat mengubah</strong> atau membatalkan persetujuan ini. Tanda tangan digital memiliki kekuatan hukum yang sama dengan tanda tangan manual.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-start">
+                        <svg class="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-sm text-gray-600">Saya telah membaca dan memahami isi formulir</p>
+                    </div>
+                    <div class="flex items-start">
+                        <svg class="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-sm text-gray-600">Saya menyetujui pelaksanaan asesmen sesuai ketentuan</p>
+                    </div>
+                    <div class="flex items-start">
+                        <svg class="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-sm text-gray-600">Saya memahami hak dan prosedur banding</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-signature" type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+                    Batal
+                </button>
+                <button id="confirm-signature" type="button" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 flex items-center">
+                    <span id="confirm-signature-text">Ya, Tandatangani</span>
+                    <div id="confirm-signature-loading" class="hidden animate-spin rounded-full h-4 w-4 border-b-2 border-white ml-2"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sukses -->
+<div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+        <div class="p-6 text-center">
+            <!-- Icon Success -->
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+
+            <!-- Content -->
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Berhasil Ditandatangani!</h3>
+            <p class="text-gray-600 mb-6">
+                Formulir FR.AK-01 telah berhasil ditandatangani dan disimpan. Tanda tangan digital Anda telah terekam dalam sistem.
+            </p>
+
+            <!-- Button -->
+            <button id="close-success-modal" type="button" class="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
-// Get user data from Laravel
+// Get user data from Laravel with proper error handling
 const userData = {
     id_asesi: '{{ Auth::user()->asesi->id_asesi ?? "" }}',
     id_asesor: '{{ Auth::user()->asesi->rincianAsesmen->id_asesor ?? "" }}',
@@ -140,79 +243,157 @@ const userData = {
     csrfToken: '{{ csrf_token() }}'
 };
 
-console.log('User data:', userData); // Debug log
-
 let currentAk01Data = null;
+let isProcessing = false;
+
+// Debug logging
+console.log('AK01 Form - User Data:', {
+    id_asesi: userData.id_asesi,
+    id_asesor: userData.id_asesor,
+    apiUrl: userData.apiUrl,
+    apiKey: userData.apiKey ? 'Present' : 'Missing',
+    csrfToken: userData.csrfToken ? 'Present' : 'Missing'
+});
 
 document.addEventListener('DOMContentLoaded', function() {
+    initializeForm();
+    initializeModals();
+});
+
+function initializeForm() {
     // Validate required data
     if (!userData.id_asesi) {
-        showError('ID Asesi tidak ditemukan');
+        showError('ID Asesi tidak ditemukan. Pastikan Anda sudah login sebagai asesi.');
         return;
     }
 
     if (!userData.id_asesor) {
-        showError('ID Asesor tidak ditemukan');
+        showError('ID Asesor tidak ditemukan. Pastikan Anda sudah memiliki asesor yang ditugaskan.');
         return;
     }
 
+    if (!userData.apiKey) {
+        showError('API Key tidak dikonfigurasi. Hubungi administrator sistem.');
+        return;
+    }
+
+    // Load initial data
     loadAk01Data(userData.id_asesi);
-});
+}
+
+function initializeModals() {
+    // Modal event listeners
+    const signatureModal = document.getElementById('signature-modal');
+    const successModal = document.getElementById('success-modal');
+    const cancelBtn = document.getElementById('cancel-signature');
+    const confirmBtn = document.getElementById('confirm-signature');
+    const closeSuccessBtn = document.getElementById('close-success-modal');
+
+    // Cancel signature
+    cancelBtn.addEventListener('click', function() {
+        hideSignatureModal();
+        // Reset checkbox
+        const checkbox = document.getElementById('approve-pemohon');
+        checkbox.checked = false;
+        checkbox.disabled = false;
+        isProcessing = false;
+    });
+
+    // Confirm signature
+    confirmBtn.addEventListener('click', async function() {
+        await processSignature();
+    });
+
+    // Close success modal
+    closeSuccessBtn.addEventListener('click', function() {
+        hideSuccessModal();
+    });
+
+    // Close modal when clicking outside
+    signatureModal.addEventListener('click', function(e) {
+        if (e.target === signatureModal) {
+            cancelBtn.click();
+        }
+    });
+
+    successModal.addEventListener('click', function(e) {
+        if (e.target === successModal) {
+            closeSuccessBtn.click();
+        }
+    });
+
+    // Escape key to close modals
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (!signatureModal.classList.contains('hidden')) {
+                cancelBtn.click();
+            }
+            if (!successModal.classList.contains('hidden')) {
+                closeSuccessBtn.click();
+            }
+        }
+    });
+}
 
 async function loadAk01Data(idAsesi) {
     try {
-        console.log('Loading AK01 data for:', idAsesi);
-        console.log('API URL:', userData.apiUrl);
-        console.log('API Key available:', !!userData.apiKey);
-        console.log('CSRF Token available:', !!userData.csrfToken);
+        showLoading(true);
+        hideError();
 
-        // Construct the full URL
-        const apiUrl = `{{ url('/api/v1/asesmen/ak01') }}/${idAsesi}`;
-        console.log('Full API URL:', apiUrl);
+        console.log('Loading AK01 data for asesi:', idAsesi);
+
+        // Construct the API URL
+        const apiUrl = `${userData.apiUrl}/api/v1/asesmen/ak01/${idAsesi}`;
+        console.log('GET API URL:', apiUrl);
+
+        // Prepare headers
+        const headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'API-KEY': userData.apiKey,
+            'X-CSRF-TOKEN': userData.csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        };
+
+        console.log('Request headers:', headers);
 
         const response = await fetch(apiUrl, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'API_KEY': userData.apiKey,
-                'X-CSRF-TOKEN': userData.csrfToken
-            }
+            headers: headers
         });
 
-        console.log('Response status:', response.status);
-        console.log('Response statusText:', response.statusText);
+        console.log('GET Response status:', response.status);
+        console.log('GET Response headers:', Object.fromEntries(response.headers.entries()));
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.log('Error response body:', errorText);
+            console.error('GET Error response body:', errorText);
 
             let errorData;
             try {
                 errorData = JSON.parse(errorText);
-                console.log('Parsed error data:', errorData);
             } catch (e) {
-                console.log('Error response is not JSON:', errorText);
+                errorData = { message: errorText };
             }
 
-            throw new Error(`HTTP ${response.status}: ${errorData?.message || errorText}`);
+            throw new Error(`HTTP ${response.status}: ${errorData.message || errorText}`);
         }
 
         const data = await response.json();
-        console.log('Response data:', data);
+        console.log('GET Response data:', data);
 
         if (data.status === 'success') {
             currentAk01Data = data.data;
             displayAk01Data(data.data);
+            showMainContent();
         } else {
             throw new Error(data.message || 'Gagal memuat data');
         }
     } catch (error) {
         console.error('Error loading AK01 data:', error);
-        console.error('Error stack:', error.stack);
         showError('Gagal memuat data: ' + error.message);
     } finally {
-        hideLoading();
+        showLoading(false);
     }
 }
 
@@ -220,13 +401,13 @@ function displayAk01Data(data) {
     const { general_info, ak01, record_exists } = data;
 
     // Display general information
-    document.getElementById('judul-skema').textContent = general_info.judul_skema || '-';
-    document.getElementById('kode-skema').textContent = general_info.kode_skema || '-';
-    document.getElementById('nama-tuk').textContent = general_info.nama_tuk || '-';
-    document.getElementById('nama-asesor').textContent = general_info.nama_asesor || '-';
-    document.getElementById('nama-asesi').textContent = general_info.nama_asesi || '-';
-    document.getElementById('tanggal-pelaksanaan').textContent = general_info.pelaksanaan_asesmen_disepakati_mulai || '-';
-    document.getElementById('tuk-pelaksanaan').textContent = general_info.nama_tuk || '-';
+    updateElementText('judul-skema', general_info.judul_skema);
+    updateElementText('kode-skema', general_info.kode_skema);
+    updateElementText('nama-tuk', general_info.nama_tuk);
+    updateElementText('nama-asesor', general_info.nama_asesor);
+    updateElementText('nama-asesi', general_info.nama_asesi);
+    updateElementText('tanggal-pelaksanaan', general_info.pelaksanaan_asesmen_disepakati_mulai);
+    updateElementText('tuk-pelaksanaan', general_info.nama_tuk);
 
     if (record_exists && ak01) {
         // Display hasil yang akan dikumpulkan
@@ -236,7 +417,7 @@ function displayAk01Data(data) {
         displaySignatureInfo(ak01);
     } else {
         // Show empty state for hasil items
-        document.getElementById('hasil-items').innerHTML = '<p class="text-gray-500">Belum ada data hasil yang akan dikumpulkan</p>';
+        document.getElementById('hasil-items').innerHTML = '<p class="text-gray-500 italic">Belum ada data hasil yang akan dikumpulkan</p>';
 
         // Initialize empty signature info
         displaySignatureInfo({
@@ -246,223 +427,342 @@ function displayAk01Data(data) {
             waktu_tanda_tangan_asesor: null
         });
     }
-
-    // Show main content
-    document.getElementById('main-content').classList.remove('hidden');
 }
 
 function displayHasilItems(hasilItems) {
     const container = document.getElementById('hasil-items');
 
+    if (!Array.isArray(hasilItems) || hasilItems.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 italic">Belum ada data hasil yang akan dikumpulkan</p>';
+        return;
+    }
+
     let html = '';
     hasilItems.forEach((item, index) => {
         const id = `hasil-item-${index}`;
         html += `
-            <div class="flex items-center mb-2">
-                <input type="checkbox" id="${id}" class="h-4 w-4 text-blue-600 border-gray-300 rounded" checked disabled>
-                <label for="${id}" class="ml-2">${item}</label>
+            <div class="flex items-start mb-2">
+                <input type="checkbox" id="${id}" class="h-4 w-4 text-blue-600 border-gray-300 rounded mt-1" checked disabled>
+                <label for="${id}" class="ml-2 text-sm leading-relaxed">${escapeHtml(item)}</label>
             </div>
         `;
     });
-
-    if (hasilItems.length === 0) {
-        html = '<p class="text-gray-500">Belum ada data hasil yang akan dikumpulkan</p>';
-    }
 
     container.innerHTML = html;
 }
 
 function displaySignatureInfo(ak01) {
     // Asesi signature
-    if (ak01.tanda_tangan_asesi && ak01.tanda_tangan_asesi !== 'null') {
-        // Handle path - API response already includes /storage/ prefix
-        let signaturePath = ak01.tanda_tangan_asesi;
+    const asesiSigned = ak01.tanda_tangan_asesi && ak01.tanda_tangan_asesi !== 'null';
+    const asesiCheckbox = document.getElementById('approve-pemohon');
+    const saveBtn = document.getElementById('save-btn');
 
+    if (asesiSigned) {
+        // Show signature image
         document.getElementById('ttd-asesi-container').innerHTML =
-            `<img src="${signaturePath}" alt="Tanda Tangan Asesi" class="h-12 inline border">`;
-        document.getElementById('approve-pemohon').checked = true;
-        document.getElementById('approve-pemohon').disabled = true;
+            `<img src="${ak01.tanda_tangan_asesi}" alt="Tanda Tangan Asesi" class="h-20 inline border border-gray-300 rounded">`;
 
-        // Update button state for signed form
-        const saveBtn = document.getElementById('save-btn');
+        // Lock checkbox and button
+        asesiCheckbox.checked = true;
+        asesiCheckbox.disabled = true;
+
+        // Update button state
         saveBtn.textContent = 'SUDAH DITANDATANGANI';
         saveBtn.disabled = true;
         saveBtn.classList.remove('bg-blue-500', 'hover:bg-blue-700');
         saveBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
 
-        console.log('Asesi signature found and form locked');
+        console.log('Form locked - Asesi has already signed');
     } else {
-        document.getElementById('ttd-asesi-container').textContent = 'Belum ditandatangani';
-        document.getElementById('approve-pemohon').checked = false;
-        document.getElementById('approve-pemohon').disabled = false;
+        // Reset signature display
+        document.getElementById('ttd-asesi-container').innerHTML = '<span class="text-gray-500 italic">Belum ditandatangani</span>';
 
-        // Reset button state for unsigned form
-        const saveBtn = document.getElementById('save-btn');
-        saveBtn.textContent = 'SAVE';
+        // Enable checkbox and button
+        asesiCheckbox.checked = false;
+        asesiCheckbox.disabled = false;
+
+        // Reset button state
+        document.getElementById('save-btn-text').textContent = 'SAVE';
         saveBtn.disabled = false;
         saveBtn.classList.add('bg-blue-500', 'hover:bg-blue-700');
         saveBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
 
-        console.log('Asesi signature not found, form available for signing');
+        console.log('Form available - Asesi can sign');
     }
 
-    // Display signature timestamp - handle both null and valid timestamps
-    let displayTimeAsesi = ak01.waktu_tanda_tangan_asesi;
-    if (!displayTimeAsesi || displayTimeAsesi === 'null') {
-        displayTimeAsesi = '-';
-    }
-    document.getElementById('tanggal-ttd-asesi').textContent = displayTimeAsesi;
+    // Display asesi signature timestamp
+    updateElementText('tanggal-ttd-asesi', ak01.waktu_tanda_tangan_asesi || '-');
 
     // Asesor signature
     if (ak01.tanda_tangan_asesor && ak01.tanda_tangan_asesor !== 'null') {
-        // Handle path - API response already includes /storage/ prefix
-        let asesorSignaturePath = ak01.tanda_tangan_asesor;
-
         document.getElementById('ttd-asesor-container').innerHTML =
-            `<img src="${asesorSignaturePath}" alt="Tanda Tangan Asesor" class="h-12 inline border">`;
+            `<img src="${ak01.tanda_tangan_asesor}" alt="Tanda Tangan Asesor" class="h-20 inline border border-gray-300 rounded">`;
     } else {
-        document.getElementById('ttd-asesor-container').textContent = 'Belum ditandatangani';
+        document.getElementById('ttd-asesor-container').innerHTML = '<span class="text-gray-500 italic">Belum ditandatangani</span>';
     }
 
     // Display asesor signature timestamp
-    let displayTimeAsesor = ak01.waktu_tanda_tangan_asesor;
-    if (!displayTimeAsesor || displayTimeAsesor === 'null') {
-        displayTimeAsesor = '-';
-    }
-    document.getElementById('tanggal-ttd-asesor').textContent = displayTimeAsesor;
+    updateElementText('tanggal-ttd-asesor', ak01.waktu_tanda_tangan_asesor || '-');
 }
 
 async function handleAsesiSignature(checkbox) {
+    if (isProcessing) {
+        checkbox.checked = !checkbox.checked;
+        return;
+    }
+
     if (checkbox.checked) {
-        const confirmSign = confirm('Apakah Anda yakin ingin menandatangani formulir AK01 ini?');
-        if (!confirmSign) {
-            checkbox.checked = false;
-            return;
-        }
+        // Show signature confirmation modal
+        showSignatureModal();
+    }
+}
 
-        // Disable checkbox during processing
-        checkbox.disabled = true;
+async function processSignature() {
+    if (isProcessing) {
+        return;
+    }
 
-        // Show loading state
-        const saveBtn = document.getElementById('save-btn');
-        saveBtn.textContent = 'Menandatangani...';
-        saveBtn.disabled = true;
+    try {
+        isProcessing = true;
 
+        // Update confirm button state
+        const confirmBtn = document.getElementById('confirm-signature');
+        const confirmBtnText = document.getElementById('confirm-signature-text');
+        const confirmBtnLoading = document.getElementById('confirm-signature-loading');
+
+        confirmBtn.disabled = true;
+        confirmBtnText.textContent = 'Menandatangani...';
+        confirmBtnLoading.classList.remove('hidden');
+
+        // Process the signature
         await saveAk01Asesi(true);
+
+        // Hide signature modal and show success modal
+        hideSignatureModal();
+        showSuccessModal();
+
+    } catch (error) {
+        console.error('Error processing signature:', error);
+
+        // Reset checkbox if error
+        const checkbox = document.getElementById('approve-pemohon');
+        checkbox.checked = false;
+        checkbox.disabled = false;
+
+        // Hide modal and show error
+        hideSignatureModal();
+        showError('Gagal memproses tanda tangan: ' + error.message);
+    } finally {
+        // Reset confirm button state
+        const confirmBtn = document.getElementById('confirm-signature');
+        const confirmBtnText = document.getElementById('confirm-signature-text');
+        const confirmBtnLoading = document.getElementById('confirm-signature-loading');
+
+        confirmBtn.disabled = false;
+        confirmBtnText.textContent = 'Ya, Tandatangani';
+        confirmBtnLoading.classList.add('hidden');
+
+        isProcessing = false;
     }
 }
 
 async function saveAk01Asesi(isSigning = false) {
+    if (isProcessing && !isSigning) {
+        return;
+    }
+
     try {
+        isProcessing = true;
+
+        // Update button state if not from modal
+        if (!isSigning) {
+            const saveBtn = document.getElementById('save-btn');
+            const saveBtnText = document.getElementById('save-btn-text');
+            const saveBtnLoading = document.getElementById('save-btn-loading');
+
+            saveBtn.disabled = true;
+            saveBtnText.textContent = 'Menyimpan...';
+            saveBtnLoading.classList.remove('hidden');
+        }
+
+        // Prepare request data
         const requestData = {
             id_asesi: userData.id_asesi,
             id_asesor: userData.id_asesor,
             is_signing: isSigning
         };
 
-        console.log('Saving AK01 data:', requestData);
+        console.log('POST Request data:', requestData);
 
-        // Construct the full URL
-        const saveUrl = `{{ url('/api/v1/asesmen/ak01/asesi/save') }}`;
-        console.log('Save URL:', saveUrl);
+        // Construct the API URL
+        const saveUrl = `${userData.apiUrl}/api/v1/asesmen/ak01/asesi/save`;
+        console.log('POST API URL:', saveUrl);
+
+        // Prepare headers
+        const headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'API-KEY': userData.apiKey,
+            'X-CSRF-TOKEN': userData.csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        };
+
+        console.log('POST Request headers:', headers);
 
         const response = await fetch(saveUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'API_KEY': userData.apiKey,
-                'X-CSRF-TOKEN': userData.csrfToken
-            },
+            headers: headers,
             body: JSON.stringify(requestData)
         });
 
-        console.log('Save response status:', response.status);
-        console.log('Save response statusText:', response.statusText);
-
-        // Log the request body that was sent
-        console.log('Request body sent:', JSON.stringify(requestData, null, 2));
+        console.log('POST Response status:', response.status);
+        console.log('POST Response headers:', Object.fromEntries(response.headers.entries()));
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.log('Save error response body:', errorText);
+            console.error('POST Error response body:', errorText);
 
             let errorData;
             try {
                 errorData = JSON.parse(errorText);
-                console.log('Parsed save error data:', errorData);
             } catch (e) {
-                console.log('Save error response is not JSON:', errorText);
+                errorData = { message: errorText };
             }
 
-            throw new Error(`HTTP ${response.status}: ${errorData?.message || errorText}`);
+            throw new Error(`HTTP ${response.status}: ${errorData.message || errorText}`);
         }
 
         const data = await response.json();
-        console.log('Save response data:', data);
+        console.log('POST Response data:', data);
 
         if (data.status === 'success') {
             if (isSigning) {
-                alert('Formulir AK01 berhasil ditandatangani dan disimpan!');
-
-                // Update display with current timestamp
-                const now = new Date();
-                const jakartaTime = new Date(now.getTime() + (7 * 60 * 60 * 1000)); // UTC+7
-                const displayTime = jakartaTime.toLocaleDateString('id-ID', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric'
-                }).replace(/\//g, '-') + ' ' +
-                jakartaTime.toLocaleTimeString('id-ID', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                }) + ' WIB';
-
-                document.getElementById('tanggal-ttd-asesi').textContent = displayTime;
-                console.log('Updated display with timestamp:', displayTime);
+                console.log('Form signed successfully');
             } else {
-                alert(data.message || 'Data berhasil disimpan');
+                console.log('Form saved successfully');
             }
 
-            // Reload data to reflect changes and show signature
+            // Reload data to reflect changes
             setTimeout(async () => {
                 await loadAk01Data(userData.id_asesi);
-            }, 1000); // Wait 1 second before reloading to ensure backend processing is complete
+            }, 1000);
         } else {
             throw new Error(data.message || 'Gagal menyimpan data');
         }
     } catch (error) {
         console.error('Error saving AK01 data:', error);
-        console.error('Error stack:', error.stack);
-        alert('Gagal menyimpan data: ' + error.message);
 
-        // Reset checkbox if error during signing
-        if (isSigning) {
-            const checkbox = document.getElementById('approve-pemohon');
-            checkbox.checked = false;
-            checkbox.disabled = false;
+        if (!isSigning) {
+            showError('Gagal menyimpan data: ' + error.message);
 
             // Reset button state
             const saveBtn = document.getElementById('save-btn');
-            saveBtn.textContent = 'SAVE';
+            const saveBtnText = document.getElementById('save-btn-text');
+            const saveBtnLoading = document.getElementById('save-btn-loading');
+
+            saveBtnText.textContent = 'SAVE';
             saveBtn.disabled = false;
+            saveBtnLoading.classList.add('hidden');
             saveBtn.classList.add('bg-blue-500', 'hover:bg-blue-700');
             saveBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
         }
+
+        throw error; // Re-throw for modal handling
     }
+}
+
+// Modal control functions
+function showSignatureModal() {
+    const modal = document.getElementById('signature-modal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    // Force center positioning
+    setTimeout(() => {
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+    }, 10);
+}
+
+function hideSignatureModal() {
+    const modal = document.getElementById('signature-modal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    modal.style.display = '';
+}
+
+function showSuccessModal() {
+    const modal = document.getElementById('success-modal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    // Force center positioning
+    setTimeout(() => {
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+    }, 10);
+}
+
+function hideSuccessModal() {
+    const modal = document.getElementById('success-modal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    modal.style.display = '';
+}
+
+// Utility functions
+function updateElementText(elementId, text) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = text || '-';
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function showError(message) {
     document.getElementById('error-text').textContent = message;
     document.getElementById('error-message').classList.remove('hidden');
-    hideLoading();
 }
 
-function hideLoading() {
-    document.getElementById('loading').style.display = 'none';
+function hideError() {
+    document.getElementById('error-message').classList.add('hidden');
 }
+
+function showLoading(show) {
+    const loadingEl = document.getElementById('loading');
+    if (show) {
+        loadingEl.classList.remove('hidden');
+        loadingEl.style.display = 'block';
+    } else {
+        loadingEl.classList.add('hidden');
+        loadingEl.style.display = 'none';
+    }
+}
+
+function showMainContent() {
+    document.getElementById('main-content').classList.remove('hidden');
+}
+
+function retryLoad() {
+    hideError();
+    loadAk01Data(userData.id_asesi);
+}
+
+// Global error handlers
+window.addEventListener('error', function(e) {
+    console.error('Global error:', e.error);
+});
+
+window.addEventListener('unhandledrejection', function(e) {
+    console.error('Unhandled promise rejection:', e.reason);
+});
 </script>
 
 @endsection

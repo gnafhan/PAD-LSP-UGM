@@ -685,6 +685,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const apiKey = "{{ env('API_KEY') }}";
     const asesiId = @json($asesi->id_asesi ?? null);
 
+    // Get asesor ID from PHP data
+    const asesorId = @json($asesor->id_asesor ?? null);
+
     // CSRF token
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
@@ -696,6 +699,14 @@ document.addEventListener('DOMContentLoaded', function() {
         'X-CSRF-TOKEN': csrfToken || '',
         'X-Requested-With': 'XMLHttpRequest'
     };
+
+    // Initialize debug info
+    console.log('Debug Info:', {
+        asesiId: asesiId,
+        asesorId: asesorId,
+        csrfToken: csrfToken ? 'Present' : 'Missing',
+        apiKey: apiKey ? 'Present' : 'Missing'
+    });
 
     if (!asesiId) {
         showError('ID Asesi tidak ditemukan');
@@ -721,13 +732,105 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     ];
 
+    // Load asesor profile photo
+    function loadAsesorPhoto() {
+        if (!asesorId) {
+            console.log('Asesor ID tidak tersedia, menggunakan foto default');
+            showDefaultAsesorPhoto();
+            return;
+        }
+
+        const asesorApiUrl = `{{ url('/api/v1/asesor/biodata') }}/${asesorId}`;
+
+        console.log('Loading asesor photo from:', asesorApiUrl);
+
+        fetch(asesorApiUrl, {
+            method: 'GET',
+            headers: apiHeaders
+        })
+        .then(response => {
+            console.log('Asesor Photo Response Status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('Asesor Photo Result:', result);
+
+            if (result.success && result.data) {
+                updateAsesorPhoto(result.data);
+            } else {
+                console.warn('Gagal memuat foto asesor:', result.message || 'Data tidak tersedia');
+                showDefaultAsesorPhoto();
+            }
+        })
+        .catch(error => {
+            console.error('Error loading asesor photo:', error);
+            showDefaultAsesorPhoto();
+        });
+    }
+
+    // Update asesor photo display
+    function updateAsesorPhoto(asesorData) {
+        // Find the asesor photo container in the right column
+        const asesorPhotoContainer = document.querySelector('.xl\\:col-span-4 .h-24.w-24');
+
+        if (!asesorPhotoContainer) {
+            console.warn('Asesor photo container tidak ditemukan');
+            return;
+        }
+
+        if (asesorData.foto_asesor_url &&
+            asesorData.foto_asesor_url !== '/storage/data_asesor' &&
+            asesorData.foto_asesor_url !== '/storage/data_asesor/' &&
+            asesorData.foto_asesor_url !== 'null') {
+
+            console.log('URL foto asesor ditemukan:', asesorData.foto_asesor_url);
+
+            // Create img element for asesor photo
+            const imgElement = document.createElement('img');
+            imgElement.src = "{{ url('') }}" + asesorData.foto_asesor_url;
+            imgElement.alt = 'Foto Asesor';
+            imgElement.className = 'h-24 w-24 object-cover rounded-full ring-4 ring-green-100';
+
+            // Handle image load success
+            imgElement.onload = function() {
+                console.log('Foto asesor berhasil dimuat:', imgElement.src);
+                asesorPhotoContainer.innerHTML = '';
+                asesorPhotoContainer.appendChild(imgElement);
+            };
+
+            // Handle image load error - fallback to default
+            imgElement.onerror = function() {
+                console.log('Gagal memuat foto asesor, menggunakan default');
+                showDefaultAsesorPhoto();
+            };
+        } else {
+            console.log('Foto asesor tidak tersedia atau tidak valid:', asesorData.foto_asesor_url);
+            showDefaultAsesorPhoto();
+        }
+    }
+
+    // Show default asesor photo
+    function showDefaultAsesorPhoto() {
+        const asesorPhotoContainer = document.querySelector('.xl\\:col-span-4 .h-24.w-24');
+        if (asesorPhotoContainer) {
+            asesorPhotoContainer.innerHTML = `
+                <svg class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+            `;
+        }
+    }
+
     // Load progress data
     function loadProgressData() {
-        const apiUrl = `{{ url('/api/v1/asesor/progressAsesi') }}/${asesiId}`;
+        const progressApiUrl = `{{ url('/api/v1/asesor/progressAsesi') }}/${asesiId}`;
 
-        console.log('Loading progress from:', apiUrl);
+        console.log('Loading progress from:', progressApiUrl);
 
-        fetch(apiUrl, {
+        fetch(progressApiUrl, {
             method: 'GET',
             headers: apiHeaders
         })
@@ -745,7 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateProgressDisplay(result.data);
                 hideLoading();
             } else {
-                showError(result.message || 'Gagal memuat data progres');
+                throw new Error(result.message || 'Gagal memuat data progres');
             }
         })
         .catch(error => {
@@ -756,14 +859,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update progress display
     function updateProgressDisplay(data) {
+        if (!data || !data.progress_asesmen || !data.progress_summary) {
+            console.error('Data progress tidak lengkap:', data);
+            showError('Data progress tidak lengkap');
+            return;
+        }
+
         const progressAsesmen = data.progress_asesmen;
         const progressSummary = data.progress_summary;
 
-        // Update summary
-        document.getElementById('progressPercentage').textContent = progressSummary.progress_percentage + '%';
-        document.getElementById('progressStepsCount').textContent =
-            `${progressSummary.completed_steps} dari ${progressSummary.total_steps} langkah`;
-        document.getElementById('progressBar').style.width = progressSummary.progress_percentage + '%';
+        // Update summary elements
+        const progressPercentageEl = document.getElementById('progressPercentage');
+        const progressStepsCountEl = document.getElementById('progressStepsCount');
+        const progressBarEl = document.getElementById('progressBar');
+
+        if (progressPercentageEl) {
+            progressPercentageEl.textContent = (progressSummary.progress_percentage || 0) + '%';
+        }
+
+        if (progressStepsCountEl) {
+            progressStepsCountEl.textContent =
+                `${progressSummary.completed_steps || 0} dari ${progressSummary.total_steps || 0} langkah`;
+        }
+
+        if (progressBarEl) {
+            progressBarEl.style.width = (progressSummary.progress_percentage || 0) + '%';
+        }
 
         // Update progress steps navigator
         updateProgressSteps(progressAsesmen);
@@ -774,8 +895,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const dateElement = document.getElementById(`date-${field}`);
 
             if (statusElement) {
-                const isCompleted = progressAsesmen[field].completed;
-                const completedAt = progressAsesmen[field].completed_at;
+                const fieldData = progressAsesmen[field];
+                const isCompleted = fieldData && fieldData.completed === true;
+                const completedAt = fieldData && fieldData.completed_at ? fieldData.completed_at : null;
 
                 if (isCompleted) {
                     statusElement.innerHTML = `
@@ -800,25 +922,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+
+        console.log('Progress display updated successfully');
     }
 
     // Update progress steps navigator
     function updateProgressSteps(progressAsesmen) {
         const stepsContainer = document.getElementById('progressSteps');
+
+        if (!stepsContainer) {
+            console.warn('Progress steps container tidak ditemukan');
+            return;
+        }
+
         let stepsHtml = '';
 
         progressSteps.forEach((step, index) => {
             // Check if step is completed
-            const stepCompleted = step.fields.every(field =>
-                progressAsesmen[field] && progressAsesmen[field].completed
-            );
+            const stepCompleted = step.fields.every(field => {
+                const fieldData = progressAsesmen[field];
+                return fieldData && fieldData.completed === true;
+            });
 
             // Determine if step is active (current step or completed)
             let stepActive = false;
             for (let i = 0; i <= index; i++) {
-                const prevStepCompleted = progressSteps[i].fields.every(field =>
-                    progressAsesmen[field] && progressAsesmen[field].completed
-                );
+                const prevStepCompleted = progressSteps[i].fields.every(field => {
+                    const fieldData = progressAsesmen[field];
+                    return fieldData && fieldData.completed === true;
+                });
                 if (!prevStepCompleted) {
                     stepActive = (i === index);
                     break;
@@ -832,7 +964,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             stepsHtml += `
                 <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 rounded-full ${stepClass} flex items-center justify-center">${step.id}</div>
+                    <div class="w-8 h-8 rounded-full ${stepClass} flex items-center justify-center text-sm font-semibold">${step.id}</div>
                     <span class="font-medium ${textClass}">${step.name}</span>
                 </div>
             `;
@@ -849,57 +981,124 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         stepsContainer.innerHTML = stepsHtml;
+        console.log('Progress steps updated');
     }
 
     // Utility functions
     function showError(message) {
         console.error('Error:', message);
-        document.getElementById('progressErrorText').textContent = message;
-        document.getElementById('progressError').classList.remove('hidden');
-        document.getElementById('progressLoading').classList.add('hidden');
-        document.getElementById('progressContent').classList.add('hidden');
+
+        const errorTextEl = document.getElementById('progressErrorText');
+        const errorEl = document.getElementById('progressError');
+        const loadingEl = document.getElementById('progressLoading');
+        const contentEl = document.getElementById('progressContent');
+
+        if (errorTextEl) errorTextEl.textContent = message;
+        if (errorEl) errorEl.classList.remove('hidden');
+        if (loadingEl) loadingEl.classList.add('hidden');
+        if (contentEl) contentEl.classList.add('hidden');
     }
 
     function hideLoading() {
-        document.getElementById('progressLoading').classList.add('hidden');
-        document.getElementById('progressError').classList.add('hidden');
-        document.getElementById('progressContent').classList.remove('hidden');
+        const loadingEl = document.getElementById('progressLoading');
+        const errorEl = document.getElementById('progressError');
+        const contentEl = document.getElementById('progressContent');
+
+        if (loadingEl) loadingEl.classList.add('hidden');
+        if (errorEl) errorEl.classList.add('hidden');
+        if (contentEl) contentEl.classList.remove('hidden');
     }
 
-    // Initialize
-    console.log('Debug Info:', {
-        asesiId: asesiId,
-        csrfToken: csrfToken ? 'Present' : 'Missing',
-        apiKey: apiKey ? 'Present' : 'Missing'
+    // Initialize data loading
+    function initializeData() {
+        console.log('Initializing data loading...');
+
+        // Load progress data
+        loadProgressData();
+
+        // Load asesor photo if asesor ID is available
+        if (asesorId) {
+            loadAsesorPhoto();
+        } else {
+            console.log('Asesor ID tidak tersedia, menggunakan foto default');
+            showDefaultAsesorPhoto();
+        }
+    }
+
+    // Start initialization
+    initializeData();
+
+    // Add error handler for uncaught errors
+    window.addEventListener('error', function(e) {
+        console.error('Uncaught error:', e.error);
     });
 
-    // Load data on page load
-    loadProgressData();
+    // Add unhandled promise rejection handler
+    window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
+    });
 });
 
+// Global function for toggling elements (accordion functionality)
 function toggleElemen(id) {
     const element = document.getElementById(id);
     const chevron = document.getElementById('chevron-' + id);
 
+    if (!element || !chevron) {
+        console.warn(`Element with ID ${id} or chevron not found`);
+        return;
+    }
+
     if (element.classList.contains('hidden')) {
         element.classList.remove('hidden');
         chevron.classList.add('rotate-180');
+        console.log(`Expanded element: ${id}`);
     } else {
         element.classList.add('hidden');
         chevron.classList.remove('rotate-180');
+        console.log(`Collapsed element: ${id}`);
     }
 }
-  function toggleElemen(id) {
-    const element = document.getElementById(id);
-    const chevron = document.getElementById('chevron-' + id);
 
-    if (element.classList.contains('hidden')) {
-      element.classList.remove('hidden');
-      chevron.classList.add('rotate-180');
-    } else {
-      element.classList.add('hidden');
-      chevron.classList.remove('rotate-180');
-    }
-  }
+// Global function for manual data refresh (can be called from console)
+function refreshDashboardData() {
+    console.log('Manually refreshing dashboard data...');
+
+    // Show loading
+    const loadingEl = document.getElementById('progressLoading');
+    const contentEl = document.getElementById('progressContent');
+    const errorEl = document.getElementById('progressError');
+
+    if (loadingEl) loadingEl.classList.remove('hidden');
+    if (contentEl) contentEl.classList.add('hidden');
+    if (errorEl) errorEl.classList.add('hidden');
+
+    // Trigger data reload
+    const event = new Event('DOMContentLoaded');
+    document.dispatchEvent(event);
+}
+
+// Debug function to check current state
+function debugDashboard() {
+    console.log('=== Dashboard Debug Info ===');
+    console.log('API Key:', "{{ env('API_KEY') }}" ? 'Present' : 'Missing');
+    console.log('Asesi ID:', @json($asesi->id_asesi ?? null));
+    console.log('Asesor ID:', @json($asesor->id_asesor ?? null));
+    console.log('CSRF Token:', document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ? 'Present' : 'Missing');
+
+    // Check elements
+    console.log('Progress Elements:');
+    console.log('- Loading:', document.getElementById('progressLoading') ? 'Found' : 'Missing');
+    console.log('- Content:', document.getElementById('progressContent') ? 'Found' : 'Missing');
+    console.log('- Error:', document.getElementById('progressError') ? 'Found' : 'Missing');
+    console.log('- Steps Container:', document.getElementById('progressSteps') ? 'Found' : 'Missing');
+
+    console.log('Asesor Photo Container:', document.querySelector('.xl\\:col-span-4 .h-24.w-24') ? 'Found' : 'Missing');
+    console.log('=== End Debug Info ===');
+}
+
+// Export debug function to global scope for console access
+window.debugDashboard = debugDashboard;
+window.refreshDashboardData = refreshDashboardData;
 </script>
 @endsection

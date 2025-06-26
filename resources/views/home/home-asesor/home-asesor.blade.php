@@ -38,44 +38,57 @@
         <!-- Content (hidden until loaded) -->
         <div id="contentState" class="hidden">
             <p class="pb-3 text-lg font-medium text-black">Profile</p>
-            <div class="flex justify-between py-6 px-8 mb-4 bg-bg_dashboard border border-border rounded-2xl">
-                <div class="flex w-fit items-center p-3 gap-2 rounded-full border border-border bg-white">
-                    <div class="relative">
-                        <img id="profilePicture" src="{{ asset('images/default-profile.png') }}" alt="Profile Picture" class="w-40 h-40 object-cover rounded-full">
-                        <div id="profileOverlay" class="absolute inset-0 hidden items-center justify-center bg-gray-800 bg-opacity-70 rounded-full">
-                            <span class="text-white text-center font-medium text-sm px-2">Tidak ada foto</span>
+            <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center py-6 px-4 lg:px-8 mb-4 bg-bg_dashboard border border-border rounded-2xl gap-6 xl:gap-8">
+                <!-- Profile Section -->
+                <div class="flex w-full xl:w-fit items-center p-3 gap-3 lg:gap-4 rounded-full border border-border bg-white shadow-sm">
+                    <div class="relative flex-shrink-0">
+                        <img id="profilePicture"
+                            src="{{ asset('images/default-profile.png') }}"
+                            alt="Profile Picture"
+                            class="w-10 h-10 lg:w-14 lg:h-14 xl:w-20 xl:h-20 2xl:w-24 2xl:h-24 object-cover rounded-full border-2 border-gray-100">
+                        <div id="profileOverlay"
+                            class="absolute inset-0 hidden items-center justify-center bg-gray-800 bg-opacity-70 rounded-full">
+                            <span class="text-white text-center font-medium text-xs lg:text-sm px-2">Tidak ada foto</span>
                         </div>
                     </div>
-                    <div class="font-medium text-black pe-4">
-                        <p id="asesorName">Nama Asesor</p>
-                        <div id="asesorEmail" class="text-sm font-light text-font_desc">Email Asesor</div>
+                    <div class="font-medium text-black min-w-0 flex-1 xl:w-64 2xl:w-80">
+                        <p id="asesorName" class="text-lg lg:text-xl xl:text-2xl font-semibold truncate">Nama Asesor</p>
+                        <div id="asesorEmail" class="text-sm lg:text-base font-light text-font_desc truncate mt-1">Email Asesor</div>
                     </div>
                 </div>
 
-                <div class="flex gap-4 my-4">
-                    <div class="flex w-36 items-center justify-center mx-6 p-2 rounded-2xl border border-border bg-white">
-                        <div class="px-2 text-font_selesai justify-items-center items-center text-black">
-                            <p id="jumlahKompetensiTeknis" class="text-4xl font-semibold">0</p>
-                            <p class="font-medium text-center">Kompetensi Teknis</p>
+                <!-- Statistics Section -->
+                <div class="flex flex-wrap lg:flex-nowrap gap-3 lg:gap-4 xl:gap-6 w-full xl:w-auto justify-center xl:justify-end">
+                    <!-- Kompetensi Teknis Card -->
+                    <div class="flex w-20 lg:w-24 xl:w-24 2xl:w-32 items-center justify-center p-3 lg:p-4 rounded-2xl border border-border bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <div class="text-center">
+                            <p id="jumlahKompetensiTeknis" class="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800 mb-1">0</p>
+                            <p class="text-xs lg:text-sm font-medium text-gray-600 leading-tight">Kompetensi<br>Teknis</p>
                         </div>
                     </div>
-                    <div class="flex w-32 items-center justify-center p-2 rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(139,92,246,0.15)]">
-                      <div class="px-2 text-font_selesai justify-items-center items-center text-font_status">
-                        <p id="jumlahAsesi" class="text-4xl font-medium">0</p>
-                        <p class="font-medium">Asesi</p>
-                      </div>
+
+                    <!-- Asesi Card -->
+                    <div class="flex w-20 lg:w-24 xl:w-24 2xl:w-32 items-center justify-center p-3 lg:p-4 rounded-2xl border border-border bg-gradient-to-br from-white to-purple-50 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <div class="text-center">
+                            <p id="jumlahAsesi" class="text-2xl lg:text-3xl xl:text-4xl font-bold text-purple-700 mb-1">0</p>
+                            <p class="text-xs lg:text-sm font-medium text-purple-600">Asesi</p>
+                        </div>
                     </div>
-                    <div class="flex w-32 items-center justify-center rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(59,130,246,0.15)]">
-                      <div class="px-2 text-font_progress justify-items-center items-center text-font_status">
-                        <p id="jumlahEvent" class="text-4xl font-medium">0</p>
-                        <p class="font-medium">Event</p>
-                      </div>
+
+                    <!-- Event Card -->
+                    <div class="flex w-20 lg:w-24 xl:w-24 2xl:w-32 items-center justify-center p-3 lg:p-4 rounded-2xl border border-border bg-gradient-to-br from-white to-blue-50 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <div class="text-center">
+                            <p id="jumlahEvent" class="text-2xl lg:text-3xl xl:text-4xl font-bold text-blue-700 mb-1">0</p>
+                            <p class="text-xs lg:text-sm font-medium text-blue-600">Event</p>
+                        </div>
                     </div>
-                    <div class="flex w-32 items-center justify-center rounded-2xl border border-border bg-gradient-to-r from-white to-[rgba(139,92,246,0.15)]">
-                      <div class="px-2 text-font_pending justify-items-center items-center text-font_status">
-                        <p id="jumlahSkema" class="text-4xl font-medium">0</p>
-                        <p class="font-medium">Skema</p>
-                      </div>
+
+                    <!-- Skema Card -->
+                    <div class="flex w-20 lg:w-24 xl:w-24 2xl:w-32 items-center justify-center p-3 lg:p-4 rounded-2xl border border-border bg-gradient-to-br from-white to-indigo-50 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <div class="text-center">
+                            <p id="jumlahSkema" class="text-2xl lg:text-3xl xl:text-4xl font-bold text-indigo-700 mb-1">0</p>
+                            <p class="text-xs lg:text-sm font-medium text-indigo-600">Skema</p>
+                        </div>
                     </div>
                 </div>
             </div>

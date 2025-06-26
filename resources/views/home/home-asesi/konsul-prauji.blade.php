@@ -313,6 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
         apiKey: "{{ env('API_KEY') }}",
         csrfToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
         baseUrl: "{{ url('/api/v1') }}",
+        storageUrl: "{{ url('') }}", // Base URL for storage files
         headers: {}
     };
 
@@ -445,6 +446,31 @@ document.addEventListener('DOMContentLoaded', function () {
         elements.tanggalTandaTanganAsesor.textContent = formattedDate;
     }
 
+    // Function to build proper image URL
+    function buildImageUrl(imagePath) {
+        if (!imagePath || imagePath === 'null' || imagePath === null) {
+            return null;
+        }
+
+        // If already a full URL, return as is
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return imagePath;
+        }
+
+        // If starts with /storage/, use as is with base URL
+        if (imagePath.startsWith('/storage/')) {
+            return config.storageUrl + imagePath;
+        }
+
+        // If starts with storage/ (without leading slash), add base URL with /
+        if (imagePath.startsWith('storage/')) {
+            return config.storageUrl + '/' + imagePath;
+        }
+
+        // For any other path, assume it needs /storage/ prefix
+        return config.storageUrl + '/storage/' + imagePath.replace(/^\//, '');
+    }
+
     // Load consultation data for asesi
     async function loadConsultationData() {
         try {
@@ -505,41 +531,56 @@ document.addEventListener('DOMContentLoaded', function () {
         setTodayDate();
 
         // PENTING: Set state.isFormLocked SEBELUM render checklist
-        state.isFormLocked = konsultasiPraUji.ttd_asesi ? true : false;
+        state.isFormLocked = konsultasiPraUji.tanda_tangan_asesi ? true : false;
 
         console.log('Form lock status:', state.isFormLocked); // Debug log
-        console.log('TTD Asesi value:', konsultasiPraUji.ttd_asesi); // Debug log
+        console.log('TTD Asesi value:', konsultasiPraUji.tanda_tangan_asesi); // Debug log
+        console.log('TTD Asesor value:', konsultasiPraUji.tanda_tangan_asesor); // Debug log
 
         // Render checklist table SETELAH state.isFormLocked diset
         renderChecklistTable();
 
-        // Show tanda tangan if exists and disable form if already signed
-        if (state.isFormLocked) {
-            elements.tandaTanganAsesiPlaceholder.classList.add('hidden');
+        // Handle signatures - UPDATED WITH DYNAMIC URL BUILDING
+        handleSignatures(konsultasiPraUji);
 
-            // Fix the path for ttd_asesi - add /storage/ prefix if not present
-            let ttdAsesiPath = konsultasiPraUji.ttd_asesi;
-            if (ttdAsesiPath && !ttdAsesiPath.startsWith('/storage/') && !ttdAsesiPath.startsWith('http')) {
-                // Remove leading slash if present, then add /storage/
-                ttdAsesiPath = '/storage/' + ttdAsesiPath.replace(/^\//, '');
+        // Show main content
+        document.getElementById('main-content').classList.remove('hidden');
+    }
+
+    // NEW: Enhanced signature handling function
+    function handleSignatures(konsultasiPraUji) {
+        // Handle Asesi Signature
+        if (konsultasiPraUji.tanda_tangan_asesi && konsultasiPraUji.tanda_tangan_asesi !== 'null') {
+            const asesiImageUrl = buildImageUrl(konsultasiPraUji.tanda_tangan_asesi);
+
+            if (asesiImageUrl) {
+                console.log('Displaying asesi signature:', asesiImageUrl);
+                elements.tandaTanganAsesiPlaceholder.classList.add('hidden');
+                elements.tandaTanganAsesi.src = asesiImageUrl;
+                elements.tandaTanganAsesi.classList.remove('hidden');
+
+                // Set timestamp if available
+                if (konsultasiPraUji.waktu_tanda_tangan_asesi) {
+                    elements.tanggalTandaTanganAsesi.textContent = konsultasiPraUji.waktu_tanda_tangan_asesi;
+                }
+
+                // Lock form
+                elements.signingCheckbox.checked = true;
+                elements.signingCheckbox.disabled = true;
+
+                // Update button text and disable
+                elements.submitButton.textContent = 'Sudah Disetujui';
+                elements.submitButton.disabled = true;
+                elements.submitButton.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'hover:from-blue-600', 'hover:to-purple-700');
+                elements.submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+
+                // Add visual indicator that form is locked
+                elements.consultationForm.classList.add('form-locked');
+
+                console.log('Form locked - Asesi signature found');
             }
-
-            elements.tandaTanganAsesi.src = ttdAsesiPath;
-            elements.tandaTanganAsesi.classList.remove('hidden');
-            elements.signingCheckbox.checked = true;
-            elements.signingCheckbox.disabled = true;
-
-            // Update button text and disable
-            elements.submitButton.textContent = 'Sudah Disetujui';
-            elements.submitButton.disabled = true;
-            elements.submitButton.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'hover:from-blue-600', 'hover:to-purple-700');
-            elements.submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
-
-            // Add visual indicator that form is locked
-            elements.consultationForm.classList.add('form-locked');
-
-            console.log('Form locked - disabling all inputs');
         } else {
+            // No asesi signature - show placeholder and enable form
             elements.tandaTanganAsesiPlaceholder.classList.remove('hidden');
             elements.tandaTanganAsesi.classList.add('hidden');
             elements.signingCheckbox.checked = false;
@@ -554,32 +595,36 @@ document.addEventListener('DOMContentLoaded', function () {
             // Remove locked form indicator
             elements.consultationForm.classList.remove('form-locked');
 
-            console.log('Form unlocked - enabling all inputs');
+            console.log('Form unlocked - No asesi signature found');
         }
 
-        // Show asesor signature if exists - apply same fix
-        if (konsultasiPraUji.ttd_asesor && konsultasiPraUji.ttd_asesor !== 'null') {
-            let ttdAsesorPath = konsultasiPraUji.ttd_asesor;
+        // Handle Asesor Signature - UPDATED WITH DYNAMIC URL BUILDING
+        if (konsultasiPraUji.tanda_tangan_asesor && konsultasiPraUji.tanda_tangan_asesor !== 'null') {
+            const asesorImageUrl = buildImageUrl(konsultasiPraUji.tanda_tangan_asesor);
 
-            // Add /storage/ prefix if not present
-            if (ttdAsesorPath && !ttdAsesorPath.startsWith('/storage/') && !ttdAsesorPath.startsWith('http')) {
-                ttdAsesorPath = '/storage/' + ttdAsesorPath.replace(/^\//, '');
+            if (asesorImageUrl) {
+                console.log('Displaying asesor signature:', asesorImageUrl);
+                elements.tandaTanganAsesorPlaceholder.classList.add('hidden');
+                elements.tandaTanganAsesor.src = asesorImageUrl;
+                elements.tandaTanganAsesor.classList.remove('hidden');
+
+                // Set timestamp if available
+                if (konsultasiPraUji.waktu_tanda_tangan_asesor) {
+                    elements.tanggalTandaTanganAsesor.textContent = konsultasiPraUji.waktu_tanda_tangan_asesor;
+                }
+
+                console.log('Asesor signature displayed successfully');
             }
-
-            elements.tandaTanganAsesorPlaceholder.classList.add('hidden');
-            elements.tandaTanganAsesor.src = ttdAsesorPath;
-            elements.tandaTanganAsesor.classList.remove('hidden');
-
-            console.log('Asesor signature path:', ttdAsesorPath); // Debug log
         } else {
+            // No asesor signature - show placeholder
             elements.tandaTanganAsesorPlaceholder.classList.remove('hidden');
             elements.tandaTanganAsesor.classList.add('hidden');
 
-            console.log('No asesor signature found or null'); // Debug log
-        }
+            // Reset timestamp
+            elements.tanggalTandaTanganAsesor.textContent = '';
 
-        // Show main content
-        document.getElementById('main-content').classList.remove('hidden');
+            console.log('No asesor signature found - showing placeholder');
+        }
     }
 
     // Render unit kompetensi table
@@ -711,7 +756,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }, 100);
         }
-}
+    }
 
     // Handle form submission
     async function submitForm(event) {
