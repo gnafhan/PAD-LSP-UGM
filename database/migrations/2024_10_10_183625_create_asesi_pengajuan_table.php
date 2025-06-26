@@ -30,23 +30,24 @@ return new class extends Migration
             $table->string('nomor_skema', 100); //nomorSkemaInput
             $table->string('tujuan_asesmen', 100);
             $table->string('sumber_anggaran', 50)->nullable();
-            $table->string('email', 200);
-            $table->json('file_kelengkapan_pemohon');
+            $table->string('email', 200)->nullable();
+            $table->json('file_kelengkapan_pemohon')->nullable();
             $table->longText('ttd_pemohon');
-            $table->string('status_rekomendasi', 20);
-            $table->string('status_pekerjaan', 20);
+            $table->string('status_rekomendasi', 20)->nullable();
+            $table->string('status_pekerjaan', 20)->nullable();
             $table->string('nama_perusahaan', 100)->nullable();
             $table->string('jabatan', 100)->nullable();
             $table->longText('alamat_perusahaan')->nullable();
             $table->string('no_telp_perusahaan', 20)->nullable();
+            $table->timestamp('waktu_tanda_tangan')->nullable();
+            $table->longText('alasan_penolakan')->nullable();
+            $table->string('id_admin', 20)->nullable();
             $table->timestamps();
-
 
             $table->foreign('id_user')->references('id_user')->on('users')->onDelete('restrict');
             $table->foreign('id_skema')->references('id_skema')->on('skema')->onDelete('restrict');
         });
     }
-
 
     /**
      * Reverse the migrations.

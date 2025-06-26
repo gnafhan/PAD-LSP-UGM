@@ -13,7 +13,7 @@
     </section>
 
     <!-- Apa Itu LSP UGM Section -->
-    <section class="py-16">
+    <section class="py-16 bg-white">
         <div class="container mx-auto text-center">
             <h2 class="text-4xl font-bold text-blue-600">Apa Itu LSP UGM?</h2>
             <p class="text-lg mt-4 text-gray-700 max-w-2xl mx-auto">

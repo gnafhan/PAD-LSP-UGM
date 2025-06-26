@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('no_lisensi_skkn', 200);
             $table->timestamps();
 
-            $table->foreign('id_penanggung_jawab')->references('id_penanggung_jawab')->on('penanggung_jawab')->onDelete('no action');
         });
     }
 
@@ -28,5 +27,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('tuk');
     }
-
 };

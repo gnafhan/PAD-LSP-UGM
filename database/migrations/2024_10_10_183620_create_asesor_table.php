@@ -13,31 +13,31 @@ return new class extends Migration
     {
         Schema::create('asesor', function (Blueprint $table) {
             $table->string('id_asesor', 20)->primary();
-            $table->string('kode_registrasi', 30);
+            $table->string('id_user', 20);
+            $table->string('kode_registrasi', 30)->nullable();
             $table->string('nama_asesor', 100);
-            $table->string('no_sertifikat', 30);
-            $table->string('no_hp', 20);
+            $table->string('no_sertifikat', 30)->nullable();
+            $table->string('no_hp', 20)->nullable();
+            $table->string('no_met', 100)->nullable();
             $table->string('email', 100);
-            $table->longText('alamat');
-            $table->string('bidang', 100); //gausah po ya?
+            $table->longText('alamat')->nullable();
             $table->string('status_asesor', 10);
-            $table->longText('foto_asesor');
-            $table->string('gelar_depan', 60)->nullable();
-            $table->string('gelar_belakang', 60)->nullable();
-            $table->string('no_ktp', 20);
-            $table->string('jenis_kelamin', 10);
-            $table->string('pendidikan_terakhir', 30);
-            $table->string('keahlian', 100);
-            $table->string('tempat_lahir', 20);
-            $table->dateTime('tanggal_lahir');
-            $table->string('kebangsaan', 30);
-            $table->string('no_lisensi', 30);
+            $table->longText('foto_asesor')->nullable();
+            $table->string('no_ktp', 20)->nullable();
+            $table->string('jenis_kelamin', 10)->nullable();
+            $table->string('kebangsaan', 100)->nullable();
+            $table->string('tempat_lahir', 100)->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('provinsi', 100)->nullable();
+            $table->string('kabupaten_kota', 100)->nullable();
+            $table->string('kode_pos', 30)->nullable();
             $table->dateTime('masa_berlaku');
-            $table->string('institusi_asal', 100);
-            $table->string('no_telp_institusi_asal', 20);
-            $table->string('fax_institusi_asal', 20);
-            $table->string('email_institusi_asal', 100);
+            $table->longText('file_sertifikat_asesor')->nullable();
+            $table->json('daftar_bidang_kompetensi')->nullable(); //json
             $table->timestamps();
+
+            $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade');
+
         });
     }
 

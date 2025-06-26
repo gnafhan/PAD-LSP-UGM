@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Website Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Link Font Awesome -->
-    <link rel="stylesheet" href="path/to/your/custom-styles.css"> <!-- Link file CSS custom, jika ada -->
 </head>
 <body>
     <!-- Konten lainnya dari website kamu -->
-    
-    <!-- Footer -->
-    <footer class="bg-blue-300 py-6">
-    <div class="container mx-auto flex flex-col items-center text-center space-y-4">
-        
-        
 
+    <!-- Footer -->
+    <footer class="md:bg-blue-300 md:py-6 md:px-4 md:ml-64">
+    <div class="container mx-auto flex flex-col items-center text-center space-y-4">
         <!-- Logo Section -->
         <div class="flex justify-center items-center space-x-4">
             <img src="{{ asset('images/logo.png') }}" alt="LSP UGM Logo" class="w-20 h-30"> <!-- Mengatur ukuran gambar lebih kecil -->
@@ -26,7 +22,7 @@
         </div>
 
         <!-- Contact Information -->
-        <div class="text-white space-y-2 text-lg">
+        <div class="text-white px-2 sm:px-auto sm:space-y-2 sm:text-lg">
             <p>Bulaksumur, Caturtunggal, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55281</p>
             <p>E: info@ugm.ac.id | P: +62(274)588688 | F: +62(274)565223 | WA: +628112869988</p>
         </div>

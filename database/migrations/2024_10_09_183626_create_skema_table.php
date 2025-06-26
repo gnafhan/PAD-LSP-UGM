@@ -18,6 +18,7 @@ return new class extends Migration
             $table->longText('dokumen_skkni');
             $table->json('daftar_id_uk');
             $table->longText('persyaratan_skema');
+            $table->boolean('has_complete_info')->default(false);
             $table->timestamps();
         });
     }
@@ -26,5 +27,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('skema');
     }
-
 };

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class UsersSeeder extends Seeder
 {
@@ -14,59 +14,93 @@ class UsersSeeder extends Seeder
      */
     public function run(): void
     {
-        $data = [
+        // Disable foreign key checks to avoid constraints issues during seeding
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+        // Truncate the table first for clean seeding
+        DB::table('users')->truncate();
+
+        // Predefined users with specific details
+        $predefinedUsers = [
             [
-                'email' => 'robin@email.com',
-                'password' => Hash::make('123123'),
+                'email' => 'yeka@mail.ugm.ac.id',
+                'password' => '123123',
                 'no_hp' => '081234567890',
                 'level' => 'asesi',
             ],
             [
-                'email' => 'sakura@email.com',
-                'password' => Hash::make('123456'),
+                'email' => 'sakura@mail.ugm.ac.id',
+                'password' => '123456',
                 'no_hp' => '082345678901',
                 'level' => 'asesi',
             ],
             [
-                'email' => 'hiro@email.com',
-                'password' => Hash::make('345345'),
+                'email' => 'hiro@mail.ugm.ac.id',
+                'password' => '345345',
                 'no_hp' => '083456789012',
                 'level' => 'asesi',
             ],
             [
-                'email' => 'saijo@email.com',
-                'password' => Hash::make('456456'),
-                'no_hp' => '084567890123',
-                'level' => 'asesi',
-            ],
-            [
-                'email' => 'annisa@email.com',
-                'password' => Hash::make('123123'),
-                'no_hp' => '085678901234',
-                'level' => 'user',
-            ],
-            [
-                'email' => 'belda@email.com',
-                'password' => Hash::make('123123'),
-                'no_hp' => '085678901234',
+                'email' => 'dwianggaranajwansugama@mail.ugm.ac.id',
+                'password' => '123123',
+                'no_hp' => '085678901235',
                 'level' => 'admin',
             ],
             [
-                'email' => 'yeka@email.com',
-                'password' => Hash::make('123123'),
-                'no_hp' => '085678901234',
-                'level' => 'asesi',
+                'email' => 'nadziraazhanifarahiya@mail.ugm.ac.id',
+                'password' => '123123',
+                'no_hp' => '085678901236',
+                'level' => 'admin',
             ],
             [
-                'email' => 'lintang@email.com',
-                'password' => Hash::make('123123'),
-                'no_hp' => '085678901234',
-                'level' => 'asesor',
+                'email' => 'zhazhanurani@mail.ugm.ac.id',
+                'password' => '123123',
+                'no_hp' => '085678901246',
+                'level' => 'admin',
+            ],
+            [
+                'email' => 'dinar.nugroho.p@mail.ugm.ac.id',
+                'password' => '123123',
+                'no_hp' => '085678901226',
+                'level' => 'admin',
+            ],
+
+            // Account for automation testing purposes
+            [
+                'email' => 'adminDwi@ugm.ac.id',
+                'password' => 'AdminDwi',
+                'no_hp' => '085678901226',
+                'level' => 'admin',
+            ],
+            [
+                'email' => 'adminNafa@mail.ugm.ac.id',
+                'password' => 'AdminNafa',
+                'no_hp' => '085678901226',
+                'level' => 'admin',
             ],
         ];
 
-        foreach ($data as $item) {
-            User::create($item);
+        // Seed predefined users using the model to leverage boot method
+        foreach ($predefinedUsers as $userData) {
+            User::create([
+                'email' => $userData['email'],
+                'password' => Hash::make($userData['password']),
+                'no_hp' => $userData['no_hp'],
+                'level' => $userData['level'],
+            ]);
         }
+
+        // Generate additional users using the model
+        for ($i = 1; $i <= 20; $i++) {
+            User::create([
+                'email' => "user{$i}@email.com",
+                'password' => Hash::make('password123'),
+                'no_hp' => '0812345678' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                'level' => 'asesi',
+            ]);
+        }
+
+        // Re-enable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 }

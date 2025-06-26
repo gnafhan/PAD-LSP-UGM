@@ -15,21 +15,21 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UKBidangSeeder::class,
             UKSeeder::class,
+            ElemenUKSeeder::class,
             SkemaSeeder::class,
-            EventSeeder::class,
             UsersSeeder::class,
             AsesorSeeder::class,
             AsesisSeeder::class,
             PenanggungJawabSeeder::class,
             TUKSeeder::class,
+            EventSeeder::class,
             MUKSeeder::class,
             AsesiPengajuanSeeder::class,
             UjianMUKSeeder::class,
-            AsesiUKSeeder::class,
             AsesiMUKSeeder::class,
             JadwalMUKSeeder::class,
-            AsesiApl02Seeder::class,
             EventSkemaSeeder::class,
+            BidangKompetensiSeeder::class,
         ]);
     }
 }

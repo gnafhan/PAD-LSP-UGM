@@ -11,15 +11,13 @@ class CheckUserLevel
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @param  string  $level
      * @return mixed
      */
     public function handle(Request $request, Closure $next, $level)
     {
         // Cek apakah pengguna sudah login
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login');  // Redirect ke halaman login jika belum login
         }
 

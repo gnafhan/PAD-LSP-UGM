@@ -10,7 +10,7 @@
     <!-- Shortcuts -->
     <div class="flex space-x-4 mb-6">
       <a href="/forget-password" class="bg-blue-500 text-white py-2 px-4 rounded">Ganti Password</a>
-      <a href="/home-asesi/jadwal-uji-kompetensi" class="bg-purple-500 text-white py-2 px-4 rounded">Petunjuk</a>
+      <a href="#" class="bg-purple-500 text-white py-2 px-4 rounded">Petunjuk</a>
     </div>
 
     <!-- Event Sertifikasi yang Sudah diikuti -->
@@ -46,13 +46,13 @@
           <tr id="aksi2" class="hidden">
               <td colspan="8" class="border px-4 py-2">
                 <div class="flex flex-wrap space-x-2 md:space-x-3">
-                <a href="/tutup0" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2" disabled>Assesi</a>
-                <a href="/tutup1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">Surat Tugas</a>
-                <a href="/tutup2" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">Absensi</a>
-                <a href="/tutup3" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">BA</a>
-                <a href="/frak5" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK-05</a>
-                <a href="/persetujuan" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2" disabled>FR.AK-06</a>
-                <a href="/tutup6" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2" disabled>FR.IA-05</a>
+                <a href="/asesor/aksi/aktif" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2" disabled>Assesi</a>
+                <a href="#" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">Surat Tugas</a>
+                <a href="#" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">Absensi</a>
+                <a href="#" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">BA</a>
+                <a href="/asesor/frak/5" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK-05</a>
+                <a href="/asesor/frak/1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2" disabled>FR.AK-01</a>
+                <a href="#" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2" disabled>FR.IA-05</a>
               </div>
             </td>
           </tr>
@@ -93,13 +93,13 @@
           <tr id="aksi3" class="hidden">
               <td colspan="8" class="border px-4 py-2">
                 <div class="flex flex-wrap space-x-2 md:space-x-3">
-                <a href="/tutup0" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition my-2" disabled>Assesi</a>
-                <a href="/tutup1" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">Surat Tugas</a>
-                <a href="/tutup2" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">Absensi</a>
-                <a href="/tutup3" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">BA</a>
-                <a href="/frak5" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK-05</a>
-                <a href="/persetujuan" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition my-2" disabled>FR.AK-06</a>
-                <a href="/tutup6" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition my-2" disabled>FR.IA-05</a>
+                <a href="/asesor/aksi/tutup" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition my-2" disabled>Assesi</a>
+                <a href="#" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">Surat Tugas</a>
+                <a href="#" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">Absensi</a>
+                <a href="#" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">BA</a>
+                <a href="/asesor/frak/5" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition my-2">FR.AK-05</a>
+                <a href="/asesor/frak/1" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition my-2" disabled>FR.AK-01</a>
+                <a href="#" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition my-2" disabled>FR.IA-05</a>
               </div>
             </td>
           </tr>
