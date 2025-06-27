@@ -308,28 +308,17 @@ input[type="checkbox"]:disabled {
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Configuration
-    const config = {
-        apiKey: "{{ env('API_KEY') }}",
-        csrfToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-        baseUrl: "{{ url('/api/v1') }}",
-        storageUrl: "{{ url('') }}", // Base URL for storage files
-        headers: {}
-    };
-
-    // Set up headers
-    config.headers = {
-        'Content-Type': 'application/json',
-        'API-KEY': config.apiKey,
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': config.csrfToken,
-        'X-Requested-With': 'XMLHttpRequest'
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesiId: @json(Auth::user()->asesi->id_asesi ?? null),
+        asesorId: @json(Auth::user()->asesi->rincianAsesmen->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
     };
 
     // State management
     const state = {
-        asesiId: '{{ Auth::user()->asesi->id_asesi ?? "" }}',
-        asesorId: '{{ Auth::user()->asesi->rincianAsesmen->id_asesor ?? "" }}',
         isSubmitting: false,
         checklist: {
             point_1: { jawaban_asesi: null },
@@ -369,18 +358,50 @@ document.addEventListener('DOMContentLoaded', function () {
         tanggalTandaTanganAsesor: document.getElementById('tanggalTandaTanganAsesor')
     };
 
-    // Stop execution if no asesi ID is found
-    if (!state.asesiId) {
-        console.error('No asesi ID found for the authenticated user');
-        showMessage('error', 'User tidak teridentifikasi, silahkan login kembali');
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showMessage('error', 'Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
         return;
     }
 
-    if (!state.asesorId) {
-        console.error('No asesor ID found for the authenticated user');
-        showMessage('error', 'Asesor tidak teridentifikasi untuk asesi ini');
+    if (!apiConfig.key) {
+        showMessage('error', 'Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
         return;
     }
+
+    if (!apiConfig.asesiId) {
+        showMessage('error', 'ID Asesi tidak ditemukan. Silakan login kembali.');
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        showMessage('error', 'ID Asesor tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    // Build API URLs dynamically
+    const consultationApiUrl = `${apiConfig.url}/asesmen/konsultasi-prauji/${apiConfig.asesiId}`;
+    const saveApiUrl = `${apiConfig.url}/asesmen/konsultasi-prauji/asesi/save`;
+
+    // Headers configuration
+    const headers = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    // Debug info - only in development
+    @if(config('app.debug'))
+    console.log('Consultation Debug Info:', {
+        asesiId: apiConfig.asesiId,
+        asesorId: apiConfig.asesorId,
+        csrfToken: apiConfig.csrfToken ? 'Present' : 'Missing',
+        apiKey: apiConfig.key ? 'Present' : 'Missing',
+        apiUrl: apiConfig.url
+    });
+    @endif
 
     // Utility function to show messages
     function showMessage(type, message, duration = 5000) {
@@ -410,32 +431,39 @@ document.addEventListener('DOMContentLoaded', function () {
     function formatDate(dateString) {
         if (!dateString) return '';
 
-        // If the date is already in DD-MM-YYYY format
-        if (dateString.includes('-') && dateString.split('-').length === 3) {
-            const [day, month, year] = dateString.split('-');
-            if (day.length === 2 && month.length === 2 && year.length === 4) {
-                const months = [
-                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
-                    'Agustus', 'September', 'Oktober', 'November', 'Desember'
-                ];
-                return `${day} ${months[parseInt(month) - 1]} ${year}`;
+        try {
+            // If the date is already in DD-MM-YYYY format
+            if (dateString.includes('-') && dateString.split('-').length === 3) {
+                const [day, month, year] = dateString.split('-');
+                if (day.length === 2 && month.length === 2 && year.length === 4) {
+                    const months = [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+                        'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ];
+                    return `${day} ${months[parseInt(month) - 1]} ${year}`;
+                }
             }
+
+            // Otherwise, parse as ISO date
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString; // Return original if invalid
+
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = date.getMonth();
+            const year = date.getFullYear();
+
+            const months = [
+                'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+                'Agustus', 'September', 'Oktober', 'November', 'Desember'
+            ];
+
+            return `${day} ${months[month]} ${year}`;
+        } catch (e) {
+            @if(config('app.debug'))
+            console.error('Error formatting date:', e);
+            @endif
+            return dateString; // Return original on error
         }
-
-        // Otherwise, parse as ISO date
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return dateString; // Return original if invalid
-
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = date.getMonth();
-        const year = date.getFullYear();
-
-        const months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
-            'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-
-        return `${day} ${months[month]} ${year}`;
     }
 
     // Set today's date
@@ -452,6 +480,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return null;
         }
 
+        const baseUrl = "{{ url('') }}";
+
         // If already a full URL, return as is
         if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
             return imagePath;
@@ -459,16 +489,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // If starts with /storage/, use as is with base URL
         if (imagePath.startsWith('/storage/')) {
-            return config.storageUrl + imagePath;
+            return baseUrl + imagePath;
         }
 
         // If starts with storage/ (without leading slash), add base URL with /
         if (imagePath.startsWith('storage/')) {
-            return config.storageUrl + '/' + imagePath;
+            return baseUrl + '/' + imagePath;
         }
 
         // For any other path, assume it needs /storage/ prefix
-        return config.storageUrl + '/storage/' + imagePath.replace(/^\//, '');
+        return baseUrl + '/storage/' + imagePath.replace(/^\//, '');
     }
 
     // Load consultation data for asesi
@@ -476,9 +506,13 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             showMessage('loading', 'Memuat data konsultasi pra uji...', 0);
 
-            const response = await fetch(`${config.baseUrl}/asesmen/konsultasi-prauji/${state.asesiId}`, {
+            @if(config('app.debug'))
+            console.log('Loading consultation data for asesi:', apiConfig.asesiId);
+            @endif
+
+            const response = await fetch(consultationApiUrl, {
                 method: 'GET',
-                headers: config.headers
+                headers: headers
             });
 
             if (!response.ok) {
@@ -487,17 +521,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const result = await response.json();
 
+            @if(config('app.debug'))
+            console.log('Consultation data loaded successfully');
+            @endif
+
             if (result.status === 'success' && result.data) {
                 state.consultationData = result.data;
                 state.checklist = result.data.konsultasi_pra_uji.jawaban_checklist || state.checklist;
                 renderConsultationForm(result.data);
                 showMessage('success', 'Data konsultasi pra uji berhasil dimuat', 3000);
             } else {
+                @if(config('app.debug'))
                 console.error('API returned success=false or missing data:', result);
+                @endif
                 showMessage('error', `Gagal memuat data konsultasi pra uji: ${result.message || 'Terjadi kesalahan'}`);
             }
         } catch (error) {
+            @if(config('app.debug'))
             console.error('Error loading consultation data:', error);
+            @endif
             showMessage('error', `Error memuat data konsultasi pra uji: ${error.message}`);
         }
     }
@@ -530,31 +572,35 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set tanggal tanda tangan
         setTodayDate();
 
-        // PENTING: Set state.isFormLocked SEBELUM render checklist
+        // Set form lock status BEFORE rendering checklist
         state.isFormLocked = konsultasiPraUji.tanda_tangan_asesi ? true : false;
 
-        console.log('Form lock status:', state.isFormLocked); // Debug log
-        console.log('TTD Asesi value:', konsultasiPraUji.tanda_tangan_asesi); // Debug log
-        console.log('TTD Asesor value:', konsultasiPraUji.tanda_tangan_asesor); // Debug log
+        @if(config('app.debug'))
+        console.log('Form lock status:', state.isFormLocked);
+        console.log('TTD Asesi value:', konsultasiPraUji.tanda_tangan_asesi);
+        console.log('TTD Asesor value:', konsultasiPraUji.tanda_tangan_asesor);
+        @endif
 
-        // Render checklist table SETELAH state.isFormLocked diset
+        // Render checklist table AFTER state.isFormLocked is set
         renderChecklistTable();
 
-        // Handle signatures - UPDATED WITH DYNAMIC URL BUILDING
+        // Handle signatures
         handleSignatures(konsultasiPraUji);
 
         // Show main content
         document.getElementById('main-content').classList.remove('hidden');
     }
 
-    // NEW: Enhanced signature handling function
+    // Enhanced signature handling function
     function handleSignatures(konsultasiPraUji) {
         // Handle Asesi Signature
         if (konsultasiPraUji.tanda_tangan_asesi && konsultasiPraUji.tanda_tangan_asesi !== 'null') {
             const asesiImageUrl = buildImageUrl(konsultasiPraUji.tanda_tangan_asesi);
 
             if (asesiImageUrl) {
+                @if(config('app.debug'))
                 console.log('Displaying asesi signature:', asesiImageUrl);
+                @endif
                 elements.tandaTanganAsesiPlaceholder.classList.add('hidden');
                 elements.tandaTanganAsesi.src = asesiImageUrl;
                 elements.tandaTanganAsesi.classList.remove('hidden');
@@ -577,7 +623,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Add visual indicator that form is locked
                 elements.consultationForm.classList.add('form-locked');
 
+                @if(config('app.debug'))
                 console.log('Form locked - Asesi signature found');
+                @endif
             }
         } else {
             // No asesi signature - show placeholder and enable form
@@ -595,15 +643,19 @@ document.addEventListener('DOMContentLoaded', function () {
             // Remove locked form indicator
             elements.consultationForm.classList.remove('form-locked');
 
+            @if(config('app.debug'))
             console.log('Form unlocked - No asesi signature found');
+            @endif
         }
 
-        // Handle Asesor Signature - UPDATED WITH DYNAMIC URL BUILDING
+        // Handle Asesor Signature
         if (konsultasiPraUji.tanda_tangan_asesor && konsultasiPraUji.tanda_tangan_asesor !== 'null') {
             const asesorImageUrl = buildImageUrl(konsultasiPraUji.tanda_tangan_asesor);
 
             if (asesorImageUrl) {
+                @if(config('app.debug'))
                 console.log('Displaying asesor signature:', asesorImageUrl);
+                @endif
                 elements.tandaTanganAsesorPlaceholder.classList.add('hidden');
                 elements.tandaTanganAsesor.src = asesorImageUrl;
                 elements.tandaTanganAsesor.classList.remove('hidden');
@@ -613,7 +665,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     elements.tanggalTandaTanganAsesor.textContent = konsultasiPraUji.waktu_tanda_tangan_asesor;
                 }
 
+                @if(config('app.debug'))
                 console.log('Asesor signature displayed successfully');
+                @endif
             }
         } else {
             // No asesor signature - show placeholder
@@ -623,7 +677,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Reset timestamp
             elements.tanggalTandaTanganAsesor.textContent = '';
 
+            @if(config('app.debug'))
             console.log('No asesor signature found - showing placeholder');
+            @endif
         }
     }
 
@@ -751,7 +807,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const radioButtons = document.querySelectorAll('input[type="radio"]');
                 radioButtons.forEach(radio => {
                     radio.addEventListener('change', function() {
+                        @if(config('app.debug'))
                         console.log(`Radio changed: ${this.name} = ${this.value}`);
+                        @endif
                     });
                 });
             }, 100);
@@ -772,8 +830,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Collect form data
         const formData = {
-            id_asesi: state.asesiId,
-            id_asesor: state.asesorId,
+            id_asesi: apiConfig.asesiId,
+            id_asesor: apiConfig.asesorId,
             jawaban_checklist: {},
             is_asesi_signing: elements.signingCheckbox.checked
         };
@@ -804,9 +862,13 @@ document.addEventListener('DOMContentLoaded', function () {
         showMessage('loading', 'Menyimpan data konsultasi pra uji...', 0);
 
         try {
-            const response = await fetch(`${config.baseUrl}/asesmen/konsultasi-prauji/asesi/save`, {
+            @if(config('app.debug'))
+            console.log('Submitting consultation data');
+            @endif
+
+            const response = await fetch(saveApiUrl, {
                 method: 'POST',
-                headers: config.headers,
+                headers: headers,
                 body: JSON.stringify(formData)
             });
 
@@ -816,6 +878,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const result = await response.json();
 
+            @if(config('app.debug'))
+            console.log('Consultation data saved successfully');
+            @endif
+
             if (result.status === 'success') {
                 showMessage('success', 'Data konsultasi pra uji berhasil disimpan');
 
@@ -824,11 +890,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     loadConsultationData();
                 }, 1000);
             } else {
+                @if(config('app.debug'))
                 console.error('API returned success=false:', result);
+                @endif
                 showMessage('error', `Gagal menyimpan data: ${result.message || 'Terjadi kesalahan'}`);
             }
         } catch (error) {
+            @if(config('app.debug'))
             console.error('Error saving consultation data:', error);
+            @endif
             showMessage('error', `Error menyimpan data: ${error.message}`);
         } finally {
             // Re-enable the form
@@ -848,6 +918,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Silent error handlers for production
+    window.addEventListener('error', function(e) {
+        // Silent error handling - log only in development
+        @if(config('app.debug'))
+        console.error('Uncaught error:', e.error);
+        @endif
+    });
+
+    window.addEventListener('unhandledrejection', function(e) {
+        // Silent error handling - log only in development
+        @if(config('app.debug'))
+        console.error('Unhandled promise rejection:', e.reason);
+        @endif
+    });
+
     // Initialize
     function init() {
         // Load initial data
@@ -859,6 +944,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Start the application
     init();
+
+    // Debug functions (only available in development)
+    @if(config('app.debug'))
+    window.debugConsultation = function() {
+        console.log('=== Consultation Debug Info ===');
+        console.log('API Config:', {
+            url: apiConfig.url,
+            key: 'Present',
+            asesiId: apiConfig.asesiId,
+            asesorId: apiConfig.asesorId,
+            csrfToken: 'Present'
+        });
+        console.log('Current Consultation Data:', state.consultationData);
+        console.log('Form Locked:', state.isFormLocked);
+        console.log('Is Submitting:', state.isSubmitting);
+        console.log('Checklist State:', state.checklist);
+        console.log('Elements:', elements);
+        console.log('=== End Debug Info ===');
+    };
+
+    window.refreshConsultationData = function() {
+        console.log('Manually refreshing consultation data...');
+        loadConsultationData();
+    };
+    @endif
 });
 </script>
 

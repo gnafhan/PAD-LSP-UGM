@@ -234,26 +234,28 @@
 </div>
 
 <script>
-// Get user data from Laravel with proper error handling
-const userData = {
-    id_asesi: '{{ Auth::user()->asesi->id_asesi ?? "" }}',
-    id_asesor: '{{ Auth::user()->asesi->rincianAsesmen->id_asesor ?? "" }}',
-    apiUrl: '{{ env('APP_URL') }}',
-    apiKey: '{{ env('API_KEY') }}',
-    csrfToken: '{{ csrf_token() }}'
+// API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+const apiConfig = {
+    url: @json(config('services.api.url')),
+    key: @json(config('services.api.key')),
+    asesiId: @json(Auth::user()->asesi->id_asesi ?? null),
+    asesorId: @json(Auth::user()->asesi->rincianAsesmen->id_asesor ?? null),
+    csrfToken: @json(csrf_token())
 };
 
 let currentAk01Data = null;
 let isProcessing = false;
 
-// Debug logging
-console.log('AK01 Form - User Data:', {
-    id_asesi: userData.id_asesi,
-    id_asesor: userData.id_asesor,
-    apiUrl: userData.apiUrl,
-    apiKey: userData.apiKey ? 'Present' : 'Missing',
-    csrfToken: userData.csrfToken ? 'Present' : 'Missing'
+// Debug logging - only in development
+@if(config('app.debug'))
+console.log('AK01 Form - API Config:', {
+    url: apiConfig.url,
+    key: 'Present',
+    asesiId: apiConfig.asesiId,
+    asesorId: apiConfig.asesorId,
+    csrfToken: 'Present'
 });
+@endif
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeForm();
@@ -262,23 +264,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initializeForm() {
     // Validate required data
-    if (!userData.id_asesi) {
+    if (!apiConfig.url) {
+        showError('Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.key) {
+        showError('Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.asesiId) {
         showError('ID Asesi tidak ditemukan. Pastikan Anda sudah login sebagai asesi.');
         return;
     }
 
-    if (!userData.id_asesor) {
+    if (!apiConfig.asesorId) {
         showError('ID Asesor tidak ditemukan. Pastikan Anda sudah memiliki asesor yang ditugaskan.');
         return;
     }
 
-    if (!userData.apiKey) {
-        showError('API Key tidak dikonfigurasi. Hubungi administrator sistem.');
-        return;
-    }
-
     // Load initial data
-    loadAk01Data(userData.id_asesi);
+    loadAk01Data(apiConfig.asesiId);
 }
 
 function initializeModals() {
@@ -340,34 +347,44 @@ async function loadAk01Data(idAsesi) {
         showLoading(true);
         hideError();
 
+        @if(config('app.debug'))
         console.log('Loading AK01 data for asesi:', idAsesi);
+        @endif
 
-        // Construct the API URL
-        const apiUrl = `${userData.apiUrl}/api/v1/asesmen/ak01/${idAsesi}`;
+        // Construct the API URL dynamically
+        const apiUrl = `${apiConfig.url}/asesmen/ak01/${idAsesi}`;
+
+        @if(config('app.debug'))
         console.log('GET API URL:', apiUrl);
+        @endif
 
         // Prepare headers
         const headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'API-KEY': userData.apiKey,
-            'X-CSRF-TOKEN': userData.csrfToken,
+            'API_KEY': apiConfig.key,
+            'X-CSRF-TOKEN': apiConfig.csrfToken,
             'X-Requested-With': 'XMLHttpRequest'
         };
 
-        console.log('Request headers:', headers);
+        @if(config('app.debug'))
+        console.log('Request headers prepared');
+        @endif
 
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: headers
         });
 
+        @if(config('app.debug'))
         console.log('GET Response status:', response.status);
-        console.log('GET Response headers:', Object.fromEntries(response.headers.entries()));
+        @endif
 
         if (!response.ok) {
             const errorText = await response.text();
+            @if(config('app.debug'))
             console.error('GET Error response body:', errorText);
+            @endif
 
             let errorData;
             try {
@@ -380,7 +397,9 @@ async function loadAk01Data(idAsesi) {
         }
 
         const data = await response.json();
-        console.log('GET Response data:', data);
+        @if(config('app.debug'))
+        console.log('GET Response data received');
+        @endif
 
         if (data.status === 'success') {
             currentAk01Data = data.data;
@@ -390,7 +409,9 @@ async function loadAk01Data(idAsesi) {
             throw new Error(data.message || 'Gagal memuat data');
         }
     } catch (error) {
+        @if(config('app.debug'))
         console.error('Error loading AK01 data:', error);
+        @endif
         showError('Gagal memuat data: ' + error.message);
     } finally {
         showLoading(false);
@@ -459,8 +480,9 @@ function displaySignatureInfo(ak01) {
 
     if (asesiSigned) {
         // Show signature image
+        const imageUrl = buildImageUrl(ak01.tanda_tangan_asesi);
         document.getElementById('ttd-asesi-container').innerHTML =
-            `<img src="${ak01.tanda_tangan_asesi}" alt="Tanda Tangan Asesi" class="h-20 inline border border-gray-300 rounded">`;
+            `<img src="${imageUrl}" alt="Tanda Tangan Asesi" class="h-20 inline border border-gray-300 rounded">`;
 
         // Lock checkbox and button
         asesiCheckbox.checked = true;
@@ -472,7 +494,9 @@ function displaySignatureInfo(ak01) {
         saveBtn.classList.remove('bg-blue-500', 'hover:bg-blue-700');
         saveBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
 
+        @if(config('app.debug'))
         console.log('Form locked - Asesi has already signed');
+        @endif
     } else {
         // Reset signature display
         document.getElementById('ttd-asesi-container').innerHTML = '<span class="text-gray-500 italic">Belum ditandatangani</span>';
@@ -487,7 +511,9 @@ function displaySignatureInfo(ak01) {
         saveBtn.classList.add('bg-blue-500', 'hover:bg-blue-700');
         saveBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
 
+        @if(config('app.debug'))
         console.log('Form available - Asesi can sign');
+        @endif
     }
 
     // Display asesi signature timestamp
@@ -495,14 +521,42 @@ function displaySignatureInfo(ak01) {
 
     // Asesor signature
     if (ak01.tanda_tangan_asesor && ak01.tanda_tangan_asesor !== 'null') {
+        const imageUrl = buildImageUrl(ak01.tanda_tangan_asesor);
         document.getElementById('ttd-asesor-container').innerHTML =
-            `<img src="${ak01.tanda_tangan_asesor}" alt="Tanda Tangan Asesor" class="h-20 inline border border-gray-300 rounded">`;
+            `<img src="${imageUrl}" alt="Tanda Tangan Asesor" class="h-20 inline border border-gray-300 rounded">`;
     } else {
         document.getElementById('ttd-asesor-container').innerHTML = '<span class="text-gray-500 italic">Belum ditandatangani</span>';
     }
 
     // Display asesor signature timestamp
     updateElementText('tanggal-ttd-asesor', ak01.waktu_tanda_tangan_asesor || '-');
+}
+
+// Function to build proper image URL
+function buildImageUrl(imagePath) {
+    if (!imagePath || imagePath === 'null' || imagePath === null) {
+        return null;
+    }
+
+    const baseUrl = "{{ url('') }}";
+
+    // If already a full URL, return as is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        return imagePath;
+    }
+
+    // If starts with /storage/, use as is with base URL
+    if (imagePath.startsWith('/storage/')) {
+        return baseUrl + imagePath;
+    }
+
+    // If starts with storage/ (without leading slash), add base URL with /
+    if (imagePath.startsWith('storage/')) {
+        return baseUrl + '/' + imagePath;
+    }
+
+    // For any other path, assume it needs /storage/ prefix
+    return baseUrl + '/storage/' + imagePath.replace(/^\//, '');
 }
 
 async function handleAsesiSignature(checkbox) {
@@ -542,7 +596,9 @@ async function processSignature() {
         showSuccessModal();
 
     } catch (error) {
+        @if(config('app.debug'))
         console.error('Error processing signature:', error);
+        @endif
 
         // Reset checkbox if error
         const checkbox = document.getElementById('approve-pemohon');
@@ -587,27 +643,34 @@ async function saveAk01Asesi(isSigning = false) {
 
         // Prepare request data
         const requestData = {
-            id_asesi: userData.id_asesi,
-            id_asesor: userData.id_asesor,
+            id_asesi: apiConfig.asesiId,
+            id_asesor: apiConfig.asesorId,
             is_signing: isSigning
         };
 
-        console.log('POST Request data:', requestData);
+        @if(config('app.debug'))
+        console.log('POST Request data prepared');
+        @endif
 
-        // Construct the API URL
-        const saveUrl = `${userData.apiUrl}/api/v1/asesmen/ak01/asesi/save`;
+        // Construct the API URL dynamically
+        const saveUrl = `${apiConfig.url}/asesmen/ak01/asesi/save`;
+
+        @if(config('app.debug'))
         console.log('POST API URL:', saveUrl);
+        @endif
 
         // Prepare headers
         const headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'API-KEY': userData.apiKey,
-            'X-CSRF-TOKEN': userData.csrfToken,
+            'API_KEY': apiConfig.key,
+            'X-CSRF-TOKEN': apiConfig.csrfToken,
             'X-Requested-With': 'XMLHttpRequest'
         };
 
-        console.log('POST Request headers:', headers);
+        @if(config('app.debug'))
+        console.log('POST Request headers prepared');
+        @endif
 
         const response = await fetch(saveUrl, {
             method: 'POST',
@@ -615,12 +678,15 @@ async function saveAk01Asesi(isSigning = false) {
             body: JSON.stringify(requestData)
         });
 
+        @if(config('app.debug'))
         console.log('POST Response status:', response.status);
-        console.log('POST Response headers:', Object.fromEntries(response.headers.entries()));
+        @endif
 
         if (!response.ok) {
             const errorText = await response.text();
+            @if(config('app.debug'))
             console.error('POST Error response body:', errorText);
+            @endif
 
             let errorData;
             try {
@@ -633,24 +699,30 @@ async function saveAk01Asesi(isSigning = false) {
         }
 
         const data = await response.json();
-        console.log('POST Response data:', data);
+        @if(config('app.debug'))
+        console.log('POST Response data received');
+        @endif
 
         if (data.status === 'success') {
+            @if(config('app.debug'))
             if (isSigning) {
                 console.log('Form signed successfully');
             } else {
                 console.log('Form saved successfully');
             }
+            @endif
 
             // Reload data to reflect changes
             setTimeout(async () => {
-                await loadAk01Data(userData.id_asesi);
+                await loadAk01Data(apiConfig.asesiId);
             }, 1000);
         } else {
             throw new Error(data.message || 'Gagal menyimpan data');
         }
     } catch (error) {
+        @if(config('app.debug'))
         console.error('Error saving AK01 data:', error);
+        @endif
 
         if (!isSigning) {
             showError('Gagal menyimpan data: ' + error.message);
@@ -752,17 +824,44 @@ function showMainContent() {
 
 function retryLoad() {
     hideError();
-    loadAk01Data(userData.id_asesi);
+    loadAk01Data(apiConfig.asesiId);
 }
 
-// Global error handlers
+// Silent error handlers for production
 window.addEventListener('error', function(e) {
-    console.error('Global error:', e.error);
+    // Silent error handling - log only in development
+    @if(config('app.debug'))
+    console.error('Uncaught error:', e.error);
+    @endif
 });
 
 window.addEventListener('unhandledrejection', function(e) {
+    // Silent error handling - log only in development
+    @if(config('app.debug'))
     console.error('Unhandled promise rejection:', e.reason);
+    @endif
 });
-</script>
 
+// Debug functions (only available in development)
+@if(config('app.debug'))
+window.debugAK01 = function() {
+    console.log('=== AK01 Debug Info ===');
+    console.log('API Config:', {
+        url: apiConfig.url,
+        key: 'Present',
+        asesiId: apiConfig.asesiId,
+        asesorId: apiConfig.asesorId,
+        csrfToken: 'Present'
+    });
+    console.log('Current AK01 Data:', currentAk01Data);
+    console.log('Is Processing:', isProcessing);
+    console.log('=== End Debug Info ===');
+};
+
+window.refreshAK01Data = function() {
+    console.log('Manually refreshing AK01 data...');
+    loadAk01Data(apiConfig.asesiId);
+};
+@endif
+</script>
 @endsection

@@ -666,27 +666,17 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Configuration
-    const config = {
-        apiKey: "{{ env('API_KEY') }}",
-        csrfToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-        baseUrl: "{{ url('/api/v1') }}",
-        headers: {}
-    };
-
-    // Set up headers
-    config.headers = {
-        'Content-Type': 'application/json',
-        'API-KEY': config.apiKey,
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': config.csrfToken,
-        'X-Requested-With': 'XMLHttpRequest'
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
     };
 
     // State management
     const state = {
         currentAsesiId: null,
-        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
         asesiData: [],
         searchTerm: '',
         isSubmitting: false,
@@ -757,9 +747,34 @@ document.addEventListener('DOMContentLoaded', function () {
         closeSuccessSignatureModal: document.getElementById('closeSuccessSignatureModal')
     };
 
-    // Stop execution if no asesor ID is found
-    if (!state.asesorId) {
-        showMessage('error', 'User tidak teridentifikasi, silahkan login kembali');
+    // Function to show error message
+    function showError(message) {
+        showMessage('error', message);
+    }
+
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showError('Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        document.querySelector('#daftarKonsul tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">Konfigurasi API tidak ditemukan</td>
+            </tr>
+        `;
+        return;
+    }
+
+    if (!apiConfig.key) {
+        showError('Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        document.querySelector('#daftarKonsul tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">Konfigurasi API tidak ditemukan</td>
+            </tr>
+        `;
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        showError('ID Asesor tidak ditemukan. Silakan login kembali.');
         document.querySelector('#daftarKonsul tbody').innerHTML = `
             <tr>
                 <td colspan="6" class="px-4 py-3 text-center text-gray-500">User tidak teridentifikasi, silahkan login kembali</td>
@@ -768,14 +783,25 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    // Build API URLs dynamically
+    const asesisApiUrl = `${apiConfig.url}/asesor/asesis/${apiConfig.asesorId}`;
+    const biodataApiUrl = `${apiConfig.url}/asesor/biodata/${apiConfig.asesorId}`;
+
+    // Headers configuration
+    const headers = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
+
     // Load asesor signature from biodata
     async function loadAsesorSignature() {
         try {
-            const biodataApiUrl = `${config.baseUrl}/asesor/biodata/${state.asesorId}`;
-
             const response = await fetch(biodataApiUrl, {
                 method: 'GET',
-                headers: config.headers
+                headers: headers
             });
 
             if (response.ok) {
@@ -999,46 +1025,6 @@ document.addEventListener('DOMContentLoaded', function () {
         elements.successSignatureModal.style.display = '';
     }
 
-    // Load asesi data from API
-    async function loadAsesiData() {
-        try {
-            showMessage('loading', 'Memuat data asesi...', 0);
-
-            const response = await fetch(`${config.baseUrl}/asesor/asesis/${state.asesorId}`, {
-                method: 'GET',
-                headers: config.headers
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-
-            if (result.success && result.data) {
-                state.asesiData = result.data.asesis || [];
-                // Load progress for each asesi
-                await loadAsesiProgress(state.asesiData);
-                renderAsesiTable();
-                showMessage('success', 'Data asesi berhasil dimuat', 3000);
-            } else {
-                document.querySelector('#daftarKonsul tbody').innerHTML = `
-                    <tr>
-                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
-                    </tr>
-                `;
-                showMessage('error', `Gagal memuat data: ${result.message || 'Terjadi kesalahan'}`);
-            }
-        } catch (error) {
-            document.querySelector('#daftarKonsul tbody').innerHTML = `
-                <tr>
-                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
-                </tr>
-            `;
-            showMessage('error', `Error memuat data: ${error.message}`);
-        }
-    }
-
     // Load progress for each asesi
     async function loadAsesiProgress(asesisData) {
         try {
@@ -1046,9 +1032,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const asesisWithProgress = await Promise.all(
                 asesisData.map(async (asesi) => {
                     try {
-                        const progressResponse = await fetch(`${config.baseUrl}/asesor/progressAsesi/${asesi.id_asesi}`, {
+                        const progressApiUrl = `${apiConfig.url}/asesor/progressAsesi/${asesi.id_asesi}`;
+                        const progressResponse = await fetch(progressApiUrl, {
                             method: 'GET',
-                            headers: config.headers
+                            headers: headers
                         });
 
                         if (progressResponse.ok) {
@@ -1089,6 +1076,46 @@ document.addEventListener('DOMContentLoaded', function () {
             state.asesiData = asesisWithProgress;
         } catch (error) {
             showMessage('error', `Error memuat progress asesi: ${error.message}`);
+        }
+    }
+
+    // Load asesi data from API
+    async function loadAsesiData() {
+        try {
+            showMessage('loading', 'Memuat data asesi...', 0);
+
+            const response = await fetch(asesisApiUrl, {
+                method: 'GET',
+                headers: headers
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                state.asesiData = result.data.asesis || [];
+                // Load progress for each asesi
+                await loadAsesiProgress(state.asesiData);
+                renderAsesiTable();
+                showMessage('success', 'Data asesi berhasil dimuat', 3000);
+            } else {
+                document.querySelector('#daftarKonsul tbody').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
+                    </tr>
+                `;
+                showMessage('error', `Gagal memuat data: ${result.message || 'Terjadi kesalahan'}`);
+            }
+        } catch (error) {
+            document.querySelector('#daftarKonsul tbody').innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
+                </tr>
+            `;
+            showMessage('error', `Error memuat data: ${error.message}`);
         }
     }
 
@@ -1177,9 +1204,10 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             showMessage('loading', 'Memuat data konsultasi pra uji...', 0);
 
-            const response = await fetch(`${config.baseUrl}/asesmen/konsultasi-prauji/${asesiId}`, {
+            const consultationApiUrl = `${apiConfig.url}/asesmen/konsultasi-prauji/${asesiId}`;
+            const response = await fetch(consultationApiUrl, {
                 method: 'GET',
-                headers: config.headers
+                headers: headers
             });
 
             if (!response.ok) {
@@ -1663,7 +1691,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Collect form data
         const formData = {
             id_asesi: state.currentAsesiId,
-            id_asesor: state.asesorId,
+            id_asesor: apiConfig.asesorId,
             jawaban_checklist: {},
             is_asesor_signing: elements.signingCheckbox.checked
         };
@@ -1684,9 +1712,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         showMessage('loading', 'Menyimpan data konsultasi pra uji...', 0);
 
-        const response = await fetch(`${config.baseUrl}/asesmen/konsultasi-prauji/asesor/save`, {
+        const saveApiUrl = `${apiConfig.url}/asesmen/konsultasi-prauji/asesor/save`;
+        const response = await fetch(saveApiUrl, {
             method: 'POST',
-            headers: config.headers,
+            headers: headers,
             body: JSON.stringify(formData)
         });
 
@@ -1815,5 +1844,4 @@ function sortTable(columnIndex) {
     rows.forEach(row => tbody.appendChild(row));
 }
 </script>
-
 @endsection

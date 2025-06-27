@@ -386,17 +386,12 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Configuration
-    const API_CONFIG = {
-        key: "{{ env('API_KEY') }}",
-        baseUrl: "{{ url('/api/v1') }}",
-        headers: {
-            'Content-Type': 'application/json',
-            'API-KEY': "{{ env('API_KEY') }}",
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
     };
 
     // Global variables
@@ -404,18 +399,70 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentAsesiData = null;
     let recordExists = false;
 
-    // Get asesor ID from authenticated user
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+    // Function to show error message
+    function showError(message) {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorModal').classList.remove('hidden');
+    }
+
+    // Function to show success message
+    function showSuccess() {
+        document.getElementById('successModal').classList.remove('hidden');
+    }
+
+    // Function to show table error
+    function showTableError(message) {
+        document.querySelector('#daftarMAPA02 tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">${message}</td>
+            </tr>
+        `;
+    }
+
+    // Function to show loading state
+    function showLoading() {
+        document.getElementById('loadingContainer').classList.remove('hidden');
+        document.getElementById('mainContent').classList.add('hidden');
+    }
+
+    // Function to show main content
+    function showMainContent() {
+        document.getElementById('loadingContainer').classList.add('hidden');
+        document.getElementById('mainContent').classList.remove('hidden');
+    }
+
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showTableError('Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.key) {
+        showTableError('Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        showTableError('ID Asesor tidak ditemukan. Silakan login kembali.');
+        return;
+    }
+
+    // Build API URLs dynamically
+    const asesisApiUrl = `${apiConfig.url}/asesor/asesis/${apiConfig.asesorId}`;
+
+    // Headers configuration
+    const headers = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
 
     // Initialize
     init();
 
     function init() {
-        if (!asesorId) {
-            showTableError('User tidak teridentifikasi sebagai asesor, silahkan login kembali');
-            return;
-        }
-
         // Load asesi list
         loadAsesiList();
 
@@ -427,22 +474,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function loadAsesiList() {
-        const apiUrl = `${API_CONFIG.baseUrl}/asesor/asesis/${asesorId}`;
-
-        fetch(apiUrl, {
+        fetch(asesisApiUrl, {
             method: 'GET',
-            headers: API_CONFIG.headers
+            headers: headers
         })
         .then(response => {
-            console.log('Asesi List Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(result => {
-            console.log('Asesi List API Response:', result);
-
             if (result.success && result.data) {
                 // Load progress for each asesi and then populate table
                 loadAsesiProgress(result.data.asesis);
@@ -451,7 +493,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => {
-            console.error('Error loading asesi list:', error);
             showTableError(`Error memuat data: ${error.message}`);
         });
     }
@@ -462,9 +503,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const asesisWithProgress = await Promise.all(
                 asesisData.map(async (asesi) => {
                     try {
-                        const progressResponse = await fetch(`${API_CONFIG.baseUrl}/asesor/progressAsesi/${asesi.id_asesi}`, {
+                        const progressApiUrl = `${apiConfig.url}/asesor/progressAsesi/${asesi.id_asesi}`;
+                        const progressResponse = await fetch(progressApiUrl, {
                             method: 'GET',
-                            headers: API_CONFIG.headers
+                            headers: headers
                         });
 
                         if (progressResponse.ok) {
@@ -478,12 +520,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                 asesi.mapa02_completed_at = null;
                             }
                         } else {
-                            console.warn(`Failed to load progress for asesi ${asesi.id_asesi}`);
                             asesi.mapa02_completed = false;
                             asesi.mapa02_completed_at = null;
                         }
                     } catch (error) {
-                        console.error(`Error loading progress for asesi ${asesi.id_asesi}:`, error);
                         asesi.mapa02_completed = false;
                         asesi.mapa02_completed_at = null;
                     }
@@ -493,7 +533,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             populateAsesiTable(asesisWithProgress);
         } catch (error) {
-            console.error('Error loading asesi progress:', error);
             showTableError(`Error memuat progress asesi: ${error.message}`);
         }
     }
@@ -580,41 +619,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function setupModals() {
         // Success modal
-        document.getElementById('closeSuccessModal').addEventListener('click', function() {
-            document.getElementById('successModal').classList.add('hidden');
+        document.getElementById('closeSuccessModal')?.addEventListener('click', function() {
+            document.getElementById('successModal')?.classList.add('hidden');
         });
 
         // Error modal
-        document.getElementById('closeErrorModal').addEventListener('click', function() {
-            document.getElementById('errorModal').classList.add('hidden');
+        document.getElementById('closeErrorModal')?.addEventListener('click', function() {
+            document.getElementById('errorModal')?.classList.add('hidden');
         });
-    }
-
-    function showTableError(message) {
-        document.querySelector('#daftarMAPA02 tbody').innerHTML = `
-            <tr>
-                <td colspan="6" class="px-4 py-3 text-center text-gray-500">${message}</td>
-            </tr>
-        `;
-    }
-
-    function showLoading() {
-        document.getElementById('loadingContainer').classList.remove('hidden');
-        document.getElementById('mainContent').classList.add('hidden');
-    }
-
-    function showMainContent() {
-        document.getElementById('loadingContainer').classList.add('hidden');
-        document.getElementById('mainContent').classList.remove('hidden');
-    }
-
-    function showError(message) {
-        document.getElementById('errorMessage').textContent = message;
-        document.getElementById('errorModal').classList.remove('hidden');
-    }
-
-    function showSuccess() {
-        document.getElementById('successModal').classList.remove('hidden');
     }
 
     // Global functions for button clicks
@@ -643,24 +655,21 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     function loadMapa02Data(id_asesi) {
-        const apiUrl = `${API_CONFIG.baseUrl}/asesmen/mapa02/${id_asesi}`;
+        const mapa02ApiUrl = `${apiConfig.url}/asesmen/mapa02/${id_asesi}`;
 
         showLoading();
 
-        fetch(apiUrl, {
+        fetch(mapa02ApiUrl, {
             method: 'GET',
-            headers: API_CONFIG.headers
+            headers: headers
         })
         .then(response => {
-            console.log('MAPA02 Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(result => {
-            console.log('MAPA02 API Response:', result);
-
             if (result.status === 'success' && result.data) {
                 currentAsesiData = result.data;
                 recordExists = result.data.record_exists;
@@ -670,7 +679,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => {
-            console.error('Error loading MAPA02 data:', error);
             showError(`Error memuat data: ${error.message}`);
         });
     }
@@ -768,7 +776,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Prepare data for API
         const requestData = {
             id_asesi: currentAsesiId,
-            id_asesor: asesorId,
+            id_asesor: apiConfig.asesorId,
             muk_ceklis_observasi: parseInt(formData.muk_ceklis_observasi),
             muk_tugas_praktik_demonstrasi: parseInt(formData.muk_tugas_praktik_demonstrasi),
             muk_pertanyaan_tertulis_esai: parseInt(formData.muk_pertanyaan_tertulis_esai),
@@ -779,23 +787,20 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         // Submit to API
-        const saveApiUrl = `${API_CONFIG.baseUrl}/asesmen/mapa02/save`;
+        const saveApiUrl = `${apiConfig.url}/asesmen/mapa02/save`;
 
         fetch(saveApiUrl, {
             method: 'POST',
-            headers: API_CONFIG.headers,
+            headers: headers,
             body: JSON.stringify(requestData)
         })
         .then(response => {
-            console.log('Save Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(result => {
-            console.log('Save API Response:', result);
-
             if (result.status === 'success') {
                 showSuccess();
 
@@ -810,7 +815,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => {
-            console.error('Error saving MAPA02 data:', error);
             showError(`Error menyimpan data: ${error.message}`);
         })
         .finally(() => {
@@ -857,7 +861,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return requiredFields.every(field => formData[field] !== undefined);
     }
+
+    // Add window alias for backward compatibility
+    window.showDocument = window.showSummary;
 });
 </script>
-
 @endsection

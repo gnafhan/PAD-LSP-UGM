@@ -363,8 +363,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const apiKey = "{{ env('API_KEY') }}";
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
+    };
 
     // Global variables
     let currentAsesiId = null;
@@ -373,21 +378,34 @@ document.addEventListener('DOMContentLoaded', function () {
     let asesiProgressData = {}; // Store progress data for each asesi
     let isFormSigned = false; // Track if form is already signed by asesor
 
-    // CSRF token
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    // Function to show error message
+    function showError(message) {
+        showNotificationModal('Error', message, 'error');
+    }
 
-    // API Headers
-    const apiHeaders = {
-        'Content-Type': 'application/json',
-        'API-KEY': apiKey,
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': csrfToken || '',
-        'X-Requested-With': 'XMLHttpRequest'
-    };
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showError('Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        document.querySelector('#daftarAPL02 tbody').innerHTML = `
+            <tr>
+                <td colspan="7" class="px-4 py-3 text-center text-gray-500">Konfigurasi API tidak ditemukan</td>
+            </tr>
+        `;
+        return;
+    }
 
-    // Check if asesor ID exists
-    if (!asesorId) {
-        console.error('No asesor ID found for the authenticated user');
+    if (!apiConfig.key) {
+        showError('Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        document.querySelector('#daftarAPL02 tbody').innerHTML = `
+            <tr>
+                <td colspan="7" class="px-4 py-3 text-center text-gray-500">Konfigurasi API tidak ditemukan</td>
+            </tr>
+        `;
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        showError('ID Asesor tidak ditemukan. Silakan login kembali.');
         document.querySelector('#daftarAPL02 tbody').innerHTML = `
             <tr>
                 <td colspan="7" class="px-4 py-3 text-center text-gray-500">User tidak teridentifikasi, silahkan login kembali</td>
@@ -395,6 +413,19 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         return;
     }
+
+    // Build API URLs dynamically
+    const asesisApiUrl = `${apiConfig.url}/asesor/asesis/${apiConfig.asesorId}`;
+    const biodataApiUrl = `${apiConfig.url}/asesor/biodata/${apiConfig.asesorId}`;
+
+    // API Headers configuration
+    const apiHeaders = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
 
     // Button state management
     function updateButtonState() {
@@ -567,7 +598,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 asesisData.map(async (asesi) => {
                     try {
                         // Call APL02 API to get progress status
-                        const apl02Response = await fetch(`{{ url('/api/v1/asesmen/apl02/asesor') }}/${asesi.id_asesi}`, {
+                        const apl02ApiUrl = `${apiConfig.url}/asesmen/apl02/asesor/${asesi.id_asesi}`;
+                        const apl02Response = await fetch(apl02ApiUrl, {
                             method: 'GET',
                             headers: apiHeaders
                         });
@@ -594,7 +626,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 asesi.apl02_data = null;
                             }
                         } else {
-                            console.warn(`Failed to load APL02 progress for asesi ${asesi.id_asesi}`);
                             asesi.apl02_asesor_signed = false;
                             asesi.apl02_asesi_signed = false;
                             asesi.apl02_completed = false;
@@ -602,7 +633,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             asesi.apl02_data = null;
                         }
                     } catch (error) {
-                        console.error(`Error loading APL02 progress for asesi ${asesi.id_asesi}:`, error);
                         asesi.apl02_asesor_signed = false;
                         asesi.apl02_asesi_signed = false;
                         asesi.apl02_completed = false;
@@ -615,7 +645,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return asesisWithApl02Progress;
         } catch (error) {
-            console.error('Error loading APL02 progress:', error);
             return asesisData;
         }
     }
@@ -626,7 +655,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const asesisWithProgress = await Promise.all(
                 asesisData.map(async (asesi) => {
                     try {
-                        const progressResponse = await fetch(`{{ url('/api/v1/asesor/progressAsesi') }}/${asesi.id_asesi}`, {
+                        const progressApiUrl = `${apiConfig.url}/asesor/progressAsesi/${asesi.id_asesi}`;
+                        const progressResponse = await fetch(progressApiUrl, {
                             method: 'GET',
                             headers: apiHeaders
                         });
@@ -648,7 +678,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 asesi.total_steps = 0;
                             }
                         } else {
-                            console.warn(`Failed to load progress for asesi ${asesi.id_asesi}`);
                             asesi.ak01_completed = false;
                             asesi.ak01_completed_at = null;
                             asesi.progress_percentage = 0;
@@ -656,7 +685,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             asesi.total_steps = 0;
                         }
                     } catch (error) {
-                        console.error(`Error loading progress for asesi ${asesi.id_asesi}:`, error);
                         asesi.ak01_completed = false;
                         asesi.ak01_completed_at = null;
                         asesi.progress_percentage = 0;
@@ -669,7 +697,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return asesisWithProgress;
         } catch (error) {
-            console.error('Error loading asesi progress:', error);
             return asesisData;
         }
     }
@@ -679,9 +706,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             showMessage('Memuat data asesi...', 'loading', 0);
 
-            const apiUrl = "{{ url('/api/v1/asesor/asesis') }}/" + asesorId;
-
-            const response = await fetch(apiUrl, {
+            const response = await fetch(asesisApiUrl, {
                 method: 'GET',
                 headers: apiHeaders
             });
@@ -793,7 +818,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
             } else {
-                console.error('API returned success=false or missing data:', result);
                 document.querySelector('#daftarAPL02 tbody').innerHTML = `
                     <tr>
                         <td colspan="7" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
@@ -802,7 +826,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 showNotificationModal('Error', `Gagal memuat data: ${result.message || 'Terjadi kesalahan'}`, 'error');
             }
         } catch (error) {
-            console.error('Error details:', error);
             document.querySelector('#daftarAPL02 tbody').innerHTML = `
                 <tr>
                     <td colspan="7" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
@@ -835,7 +858,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Return format: "23 Juni 2025, 17:20 WIB"
             return `${parseInt(hari)} ${bulanIndo} ${tahun}, ${jam}:${menit} ${timezone}`;
         } catch (error) {
-            console.error('Error formatting date:', error);
             return tanggalString; // Return original jika gagal format
         }
     }
@@ -843,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load asesor signature from biodata
     async function loadAsesorSignatureFromBiodata() {
         try {
-            const response = await fetch(`{{ url('/api/v1/asesor/biodata') }}/${asesorId}`, {
+            const response = await fetch(biodataApiUrl, {
                 method: 'GET',
                 headers: apiHeaders
             });
@@ -862,7 +884,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         document.getElementById('asesorApprovalSection').classList.remove('hidden');
                     }
 
-                    console.log('Asesor signature loaded from biodata');
                     return true;
                 } else {
                     // No signature found
@@ -870,15 +891,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('noAsesorSignature').classList.remove('hidden');
                     document.getElementById('asesorApprovalSection').classList.add('hidden');
 
-                    console.log('No asesor signature found in biodata');
                     return false;
                 }
             } else {
-                console.warn('Failed to load asesor biodata');
                 return false;
             }
         } catch (error) {
-            console.error('Error loading asesor signature from biodata:', error);
             document.getElementById('asesorExistingSignature').classList.add('hidden');
             document.getElementById('noAsesorSignature').classList.remove('hidden');
             document.getElementById('asesorApprovalSection').classList.add('hidden');
@@ -932,9 +950,9 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('breadcrumbs').classList.remove('hidden');
         document.getElementById('detailAPL02').classList.remove('hidden');
 
-        const apiUrl = `{{ url('/api/v1/asesmen/apl02/asesor') }}/${idAsesi}`;
+        const aplDetailApiUrl = `${apiConfig.url}/asesmen/apl02/asesor/${idAsesi}`;
 
-        fetch(apiUrl, {
+        fetch(aplDetailApiUrl, {
             method: 'GET',
             headers: apiHeaders
         })
@@ -956,7 +974,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => {
             showLoading(false);
-            console.error('Error loading APL02 detail:', error);
             showNotificationModal('Error', 'Error memuat data APL02: ' + error.message, 'error');
         });
     };
@@ -1263,7 +1280,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Prepare data for API
         const postData = {
             id_asesi: currentAsesiId,
-            id_asesor: asesorId,
+            id_asesor: apiConfig.asesorId,
             rekomendasi: rekomendasi,
             metode_uji: metodeUji,
             detail_kompetensi: detailKompetensi,
@@ -1271,7 +1288,7 @@ document.addEventListener('DOMContentLoaded', function () {
             asesor_approval: true
         };
 
-        const apiUrl = `{{ url('/api/v1/asesmen/apl02/asesor/save') }}`;
+        const saveApiUrl = `${apiConfig.url}/asesmen/apl02/asesor/save`;
 
         showLoading(true);
 
@@ -1282,7 +1299,7 @@ document.addEventListener('DOMContentLoaded', function () {
         submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
         submitButton.textContent = 'Sedang Memproses...';
 
-        fetch(apiUrl, {
+        fetch(saveApiUrl, {
             method: 'POST',
             headers: apiHeaders,
             body: JSON.stringify(postData)
@@ -1328,7 +1345,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => {
             showLoading(false);
-            console.error('Error saving APL02:', error);
 
             // Re-enable button on error
             submitButton.disabled = false;
@@ -1376,7 +1392,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Make showSummary available globally (for summary modal if needed)
     window.showSummary = function(asesiId, asesiName, skemaName, progressPercent, completedSteps, totalSteps) {
         // This can be implemented to show summary modal if needed
-        console.log('Show summary for:', asesiId, asesiName, skemaName);
         // For now, redirect to document detail
         loadAPL02Detail(asesiId);
     };

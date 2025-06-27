@@ -138,181 +138,179 @@
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[80%] rounded-full bg-biru opacity-10 blur-[80px]">
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const apiKey = "{{ env('API_KEY') }}";
-            const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
+    };
 
-            // Function to show loading state
-            function showLoadingState() {
-                document.getElementById('loadingState').classList.remove('hidden');
-                document.getElementById('contentState').classList.add('hidden');
-                document.getElementById('errorState').classList.add('hidden');
-            }
+    // Function to show loading state
+    function showLoadingState() {
+        document.getElementById('loadingState').classList.remove('hidden');
+        document.getElementById('contentState').classList.add('hidden');
+        document.getElementById('errorState').classList.add('hidden');
+    }
 
-            // Function to show content state
-            function showContentState() {
-                document.getElementById('loadingState').classList.add('hidden');
-                document.getElementById('contentState').classList.remove('hidden');
-                document.getElementById('errorState').classList.add('hidden');
-            }
+    // Function to show content state
+    function showContentState() {
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('contentState').classList.remove('hidden');
+        document.getElementById('errorState').classList.add('hidden');
+    }
 
-            // Function to show error state
-            function showErrorState(title, message) {
-                document.getElementById('loadingState').classList.add('hidden');
-                document.getElementById('contentState').classList.add('hidden');
-                document.getElementById('errorState').classList.remove('hidden');
+    // Function to show error state
+    function showErrorState(title, message) {
+        document.getElementById('loadingState').classList.add('hidden');
+        document.getElementById('contentState').classList.add('hidden');
+        document.getElementById('errorState').classList.remove('hidden');
 
-                document.getElementById('errorTitle').textContent = title || 'Gagal memuat data';
-                document.getElementById('errorMessage').textContent = message || 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.';
-            }
+        document.getElementById('errorTitle').textContent = title || 'Gagal memuat data';
+        document.getElementById('errorMessage').textContent = message || 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.';
+    }
 
-            // Function to setup profile picture
-            function setupProfilePicture(biodataAsesor) {
-                const profilePictureElement = document.getElementById('profilePicture');
-                const profileOverlay = document.getElementById('profileOverlay');
+    // Function to setup profile picture
+    function setupProfilePicture(biodataAsesor) {
+        const profilePictureElement = document.getElementById('profilePicture');
+        const profileOverlay = document.getElementById('profileOverlay');
 
-                // Reset overlay first
-                profileOverlay.classList.add('hidden');
-                profileOverlay.classList.remove('flex');
+        // Reset overlay first
+        profileOverlay.classList.add('hidden');
+        profileOverlay.classList.remove('flex');
 
-                // Check if foto_asesor_url exists and is valid
-                if (biodataAsesor.foto_asesor_url &&
-                    biodataAsesor.foto_asesor_url !== '/storage/data_asesor' &&
-                    biodataAsesor.foto_asesor_url !== '/storage/data_asesor/') {
+        // Check if foto_asesor_url exists and is valid
+        if (biodataAsesor.foto_asesor_url &&
+            biodataAsesor.foto_asesor_url !== '/storage/data_asesor' &&
+            biodataAsesor.foto_asesor_url !== '/storage/data_asesor/') {
 
-                    console.log('URL foto ditemukan:', biodataAsesor.foto_asesor_url);
+            // Set the photo URL with full domain
+            const fullPhotoUrl = "{{ url('') }}" + biodataAsesor.foto_asesor_url;
+            profilePictureElement.src = fullPhotoUrl;
 
-                    // Set the photo URL with full domain
-                    const fullPhotoUrl = "{{ url('') }}" + biodataAsesor.foto_asesor_url;
-                    profilePictureElement.src = fullPhotoUrl;
-
-                    // Add error handler if image fails to load
-                    profilePictureElement.onerror = function() {
-                        console.log('Gagal memuat foto, menampilkan overlay');
-                        showNoPhotoOverlay();
-                    };
-
-                    // Add load handler to confirm image loaded successfully
-                    profilePictureElement.onload = function() {
-                        console.log('Foto berhasil dimuat');
-                    };
-                } else {
-                    console.log('URL foto tidak tersedia atau tidak valid');
-                    showNoPhotoOverlay();
-                }
-
-                function showNoPhotoOverlay() {
-                    // Use default image
-                    profilePictureElement.src = '{{ asset("images/default-profile.png") }}';
-
-                    // Show overlay with "No photo" text
-                    profileOverlay.classList.remove('hidden');
-                    profileOverlay.classList.add('flex');
-                }
-            }
-
-            // Show loading state initially
-            showLoadingState();
-
-            // Stop execution if no asesor ID is found
-            if (!asesorId) {
-                console.error('No asesor ID found for the authenticated user');
-                showErrorState('User Tidak Teridentifikasi', 'ID Asesor tidak ditemukan. Silakan login kembali.');
-                return;
-            }
-
-            // Get CSRF token from meta tag
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-            // API Headers configuration
-            const apiHeaders = {
-                'Content-Type': 'application/json',
-                'API_KEY': apiKey,
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken || '',
-                'X-Requested-With': 'XMLHttpRequest'
+            // Add error handler if image fails to load
+            profilePictureElement.onerror = function() {
+                showNoPhotoOverlay();
             };
 
-            // Load dashboard data and biodata in parallel
-            async function loadAsesorData() {
-                try {
-                    const dashboardUrl = "{{ url('/api/v1/asesor/dashboard') }}/" + asesorId;
-                    const biodataUrl = "{{ url('/api/v1/asesor/biodata') }}/" + asesorId;
+            // Add load handler to confirm image loaded successfully
+            profilePictureElement.onload = function() {
+                // Silent success for security
+            };
+        } else {
+            showNoPhotoOverlay();
+        }
 
-                    console.log('Fetching data for asesor ID:', asesorId);
-                    console.log('Dashboard API URL:', dashboardUrl);
-                    console.log('Biodata API URL:', biodataUrl);
+        function showNoPhotoOverlay() {
+            // Use default image
+            profilePictureElement.src = '{{ asset("images/default-profile.png") }}';
 
-                    // Fetch both APIs in parallel
-                    const [dashboardResponse, biodataResponse] = await Promise.all([
-                        fetch(dashboardUrl, {
-                            method: 'GET',
-                            headers: apiHeaders
-                        }),
-                        fetch(biodataUrl, {
-                            method: 'GET',
-                            headers: apiHeaders
-                        })
-                    ]);
+            // Show overlay with "No photo" text
+            profileOverlay.classList.remove('hidden');
+            profileOverlay.classList.add('flex');
+        }
+    }
 
-                    console.log('Dashboard response status:', dashboardResponse.status);
-                    console.log('Biodata response status:', biodataResponse.status);
+    // Show loading state initially
+    showLoadingState();
 
-                    // Check if both responses are OK
-                    if (!dashboardResponse.ok) {
-                        throw new Error(`Dashboard API error! status: ${dashboardResponse.status}`);
-                    }
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showErrorState('Konfigurasi Tidak Ditemukan', 'Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
 
-                    if (!biodataResponse.ok) {
-                        throw new Error(`Biodata API error! status: ${biodataResponse.status}`);
-                    }
+    if (!apiConfig.key) {
+        showErrorState('Konfigurasi Tidak Ditemukan', 'Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
 
-                    // Parse both responses
-                    const [dashboardResult, biodataResult] = await Promise.all([
-                        dashboardResponse.json(),
-                        biodataResponse.json()
-                    ]);
+    if (!apiConfig.asesorId) {
+        showErrorState('User Tidak Teridentifikasi', 'ID Asesor tidak ditemukan. Silakan login kembali.');
+        return;
+    }
 
-                    console.log('Dashboard API Response:', dashboardResult);
-                    console.log('Biodata API Response:', biodataResult);
+    // Build API URLs dynamically
+    const dashboardApiUrl = `${apiConfig.url}/asesor/dashboard/${apiConfig.asesorId}`;
+    const biodataApiUrl = `${apiConfig.url}/asesor/biodata/${apiConfig.asesorId}`;
 
-                    // Check if both APIs returned success
-                    if (!dashboardResult.success || !dashboardResult.data) {
-                        throw new Error('Dashboard API returned error: ' + (dashboardResult.message || 'Unknown error'));
-                    }
+    // API Headers configuration
+    const apiHeaders = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
 
-                    if (!biodataResult.success || !biodataResult.data) {
-                        throw new Error('Biodata API returned error: ' + (biodataResult.message || 'Unknown error'));
-                    }
+    // Load dashboard data and biodata in parallel
+    async function loadAsesorData() {
+        try {
+            // Fetch both APIs in parallel
+            const [dashboardResponse, biodataResponse] = await Promise.all([
+                fetch(dashboardApiUrl, {
+                    method: 'GET',
+                    headers: apiHeaders
+                }),
+                fetch(biodataApiUrl, {
+                    method: 'GET',
+                    headers: apiHeaders
+                })
+            ]);
 
-                    // Update dashboard information
-                    const dashboardData = dashboardResult.data;
-                    document.getElementById('asesorName').textContent = dashboardData.nama_asesor || 'Nama tidak tersedia';
-                    document.getElementById('asesorEmail').textContent = dashboardData.email_asesor || 'Email tidak tersedia';
-
-                    // Update statistics counters
-                    document.getElementById('jumlahKompetensiTeknis').textContent = dashboardData.jumlah_kompetensi_teknis || '0';
-                    document.getElementById('jumlahAsesi').textContent = dashboardData.jumlah_asesi || '0';
-                    document.getElementById('jumlahEvent').textContent = dashboardData.jumlah_event || '0';
-                    document.getElementById('jumlahSkema').textContent = dashboardData.jumlah_skema || '0';
-
-                    // Setup profile picture from biodata
-                    const biodataAsesor = biodataResult.data;
-                    setupProfilePicture(biodataAsesor);
-
-                    // Show content after all data is loaded
-                    showContentState();
-
-                } catch (error) {
-                    console.error('Error loading asesor data:', error);
-                    showErrorState('Terjadi Kesalahan', 'Error: ' + (error.message || 'Unknown error'));
-                }
+            // Check if both responses are OK
+            if (!dashboardResponse.ok) {
+                throw new Error(`Dashboard API error! status: ${dashboardResponse.status}`);
             }
 
-            // Start loading data
-            loadAsesorData();
-        });
-    </script>
+            if (!biodataResponse.ok) {
+                throw new Error(`Biodata API error! status: ${biodataResponse.status}`);
+            }
+
+            // Parse both responses
+            const [dashboardResult, biodataResult] = await Promise.all([
+                dashboardResponse.json(),
+                biodataResponse.json()
+            ]);
+
+            // Check if both APIs returned success
+            if (!dashboardResult.success || !dashboardResult.data) {
+                throw new Error('Dashboard API returned error: ' + (dashboardResult.message || 'Unknown error'));
+            }
+
+            if (!biodataResult.success || !biodataResult.data) {
+                throw new Error('Biodata API returned error: ' + (biodataResult.message || 'Unknown error'));
+            }
+
+            // Update dashboard information
+            const dashboardData = dashboardResult.data;
+            document.getElementById('asesorName').textContent = dashboardData.nama_asesor || 'Nama tidak tersedia';
+            document.getElementById('asesorEmail').textContent = dashboardData.email_asesor || 'Email tidak tersedia';
+
+            // Update statistics counters
+            document.getElementById('jumlahKompetensiTeknis').textContent = dashboardData.jumlah_kompetensi_teknis || '0';
+            document.getElementById('jumlahAsesi').textContent = dashboardData.jumlah_asesi || '0';
+            document.getElementById('jumlahEvent').textContent = dashboardData.jumlah_event || '0';
+            document.getElementById('jumlahSkema').textContent = dashboardData.jumlah_skema || '0';
+
+            // Setup profile picture from biodata
+            const biodataAsesor = biodataResult.data;
+            setupProfilePicture(biodataAsesor);
+
+            // Show content after all data is loaded
+            showContentState();
+
+        } catch (error) {
+            showErrorState('Terjadi Kesalahan', 'Error: ' + (error.message || 'Unknown error'));
+        }
+    }
+
+    // Start loading data
+    loadAsesorData();
+});
+</script>
 @endsection

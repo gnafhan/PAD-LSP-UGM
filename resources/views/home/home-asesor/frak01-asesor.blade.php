@@ -337,20 +337,64 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const apiKey = "{{ env('API_KEY') }}";
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
+    };
 
     let currentAsesiId = null;
     let asesorSignatureUrl = null;
     let recordExists = false;
 
+    // Function to show error message
+    function showError(message) {
+        showMessage(message, 'error');
+    }
+
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showError('Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        document.querySelector('#daftarAK01 tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">Konfigurasi API tidak ditemukan</td>
+            </tr>
+        `;
+        return;
+    }
+
+    if (!apiConfig.key) {
+        showError('Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        document.querySelector('#daftarAK01 tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">Konfigurasi API tidak ditemukan</td>
+            </tr>
+        `;
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        showError('ID Asesor tidak ditemukan. Silakan login kembali.');
+        document.querySelector('#daftarAK01 tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">User tidak teridentifikasi, silahkan login kembali</td>
+            </tr>
+        `;
+        return;
+    }
+
+    // Build API URLs dynamically
+    const asesisApiUrl = `${apiConfig.url}/asesor/asesis/${apiConfig.asesorId}`;
+    const biodataApiUrl = `${apiConfig.url}/asesor/biodata/${apiConfig.asesorId}`;
+
     // Headers untuk API request
     const headers = {
         'Content-Type': 'application/json',
-        'API-KEY': apiKey,
+        'API_KEY': apiConfig.key,
         'Accept': 'application/json',
-        'X-CSRF-TOKEN': csrfToken || '',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
         'X-Requested-With': 'XMLHttpRequest'
     };
 
@@ -414,22 +458,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Stop execution if no asesor ID is found
-    if (!asesorId) {
-        console.error('No asesor ID found for the authenticated user');
-        showMessage('User tidak teridentifikasi, silahkan login kembali', 'error');
-        document.querySelector('#daftarAK01 tbody').innerHTML = `
-            <tr>
-                <td colspan="6" class="px-4 py-3 text-center text-gray-500">User tidak teridentifikasi, silahkan login kembali</td>
-            </tr>
-        `;
-        return;
-    }
-
     // Load asesor signature from biodata
     function loadAsesorSignature() {
-        const biodataApiUrl = `{{ url('/api/v1/asesor/biodata') }}/${asesorId}`;
-
         fetch(biodataApiUrl, {
             method: 'GET',
             headers: headers
@@ -438,13 +468,10 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(result => {
             if (result.success && result.data?.file_url_tanda_tangan) {
                 asesorSignatureUrl = "{{ url('') }}" + result.data.file_url_tanda_tangan;
-                console.log('Asesor signature loaded:', asesorSignatureUrl);
-            } else {
-                console.warn('Asesor belum memiliki tanda tangan di biodata');
             }
         })
         .catch(error => {
-            console.error('Error loading asesor signature:', error);
+            // Silent fail for signature loading
         });
     }
 
@@ -455,7 +482,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const asesisWithProgress = await Promise.all(
                 asesisData.map(async (asesi) => {
                     try {
-                        const progressResponse = await fetch(`{{ url('/api/v1/asesor/progressAsesi') }}/${asesi.id_asesi}`, {
+                        const progressApiUrl = `${apiConfig.url}/asesor/progressAsesi/${asesi.id_asesi}`;
+                        const progressResponse = await fetch(progressApiUrl, {
                             method: 'GET',
                             headers: headers
                         });
@@ -477,7 +505,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 asesi.total_steps = 0;
                             }
                         } else {
-                            console.warn(`Failed to load progress for asesi ${asesi.id_asesi}`);
                             asesi.ak01_completed = false;
                             asesi.ak01_completed_at = null;
                             asesi.progress_percentage = 0;
@@ -485,7 +512,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             asesi.total_steps = 0;
                         }
                     } catch (error) {
-                        console.error(`Error loading progress for asesi ${asesi.id_asesi}:`, error);
                         asesi.ak01_completed = false;
                         asesi.ak01_completed_at = null;
                         asesi.progress_percentage = 0;
@@ -498,7 +524,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return asesisWithProgress;
         } catch (error) {
-            console.error('Error loading asesi progress:', error);
             showMessage(`Error memuat progress asesi: ${error.message}`, 'error');
             return asesisData;
         }
@@ -509,9 +534,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             showMessage('Memuat data asesi...', 'loading', 0);
 
-            const apiUrl = "{{ url('/api/v1/asesor/asesis') }}/" + asesorId;
-
-            const response = await fetch(apiUrl, {
+            const response = await fetch(asesisApiUrl, {
                 method: 'GET',
                 headers: headers
             });
@@ -608,7 +631,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
             } else {
-                console.error('API returned success=false or missing data:', result);
                 document.querySelector('#daftarAK01 tbody').innerHTML = `
                     <tr>
                         <td colspan="6" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
@@ -617,7 +639,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 showMessage(`Gagal memuat data: ${result.message || 'Terjadi kesalahan'}`, 'error');
             }
         } catch (error) {
-            console.error('Error details:', error);
             document.querySelector('#daftarAK01 tbody').innerHTML = `
                 <tr>
                     <td colspan="6" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
@@ -633,7 +654,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         showMessage('Memuat data AK01...', 'loading', 0);
 
-        const ak01ApiUrl = `{{ url('/api/v1/asesmen/ak01') }}/${asesiId}`;
+        const ak01ApiUrl = `${apiConfig.url}/asesmen/ak01/${asesiId}`;
 
         fetch(ak01ApiUrl, {
             method: 'GET',
@@ -667,24 +688,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Show existing signatures if available
                 if (recordExists && data.ak01) {
-                    // // Show asesi signature if available
-                    // if (data.ak01.tanda_tangan_asesi && data.ak01.tanda_tangan_asesi !== "null") {
-                    //     const asesiImage = document.getElementById('asesi-signature-image');
-                    //     const asesiContent = document.getElementById('asesi-signature-content');
-                    //     const asesiPreview = document.getElementById('asesi-signature-preview');
-                    //     const tanggalAsesi = document.getElementById('tanggalTandaTanganAsesi');
-
-                    //     if (asesiImage && asesiContent && asesiPreview) {
-                    //         asesiImage.src = data.ak01.tanda_tangan_asesi;
-                    //         asesiContent.classList.add('hidden');
-                    //         asesiPreview.classList.remove('hidden');
-
-                    //         if (tanggalAsesi && data.ak01.waktu_tanda_tangan_asesi) {
-                    //             tanggalAsesi.textContent = `Tanggal: ${data.ak01.waktu_tanda_tangan_asesi}`;
-                    //         }
-                    //     }
-                    // }
-
                     // Show asesor signature if available and disable form
                     if (data.ak01.tanda_tangan_asesor && data.ak01.tanda_tangan_asesor !== "null") {
                         const asesorImage = document.getElementById('asesor-signature-image');
@@ -758,7 +761,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => {
-            console.error('Error loading AK01 data:', error);
             showMessage('Error memuat data AK01: ' + error.message, 'error');
         });
     }
@@ -827,13 +829,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Prepare data for API
         const requestData = {
             id_asesi: currentAsesiId,
-            id_asesor: asesorId,
+            id_asesor: apiConfig.asesorId,
             hasil_yang_akan_dikumpulkan: selectedHasil,
             is_signing: true
         };
 
         // Submit to API
-        const saveApiUrl = `{{ url('/api/v1/asesmen/ak01/asesor/save') }}`;
+        const saveApiUrl = `${apiConfig.url}/asesmen/ak01/asesor/save`;
 
         fetch(saveApiUrl, {
             method: 'POST',
@@ -866,7 +868,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .catch(error => {
-            console.error('Error saving AK01 data:', error);
             showMessage('Error menyimpan data AK01: ' + error.message, 'error');
         });
     }
@@ -888,7 +889,6 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             function() {
                 // User cancelled
-                console.log('User cancelled the confirmation');
             }
         );
     });
@@ -964,5 +964,4 @@ function sortTable(columnIndex) {
     });
 }
 </script>
-
 @endsection

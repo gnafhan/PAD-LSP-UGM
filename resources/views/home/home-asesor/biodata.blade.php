@@ -446,24 +446,41 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingDataState = document.getElementById('loadingDataState');
     const frameBiodatasesor = document.getElementById('frameBiodatasesor');
 
-    // API configuration
-    const apiKey = "{{ env('API_KEY') }}";
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
+    };
 
-    console.log('Asesor ID:', asesorId);
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showMessage('Konfigurasi API URL tidak ditemukan', 'error');
+        hideLoadingState();
+        return;
+    }
 
-    if (!asesorId) {
-        console.error('Asesor ID tidak ditemukan');
+    if (!apiConfig.key) {
+        showMessage('Konfigurasi API Key tidak ditemukan', 'error');
+        hideLoadingState();
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
         showMessage('Asesor ID tidak ditemukan', 'error');
         hideLoadingState();
         return;
     }
 
-    const apiUrl = `http://localhost:8000/api/v1/asesor/biodata/${asesorId}`;
+    // Build API URL dynamically
+    const apiUrl = `${apiConfig.url}/asesor/biodata/${apiConfig.asesorId}`;
+
+    // Headers configuration
     const headers = {
         'accept': 'application/json',
-        'API_KEY': apiKey,
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 'GEehkbzds4sVRLNO9Prq2t2mna8QbXnHItVq2iYx'
+        'API_KEY': apiConfig.key,
+        'X-CSRF-TOKEN': apiConfig.csrfToken
     };
 
     // Loading state management
@@ -528,7 +545,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const removeButton = document.getElementById(removeButtonId);
 
         if (!input || !uploadArea || !content || !preview || !image) {
-            console.error('Upload elements not found for:', inputId);
             return null;
         }
 
@@ -602,8 +618,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dt = new DataTransfer();
                 dt.items.add(file);
                 input.files = dt.files;
-
-                console.log('Preview berhasil ditampilkan untuk:', inputId);
             };
             reader.onerror = function() {
                 showMessage('Gagal membaca file', 'error');
@@ -616,7 +630,6 @@ document.addEventListener('DOMContentLoaded', function() {
             content.classList.remove('hidden');
             preview.classList.add('hidden');
             input.value = '';
-            console.log('Preview dihapus untuk:', inputId);
         }
 
         // Public methods
@@ -629,10 +642,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         image.src = url;
                         content.classList.add('hidden');
                         preview.classList.remove('hidden');
-                        console.log('Preview set dari URL:', url);
                     };
                     testImg.onerror = function() {
-                        console.warn('Gagal memuat gambar dari URL:', url);
+                        // Silent fail for security
                     };
                     testImg.src = url;
                 }
@@ -669,7 +681,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const element = document.getElementById(id);
         if (element && value !== null && value !== undefined && value !== '') {
             element.value = value;
-            console.log(`Set ${id} to:`, value);
         }
     }
 
@@ -683,7 +694,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     option.value.toLowerCase() === value.toLowerCase() ||
                     option.textContent.toLowerCase().includes(value.toLowerCase())) {
                     select.selectedIndex = i;
-                    console.log(`Set ${selectId} to:`, option.textContent);
                     break;
                 }
             }
@@ -692,7 +702,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fetch and populate form data
     function loadBiodataData() {
-        console.log('Memulai proses loading biodata...');
         showLoadingState();
         showMessage('Memuat data biodata...', 'info', 0);
 
@@ -701,14 +710,12 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: headers
         })
         .then(response => {
-            console.log('Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(res => {
-            console.log('API Response:', res);
             if (res.success && res.data) {
                 const data = res.data;
 
@@ -762,27 +769,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 showMessage('Data berhasil dimuat', 'success', 3000);
-                console.log('Data biodata berhasil dimuat dan form telah diisi');
             } else {
                 showMessage('Data tidak ditemukan', 'warning');
-                console.warn('Data tidak ditemukan dalam response');
             }
         })
         .catch(err => {
-            console.error('Error loading biodata:', err);
-            showMessage(`Gagal memuat data biodata: ${err.message}`, 'error');
+            showMessage('Gagal memuat data biodata', 'error');
         })
         .finally(() => {
             // Hide loading state setelah selesai (berhasil atau gagal)
             setTimeout(() => {
                 hideLoadingState();
-                console.log('Loading state dihilangkan');
-            }, 500); // Delay sedikit untuk smooth transition
+            }, 500);
         });
     }
 
     // Load data when page loads
-    console.log('Page loaded, mulai loading biodata...');
     loadBiodataData();
 
     // Form submission handler
@@ -908,15 +910,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Headers untuk PUT request (tanpa Content-Type untuk multipart/form-data)
         const putHeaders = {
             'accept': 'application/json',
-            'API_KEY': apiKey,
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 'GEehkbzds4sVRLNO9Prq2t2mna8QbXnHItVq2iYx'
+            'API_KEY': apiConfig.key,
+            'X-CSRF-TOKEN': apiConfig.csrfToken
         };
-
-        // Debug: Log formData contents
-        console.log('FormData contents:');
-        for (let [key, value] of formData.entries()) {
-            console.log(key, typeof value === 'object' && value instanceof File ? `File: ${value.name}` : value);
-        }
 
         // Disable submit button
         const submitButton = document.getElementById('simpanBiodata');
@@ -930,11 +926,9 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData
         })
         .then(response => {
-            console.log('Update response status:', response.status);
             return response.json();
         })
         .then(res => {
-            console.log('Update response:', res);
             if (res.success) {
                 showMessage(res.message || 'Biodata berhasil diupdate!', 'success');
 
@@ -954,8 +948,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(err => {
-            console.error('Error updating data:', err);
-            showMessage(`Gagal mengupdate biodata: ${err.message}`, 'error');
+            showMessage('Gagal mengupdate biodata', 'error');
         })
         .finally(() => {
             // Re-enable submit button
@@ -965,5 +958,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
 @endsection

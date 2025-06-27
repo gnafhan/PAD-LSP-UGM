@@ -179,7 +179,13 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const apiKey = "{{ env('API_KEY') }}";
+        // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+        const apiConfig = {
+            url: @json(config('services.api.url')),
+            key: @json(config('services.api.key')),
+            asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+            csrfToken: @json(csrf_token())
+        };
 
         // Function to manage UI states
         function showLoadingState() {
@@ -205,28 +211,36 @@
             document.getElementById('errorMessage').textContent = message || 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.';
         }
 
-        // Get asesor ID dynamically from the authenticated user with proper error handling
-        const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
-
         // Show loading state initially
         showLoadingState();
 
-        // Stop execution if no asesor ID is found
-        if (!asesorId) {
-            console.error('No asesor ID found for the authenticated user');
+        // Validasi konfigurasi API
+        if (!apiConfig.url) {
+            showErrorState('Konfigurasi Tidak Ditemukan', 'Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+            return;
+        }
+
+        if (!apiConfig.key) {
+            showErrorState('Konfigurasi Tidak Ditemukan', 'Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+            return;
+        }
+
+        if (!apiConfig.asesorId) {
             showErrorState('User Tidak Teridentifikasi', 'ID Asesor tidak ditemukan. Silakan login kembali.');
             return;
         }
 
-        // Construct API URL with the asesor ID
-        const apiUrl = "{{ url('/api/v1/asesor/kompetensi_teknis') }}/" + asesorId;
+        // Build API URL dynamically
+        const apiUrl = `${apiConfig.url}/asesor/kompetensi_teknis/${apiConfig.asesorId}`;
 
-        // Debug output
-        console.log('Fetching data for asesor ID:', asesorId);
-        console.log('API URL:', apiUrl);
-
-        // Get CSRF token from meta tag
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        // Headers configuration
+        const headers = {
+            'Content-Type': 'application/json',
+            'API_KEY': apiConfig.key,
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': apiConfig.csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        };
 
         // Function untuk menangani foto profil
         function setupProfilePicture(asesorData) {
@@ -246,16 +260,13 @@
                 asesorData.file_url_foto_asesor !== '/storage/data_asesor' &&
                 asesorData.file_url_foto_asesor !== '/storage/data_asesor/') {
 
-                console.log('URL foto ditemukan:', asesorData.file_url_foto_asesor);
                 profilePictureElement.src = asesorData.file_url_foto_asesor;
 
                 // Tambahkan error handler jika gambar gagal dimuat
                 profilePictureElement.onerror = function() {
-                    console.log('Gagal memuat foto, menggunakan placeholder');
                     showNoPhotoOverlay(profilePictureElement, imageContainer);
                 };
             } else {
-                console.log('URL foto tidak tersedia');
                 showNoPhotoOverlay(profilePictureElement, imageContainer);
             }
         }
@@ -276,25 +287,15 @@
         // Make API request
         fetch(apiUrl, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'API_KEY': apiKey,
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken || '',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+            headers: headers
         })
         .then(response => {
-            console.log('Response status:', response.status);
-
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(result => {
-            console.log('API Response:', result);
-
             if (result.success && result.data) {
                 const asesorData = result.data.asesor;
                 const kompetensiData = result.data.kompetensi_teknis;
@@ -375,15 +376,16 @@
                     `;
                 }
 
+                // Setup profile picture
+                setupProfilePicture(asesorData);
+
                 // Show content after data is loaded
                 showContentState();
             } else {
-                console.error('API returned success=false or missing data:', result);
                 showErrorState('Data Tidak Tersedia', result.message || 'Format respons tidak sesuai');
             }
         })
         .catch(error => {
-            console.error('Error details:', error);
             showErrorState('Terjadi Kesalahan', 'Error: ' + (error.message || 'Unknown error'));
         });
 
@@ -405,7 +407,6 @@
 
                 return expiryDate < today;
             } catch (e) {
-                console.error('Error parsing date:', e);
                 return false;
             }
         }

@@ -187,14 +187,46 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const apiKey = "{{ env('API_KEY') }}";
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
+    };
 
-    // Get asesor ID dynamically from the authenticated user with proper error handling
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+    // Function to show error message
+    function showError(message) {
+        document.getElementById('errorMessage').classList.remove('hidden');
+        document.getElementById('errorText').textContent = message;
 
-    // Stop execution if no asesor ID is found
-    if (!asesorId) {
-        console.error('No asesor ID found for the authenticated user');
+        // Hide loading indicator if it's visible
+        document.getElementById('loadingIndicator').classList.add('hidden');
+    }
+
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showError('Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        document.querySelector('#daftarAsesi tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">Konfigurasi API tidak ditemukan</td>
+            </tr>
+        `;
+        return;
+    }
+
+    if (!apiConfig.key) {
+        showError('Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        document.querySelector('#daftarAsesi tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">Konfigurasi API tidak ditemukan</td>
+            </tr>
+        `;
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        showError('ID Asesor tidak ditemukan. Silakan login kembali.');
         document.querySelector('#daftarAsesi tbody').innerHTML = `
             <tr>
                 <td colspan="6" class="px-4 py-3 text-center text-gray-500">User tidak teridentifikasi, silahkan login kembali</td>
@@ -203,38 +235,30 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // Construct API URL with the asesor ID
-    const apiUrl = "{{ url('/api/v1/asesor/asesis') }}/" + asesorId;
+    // Build API URL dynamically
+    const apiUrl = `${apiConfig.url}/asesor/asesis/${apiConfig.asesorId}`;
 
-    // Debug output
-    console.log('Fetching data for asesor ID:', asesorId);
-    console.log('API URL:', apiUrl);
-
-    // Get CSRF token from meta tag
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    // Headers configuration
+    const headers = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
 
     // Make API request
     fetch(apiUrl, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'API-KEY': apiKey,
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken || '',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+        headers: headers
     })
     .then(response => {
-        console.log('Response status:', response.status);
-
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
     })
     .then(result => {
-        console.log('API Response:', result);
-
         if (result.success && result.data) {
             const asesisData = result.data.asesis;
             const jumlahAsesi = result.data.jumlah_asesi;
@@ -303,7 +327,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
         } else {
-            console.error('API returned success=false or missing data:', result);
             document.querySelector('#daftarAsesi tbody').innerHTML = `
                 <tr>
                     <td colspan="6" class="px-4 py-3 text-center text-gray-500">Gagal memuat data: ${result.message || 'Terjadi kesalahan'}</td>
@@ -312,7 +335,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     })
     .catch(error => {
-        console.error('Error details:', error);
         document.querySelector('#daftarAsesi tbody').innerHTML = `
             <tr>
                 <td colspan="6" class="px-4 py-3 text-center text-gray-500">Error memuat data: ${error.message || 'Terjadi kesalahan'}</td>
@@ -391,19 +413,26 @@ function fetchAsesiProgressData(asesiId) {
         return;
     }
 
-    const apiKey = "{{ env('API_KEY') }}";
-    const apiUrl = `{{ url('/api/v1/asesor/progressAsesi') }}/${asesiId}`;
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    // Get API config again for progress API
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        csrfToken: @json(csrf_token())
+    };
 
-    fetch(apiUrl, {
+    const progressApiUrl = `${apiConfig.url}/asesor/progressAsesi/${asesiId}`;
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    fetch(progressApiUrl, {
         method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'API-KEY': apiKey,
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': csrfToken || '',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+        headers: headers
     })
     .then(response => {
         if (!response.ok) {
@@ -412,8 +441,6 @@ function fetchAsesiProgressData(asesiId) {
         return response.json();
     })
     .then(result => {
-        console.log('Progress API Response:', result);
-
         // Hide loading indicator
         document.getElementById('loadingIndicator').classList.add('hidden');
 
@@ -431,8 +458,6 @@ function fetchAsesiProgressData(asesiId) {
         }
     })
     .catch(error => {
-        console.error('Error fetching progress data:', error);
-
         // Hide loading indicator
         document.getElementById('loadingIndicator').classList.add('hidden');
 
@@ -442,6 +467,15 @@ function fetchAsesiProgressData(asesiId) {
         // Still show the detail section with basic info
         document.getElementById('detailAsesi').classList.remove('hidden');
     });
+}
+
+// Function to show error message
+function showError(message) {
+    document.getElementById('errorMessage').classList.remove('hidden');
+    document.getElementById('errorText').textContent = message;
+
+    // Hide loading indicator if it's visible
+    document.getElementById('loadingIndicator').classList.add('hidden');
 }
 
 // Function to populate progress tables
@@ -573,18 +607,8 @@ function formatDateFromWIB(dateString) {
 
         return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
     } catch (e) {
-        console.error('Error formatting date:', e);
         return dateString; // Return original on error
     }
-}
-
-// Function to show error message
-function showError(message) {
-    document.getElementById('errorMessage').classList.remove('hidden');
-    document.getElementById('errorText').textContent = message;
-
-    // Hide loading indicator if it's visible
-    document.getElementById('loadingIndicator').classList.add('hidden');
 }
 
 // Table sorting function for all tables

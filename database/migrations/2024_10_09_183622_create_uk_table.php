@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('uk', function (Blueprint $table) {
             $table->string('id_uk', 20)->primary();
             $table->string('kode_uk', 100);
-            $table->string('nama_uk', 100);
+            $table->string('nama_uk', 255);
             $table->string('id_bidang', 20)->nullable();
             $table->string('jenis_standar', 50);
             $table->timestamps();

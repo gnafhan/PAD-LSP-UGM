@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('skema', function (Blueprint $table) {
             $table->string('id_skema', 20)->primary();
             $table->string('nomor_skema', 100);
-            $table->string('nama_skema', 100);
+            $table->string('nama_skema', 255);
             $table->longText('dokumen_skkni');
             $table->json('daftar_id_uk');
             $table->longText('persyaratan_skema');

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('elemen_uk', function (Blueprint $table) {
             $table->id('id_elemen_uk');
             $table->string('id_uk', 20);
-            $table->string('nama_elemen', 100);
+            $table->string('nama_elemen', 255);
             $table->foreign('id_uk')->references('id_uk')->on('uk')->onDelete('cascade');
             $table->timestamps();
         });

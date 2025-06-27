@@ -265,17 +265,12 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Configuration
-    const API_CONFIG = {
-        key: "{{ env('API_KEY') }}",
-        baseUrl: "{{ url('/api/v1') }}",
-        headers: {
-            'Content-Type': 'application/json',
-            'API-KEY': "{{ env('API_KEY') }}",
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
     };
 
     // Global variables
@@ -284,18 +279,71 @@ document.addEventListener('DOMContentLoaded', function () {
     let asesorSignatureUrl = null;
     let recordExists = false;
 
-    // Get asesor ID from authenticated user
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+    // Function to show error message
+    function showError(message) {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorModal').classList.remove('hidden');
+    }
+
+    // Function to show success message
+    function showSuccess() {
+        document.getElementById('successModal').classList.remove('hidden');
+    }
+
+    // Function to show table error
+    function showTableError(message) {
+        document.querySelector('#daftarKetidakberpihakan tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">${message}</td>
+            </tr>
+        `;
+    }
+
+    // Function to show loading state
+    function showLoading() {
+        document.getElementById('loadingContainer').classList.remove('hidden');
+        document.getElementById('mainContent').classList.add('hidden');
+    }
+
+    // Function to show main content
+    function showMainContent() {
+        document.getElementById('loadingContainer').classList.add('hidden');
+        document.getElementById('mainContent').classList.remove('hidden');
+    }
+
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showTableError('Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.key) {
+        showTableError('Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        showTableError('ID Asesor tidak ditemukan. Silakan login kembali.');
+        return;
+    }
+
+    // Build API URLs dynamically
+    const asesisApiUrl = `${apiConfig.url}/asesor/asesis/${apiConfig.asesorId}`;
+    const biodataApiUrl = `${apiConfig.url}/asesor/biodata/${apiConfig.asesorId}`;
+
+    // Headers configuration
+    const headers = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
 
     // Initialize
     init();
 
     function init() {
-        if (!asesorId) {
-            showTableError('User tidak teridentifikasi sebagai asesor, silahkan login kembali');
-            return;
-        }
-
         // Load asesi list
         loadAsesiList();
 
@@ -307,11 +355,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function loadAsesiList() {
-        const apiUrl = `${API_CONFIG.baseUrl}/asesor/asesis/${asesorId}`;
-
-        fetch(apiUrl, {
+        fetch(asesisApiUrl, {
             method: 'GET',
-            headers: API_CONFIG.headers
+            headers: headers
         })
         .then(response => {
             console.log('Asesi List Response status:', response.status);
@@ -342,9 +388,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const asesisWithProgress = await Promise.all(
                 asesisData.map(async (asesi) => {
                     try {
-                        const progressResponse = await fetch(`${API_CONFIG.baseUrl}/asesor/progressAsesi/${asesi.id_asesi}`, {
+                        const progressApiUrl = `${apiConfig.url}/asesor/progressAsesi/${asesi.id_asesi}`;
+                        const progressResponse = await fetch(progressApiUrl, {
                             method: 'GET',
-                            headers: API_CONFIG.headers
+                            headers: headers
                         });
 
                         if (progressResponse.ok) {
@@ -470,33 +517,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function showTableError(message) {
-        document.querySelector('#daftarKetidakberpihakan tbody').innerHTML = `
-            <tr>
-                <td colspan="6" class="px-4 py-3 text-center text-gray-500">${message}</td>
-            </tr>
-        `;
-    }
-
-    function showLoading() {
-        document.getElementById('loadingContainer').classList.remove('hidden');
-        document.getElementById('mainContent').classList.add('hidden');
-    }
-
-    function showMainContent() {
-        document.getElementById('loadingContainer').classList.add('hidden');
-        document.getElementById('mainContent').classList.remove('hidden');
-    }
-
-    function showError(message) {
-        document.getElementById('errorMessage').textContent = message;
-        document.getElementById('errorModal').classList.remove('hidden');
-    }
-
-    function showSuccess() {
-        document.getElementById('successModal').classList.remove('hidden');
-    }
-
     // Global functions for button clicks
     window.showSummary = function(id_asesi, nama_asesi, nama_skema, progress_percentage, completed_steps, total_steps, ketidakberpihakan_completed = false) {
         currentAsesiId = id_asesi;
@@ -522,15 +542,14 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('detailKetidakberpihakan').scrollIntoView({ behavior: 'smooth' });
     };
 
-
     function loadKetidakberpihakanData(id_asesi) {
-        const apiUrl = `${API_CONFIG.baseUrl}/asesmen/ketidakberpihakan/${id_asesi}`;
+        const ketidakberpihakanApiUrl = `${apiConfig.url}/asesmen/ketidakberpihakan/${id_asesi}`;
 
         showLoading();
 
-        fetch(apiUrl, {
+        fetch(ketidakberpihakanApiUrl, {
             method: 'GET',
-            headers: API_CONFIG.headers
+            headers: headers
         })
         .then(response => {
             console.log('Ketidakberpihakan Response status:', response.status);
@@ -613,11 +632,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function loadAsesorSignature() {
-        const biodataApiUrl = `${API_CONFIG.baseUrl}/asesor/biodata/${asesorId}`;
-
         fetch(biodataApiUrl, {
             method: 'GET',
-            headers: API_CONFIG.headers
+            headers: headers
         })
         .then(response => response.json())
         .then(result => {
@@ -684,15 +701,15 @@ document.addEventListener('DOMContentLoaded', function () {
         // Prepare data for API
         const requestData = {
             id_asesi: currentAsesiId,
-            id_asesor: asesorId
+            id_asesor: apiConfig.asesorId
         };
 
         // Submit to API
-        const saveApiUrl = `${API_CONFIG.baseUrl}/asesmen/ketidakberpihakan/sign`;
+        const saveApiUrl = `${apiConfig.url}/asesmen/ketidakberpihakan/sign`;
 
         fetch(saveApiUrl, {
             method: 'POST',
-            headers: API_CONFIG.headers,
+            headers: headers,
             body: JSON.stringify(requestData)
         })
         .then(response => {
@@ -730,7 +747,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    // Add window alias for backward compatibility
+    window.showDocument = window.showSummary;
 });
 </script>
-
 @endsection

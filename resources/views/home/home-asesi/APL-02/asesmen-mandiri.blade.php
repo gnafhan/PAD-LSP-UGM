@@ -261,37 +261,83 @@ input[type="checkbox"]:disabled {
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const apiKey = "{{ env('API_KEY') }}";
-    const asesiId = @json($asesi->id_asesi ?? null);
-    const asesorId = @json($rincianAsesmen->asesor->id_asesor ?? null);
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesiId: @json($asesi->id_asesi ?? null),
+        asesorId: @json($rincianAsesmen->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
+    };
 
-    // CSRF token
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    // Global variables
+    let currentApl02Data = null;
+    let isFormLocked = false;
+
+    // Function to show error message
+    function showError(message) {
+        @if(config('app.debug'))
+        console.error('Error:', message);
+        @endif
+        document.getElementById('errorText').textContent = message;
+        document.getElementById('errorMessage').classList.remove('hidden');
+        hideOtherMessages('error');
+    }
+
+    // Function to show success message
+    function showSuccess(message) {
+        @if(config('app.debug'))
+        console.log('Success:', message);
+        @endif
+        document.getElementById('successText').textContent = message;
+        document.getElementById('successMessage').classList.remove('hidden');
+        hideOtherMessages('success');
+    }
+
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showError('Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.key) {
+        showError('Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.asesiId) {
+        showError('ID Asesi tidak ditemukan. Silakan login kembali.');
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        showError('ID Asesor tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    // Build API URLs dynamically
+    const apl02ApiUrl = `${apiConfig.url}/asesmen/apl02/asesi/${apiConfig.asesiId}`;
+    const saveApiUrl = `${apiConfig.url}/asesmen/apl02/asesi/sign`;
 
     // API Headers for JSON requests
     const apiHeaders = {
         'Content-Type': 'application/json',
-        'API-KEY': apiKey,
+        'API_KEY': apiConfig.key,
         'Accept': 'application/json',
-        'X-CSRF-TOKEN': csrfToken || '',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
         'X-Requested-With': 'XMLHttpRequest'
     };
 
-    let currentApl02Data = null;
-    let isFormLocked = false;
-
-    // Check if required IDs exist
-    if (!asesiId || !asesorId) {
-        showError('Data asesi atau asesor tidak ditemukan. Silakan hubungi administrator.');
-        return;
-    }
-
+    // Debug info - only in development
+    @if(config('app.debug'))
     console.log('Debug Info:', {
-        asesiId: asesiId,
-        asesorId: asesorId,
-        csrfToken: csrfToken ? 'Present' : 'Missing',
-        apiKey: apiKey ? 'Present' : 'Missing'
+        asesiId: apiConfig.asesiId,
+        asesorId: apiConfig.asesorId,
+        csrfToken: apiConfig.csrfToken ? 'Present' : 'Missing',
+        apiKey: apiConfig.key ? 'Present' : 'Missing',
+        apiUrl: apiConfig.url
     });
+    @endif
 
     // DOM elements
     const elements = {
@@ -321,20 +367,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function showError(message) {
-        console.error('Error:', message);
-        document.getElementById('errorText').textContent = message;
-        document.getElementById('errorMessage').classList.remove('hidden');
-        hideOtherMessages('error');
-    }
-
-    function showSuccess(message) {
-        console.log('Success:', message);
-        document.getElementById('successText').textContent = message;
-        document.getElementById('successMessage').classList.remove('hidden');
-        hideOtherMessages('success');
-    }
-
     function hideOtherMessages(except) {
         const messages = ['errorMessage', 'successMessage'];
         messages.forEach(msgId => {
@@ -359,7 +391,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             return date.toLocaleDateString('id-ID');
         } catch (e) {
+            @if(config('app.debug'))
             console.error('Error formatting date:', e);
+            @endif
             return dateString; // Return original on error
         }
     }
@@ -400,7 +434,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const asesorImageUrl = buildImageUrl(detailApl02.ttd_asesor);
 
             if (asesorImageUrl) {
+                @if(config('app.debug'))
                 console.log('Displaying asesor signature:', asesorImageUrl);
+                @endif
                 elements.tandaTanganAsesorPlaceholder.classList.add('hidden');
                 elements.tandaTanganAsesor.src = asesorImageUrl;
                 elements.tandaTanganAsesor.classList.remove('hidden');
@@ -421,7 +457,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const asesiImageUrl = buildImageUrl(detailApl02.ttd_asesi);
 
             if (asesiImageUrl) {
+                @if(config('app.debug'))
                 console.log('Displaying asesi signature:', asesiImageUrl);
+                @endif
                 elements.tandaTanganAsesiPlaceholder.classList.add('hidden');
                 elements.tandaTanganAsesi.src = asesiImageUrl;
                 elements.tandaTanganAsesi.classList.remove('hidden');
@@ -442,7 +480,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 elements.submitButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
                 elements.submitButton.classList.add('bg-green-500');
 
+                @if(config('app.debug'))
                 console.log('Form locked - Asesi signature found');
+                @endif
             }
         } else {
             // No asesi signature - show placeholder and enable form
@@ -452,7 +492,9 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.signingCheckbox.disabled = false;
             isFormLocked = false;
 
+            @if(config('app.debug'))
             console.log('Form unlocked - No asesi signature found');
+            @endif
         }
     }
 
@@ -460,22 +502,27 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadAPL02Data() {
         showLoading(true);
 
-        const apiUrl = `{{ url('/api/v1/asesmen/apl02/asesi') }}/${asesiId}`;
-        console.log('Loading APL02 data from:', apiUrl);
+        @if(config('app.debug'))
+        console.log('Loading APL02 data from:', apl02ApiUrl);
+        @endif
 
-        fetch(apiUrl, {
+        fetch(apl02ApiUrl, {
             method: 'GET',
             headers: apiHeaders
         })
         .then(response => {
+            @if(config('app.debug'))
             console.log('APL02 Load Response Status:', response.status);
+            @endif
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(result => {
+            @if(config('app.debug'))
             console.log('APL02 Load Result:', result);
+            @endif
 
             if (result.status === 'success' && result.data) {
                 currentApl02Data = result.data;
@@ -487,7 +534,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
+            @if(config('app.debug'))
             console.error('Error loading APL02 data:', error);
+            @endif
             showError('Error memuat data APL02: ' + error.message);
         })
         .finally(() => {
@@ -629,37 +678,45 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        @if(config('app.debug'))
         console.log('Preparing to submit approval');
+        @endif
 
         // Prepare request data
         const requestData = {
-            id_asesi: asesiId,
-            id_asesor: asesorId,
+            id_asesi: apiConfig.asesiId,
+            id_asesor: apiConfig.asesorId,
             is_signing: true
         };
 
+        @if(config('app.debug'))
         console.log('Request Data:', requestData);
-
-        const apiUrl = `{{ url('/api/v1/asesmen/apl02/asesi/sign') }}`;
-        console.log('Submitting to:', apiUrl);
+        console.log('Submitting to:', saveApiUrl);
+        @endif
 
         showLoading(true);
 
-        fetch(apiUrl, {
+        fetch(saveApiUrl, {
             method: 'POST',
             headers: apiHeaders,
             body: JSON.stringify(requestData)
         })
         .then(response => {
+            @if(config('app.debug'))
             console.log('Approval Response Status:', response.status);
+            @endif
 
             return response.clone().text().then(text => {
+                @if(config('app.debug'))
                 console.log('Raw response:', text);
+                @endif
 
                 if (!response.ok) {
                     try {
                         const errorData = JSON.parse(text);
+                        @if(config('app.debug'))
                         console.log('Error response data:', errorData);
+                        @endif
                         throw new Error(`HTTP ${response.status}: ${errorData.message || errorData.error || 'Validation failed'}`);
                     } catch (parseError) {
                         throw new Error(`HTTP ${response.status}: ${text || 'Unknown error'}`);
@@ -670,7 +727,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         })
         .then(result => {
+            @if(config('app.debug'))
             console.log('Approval Result:', result);
+            @endif
             showLoading(false);
 
             if (result.status === 'success') {
@@ -687,7 +746,9 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             showLoading(false);
+            @if(config('app.debug'))
             console.error('Error approving APL02:', error);
+            @endif
             showError('Error menyetujui APL02: ' + error.message);
         });
     }
@@ -726,8 +787,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Silent error handlers for production
+    window.addEventListener('error', function(e) {
+        // Silent error handling - log only in development
+        @if(config('app.debug'))
+        console.error('Uncaught error:', e.error);
+        @endif
+    });
+
+    window.addEventListener('unhandledrejection', function(e) {
+        // Silent error handling - log only in development
+        @if(config('app.debug'))
+        console.error('Unhandled promise rejection:', e.reason);
+        @endif
+    });
+
     // Initialize page
     loadAPL02Data();
+
+    // Debug functions (only available in development)
+    @if(config('app.debug'))
+    window.debugAPL02 = function() {
+        console.log('=== APL02 Debug Info ===');
+        console.log('API Config:', {
+            url: apiConfig.url,
+            key: 'Present',
+            asesiId: apiConfig.asesiId,
+            asesorId: apiConfig.asesorId,
+            csrfToken: 'Present'
+        });
+        console.log('Current APL02 Data:', currentApl02Data);
+        console.log('Form Locked:', isFormLocked);
+        console.log('Elements:', elements);
+        console.log('=== End Debug Info ===');
+    };
+
+    window.refreshAPL02Data = function() {
+        console.log('Manually refreshing APL02 data...');
+        loadAPL02Data();
+    };
+    @endif
 });
 </script>
 @endsection

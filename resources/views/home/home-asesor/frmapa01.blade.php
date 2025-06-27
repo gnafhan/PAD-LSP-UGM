@@ -359,41 +359,83 @@
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
     </div>
 </div>
-@endsection
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Configuration
-    const API_CONFIG = {
-        key: "{{ env('API_KEY') }}",
-        baseUrl: "{{ url('/api/v1') }}",
-        headers: {
-            'Content-Type': 'application/json',
-            'API-KEY': "{{ env('API_KEY') }}",
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
     };
 
     // Global variables
     let currentAsesiData = null;
     let currentAsesiId = null;
-    let currentAsesorId = null;
     let recordExists = false;
+
+    // Function to show error message
+    function showError(message) {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorModal').classList.remove('hidden');
+    }
+
+    // Function to show success message
+    function showSuccess() {
+        document.getElementById('successModal').classList.remove('hidden');
+    }
+
+    // Function to show table error
+    function showTableError(message) {
+        document.querySelector('#daftarMAPA01 tbody').innerHTML = `
+            <tr>
+                <td colspan="6" class="px-4 py-3 text-center text-gray-500">${message}</td>
+            </tr>
+        `;
+    }
+
+    // Function to show loading state
+    function showLoading() {
+        const loadingHTML = `
+            <div class="flex justify-center items-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-biru"></div>
+            </div>
+        `;
+        document.getElementById('FRMAPA01').innerHTML = loadingHTML;
+    }
+
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        showTableError('Konfigurasi API URL tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.key) {
+        showTableError('Konfigurasi API Key tidak ditemukan. Silakan hubungi administrator.');
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        showTableError('ID Asesor tidak ditemukan. Silakan login kembali.');
+        return;
+    }
+
+    // Build API URLs dynamically
+    const asesisApiUrl = `${apiConfig.url}/asesor/asesis/${apiConfig.asesorId}`;
+
+    // Headers configuration
+    const headers = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
 
     // Initialize
     init();
 
     function init() {
-        // Get asesor ID from authenticated user
-        currentAsesorId = @json(Auth::user()->asesor->id_asesor ?? null);
-
-        if (!currentAsesorId) {
-            showTableError('User tidak teridentifikasi sebagai asesor, silahkan login kembali');
-            return;
-        }
-
         // Load asesi list
         loadAsesiList();
 
@@ -406,9 +448,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function loadAsesiList() {
         try {
-            const response = await fetch(`${API_CONFIG.baseUrl}/asesor/asesis/${currentAsesorId}`, {
+            const response = await fetch(asesisApiUrl, {
                 method: 'GET',
-                headers: API_CONFIG.headers
+                headers: headers
             });
 
             if (!response.ok) {
@@ -434,9 +476,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const asesisWithProgress = await Promise.all(
                 asesisData.map(async (asesi) => {
                     try {
-                        const progressResponse = await fetch(`${API_CONFIG.baseUrl}/asesor/progressAsesi/${asesi.id_asesi}`, {
+                        const progressApiUrl = `${apiConfig.url}/asesor/progressAsesi/${asesi.id_asesi}`;
+                        const progressResponse = await fetch(progressApiUrl, {
                             method: 'GET',
-                            headers: API_CONFIG.headers
+                            headers: headers
                         });
 
                         if (progressResponse.ok) {
@@ -559,32 +602,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function showTableError(message) {
-        document.querySelector('#daftarMAPA01 tbody').innerHTML = `
-            <tr>
-                <td colspan="6" class="px-4 py-3 text-center text-gray-500">${message}</td>
-            </tr>
-        `;
-    }
-
-    function showLoading() {
-        const loadingHTML = `
-            <div class="flex justify-center items-center py-8">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-biru"></div>
-            </div>
-        `;
-        document.getElementById('FRMAPA01').innerHTML = loadingHTML;
-    }
-
-    function showError(message) {
-        document.getElementById('errorMessage').textContent = message;
-        document.getElementById('errorModal').classList.remove('hidden');
-    }
-
-    function showSuccess() {
-        document.getElementById('successModal').classList.remove('hidden');
-    }
-
     window.showSummary = function(id_asesi, nama_asesi, nama_skema, progress_percentage, completed_steps, total_steps, mapa01_completed = false) {
         currentAsesiId = id_asesi;
 
@@ -610,13 +627,13 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     function loadMapa01Data(id_asesi) {
-        const apiUrl = `${API_CONFIG.baseUrl}/asesmen/mapa01/${id_asesi}`;
+        const mapa01ApiUrl = `${apiConfig.url}/asesmen/mapa01/${id_asesi}`;
 
         showLoading();
 
-        fetch(apiUrl, {
+        fetch(mapa01ApiUrl, {
             method: 'GET',
-            headers: API_CONFIG.headers
+            headers: headers
         })
         .then(response => {
             if (!response.ok) {
@@ -758,7 +775,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const isSigned = recordExists && data.mapa01?.tanda_tangan_asesor && data.mapa01.tanda_tangan_asesor.trim() !== '';
 
         if (isSigned) {
-
             // Show signature info if available
             if (data.mapa01.waktu_tanda_tangan_asesor) {
                 const signatureInfo = document.createElement('p');
@@ -780,8 +796,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 </svg>
                 Sudah Ditandatangani
             `;
-
-
         } else {
             // Data doesn't exist or not signed - enable button with original colors
             submitButton.textContent = 'Simpan dan Setujui';
@@ -855,7 +869,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function collectFormData() {
         const formData = {
             id_asesi: currentAsesiId,
-            id_asesor: currentAsesorId,
+            id_asesor: apiConfig.asesorId,
             is_signing: true
         };
 
@@ -915,11 +929,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function saveMapa01Data(formData, submitButton, originalText) {
-        const apiUrl = `${API_CONFIG.baseUrl}/asesmen/mapa01/save`;
+        const saveApiUrl = `${apiConfig.url}/asesmen/mapa01/save`;
 
-        fetch(apiUrl, {
+        fetch(saveApiUrl, {
             method: 'POST',
-            headers: API_CONFIG.headers,
+            headers: headers,
             body: JSON.stringify(formData)
         })
         .then(response => {
@@ -979,4 +993,46 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add window alias for backward compatibility
     window.showDocument = window.showSummary;
 });
+
+// Table sorting function (global for onclick handler)
+function sortTable(columnIndex) {
+    const table = document.getElementById('daftarMAPA01');
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    // Skip if there are less than 2 rows or the rows don't have enough cells
+    if (rows.length < 2 || rows[0].querySelectorAll('td').length <= columnIndex) {
+        return;
+    }
+
+    // Determine the current sort direction
+    const th = table.querySelector(`th:nth-child(${columnIndex + 1})`);
+    const currentDirection = th.classList.contains('sorted-asc') ? 'desc' : 'asc';
+
+    // Remove sorted classes from all headers
+    table.querySelectorAll('th').forEach(header => {
+        header.classList.remove('sorted-asc', 'sorted-desc');
+    });
+
+    // Add the appropriate class to the current header
+    th.classList.add(`sorted-${currentDirection}`);
+
+    // Sort the rows
+    rows.sort((a, b) => {
+        const aValue = a.querySelectorAll('td')[columnIndex]?.textContent.trim() || '';
+        const bValue = b.querySelectorAll('td')[columnIndex]?.textContent.trim() || '';
+
+        // Compare values based on direction
+        if (currentDirection === 'asc') {
+            return aValue.localeCompare(bValue, undefined, { numeric: true });
+        } else {
+            return bValue.localeCompare(aValue, undefined, { numeric: true });
+        }
+    });
+
+    // Re-append the sorted rows to the tbody
+    tbody.innerHTML = '';
+    rows.forEach(row => tbody.appendChild(row));
+}
 </script>
+@endsection
