@@ -74,14 +74,19 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const apiKey = "{{ env('API_KEY') }}";
-    const asesorId = @json(Auth::user()->asesor->id_asesor ?? null);
+    // API configuration - Menggunakan config helper Laravel untuk dynamic configuration
+    const apiConfig = {
+        url: @json(config('services.api.url')),
+        key: @json(config('services.api.key')),
+        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        csrfToken: @json(csrf_token())
+    };
 
     // Cache keys
     const CACHE_KEYS = {
-        DASHBOARD: `asesor_dashboard_${asesorId}`,
-        BIODATA: `asesor_biodata_${asesorId}`,
-        CACHE_TIMESTAMP: `asesor_cache_timestamp_${asesorId}`
+        DASHBOARD: `asesor_dashboard_${apiConfig.asesorId}`,
+        BIODATA: `asesor_biodata_${apiConfig.asesorId}`,
+        CACHE_TIMESTAMP: `asesor_cache_timestamp_${apiConfig.asesorId}`
     };
 
     // Cache expiration time (30 minutes)
@@ -91,6 +96,55 @@ document.addEventListener('DOMContentLoaded', function () {
     const navbarLoadingState = document.getElementById('navbarLoadingState');
     const navbarContentState = document.getElementById('navbarContentState');
     const navbarErrorState = document.getElementById('navbarErrorState');
+
+    // Validasi konfigurasi API
+    if (!apiConfig.url) {
+        @if(config('app.debug'))
+        console.error('Konfigurasi API URL tidak ditemukan');
+        @endif
+        showNavbarError();
+        return;
+    }
+
+    if (!apiConfig.key) {
+        @if(config('app.debug'))
+        console.error('Konfigurasi API Key tidak ditemukan');
+        @endif
+        showNavbarError();
+        return;
+    }
+
+    if (!apiConfig.asesorId) {
+        @if(config('app.debug'))
+        console.error('Asesor ID tidak ditemukan');
+        @endif
+        showNavbarError();
+        return;
+    }
+
+    // Build API URLs dynamically
+    const dashboardApiUrl = `${apiConfig.url}/asesor/dashboard/${apiConfig.asesorId}`;
+    const biodataApiUrl = `${apiConfig.url}/asesor/biodata/${apiConfig.asesorId}`;
+
+    // Headers configuration
+    const apiHeaders = {
+        'Content-Type': 'application/json',
+        'API_KEY': apiConfig.key,
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': apiConfig.csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    // Debug info - only in development
+    @if(config('app.debug'))
+    console.log('Navbar API Configuration:', {
+        asesorId: apiConfig.asesorId,
+        dashboardUrl: dashboardApiUrl,
+        biodataUrl: biodataApiUrl,
+        apiKey: apiConfig.key ? 'Present' : 'Missing',
+        csrfToken: apiConfig.csrfToken ? 'Present' : 'Missing'
+    });
+    @endif
 
     // Cache management functions
     function isCacheValid() {
@@ -107,9 +161,14 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.setItem(CACHE_KEYS.DASHBOARD, JSON.stringify(dashboardData));
             localStorage.setItem(CACHE_KEYS.BIODATA, JSON.stringify(biodataData));
             localStorage.setItem(CACHE_KEYS.CACHE_TIMESTAMP, Date.now().toString());
+
+            @if(config('app.debug'))
             console.log('Data cached successfully');
+            @endif
         } catch (error) {
+            @if(config('app.debug'))
             console.error('Error caching data:', error);
+            @endif
         }
     }
 
@@ -126,7 +185,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             return null;
         } catch (error) {
+            @if(config('app.debug'))
             console.error('Error reading cached data:', error);
+            @endif
             return null;
         }
     }
@@ -135,33 +196,44 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.removeItem(CACHE_KEYS.DASHBOARD);
         localStorage.removeItem(CACHE_KEYS.BIODATA);
         localStorage.removeItem(CACHE_KEYS.CACHE_TIMESTAMP);
+
+        @if(config('app.debug'))
         console.log('Cache cleared');
+        @endif
     }
 
     // Navbar state management functions
     function showNavbarLoading() {
-        navbarLoadingState.classList.remove('hidden');
-        navbarContentState.classList.add('hidden');
-        navbarErrorState.classList.add('hidden');
+        navbarLoadingState?.classList.remove('hidden');
+        navbarContentState?.classList.add('hidden');
+        navbarErrorState?.classList.add('hidden');
     }
 
     function showNavbarContent() {
-        navbarLoadingState.classList.add('hidden');
-        navbarContentState.classList.remove('hidden');
-        navbarErrorState.classList.add('hidden');
+        navbarLoadingState?.classList.add('hidden');
+        navbarContentState?.classList.remove('hidden');
+        navbarErrorState?.classList.add('hidden');
     }
 
     function showNavbarError() {
-        navbarLoadingState.classList.add('hidden');
-        navbarContentState.classList.add('hidden');
-        navbarErrorState.classList.remove('hidden');
+        navbarLoadingState?.classList.add('hidden');
+        navbarContentState?.classList.add('hidden');
+        navbarErrorState?.classList.remove('hidden');
     }
 
     // Function to update navbar with data
     function updateNavbarContent(dashboardData, biodataData) {
         // Update profile information
-        document.getElementById('nama_asesor').textContent = dashboardData.nama_asesor || 'Nama tidak tersedia';
-        document.getElementById('email_asesor').textContent = dashboardData.email_asesor || 'Email tidak tersedia';
+        const namaAsesorElement = document.getElementById('nama_asesor');
+        const emailAsesorElement = document.getElementById('email_asesor');
+
+        if (namaAsesorElement) {
+            namaAsesorElement.textContent = dashboardData.nama_asesor || 'Nama tidak tersedia';
+        }
+
+        if (emailAsesorElement) {
+            emailAsesorElement.textContent = dashboardData.email_asesor || 'Email tidak tersedia';
+        }
 
         // Setup profile photo
         setupProfilePhoto(biodataData);
@@ -170,33 +242,46 @@ document.addEventListener('DOMContentLoaded', function () {
         showNavbarContent();
     }
 
-    // Function to setup profile photo
+    // Function to setup profile photo with secure error handling
     function setupProfilePhoto(biodataAsesor) {
         const profilePhotoElement = document.getElementById('profilePhoto');
         const defaultIconElement = document.getElementById('defaultProfileIcon');
 
-        if (biodataAsesor.foto_asesor_url &&
+        if (!profilePhotoElement || !defaultIconElement) {
+            return;
+        }
+
+        // Check if foto_asesor_url exists and is valid
+        if (biodataAsesor?.foto_asesor_url &&
             biodataAsesor.foto_asesor_url !== '/storage/data_asesor' &&
             biodataAsesor.foto_asesor_url !== '/storage/data_asesor/') {
 
+            @if(config('app.debug'))
             console.log('URL foto ditemukan:', biodataAsesor.foto_asesor_url);
+            @endif
 
             const fullPhotoUrl = "{{ url('') }}" + biodataAsesor.foto_asesor_url;
             profilePhotoElement.src = fullPhotoUrl;
 
             profilePhotoElement.onload = function() {
+                @if(config('app.debug'))
                 console.log('Foto berhasil dimuat');
+                @endif
                 defaultIconElement.classList.add('hidden');
                 profilePhotoElement.classList.remove('hidden');
             };
 
             profilePhotoElement.onerror = function() {
+                @if(config('app.debug'))
                 console.log('Gagal memuat foto, menggunakan icon default');
+                @endif
                 profilePhotoElement.classList.add('hidden');
                 defaultIconElement.classList.remove('hidden');
             };
         } else {
+            @if(config('app.debug'))
             console.log('URL foto tidak tersedia atau tidak valid');
+            @endif
             profilePhotoElement.classList.add('hidden');
             defaultIconElement.classList.remove('hidden');
         }
@@ -204,53 +289,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Check if we have valid cached data first
     function loadAsesorDataFromCacheOrAPI() {
-        if (!asesorId) {
-            console.error('No asesor ID found for the authenticated user');
-            showNavbarError();
-            return;
-        }
-
         // Check cache first
         if (isCacheValid()) {
             const cachedData = getCachedData();
             if (cachedData) {
+                @if(config('app.debug'))
                 console.log('Loading data from cache');
+                @endif
                 updateNavbarContent(cachedData.dashboard, cachedData.biodata);
                 return;
             }
         }
 
         // If no valid cache, load from API
+        @if(config('app.debug'))
         console.log('Loading data from API');
+        @endif
         showNavbarLoading();
         loadAsesorDataFromAPI();
     }
 
-    // Load data from API
+    // Load data from API with secure error handling
     async function loadAsesorDataFromAPI() {
         try {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-            const apiHeaders = {
-                'Content-Type': 'application/json',
-                'API_KEY': apiKey,
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken || '',
-                'X-Requested-With': 'XMLHttpRequest'
-            };
-
-            const dashboardUrl = "{{ url('/api/v1/asesor/dashboard') }}/" + asesorId;
-            const biodataUrl = "{{ url('/api/v1/asesor/biodata') }}/" + asesorId;
-
-            console.log('Fetching data for asesor ID:', asesorId);
+            @if(config('app.debug'))
+            console.log('Fetching data for asesor ID:', apiConfig.asesorId);
+            @endif
 
             // Fetch both APIs in parallel
             const [dashboardResponse, biodataResponse] = await Promise.all([
-                fetch(dashboardUrl, {
+                fetch(dashboardApiUrl, {
                     method: 'GET',
                     headers: apiHeaders
                 }),
-                fetch(biodataUrl, {
+                fetch(biodataApiUrl, {
                     method: 'GET',
                     headers: apiHeaders
                 })
@@ -286,21 +358,52 @@ document.addEventListener('DOMContentLoaded', function () {
             // Update navbar
             updateNavbarContent(dashboardData, biodataData);
 
+            @if(config('app.debug'))
+            console.log('Navbar data loaded successfully');
+            @endif
+
         } catch (error) {
+            @if(config('app.debug'))
             console.error('Error loading asesor data:', error);
+            @endif
+
             showNavbarError();
 
-            document.getElementById('nama_asesor').textContent = 'Error memuat data';
-            document.getElementById('email_asesor').textContent = error.message;
+            // Update error display elements safely
+            const namaAsesorElement = document.getElementById('nama_asesor');
+            const emailAsesorElement = document.getElementById('email_asesor');
+
+            if (namaAsesorElement) {
+                namaAsesorElement.textContent = 'Error memuat data';
+            }
+
+            if (emailAsesorElement) {
+                emailAsesorElement.textContent = 'Silakan refresh halaman';
+            }
         }
     }
+
+    // Global error handlers for production safety
+    window.addEventListener('error', function(e) {
+        @if(config('app.debug'))
+        console.error('Uncaught navbar error:', e.error);
+        @endif
+    });
+
+    window.addEventListener('unhandledrejection', function(e) {
+        @if(config('app.debug'))
+        console.error('Unhandled navbar promise rejection:', e.reason);
+        @endif
+    });
 
     // Start loading data (cache first, then API if needed)
     loadAsesorDataFromCacheOrAPI();
 
     // Global function to refresh cache (can be called from other pages)
     window.refreshAsesorCache = function() {
+        @if(config('app.debug'))
         console.log('Refreshing asesor cache...');
+        @endif
         clearCache();
         showNavbarLoading();
         loadAsesorDataFromAPI();
@@ -314,7 +417,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return null;
     };
+
+    // Debug functions (only available in development)
+    @if(config('app.debug'))
+    window.debugNavbarAsesor = function() {
+        console.log('=== Navbar Asesor Debug Info ===');
+        console.log('API Config:', {
+            url: apiConfig.url,
+            key: 'Present',
+            asesorId: apiConfig.asesorId,
+            csrfToken: 'Present'
+        });
+        console.log('Cache Status:', {
+            isValid: isCacheValid(),
+            keys: CACHE_KEYS,
+            expiration: CACHE_EXPIRATION
+        });
+        console.log('Cached Data:', getCachedData());
+        console.log('=== End Debug Info ===');
+    };
+
+    window.clearAsesorCache = function() {
+        console.log('Manually clearing asesor cache...');
+        clearCache();
+        loadAsesorDataFromAPI();
+    };
+    @endif
 });
 </script>
-
-<!-- Navbar Ends -->
