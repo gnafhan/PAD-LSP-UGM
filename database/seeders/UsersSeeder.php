@@ -64,6 +64,12 @@ class UsersSeeder extends Seeder
                 'no_hp' => '085678901226',
                 'level' => 'admin',
             ],
+            [
+                'email' => 'budi@mail.ugm.ac.id',
+                'password' => 'budi123',
+                'no_hp' => '081234567899',
+                'level' => 'asesi',
+            ],
 
             // Account for automation testing purposes
             [
