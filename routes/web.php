@@ -347,6 +347,12 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
 });
 
 
+// Global logout route for Jetstream components
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
+
 //Guest (tanpa login)
 Route::get('/', function () {
     return view('home/home');
