@@ -229,7 +229,7 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     Route::post('/logout', function () {
         Auth::logout();
         return redirect('/login');
-    })->name('logout');
+    })->name('asesi.logout');
 });
 
 
@@ -346,6 +346,12 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     })->name('logout');
 });
 
+
+// Global logout route for Jetstream components
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
 
 //Guest (tanpa login)
 Route::get('/', function () {
