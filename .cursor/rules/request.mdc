@@ -83,3 +83,14 @@ alwaysApply: false
 
 - Suggest high-value, non-critical enhancements (performance, security, observability).
 - Provide impact estimates and outline next steps.
+
+Styling:
+Create a iOS-style design with rounded corners and subtle shadows using a light theme with bright backgrounds. Use sky as the primary accent color. Apply medium shadows for depth to create appropriate visual hierarchy. The background should be white with gray borders for clean separation.
+
+Ensure the design meets WCAG AA accessibility standards with proper contrast ratios (minimum 4.5:1 for normal text, 3:1 for large text). Include clear focus states for keyboard navigation and don't rely solely on color to convey information. Implement responsive design principles with appropriate breakpoints at 640px (mobile), 768px (tablet), and 1024px (desktop). Scale typography, spacing, and interactive elements appropriately across device sizes.
+
+The final design should feel cohesive, professional, and aligned with modern UI/UX best practices while maintaining the chosen aesthetic direction.
+
+Font:
+Create a  landing page with modern typography: • Hero heading: Bricolage Grotesque, 64px, font-weight: 700, letter-spacing: -0.03em • Feature titles: Bricolage Grotesque, 28px, font-weight: 600, letter-spacing: -0.01em • UI text: Inter, 16px, font-weight: 400, line-height: 1.5 • Button text: Inter, 14px, font-weight: 600, letter-spacing: 0.01em • Nav links: Inter, 14px, font-weight: 500 • Use vibrant blue (#3B82F6) for interactive elements with white text
+---
