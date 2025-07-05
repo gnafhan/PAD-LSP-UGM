@@ -229,7 +229,7 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     Route::post('/logout', function () {
         Auth::logout();
         return redirect('/login');
-    })->name('logout');
+    })->name('asesi.logout');
 });
 
 
