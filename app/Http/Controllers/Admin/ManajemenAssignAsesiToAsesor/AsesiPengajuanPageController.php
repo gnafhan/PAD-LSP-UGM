@@ -41,6 +41,7 @@ class AsesiPengajuanPageController extends Controller
                             $query->where('status', '!=', 'needs_revision')
                                   ->orWhereNull('status');
                         })
+                        ->orderBy('created_at', 'desc')
                         ->paginate(5, ['*'], 'pengajuan_baru_page');
         
         // Ubah query untuk pengajuan revisi, tambahkan status baru
