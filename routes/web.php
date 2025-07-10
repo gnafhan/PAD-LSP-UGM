@@ -391,6 +391,10 @@ Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEma
 Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.update'); // buat isi token
 
+// CKEditor Image Upload Route
+Route::post('/upload-image', [HomeController::class, 'uploadImage'])->name('upload.image');
+Route::post('/save-instruksi-kerja', [HomeController::class, 'saveInstruksiKerja'])->name('save.instruksi');
+
 // Page informasi
 Route::get('/panduan', function () {
     return view('home/home-visitor/panduan');
