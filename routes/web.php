@@ -216,7 +216,6 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     Route::prefix('fr')->name('asesi.fr.')->group(function () {
         Route::view('/ak1', 'home/home-asesi/FRAK-01/frak01')->name('ak1');
         Route::view('/ak3', 'home/home-asesi/FRAK-03/frak3')->name('ak3');
-//        Route::view('/ia2', 'home/home-asesi/FRIA-02/fria2')->name('ia2');
 //        Route::view('/ia2/hasil', 'home/home-asesi/FRIA-02/hasil')->name('ia2.hasil');
 //        Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
     });
