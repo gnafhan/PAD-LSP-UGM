@@ -54,9 +54,9 @@
                             <tr class="hover-row">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+                                        <a href="{{ route('ia2.detail', ['id' => $data['id_skema']]) }}" class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
                                             <i class="fas fa-search"></i>
-                                        </div>
+                                        </a>
                                         <div>
                                             <div class="text-sm font-medium text-gray-900">1</div>
                                             <div class="text-xs text-gray-500">{{ $data['nomor_skema'] }}</div>

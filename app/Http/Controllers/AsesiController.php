@@ -134,6 +134,7 @@ class AsesiController extends Controller
         $data = [
 
             'nomor_peserta' => $asesi->id_asesi,
+            'id_skema' => $asesi->id_skema,
             'nomor_skema' => $skema ? $skema->nomor_skema : 'Tidak ditemukan',
             'nama_skema' => $skema ? $skema->nama_skema : 'Tidak ditemukan',
             'tujuan_asesi' => $asesiPengajuan ? $asesiPengajuan->tujuan_asesmen : 'Tidak ditemukan',
