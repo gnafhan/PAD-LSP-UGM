@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JadwalMUK;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -109,6 +110,38 @@ class AsesiController extends Controller
             ->first();
 
         return view('home.home-asesi.APL-02.asesmen-mandiri', compact('asesi', 'event', 'today', 'unitKompetensi'));
+    }
+
+    public function fria2()
+    {
+        $user = Auth::user();
+//        @dd($user);
+        $asesi = Asesi::where('id_user', $user->id_user)->first();
+
+        if (!$asesi) {
+            return redirect()->back()->with('error', 'Data Asesi tidak ditemukan.');
+        }
+
+        // Ambil skema & asesor dari relasi
+        $skema = Skema::find($asesi->id_skema);
+        $asesiPengajuan = AsesiPengajuan::where('id_user', $user->id_user)->first();
+
+        // Jadwal pelaksanaan asesmen
+        $jadwal = JadwalMUK::where('id_asesi', $asesi->id_asesi)->first();
+        $asesor = Asesor::find($jadwal->id_asesor ?? null);
+
+        // Siapkan data untuk view
+        $data = [
+
+            'nomor_peserta' => $asesi->id_asesi,
+            'nomor_skema' => $skema ? $skema->nomor_skema : 'Tidak ditemukan',
+            'nama_skema' => $skema ? $skema->nama_skema : 'Tidak ditemukan',
+            'tujuan_asesi' => $asesiPengajuan ? $asesiPengajuan->tujuan_asesmen : 'Tidak ditemukan',
+            'tanggal_asesi' => $jadwal ? $jadwal->waktu_jadwal : 'Tidak ditemukan',
+            'nama_asesor' => $asesor ? $asesor->nama_asesor : 'Tidak ditemukan',
+        ];
+
+        return view('home/home-asesi/FRIA-02/fria2', compact('data'));
     }
 
 
