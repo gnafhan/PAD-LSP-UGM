@@ -9,7 +9,7 @@
         <nav class="mb-8">
             <div class="flex items-center space-x-2 text-sm">
                 <i class="fas fa-home text-blue-600"></i>
-                <span class="breadcrumb-item">Home</span>
+                <a href="{{ route('asesi.index') }}" class="breadcrumb-item">Home</a>
                 <i class="fas fa-chevron-right text-xs text-gray-400"></i>
                 <span class="breadcrumb-item">Formulir IA.02</span>
             </div>

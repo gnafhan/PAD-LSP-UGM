@@ -145,5 +145,11 @@ class AsesiController extends Controller
         return view('home/home-asesi/FRIA-02/fria2', compact('data'));
     }
 
+    public function detail_fria02()
+    {
+
+        return view('home/home-asesi/FRIA-02/detail');
+    }
+
 
 }

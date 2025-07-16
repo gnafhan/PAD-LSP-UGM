@@ -222,7 +222,7 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
 
     // FRIA-02
     Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
-    Route::get('/ia2/{id}', [AsesiController::class, 'deetail_fria02'])->name('ia2.detail');
+    Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('ia2.detail');
 
 
     // Jadwal Uji Kompetensi
