@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Headers configuration
     const headers = {
         'Content-Type': 'application/json',
-        'API_KEY': apiConfig.key,
+        'API-KEY': apiConfig.key,
         'Accept': 'application/json',
         'X-CSRF-TOKEN': apiConfig.csrfToken,
         'X-Requested-With': 'XMLHttpRequest'
@@ -424,7 +424,7 @@ function fetchAsesiProgressData(asesiId) {
 
     const headers = {
         'Content-Type': 'application/json',
-        'API_KEY': apiConfig.key,
+        'API-KEY': apiConfig.key,
         'Accept': 'application/json',
         'X-CSRF-TOKEN': apiConfig.csrfToken,
         'X-Requested-With': 'XMLHttpRequest'

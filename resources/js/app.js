@@ -2,13 +2,6 @@ import "./bootstrap";
 import "flowbite";
 import "flowbite-datepicker";
 
-// Import Quill.js
-import Quill from "quill";
-import "quill/dist/quill.snow.css";
-
-// Make Quill globally available
-window.Quill = Quill;
-
 // Active State Management
 class ActiveStateManager {
     constructor() {

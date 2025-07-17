@@ -6,7 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
     @vite('resources/css/app.css')
-    @vite('resources/js/app.js')
+    @vite('resources/js/asesor.js')
+    @vite('resources/js/quill-editor.js')
     
     <!-- Custom Quill.js Font Styles -->
     <style>

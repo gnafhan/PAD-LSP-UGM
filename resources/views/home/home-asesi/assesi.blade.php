@@ -757,7 +757,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // API Headers
     const apiHeaders = {
         'Content-Type': 'application/json',
-        'API_KEY': apiConfig.key,
+        'API-KEY': apiConfig.key,
         'Accept': 'application/json',
         'X-CSRF-TOKEN': apiConfig.csrfToken,
         'X-Requested-With': 'XMLHttpRequest'
