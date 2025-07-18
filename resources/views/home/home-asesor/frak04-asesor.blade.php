@@ -55,9 +55,9 @@
     <div id="frameAK01" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Data Asesi untuk FR.AK.04 Persetujuan Asesmen & Kerahasiaan</p>
         <!-- Search Form -->
-        <form id="searchAK01" class="max-w-md mb-4 rounded-xl">
+        <form id="searchAK01" class="max-w-md mb-4 rounded-xl" method="GET" action="">
             <div class="relative">
-            <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
+            <input type="search" id="default-search" name="q" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Peserta/Skema Sertifikasi" value="{{ request('q') }}" />
                 <button type="submit" class="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
                     <svg class="w-4 h-4 text-biru" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -78,7 +78,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 text-black text-center">
-                    @foreach($asesis as $index => $asesi)
+                    @forelse($asesis as $index => $asesi)
                     <tr>
                         <td class="px-4 py-3 text-sm text-gray-700">{{ $index + 1 }}</td>
                         <td class="px-4 py-3 text-center">
@@ -107,7 +107,11 @@
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="6" class="py-6 text-center text-gray-500">Tidak ada data ditemukan.</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

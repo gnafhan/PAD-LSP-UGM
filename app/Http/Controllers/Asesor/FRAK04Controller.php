@@ -13,19 +13,28 @@ use Illuminate\Support\Facades\DB;
 
 class FRAK04Controller extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         $asesor = Auth::user()->asesor;
+        $q = $request->input('q');
         if($asesor){
             $asesisQuery = DB::table('rincian_asesmen')
                 ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
                 ->where('rincian_asesmen.id_asesor', $asesor->id_asesor)
                 ->join('skema', 'asesi.id_skema', '=', 'skema.id_skema')
                 ->select('asesi.id_asesi', 'asesi.nama_asesi', 'skema.nama_skema', 'skema.nomor_skema');
-            
+
+            if ($q) {
+                $asesisQuery->where(function($query) use ($q) {
+                    $query->where('asesi.nama_asesi', 'like', "%$q%")
+                          ->orWhere('skema.nama_skema', 'like', "%$q%")
+                          ->orWhere('skema.nomor_skema', 'like', "%$q%") ;
+                });
+            }
             $asesis = $asesisQuery->get();
-            // dd($asesis);
+        } else {
+            $asesis = collect();
         }
-        return view('home/home-asesor/frak04-asesor', compact(['asesis']));
+        return view('home/home-asesor/frak04-asesor', compact(['asesis', 'q']));
     }
 
     public function show($id_asesi){
