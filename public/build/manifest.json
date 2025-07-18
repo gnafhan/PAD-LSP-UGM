@@ -1,12 +1,49 @@
 {
+  "__commonjsHelpers-39b5b250.js": {
+    "file": "assets/_commonjsHelpers-39b5b250.js"
+  },
+  "_flowbite-8b4af90c.js": {
+    "file": "assets/flowbite-8b4af90c.js",
+    "imports": [
+      "__commonjsHelpers-39b5b250.js"
+    ]
+  },
   "resources/css/app.css": {
-    "file": "assets/app-d040344a.css",
+    "file": "assets/app-4ea36836.css",
     "isEntry": true,
     "src": "resources/css/app.css"
   },
   "resources/js/app.js": {
-    "file": "assets/app-881c7369.js",
+    "file": "assets/app-49b088f8.js",
+    "imports": [
+      "_flowbite-8b4af90c.js",
+      "__commonjsHelpers-39b5b250.js"
+    ],
     "isEntry": true,
     "src": "resources/js/app.js"
+  },
+  "resources/js/asesor.js": {
+    "file": "assets/asesor-048da57a.js",
+    "imports": [
+      "_flowbite-8b4af90c.js",
+      "__commonjsHelpers-39b5b250.js"
+    ],
+    "isEntry": true,
+    "src": "resources/js/asesor.js"
+  },
+  "resources/js/quill-editor.css": {
+    "file": "assets/quill-editor-4ffab3b8.css",
+    "src": "resources/js/quill-editor.css"
+  },
+  "resources/js/quill-editor.js": {
+    "css": [
+      "assets/quill-editor-4ffab3b8.css"
+    ],
+    "file": "assets/quill-editor-b1f57b97.js",
+    "imports": [
+      "__commonjsHelpers-39b5b250.js"
+    ],
+    "isEntry": true,
+    "src": "resources/js/quill-editor.js"
   }
 }

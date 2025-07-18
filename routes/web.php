@@ -19,11 +19,18 @@ use App\Http\Controllers\Admin\ManajemenPengguna\KompetensiTeknisController;
 use App\Http\Controllers\Admin\ManajemenTUK\TukController;
 use App\Http\Controllers\Admin\ManajemenTUK\PenanggungJawabController;
 use App\Http\Controllers\SwaggerController;
+use App\Http\Controllers\IA02ContentController;
+use App\Http\Controllers\TempImageController;
 
 
 // API Documentation
 Route::get('api/documentation', [SwaggerController::class, 'index'])
     ->name('l5-swagger.default.api');
+
+// Test routes
+Route::get('/test-custom-resize', function () {
+    return view('test-custom-resize');
+})->name('test.custom.resize');
 
 // Level: user
 Route::middleware(['role:user'])->prefix('user')->group(function () {
@@ -396,6 +403,44 @@ Route::get('password/reset', [PasswordResetController::class, 'showResetForm'])-
 Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.update'); // buat isi token
+
+// Test Image Resize
+Route::get('/test-resize', function () {
+    return view('test-resize');
+});
+
+// Manual Image Test
+Route::get('/test-manual-image', function () {
+    return view('test-manual-image');
+});
+
+// URL Test route
+Route::get('/test-url', function () {
+    return view('test-url');
+});
+
+// Debug routes (remove in production)
+Route::get('/debug-quill', function () {
+    return view('debug-quill');
+});
+
+// Test routes (remove in production)
+Route::get('/test-quill', function () {
+    return view('test-quill');
+});
+
+// Quill.js Content Management Routes
+Route::post('/upload-image', [IA02ContentController::class, 'uploadImage'])->name('upload.image');
+Route::post('/save-content', [IA02ContentController::class, 'saveContent'])->name('save.content');
+Route::get('/load-content/{ia02Id}/{contentType?}', [IA02ContentController::class, 'loadContent'])->name('load.content');
+Route::delete('/delete-content/{ia02Id}/{contentType?}', [IA02ContentController::class, 'deleteContent'])->name('delete.content');
+
+// Temporary Image Management Routes
+Route::post('/upload-temp-image', [TempImageController::class, 'uploadTempImage'])->name('upload.temp.image');
+Route::post('/save-content-with-images', [IA02ContentController::class, 'saveContentWithImages'])->name('save.content.with.images');
+
+// Legacy CKEditor routes (keep for backward compatibility)
+Route::post('/save-instruksi-kerja', [HomeController::class, 'saveInstruksiKerja'])->name('save.instruksi');
 
 // Page informasi
 Route::get('/panduan', function () {

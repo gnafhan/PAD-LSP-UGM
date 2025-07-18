@@ -1,0 +1,1 @@
+import{f as o}from"./flowbite-8b4af90c.js";import"./_commonjsHelpers-39b5b250.js";document.addEventListener("DOMContentLoaded",function(){o.initFlowbite(),console.log("Asesor JS loaded")});window.AsesorJS={initialized:!0,version:"1.0.0"};

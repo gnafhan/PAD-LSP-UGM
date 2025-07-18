@@ -68,10 +68,10 @@ class DataAsesiController extends Controller
         $asesor = Asesor::where('id_asesor', $id)->first();
 
         if ($asesor){
-            // Get base asesi data
-            $asesisQuery = DB::table('rincian_asesmen')
-                ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
-                ->where('rincian_asesmen.id_asesor', $id)
+            // Get base asesi data - using asesi_muk table which has consistent assignment data
+            $asesisQuery = DB::table('asesi_muk')
+                ->join('asesi', 'asesi_muk.id_asesi', '=', 'asesi.id_asesi')
+                ->where('asesi_muk.id_asesor', $id)
                 ->join('skema', 'asesi.id_skema', '=', 'skema.id_skema')
                 ->select('asesi.id_asesi', 'asesi.nama_asesi', 'skema.nama_skema', 'skema.nomor_skema');
             
