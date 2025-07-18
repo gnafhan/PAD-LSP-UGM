@@ -13,6 +13,7 @@ use App\Models\Asesor;
 use App\Models\UK;
 use App\Models\AsesiUK;
 use App\Models\AsesiApl02;
+use App\Models\HasilAsesmen;
 
 class AsesiController extends Controller
 {
@@ -53,7 +54,14 @@ class AsesiController extends Controller
             ];
         });
 
-        return view('home.home-asesi.assesi', compact('eventData'));
+        $hasilAsesmen = HasilAsesmen::join('rincian_asesmen', 'hasil_asesmen.id_rincian_asesmen', '=', 'rincian_asesmen.id_rincian_asesmen')
+        ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
+        ->where('asesi.id_user', $user->id_user)
+        ->select('hasil_asesmen.id', 'hasil_asesmen.status', 'hasil_asesmen.tanggal_selesai')
+        ->get();
+        // dd($hasilAsesmen);
+
+        return view('home.home-asesi.assesi', compact('eventData', 'hasilAsesmen'));
     }
 
     public function detailApl1($id)

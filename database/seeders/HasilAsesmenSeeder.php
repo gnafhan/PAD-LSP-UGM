@@ -19,6 +19,7 @@ class HasilAsesmenSeeder extends Seeder
             HasilAsesmen::create([
                 'id_rincian_asesmen' => $rincian->id_rincian_asesmen,
                 'status' => 'kompeten',
+                'tanggal_selesai' => now(),
             ]);
         }
     }

@@ -564,6 +564,83 @@
                     </table>
                   </div>
                 </div>
+                {{-- Hasil Asesmen --}}
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4 mt-7 flex items-center">
+                    <div class="flex-shrink-0 bg-indigo-100 text-indigo-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">4</div>
+                    Hasil Asesmen
+                  </h3>
+                  <div class="overflow-x-auto w-full bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <table class="min-w-full w-full divide-y divide-gray-200">
+                      <thead class="w-full">
+                        <tr class="w-full bg-red-400" >
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Selesai</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Hasil</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Umpan Balik -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-green-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Hasil Asesmen</div>
+                                <div class="text-xs text-gray-500">Hasil dari asesmen</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                           
+                            @php
+                              $status = $hasilAsesmen->first()->status ?? null;
+                              $isSelesai = $status === 'kompeten' || $status === 'tidak_kompeten';
+                            @endphp
+                            <span id="status-umpan_balik" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $isSelesai ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                              @if($isSelesai)
+                                <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Selesai
+                              @else
+                                <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Belum Selesai
+                              @endif
+                            </span>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-umpan_balik">{{ $hasilAsesmen->first()->tanggal_selesai ?? '-' }} WIB</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm  text-right">
+                          @php
+                            $status = $hasilAsesmen->first()->status ?? null;
+                          @endphp
+                          @if($status === 'kompeten')
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              Kompeten
+                            </span>
+                          @elseif($status === 'tidak_kompeten')
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                              Tidak Kompeten
+                            </span>
+                          @else
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              -
+                            </span>
+                          @endif
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -852,6 +929,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(result => {
             if (result.success && result.data) {
+              console.log(result.data);
                 updateProgressDisplay(result.data);
                 hideLoading();
             } else {
