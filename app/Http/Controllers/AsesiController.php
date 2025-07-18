@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IA02;
+use App\Models\IA02ProsesAssessment;
 use App\Models\JadwalMUK;
 use App\Models\TUK;
 use App\Models\UjianMUK;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -15,7 +18,7 @@ use App\Models\Skema;
 use App\Models\Asesor;
 use App\Models\UK;
 use App\Models\AsesiUK;
-use App\Models\AsesiApl02;
+use App\Models\AsesiApl02;;
 
 class AsesiController extends Controller
 {
@@ -147,7 +150,7 @@ class AsesiController extends Controller
         return view('home/home-asesi/FRIA-02/fria2', compact('data'));
     }
 
-    public function detail_fria02(Request $request)
+    public function detail_fria022(Request $request)
     {
         $user = Auth::user();
         $asesi = Asesi::where('id_user', $user->id_user)->first();
@@ -193,6 +196,38 @@ class AsesiController extends Controller
 //        @dd($data);
         return view('home/home-asesi/FRIA-02/detail', compact('data'));
     }
+    public function detail_fria02(Request $request)
+    {
+        $user = Auth::user();
+        $asesi = Asesi::where('id_user', $user->id_user)->first();
+
+        if (!$asesi) {
+            return redirect()->back()->with('error', 'Data Asesi tidak ditemukan.');
+        }
+
+        // Jadwal pelaksanaan asesmen
+        $jadwal = JadwalMUK::where('id_asesi', $asesi->id_asesi)->first();
+        $asesor = Asesor::find($jadwal->id_asesor ?? null);
+
+        // Mengambil UK
+        $daftar_id_uk = json_decode($asesi->skema->daftar_id_uk, true);
+        $uks = UK::with('elemen_uk')
+            ->whereIn('id_uk', $daftar_id_uk)
+            ->get();
+
+        $data = IA02::where('id_asesi', $asesi->id_asesi)
+            ->where('id_skema', $asesi->id_skema)
+            ->where('id_asesor', $asesor ? $asesor->id_asesor : null)
+            ->first();
+//        @dd($data->id);
+
+        $defaultProcess = IA02ProsesAssessment::where('ia02_id', $data->id)->get();
+
+//        @dd($defaultProcess);
+        return view('home/home-asesi/FRIA-02/detail', compact('data','uks', 'defaultProcess'));
+
+    }
+
 
 
 }
