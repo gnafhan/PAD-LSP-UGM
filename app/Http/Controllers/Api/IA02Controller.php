@@ -5,8 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\IA02Service;
 use App\Models\IA02;
+use App\Models\Asesor;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class IA02Controller extends Controller
 {
@@ -26,6 +31,13 @@ class IA02Controller extends Controller
             // Get asesor ID from header instead of auth
             $asesorId = $request->header('X-Asesor-ID');
             
+            // Debug logging
+            Log::info('IA02 API called', [
+                'asesiId' => $asesiId,
+                'asesorId' => $asesorId,
+                'headers' => $request->headers->all()
+            ]);
+            
             if (!$asesorId) {
                 return response()->json([
                     'status' => 'error',
@@ -35,7 +47,19 @@ class IA02Controller extends Controller
 
             $ia02 = $this->ia02Service->getIA02ForAsesi($asesiId, $asesorId);
             
+            Log::info('IA02 Service result', [
+                'ia02_found' => !!$ia02,
+                'ia02_id' => $ia02 ? $ia02->id : null
+            ]);
+            
             if (!$ia02) {
+                // Try to find any IA02 for this asesi without asesor filter for debugging
+                $anyIA02 = IA02::where('id_asesi', $asesiId)->first();
+                Log::info('Debug: Any IA02 for this asesi?', [
+                    'any_ia02_found' => !!$anyIA02,
+                    'any_ia02_asesor' => $anyIA02 ? $anyIA02->id_asesor : null
+                ]);
+                
                 // Create new IA02 if not exists
                 $ia02 = $this->ia02Service->createIA02ForAsesi($asesiId, $asesorId);
             }
@@ -151,43 +175,110 @@ class IA02Controller extends Controller
     }
 
     /**
-     * Sign IA02 by Asesor
+     * Sign IA02 by asesor menggunakan signature dari database
      */
-    public function signByAsesor(Request $request, $asesiId): JsonResponse
+    public function signByAsesor(Request $request, $id)
     {
         try {
-            // Get asesor ID from header
-            $asesorId = $request->header('X-Asesor-ID');
-            
-            if (!$asesorId) {
+            $validator = Validator::make($request->all(), [
+                'asesor_id' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Asesor ID tidak ditemukan dalam header'
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
                 ], 400);
             }
 
-            $ia02 = $this->ia02Service->getIA02ForAsesi($asesiId, $asesorId);
+            $ia02 = IA02::find($id);
             
             if (!$ia02) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Data IA02 tidak ditemukan'
+                    'message' => 'IA02 tidak ditemukan'
                 ], 404);
             }
 
-            $signatureData = $request->input('signature_data', null);
+            // Get asesor data
+            $asesor = Asesor::where('id_asesor', $request->asesor_id)->first();
             
-            $this->ia02Service->signByAsesor($ia02->id, $signatureData);
+            if (!$asesor) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Asesor tidak ditemukan'
+                ], 404);
+            }
+
+            // Check if asesor has already signed this IA02
+            if ($ia02->ttd_asesor && $ia02->waktu_tanda_tangan_asesor) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'IA02 sudah ditandatangani oleh asesor pada ' . $ia02->waktu_tanda_tangan_asesor
+                ], 400);
+            }
+
+            // Check if IA02 is in correct status for signing
+            if (!in_array($ia02->status, ['draft', 'submitted'])) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'IA02 tidak dapat ditandatangani. Status saat ini: ' . $ia02->status
+                ], 400);
+            }
+
+            // Check if asesor has valid signature in tanda_tangan_asesor table
+            $tandaTanganAsesor = DB::table('tanda_tangan_asesor')
+                ->where('id_asesor', $request->asesor_id)
+                ->where(function ($query) {
+                    $query->whereNull('valid_until')
+                          ->orWhere('valid_until', '>=', now());
+                })
+                ->orderBy('created_at', 'desc')
+                ->first();
+            
+            if (!$tandaTanganAsesor) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Asesor belum memiliki tanda tangan digital yang valid. Silakan upload tanda tangan terlebih dahulu.'
+                ], 400);
+            }
+
+            // Update IA02 with asesor signature and timestamp
+            $now = Carbon::now()->format('d-m-Y H:i:s') . ' WIB';
+            
+            $ia02->ttd_asesor = $tandaTanganAsesor->file_tanda_tangan;
+            $ia02->waktu_tanda_tangan_asesor = $now;
+            
+            // Update status based on signature status
+            if ($ia02->ttd_asesi) {
+                // Both asesor and asesi have signed - mark as completed
+                $ia02->status = 'completed';
+            } else {
+                // Only asesor has signed - mark as approved (waiting for asesi)
+                $ia02->status = 'approved';
+            }
+            
+            $ia02->save();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'IA02 berhasil ditandatangani oleh asesor'
+                'message' => 'IA02 berhasil ditandatangani oleh asesor',
+                'data' => [
+                    'signature_data' => [
+                        'ttd_asesor' => $ia02->ttd_asesor,
+                        'waktu_tanda_tangan' => $ia02->waktu_tanda_tangan_asesor,
+                        'nama_asesor' => $asesor->nama_asesor,
+                        'status' => $ia02->status,
+                        'status_message' => $ia02->status === 'approved' ? 'Menunggu tanda tangan asesi' : 'IA02 telah selesai'
+                    ]
+                ]
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Gagal menandatangani IA02: ' . $e->getMessage()
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -239,6 +330,111 @@ class IA02Controller extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal mengambil daftar IA02: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update instruksi kerja pada IA02
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateInstruksiKerja(Request $request, $id)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'instruksi_kerja' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 400);
+            }
+
+            $ia02 = IA02::find($id);
+            
+            if (!$ia02) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'IA02 tidak ditemukan'
+                ], 404);
+            }
+
+            // Update instruksi kerja
+            $ia02->instruksi_kerja = $request->instruksi_kerja;
+            $ia02->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Instruksi kerja berhasil disimpan',
+                'data' => [
+                    'id' => $ia02->id,
+                    'instruksi_kerja' => $ia02->instruksi_kerja
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+    /**
+     * Get IA02 detail including instruksi_kerja
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDetail($id)
+    {
+        try {
+            $ia02 = IA02::with(['asesi', 'asesor'])->find($id);
+            
+            if (!$ia02) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'IA02 tidak ditemukan'
+                ], 404);
+            }
+
+            // Debug logging for instruksi_kerja
+            Log::info('IA02 getDetail debug', [
+                'ia02_id' => $ia02->id,
+                'instruksi_kerja_value' => $ia02->instruksi_kerja,
+                'instruksi_kerja_type' => gettype($ia02->instruksi_kerja),
+                'instruksi_kerja_length' => $ia02->instruksi_kerja ? strlen($ia02->instruksi_kerja) : 0,
+                'instruksi_kerja_preview' => $ia02->instruksi_kerja ? substr($ia02->instruksi_kerja, 0, 100) : null
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data IA02 berhasil diambil',
+                'data' => [
+                    'detail_ia02' => $ia02,
+                    'debug_instruksi_kerja' => [
+                        'value' => $ia02->instruksi_kerja,
+                        'type' => gettype($ia02->instruksi_kerja),
+                        'length' => $ia02->instruksi_kerja ? strlen($ia02->instruksi_kerja) : 0,
+                        'preview' => $ia02->instruksi_kerja ? substr($ia02->instruksi_kerja, 0, 100) : null,
+                        'is_null' => is_null($ia02->instruksi_kerja),
+                        'is_empty' => empty($ia02->instruksi_kerja)
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
         }
     }

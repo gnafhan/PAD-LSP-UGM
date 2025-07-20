@@ -50,16 +50,7 @@ class IA02 extends Model
         return $this->belongsTo(Skema::class, 'id_skema', 'id_skema');
     }
 
-    public function content()
-    {
-        return $this->hasMany(IA02Content::class, 'ia02_id', 'id');
-    }
 
-    public function instruksiKerjaContent()
-    {
-        return $this->hasOne(IA02Content::class, 'ia02_id', 'id')
-                    ->where('content_type', 'instruksi_kerja');
-    }
 
     public function kompetensis()
     {
@@ -97,30 +88,5 @@ class IA02 extends Model
         ];
 
         return $statuses[$this->status] ?? 'Unknown';
-    }
-    
-    // Accessor to get instruksi_kerja from content if available
-    public function getInstruksiKerjaAttribute($value)
-    {
-        // If there's content for instruksi_kerja, return that instead
-        $content = $this->instruksiKerjaContent;
-        if ($content && !empty($content->html_content)) {
-            return $content->html_content;
-        }
-        
-        // Otherwise return the original field value
-        return $value;
-    }
-    
-    // Method to get plain text version of instruksi kerja
-    public function getInstruksiKerjaPlainText()
-    {
-        $content = $this->instruksiKerjaContent;
-        if ($content && !empty($content->text_content)) {
-            return $content->text_content;
-        }
-        
-        // Fallback to stripping HTML from the original field
-        return strip_tags($this->attributes['instruksi_kerja'] ?? '');
     }
 }

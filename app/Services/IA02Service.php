@@ -229,9 +229,7 @@ class IA02Service
             'asesor', 
             'skema', 
             'kompetensis.uk', 
-            'prosesAssessments.instruksiKerjas',
-            'content', // Load all content
-            'instruksiKerjaContent' // Load instruksi kerja content specifically
+            'prosesAssessments.instruksiKerjas'
         ])->where('id_asesi', $asesiId);
 
         if ($asesorId) {

@@ -146,9 +146,14 @@ Route::middleware('api_key')->group(function () {
         // Get data
         Route::get('/asesor/{id_asesi}', [IA02Controller::class, 'getIA02ForAsesor']);
         Route::get('/list', [IA02Controller::class, 'getIA02ListForAsesor']);
+        Route::get('/{id}', [IA02Controller::class, 'getDetail']);
         
         // Save/Update data
         Route::post('/asesor/{id_asesi}/update', [IA02Controller::class, 'updateIA02']);
         Route::post('/asesor/{id_asesi}/sign', [IA02Controller::class, 'signByAsesor']);
+        
+        // New routes for instruksi kerja and signing
+        Route::put('/{id}/update-instruksi-kerja', [IA02Controller::class, 'updateInstruksiKerja']);
+        Route::post('/{id}/sign-asesor', [IA02Controller::class, 'signByAsesor']);
     });
 });

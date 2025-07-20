@@ -198,7 +198,12 @@
                 </div>
                 
                 <!-- Button Simpan -->
-                <div class="flex justify-end mt-4">
+                <div class="flex justify-between mt-4">
+                    <div class="flex gap-2">
+                        <button id="loadTemplateBtn" type="button" class="inline-flex justify-center rounded-md bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 text-sm/6 font-medium focus:outline-none">
+                            Load Template Default
+                        </button>
+                    </div>
                     <button id="simpanInstruksiKerja" type="button" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none">
                         Simpan Instruksi Kerja
                     </button>
@@ -207,7 +212,6 @@
 
             <script>
                 // Quill.js Rich Text Editor
-                let quillEditor;
                 const QUILL_DEBUG = true; // Set to false in production
                 
                 function quillLog(message, ...args) {
@@ -247,33 +251,35 @@
                     Size.whitelist = ['10px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px'];
                     Quill.register(Size, true);
                     
-                    // Initialize Quill with custom toolbar (tanpa tombol image)
+                    // Initialize Quill with simple toolbar (tanpa fitur upload gambar)
                     try {
                         const modules = {
-                            toolbar: {
-                                container: [
-                                    [{ 'font': [] }],
-                                    [{ 'size': ['small', false, 'large', 'huge'] }],
-                                    [{ 'header': [1, 2, 3, false] }],
-                                    ['bold', 'italic', 'underline', 'strike'],
-                                    [{ 'color': [] }, { 'background': [] }],
-                                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                    [{ 'indent': '-1'}, { 'indent': '+1' }],
-                                    [{ 'direction': 'rtl' }],
-                                    [{ 'align': [] }],
-                                    ['code-block'],
-                                    ['link'],
-                                    ['clean']
-                                ]
-                                // Hapus handlers: { image: imageHandler }
-                            }
+                            toolbar: [
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['bold', 'italic', 'underline'],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                                [{ 'align': [] }],
+                                ['clean']
+                            ]
                         };
                         
-                        quillEditor = new Quill('#instruksi-kerja-editor', {
+                        // Initialize Quill editor and make it globally accessible
+                        const quillEditor = new Quill('#instruksi-kerja-editor', {
                             theme: 'snow',
                             placeholder: 'Tulis instruksi kerja disini...',
                             modules: modules
                         });
+                        
+                        // Make quillEditor globally accessible
+                        window.quillEditor = quillEditor;
+                        
+                        console.log('✅ Quill.js berhasil diinisialisasi!');
+                        console.log('quillEditor:', quillEditor);
+                        console.log('quillEditor.root:', quillEditor.root);
+                        
+                        // Set quill ready flag
+                        window.quillReady = true;
                         
                         quillLog('✅ Quill.js initialized successfully!');
                     } catch (error) {
@@ -283,7 +289,7 @@
                     
                     // Auto-save functionality
                     let saveTimeout;
-                    quillEditor.on('text-change', function() {
+                    window.quillEditor.on('text-change', function() {
                         clearTimeout(saveTimeout);
                         saveTimeout = setTimeout(() => {
                             quillLog('✅ Content auto-saved');
@@ -292,105 +298,39 @@
                     });
                     
                     // Save button functionality
-                    document.getElementById('simpanInstruksiKerja').addEventListener('click', function() {
-                        saveInstruksiKerja();
-                    });
+                    const simpanInstruksiKerjaBtn = document.getElementById('simpanInstruksiKerja');
+                    if (simpanInstruksiKerjaBtn) {
+                        simpanInstruksiKerjaBtn.addEventListener('click', function() {
+                            console.log('Tombol simpan instruksi kerja diklik');
+                            saveInstruksiKerja();
+                        });
+                        console.log('Event listener untuk simpan instruksi kerja berhasil ditambahkan');
+                    } else {
+                        console.error('Tombol simpan instruksi kerja tidak ditemukan!');
+                    }
+
+                    // Load Template button functionality
+                    const loadTemplateBtn = document.getElementById('loadTemplateBtn');
+                    if (loadTemplateBtn) {
+                        loadTemplateBtn.addEventListener('click', function() {
+                            console.log('Tombol load template diklik');
+                            if (confirm('Apakah Anda yakin ingin memuat template default? Ini akan mengganti konten yang sudah ada.')) {
+                                loadDefaultTemplate();
+                                showMessage('Template default berhasil dimuat', 'success', 3000);
+                            }
+                        });
+                        console.log('Event listener untuk load template berhasil ditambahkan');
+                    } else {
+                        console.error('Tombol load template tidak ditemukan!');
+                    }
                 });
                 
-                // Function to save final content and move images from temp to permanent
-                async function saveInstruksiKerja() {
-                    if (!quillEditor) {
-                        alert('Editor belum siap!');
-                        return;
-                    }
-                    
-                    if (!currentAsesiId || !currentIA02Data) {
-                        alert('Pilih asesi terlebih dahulu!');
-                        return;
-                    }
-                    
-                    const button = document.getElementById('simpanInstruksiKerja');
-                    const originalText = button.innerHTML;
-                    
-                    // Show loading state
-                    button.disabled = true;
-                    button.innerHTML = `
-                        <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Memproses gambar...
-                    `;
-                    
-                    try {
-                        // Get current HTML content
-                        const htmlContent = quillEditor.root.innerHTML;
-                        const deltaContent = JSON.stringify(quillEditor.getContents());
-                        
-                        console.log('Saving content for IA02 ID:', currentIA02Data.detail_ia02.id);
-                        console.log('HTML Content:', htmlContent);
-                        
-                        // Send content with temporary images to backend
-                        // Backend will process and move temp images to permanent storage
-                        const response = await fetch('/save-content-with-images', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                ia02_id: currentIA02Data.detail_ia02.id,
-                                content_type: 'instruksi_kerja',
-                                html_content: htmlContent,
-                                delta_content: deltaContent
-                            })
-                        });
-                        
-                        const data = await response.json();
-                        
-                        if (data.success) {
-                            // Update editor with permanent URLs if provided
-                            if (data.updated_html_content) {
-                                quillEditor.root.innerHTML = data.updated_html_content;
-                                console.log('✅ Editor updated with permanent URLs');
-                            }
-                            
-                            // Show success message
-                            button.innerHTML = `
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                Tersimpan!
-                            `;
-                            button.classList.remove('from-biru', 'to-ungu');
-                            button.classList.add('bg-green-600');
-                            
-                            setTimeout(() => {
-                                button.innerHTML = originalText;
-                                button.classList.remove('bg-green-600');
-                                button.classList.add('from-biru', 'to-ungu');
-                                button.disabled = false;
-                            }, 2000);
-                            
-                            console.log('✅ Instruksi kerja berhasil disimpan!');
-                            showMessage('Instruksi kerja berhasil disimpan', 'success', 3000);
-                        } else {
-                            throw new Error(data.message || 'Gagal menyimpan');
-                        }
-                    } catch (error) {
-                        console.error('Save error:', error);
-                        showNotificationModal('Error', `Gagal menyimpan: ${error.message}`, 'error');
-                        
-                        // Restore button
-                        button.innerHTML = originalText;
-                        button.disabled = false;
-                    }
-                }
+
                 
                 // Helper functions for content management
                 function saveEditorContent() {
-                    if (quillEditor) {
-                        const content = quillEditor.root.innerHTML;
+                    if (window.quillEditor) {
+                        const content = window.quillEditor.root.innerHTML;
                         console.log('Editor content:', content);
                         return content;
                     }
@@ -398,52 +338,27 @@
                 }
                 
                 function loadEditorContent(content) {
-                    if (quillEditor) {
-                        quillEditor.root.innerHTML = content || '';
-                    }
-                }
-
-                // Load saved content from database
-                async function loadSavedContent(ia02Id, contentType = 'instruksi_kerja') {
-                    if (!ia02Id) {
-                        console.log('No IA02 ID provided for loading content');
-                        return;
-                    }
-
-                    try {
-                        console.log('Loading saved content for IA02 ID:', ia02Id);
-                        
-                        const response = await fetch(`/load-content/${ia02Id}/${contentType}`, {
-                            method: 'GET',
-                            headers: {
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            }
-                        });
-
-                        const data = await response.json();
-                        
-                        if (data.success) {
-                            if (data.content && data.content.trim() !== '') {
-                                console.log('Loading saved content:', data.content);
-                                loadEditorContent(data.content);
-                                showMessage('Konten tersimpan berhasil dimuat', 'success', 3000);
-                            } else {
-                                console.log('No saved content found, using default template');
-                                loadDefaultTemplate();
-                            }
-                        } else {
-                            console.log('Failed to load content:', data.message);
-                            loadDefaultTemplate();
+                    console.log('loadEditorContent dipanggil dengan content:', content ? 'ada content' : 'content kosong');
+                    console.log('window.quillEditor status:', !!window.quillEditor);
+                    
+                    if (window.quillEditor && window.quillEditor.root) {
+                        console.log('Memuat content ke Quill editor...');
+                        window.quillEditor.root.innerHTML = content || '';
+                        console.log('✅ Content berhasil dimuat ke editor');
+                    } else {
+                        console.error('❌ Quill editor tidak tersedia untuk load content');
+                        console.log('window.quillEditor:', window.quillEditor);
+                        if (window.quillEditor) {
+                            console.log('window.quillEditor.root:', window.quillEditor.root);
                         }
-                    } catch (error) {
-                        console.error('Error loading saved content:', error);
-                        loadDefaultTemplate();
                     }
                 }
+
+                // Note: loadSavedContent function removed - we now use data directly from loadIA02Data response
 
                 // Load default template content
                 function loadDefaultTemplate() {
+                    console.log('Loading default template...');
                     const defaultContent = `
                         <p><em>Tulis disini:</em></p>
                         <p><strong>Skenario</strong></p>
@@ -465,6 +380,163 @@
                         </ol>
                     `;
                     loadEditorContent(defaultContent);
+                    console.log('✅ Default template loaded');
+                }
+            </script>
+
+            <!-- Global Functions Script -->
+            <script>
+                // Function to save instruksi kerja to IA02 table
+                async function saveInstruksiKerja() {
+                    console.log('=== saveInstruksiKerja dipanggil ===');
+                    console.log('window.quillEditor:', window.quillEditor);
+                    
+                    // Use global variables as fallback for cross-script access
+                    const asesiId = currentAsesiId || window.currentAsesiId;
+                    const ia02Data = currentIA02Data || window.currentIA02Data;
+                    
+                    console.log('asesiId:', asesiId);
+                    console.log('ia02Data:', ia02Data);
+                    
+                    // Cek apakah Quill editor sudah siap
+                    if (!window.quillEditor) {
+                        console.error('Quill editor belum diinisialisasi!');
+                        window.showNotificationModal('Error', 'Editor belum siap. Silakan tunggu sebentar dan coba lagi.', 'error');
+                        return;
+                    }
+
+                    // Cek apakah Quill editor root element ada
+                    if (!window.quillEditor.root) {
+                        console.error('Quill editor root tidak ditemukan!');
+                        window.showNotificationModal('Error', 'Editor tidak valid. Silakan refresh halaman.', 'error');
+                        return;
+                    }
+                    
+                    if (!asesiId) {
+                        console.error('asesiId tidak ditemukan');
+                        window.showNotificationModal('Error', 'Pilih asesi terlebih dahulu!', 'error');
+                        return;
+                    }
+
+                    if (!ia02Data || !ia02Data.detail_ia02 || !ia02Data.detail_ia02.id) {
+                        console.error('Data IA02 tidak ditemukan atau tidak lengkap');
+                        console.log('ia02Data:', ia02Data);
+                        window.showNotificationModal('Error', 'Data IA02 tidak ditemukan. Silakan muat ulang data asesi.', 'error');
+                        return;
+                    }
+                    
+                    const button = document.getElementById('simpanInstruksiKerja');
+                    if (!button) {
+                        console.error('Tombol simpan tidak ditemukan!');
+                        return;
+                    }
+                    
+                    const originalText = button.innerHTML;
+                    
+                    // Show loading state
+                    button.disabled = true;
+                    button.innerHTML = `
+                        <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Menyimpan...
+                    `;
+                    
+                    try {
+                        // Get current HTML content from Quill editor
+                        const htmlContent = window.quillEditor.root.innerHTML;
+                        console.log('Content yang akan disimpan:', htmlContent);
+                        
+                        // Validasi content tidak kosong
+                        if (!htmlContent || htmlContent.trim() === '' || htmlContent.trim() === '<p><br></p>') {
+                            window.showNotificationModal('Peringatan', 'Instruksi kerja tidak boleh kosong!', 'warning');
+                            button.innerHTML = originalText;
+                            button.disabled = false;
+                            return;
+                        }
+                        
+                        // Build API config
+                        const apiConfig = {
+                            url: @json(config('services.api.url')),
+                            key: @json(config('services.api.key')),
+                            asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+                            csrfToken: @json(csrf_token())
+                        };
+
+                        const apiHeaders = {
+                            'Content-Type': 'application/json',
+                            'API-KEY': apiConfig.key,
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': apiConfig.csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-Asesor-ID': apiConfig.asesorId
+                        };
+                        
+                        // Save to IA02 instruksi_kerja column via API
+                        const ia02UpdateUrl = `${apiConfig.url}/asesmen/ia02/${ia02Data.detail_ia02.id}/update-instruksi-kerja`;
+                        
+                        console.log('URL API:', ia02UpdateUrl);
+                        console.log('IA02 ID:', ia02Data.detail_ia02.id);
+                        
+                        const response = await fetch(ia02UpdateUrl, {
+                            method: 'PUT',
+                            headers: apiHeaders,
+                            body: JSON.stringify({
+                                instruksi_kerja: htmlContent
+                            })
+                        });
+                        
+                        console.log('Response status:', response.status);
+                        
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('Response error:', errorText);
+                            throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+                        }
+                        
+                        const data = await response.json();
+                        console.log('Response data:', data);
+                        
+                        if (data.status === 'success') {
+                            // Update local data
+                            ia02Data.detail_ia02.instruksi_kerja = htmlContent;
+                            
+                            // Update global variables too
+                            if (currentIA02Data) currentIA02Data.detail_ia02.instruksi_kerja = htmlContent;
+                            if (window.currentIA02Data) window.currentIA02Data.detail_ia02.instruksi_kerja = htmlContent;
+                            
+                            // Show success message
+                            button.innerHTML = `
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Tersimpan!
+                            `;
+                            button.classList.remove('from-biru', 'to-ungu');
+                            button.classList.add('bg-green-600');
+                            
+                            console.log('✅ Instruksi kerja berhasil disimpan ke database!');
+                            window.showNotificationModal('Sukses', 'Instruksi kerja berhasil disimpan ke database!', 'success');
+                            
+                            setTimeout(() => {
+                                button.innerHTML = originalText;
+                                button.classList.remove('bg-green-600');
+                                button.classList.add('from-biru', 'to-ungu');
+                                button.disabled = false;
+                            }, 2000);
+                            
+                        } else {
+                            throw new Error(data.message || 'Gagal menyimpan ke database');
+                        }
+                    } catch (error) {
+                        console.error('Save error:', error);
+                        window.showNotificationModal('Error', `Gagal menyimpan instruksi kerja: ${error.message}`, 'error');
+                        
+                        // Restore button
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }
                 }
             </script>
 
@@ -486,7 +558,7 @@
                         <div class="text-center">
                             <div class="mb-4">
                                 <p class="text-sm text-gray-600 mb-2">Tanggal:</p>
-                                <p class="text-sm font-medium">15 Maret 2023</p>
+                                <p id="tanggalTandaTanganAsesi" class="text-sm font-medium">-</p>
                             </div>
                             
                             <!-- Area Tanda Tangan -->
@@ -496,34 +568,50 @@
                             
                             <div class="border-t border-gray-300 pt-2">
                                 <p class="text-sm font-medium">Asesi</p>
-                                <p class="text-sm text-gray-600">Muhammad Rifai</p>
+                                <p id="namaAsesiTandaTangan" class="text-sm text-gray-600">Pilih asesi untuk melihat nama</p>
                             </div>
                         </div>
 
                         <!-- Kolom Asesor -->
                         <div class="text-center">
-                            <div class="mb-4">
-                                <p class="text-sm text-gray-600 mb-2">Tanggal:</p>
-                                <p class="text-sm font-medium">15 Maret 2023</p>
+                            <label for="is_asesor_signing" class="block text-sm/6 font-medium text-sidebar_font text-center mb-2">
+                                Tanda Tangan Asesor
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <div id="asesor-signature-upload-area" class="w-full flex flex-col items-center justify-center rounded-lg border border-dashed border-border_input px-6 py-10 hover:bg-blue-50 cursor-pointer min-h-[200px]">
+                                <div class="text-center" id="asesor-signature-content">
+                                    <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                                    </svg>
+                                    <div class="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
+                                        <span class="font-semibold text-biru">Tanda Tangan dari Biodata</span>
+                                    </div>
+                                    <p class="text-xs leading-5 text-gray-500">Akan menggunakan tanda tangan dari biodata</p>
+                                </div>
+                                <!-- Preview Image Asesor -->
+                                <div id="asesor-signature-preview" class="hidden">
+                                    <img id="asesor-signature-image" src="" alt="Tanda Tangan Asesor" class="max-h-48 w-auto mx-auto rounded-lg p-2 border border-gray-200 bg-white shadow-sm">
+                                    <p class="text-xs text-center mt-2 text-gray-500">Tanda tangan asesor dari biodata</p>
+                                    <p id="tanggalTandaTanganAsesor" class="text-xs text-center text-gray-500">Tanggal: -</p>
+                                </div>
                             </div>
-                            
-                            <!-- Area Tanda Tangan -->
-                            <div class="h-24 border border-dashed border-gray-300 rounded-lg mb-4 flex items-center justify-center bg-gray-50">
-                                <p class="text-gray-400 text-sm">Area Tanda Tangan</p>
-                            </div>
-                            
-                            <div class="border-t border-gray-300 pt-2">
-                                <p class="text-sm font-medium">Asesor</p>
-                                <p class="text-sm text-gray-600">Nafa Popcorn</p>
+
+                            <!-- Checkbox untuk persetujuan tanda tangan -->
+                            <div class="mt-4 flex items-center justify-center">
+                                <input id="is_asesor_signing" name="is_asesor_signing" type="checkbox" value="true"
+                                       class="w-4 h-4 text-biru bg-gray-100 border-gray-300 rounded focus:ring-biru focus:ring-2">
+                                <label for="is_asesor_signing" class="ms-2 text-sm font-medium text-sidebar_font">
+                                    Data yang saya masukkan sudah benar dan saya menyetujui formulir IA.02 ini
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Button Simpan dan Cetak -->
-                <div class="flex justify-end gap-3 mt-6">
-                    <button id="simpanIA02" type="button" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none">
-                        Simpan Dan Setujui
+                <!-- Button Simpan -->
+                <div class="flex justify-end pe-4">
+                    <button id="simpanIA02" type="button" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6">
+                        Saya Menyetujui
                     </button>
                 </div>
             </div>
@@ -534,6 +622,81 @@
     </div>
     <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
+    </div>
+</div>
+
+<!-- CSS untuk Upload Area -->
+<style>
+.upload-area:hover {
+    border-color: #3B82F6;
+    background-color: #EFF6FF;
+}
+
+.upload-area.dragover {
+    border-color: #3B82F6;
+    background-color: #EFF6FF;
+    transform: scale(1.02);
+}
+
+#asesor-signature-preview img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    padding: 8px;
+    background: white;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Fix untuk flex layout pada upload area */
+.upload-area {
+    min-height: 200px;
+}
+</style>
+
+<!-- Modal Konfirmasi -->
+<div id="confirmationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
+                <svg class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4" id="confirmationTitle">Konfirmasi Persetujuan</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500" id="confirmationMessage">
+                    Apakah Anda yakin ingin menyetujui dan menandatangani formulir FR.IA-02 ini?
+                    <br><br>
+                    <strong class="text-red-600">Perhatian:</strong> Data yang sudah disetujui dan ditandatangani tidak dapat diubah lagi.
+                    <br><br>
+                    Pastikan semua informasi sudah benar sebelum melanjutkan.
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="confirmYesBtn" class="px-4 py-2 bg-gradient-to-r from-biru to-ungu text-white text-base font-medium rounded-md w-20 mr-2 hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    Ya
+                </button>
+                <button id="confirmNoBtn" class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-20 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Batal
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -550,13 +713,9 @@ document.addEventListener('DOMContentLoaded', function () {
         asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
         csrfToken: @json(csrf_token())
     };
-
-    // Debug logging
-    console.log('API Config:', apiConfig);
     
     // Fallback for asesorId if not available
     if (!apiConfig.asesorId) {
-        console.warn('Asesor ID not found, using default test ID');
         apiConfig.asesorId = 'ASESOR202500001'; // Default test asesor ID
     }
 
@@ -566,6 +725,17 @@ document.addEventListener('DOMContentLoaded', function () {
     let kompetensiData = [];
     let asesiProgressData = {}; // Store progress data for each asesi
     let isFormSigned = false; // Track if form is already signed by asesor
+    let asesorSignatureUrl = null; // Store asesor signature URL from biodata
+    let recordExists = false; // Track if IA02 record exists
+    
+    // Make these variables globally accessible for cross-script access
+    window.currentAsesiId = null;
+    window.currentIA02Data = null;
+    
+    // Don't overwrite existing quillEditor if it's already initialized
+    if (typeof window.quillEditor === 'undefined') {
+        window.quillEditor = null; // Global quill editor variable - accessible across script blocks
+    }
 
     // Function to show error message
     function showError(message) {
@@ -618,7 +788,42 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Modal functions
-    function showNotificationModal(title, message, type = 'info') {
+    function showConfirmationModal(title, message, onConfirm, onCancel = null) {
+        const modal = document.getElementById('confirmationModal');
+        const titleElement = document.getElementById('confirmationTitle');
+        const messageElement = document.getElementById('confirmationMessage');
+        const yesBtn = document.getElementById('confirmYesBtn');
+        const noBtn = document.getElementById('confirmNoBtn');
+
+        titleElement.textContent = title;
+        messageElement.innerHTML = message;
+
+        // Remove existing event listeners
+        const newYesBtn = yesBtn.cloneNode(true);
+        const newNoBtn = noBtn.cloneNode(true);
+        yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+        noBtn.parentNode.replaceChild(newNoBtn, noBtn);
+
+        // Add new event listeners
+        newYesBtn.addEventListener('click', function() {
+            hideConfirmationModal();
+            if (onConfirm) onConfirm();
+        });
+
+        newNoBtn.addEventListener('click', function() {
+            hideConfirmationModal();
+            if (onCancel) onCancel();
+        });
+
+        modal.classList.remove('hidden');
+    }
+
+    function hideConfirmationModal() {
+        document.getElementById('confirmationModal').classList.add('hidden');
+    }
+
+    // Modal functions
+    window.showNotificationModal = function(title, message, type = 'info') {
         // Create notification modal if not exists
         let modal = document.getElementById('notificationModal');
         if (!modal) {
@@ -697,7 +902,7 @@ document.addEventListener('DOMContentLoaded', function () {
         iconElement.innerHTML = iconHtml;
 
         modal.classList.remove('hidden');
-    }
+    };
 
     function hideNotificationModal() {
         const modal = document.getElementById('notificationModal');
@@ -712,9 +917,62 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Utility function to show messages
-    function showMessage(message, type = 'info', duration = 5000) {
-        console.log(`[${type.toUpperCase()}] ${message}`);
+    window.showMessage = function(message, type = 'info', duration = 5000) {
         // You can implement additional message display logic here if needed
+    };
+
+    // Load asesor signature from biodata
+    function loadAsesorSignature() {
+        console.log('Loading asesor signature from:', biodataApiUrl);
+        
+        fetch(biodataApiUrl, {
+            method: 'GET',
+            headers: apiHeaders
+        })
+        .then(response => {
+            console.log('Biodata response status:', response.status);
+            return response.json();
+        })
+        .then(result => {
+            console.log('Biodata result:', result);
+            
+            if (result.success && result.data?.file_url_tanda_tangan) {
+                asesorSignatureUrl = "{{ url('') }}" + result.data.file_url_tanda_tangan;
+                console.log('Asesor signature URL:', asesorSignatureUrl);
+                console.log('Signature file path from API:', result.data.file_url_tanda_tangan);
+                
+                // Check if there's additional signature data we should be aware of
+                if (result.data.tanda_tangan_asesor) {
+                    console.log('Additional signature data found:', result.data.tanda_tangan_asesor);
+                }
+                
+                // Show asesor signature preview if available
+                const asesorImage = document.getElementById('asesor-signature-image');
+                const asesorContent = document.getElementById('asesor-signature-content');
+                const asesorPreview = document.getElementById('asesor-signature-preview');
+
+                if (asesorImage && asesorContent && asesorPreview && asesorSignatureUrl) {
+                    asesorImage.src = asesorSignatureUrl;
+                    asesorContent.classList.add('hidden');
+                    asesorPreview.classList.remove('hidden');
+                    console.log('Asesor signature preview displayed');
+                } else {
+                    console.log('Missing signature elements:', {
+                        asesorImage: !!asesorImage,
+                        asesorContent: !!asesorContent,
+                        asesorPreview: !!asesorPreview,
+                        asesorSignatureUrl: !!asesorSignatureUrl
+                    });
+                }
+            } else {
+                console.log('No signature found in biodata. Full biodata response:', result);
+                asesorSignatureUrl = null;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading asesor signature:', error);
+            asesorSignatureUrl = null;
+        });
     }
 
     // Load IA02 progress for each asesi
@@ -993,6 +1251,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Show summary function
     window.showSummary = function(asesiId, namaAsesi, namaSkema, progressPercent, completedSteps, totalSteps) {
         currentAsesiId = asesiId;
+        window.currentAsesiId = asesiId; // Update global variable
         
         // Find the asesi data from loaded data
         const asesiData = daftarAsesiData.find(a => a.id_asesi == asesiId);
@@ -1007,6 +1266,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (breadcrumbElement && breadcrumbContainer) {
             breadcrumbElement.textContent = namaAsesi;
             breadcrumbContainer.classList.remove('hidden');
+        }
+
+        // Update nama asesi di bagian tanda tangan immediately
+        const namaAsesiTandaTangan = document.getElementById('namaAsesiTandaTangan');
+        if (namaAsesiTandaTangan) {
+            namaAsesiTandaTangan.textContent = namaAsesi;
         }
 
         // Update form data
@@ -1061,41 +1326,43 @@ document.addEventListener('DOMContentLoaded', function () {
     async function loadIA02Data(asesiId) {
         try {
             const ia02ApiUrl = `${apiConfig.url}/asesmen/ia02/asesor/${asesiId}`;
-            console.log('Loading IA02 data for asesi:', asesiId);
-            console.log('API URL:', ia02ApiUrl);
-            console.log('API Headers:', apiHeaders);
             
             const response = await fetch(ia02ApiUrl, {
                 method: 'GET',
                 headers: apiHeaders
             });
 
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Response error:', errorText);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
             }
 
             const result = await response.json();
 
-            if (result.status === 'success' && result.data.record_exists) {
-                const ia02Data = result.data;
-                currentIA02Data = ia02Data;
+                if (result.status === 'success' && result.data.detail_ia02) {
+                    const ia02Data = result.data;
+                    currentIA02Data = ia02Data;
+                    window.currentIA02Data = ia02Data; // Update global variable
 
-                // Update form with IA02 data
-                updateFormWithIA02Data(ia02Data.detail_ia02);
-                
-                // Load kompetensis table
-                loadKompetensiTable(ia02Data.kompetensis);
-                
-                // Load instruksi kerja editor - now loads from database
-                loadSavedContent(ia02Data.detail_ia02.id, 'instruksi_kerja');
-                
-                // Load proses assessment tables
-                loadProsesAssessmentTables(ia02Data.proses_assessments);
+                    // Update form with IA02 data
+                    updateFormWithIA02Data(ia02Data.detail_ia02);
+                    
+                    // Load kompetensis table
+                    loadKompetensiTable(ia02Data.kompetensis);
+                    
+                    // Load instruksi kerja langsung dengan data dari database
+                    const instruksiKerjaData = ia02Data.detail_ia02.instruksi_kerja;
+                    
+                    // Load immediately if Quill is ready, otherwise wait and retry
+                    if (window.quillReady && window.quillEditor && window.quillEditor.root) {
+                        window.loadInstruksiKerjaFromData(instruksiKerjaData);
+                    } else {
+                        setTimeout(() => {
+                            window.loadInstruksiKerjaFromData(instruksiKerjaData);
+                        }, 1000);
+                    }
+                    
+                    // Load proses assessment tables
+                    loadProsesAssessmentTables(ia02Data.proses_assessments);
                 
                 showMessage('Data IA02 berhasil dimuat', 'success', 3000);
             } else {
@@ -1103,7 +1370,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
         } catch (error) {
-            console.error('Error loading IA02 data:', error);
             showNotificationModal('Error', `Gagal memuat data IA02: ${error.message}`, 'error');
         }
     }
@@ -1121,6 +1387,74 @@ document.addEventListener('DOMContentLoaded', function () {
         if (namaPeserta) namaPeserta.textContent = ia02Detail.nama_peserta || 'Tidak tersedia';
         if (namaAsesor) namaAsesor.textContent = ia02Detail.nama_asesor || 'Tidak tersedia';
         if (tuk) tuk.textContent = ia02Detail.tuk || 'Tidak tersedia';
+
+        // Update nama asesi di bagian tanda tangan
+        const namaAsesiTandaTangan = document.getElementById('namaAsesiTandaTangan');
+        if (namaAsesiTandaTangan) {
+            namaAsesiTandaTangan.textContent = ia02Detail.nama_peserta || 'Nama Asesi';
+        }
+
+        // Update tanggal tanda tangan asesi jika sudah ada
+        const tanggalAsesiElement = document.getElementById('tanggalTandaTanganAsesi');
+        if (tanggalAsesiElement) {
+            tanggalAsesiElement.textContent = ia02Detail.waktu_tanda_tangan_asesi || '-';
+        }
+
+        // Check if IA02 record exists and is already signed
+        recordExists = ia02Detail.id && ia02Detail.waktu_tanda_tangan_asesor && ia02Detail.ttd_asesor;
+
+        if (recordExists) {
+            // Show existing signature and disable form
+            const asesorImage = document.getElementById('asesor-signature-image');
+            const asesorContent = document.getElementById('asesor-signature-content');
+            const asesorPreview = document.getElementById('asesor-signature-preview');
+            const tanggalElement = document.getElementById('tanggalTandaTanganAsesor');
+
+            if (asesorImage && asesorContent && asesorPreview) {
+                // Build complete signature URL
+                const signatureUrl = ia02Detail.ttd_asesor.startsWith('http') 
+                    ? ia02Detail.ttd_asesor 
+                    : "{{ url('') }}/storage/tanda_tangan/" + ia02Detail.ttd_asesor;
+                
+                console.log('Setting asesor signature image from IA02 data:', signatureUrl);
+                asesorImage.src = signatureUrl;
+                asesorContent.classList.add('hidden');
+                asesorPreview.classList.remove('hidden');
+            }
+
+            if (tanggalElement) {
+                tanggalElement.textContent = ia02Detail.waktu_tanda_tangan_asesor || '-';
+            }
+
+            // Disable checkbox and form
+            const signingCheckbox = document.getElementById('is_asesor_signing');
+            const submitButton = document.getElementById('simpanIA02');
+
+            if (signingCheckbox) {
+                signingCheckbox.checked = true;
+                signingCheckbox.disabled = true;
+            }
+
+            if (submitButton) {
+                submitButton.textContent = 'Sudah Disetujui';
+                submitButton.disabled = true;
+                submitButton.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru');
+                submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+            }
+        } else {
+            // Show asesor signature preview if available from biodata
+            if (asesorSignatureUrl) {
+                const asesorImage = document.getElementById('asesor-signature-image');
+                const asesorContent = document.getElementById('asesor-signature-content');
+                const asesorPreview = document.getElementById('asesor-signature-preview');
+
+                if (asesorImage && asesorContent && asesorPreview) {
+                    asesorImage.src = asesorSignatureUrl;
+                    asesorContent.classList.add('hidden');
+                    asesorPreview.classList.remove('hidden');
+                }
+            }
+        }
     }
 
     // Load kompetensi table
@@ -1154,19 +1488,70 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Load instruksi kerja editor
     function loadInstruksiKerjaEditor(instruksiKerja) {
-        if (typeof quillEditor !== 'undefined' && quillEditor && instruksiKerja) {
-            quillEditor.root.innerHTML = instruksiKerja;
+        if (typeof window.quillEditor !== 'undefined' && window.quillEditor && instruksiKerja) {
+            window.quillEditor.root.innerHTML = instruksiKerja;
         }
     }
+
+    // Load instruksi kerja from data already loaded
+    window.loadInstruksiKerjaFromData = function(instruksiKerja) {
+        // Check if Quill is ready using multiple approaches
+        const isQuillReady = (window.quillReady && 
+                             typeof window.quillEditor !== 'undefined' && 
+                             window.quillEditor && 
+                             window.quillEditor.root) || 
+                             // Fallback: try to find the Quill instance by DOM element
+                             (document.querySelector('#instruksi-kerja-editor .ql-editor'));
+        
+        // If Quill is not ready via window.quillEditor but the DOM element exists, try to find the instance
+        if (!window.quillEditor && document.querySelector('#instruksi-kerja-editor .ql-editor')) {
+            // Try to get the Quill instance from the DOM element
+            const editorElement = document.querySelector('#instruksi-kerja-editor');
+            if (editorElement && editorElement.__quill) {
+                window.quillEditor = editorElement.__quill;
+                window.quillReady = true;
+            }
+        }
+        
+        // Re-evaluate after potential recovery
+        const finalQuillReady = window.quillEditor && window.quillEditor.root;
+        
+        if (finalQuillReady) {
+            // Check if instruksiKerja has actual content (not null, not empty, not just whitespace)
+            if (instruksiKerja && 
+                instruksiKerja !== null && 
+                instruksiKerja !== 'null' && 
+                instruksiKerja.toString().trim() !== '' &&
+                instruksiKerja.toString().trim() !== '<p><br></p>' &&
+                instruksiKerja.toString().trim() !== '<p></p>') {
+                
+                // Set content directly - no need to clear first
+                window.quillEditor.root.innerHTML = instruksiKerja.toString();
+                showMessage('Instruksi kerja dari database berhasil dimuat', 'success', 3000);
+            } else {
+                // Keep editor empty instead of loading default template
+                window.quillEditor.root.innerHTML = '<p><br></p>';
+                showMessage('Editor siap untuk diisi', 'info', 2000);
+            }
+        } else {
+            // Retry after a short delay with maximum 5 retries
+            const retryCount = window.loadInstruksiKerjaFromData.retryCount || 0;
+            if (retryCount < 5) {
+                window.loadInstruksiKerjaFromData.retryCount = retryCount + 1;
+                setTimeout(() => {
+                    window.loadInstruksiKerjaFromData(instruksiKerja);
+                }, 1000);
+            } else {
+                showMessage('Editor tidak dapat diinisialisasi. Silakan refresh halaman.', 'error', 5000);
+            }
+        }
+    };
 
     // Load proses assessment tables
     function loadProsesAssessmentTables(prosesAssessments) {
         const container = document.getElementById('prosesAssessmentContainer');
         
         if (!container) return;
-
-        // Debug: log the data received from backend
-        console.log('prosesAssessments:', prosesAssessments);
 
         if (prosesAssessments && prosesAssessments.length > 0) {
             let containerContent = '';
@@ -1225,7 +1610,6 @@ document.addEventListener('DOMContentLoaded', function () {
             container.innerHTML = `
                 <div class="text-center text-gray-500 py-8">
                     <p>Tidak ada data proses assessment</p>
-                    <!-- Debug: If you see this, check the API response for proses_assessments field -->
                 </div>
             `;
         }
@@ -1255,112 +1639,238 @@ document.addEventListener('DOMContentLoaded', function () {
         backButton.addEventListener('click', kembaliKeList);
     }
 
-    // Save IA02 button event listener
+    // Save IA02 button event listener with confirmation modal
     const saveIA02Button = document.getElementById('simpanIA02');
     if (saveIA02Button) {
-        saveIA02Button.addEventListener('click', saveAndSignIA02);
+        saveIA02Button.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            showConfirmationModal(
+                'Konfirmasi Persetujuan',
+                `Apakah Anda yakin ingin menyetujui dan menandatangani formulir FR.IA-02 ini?
+                <br><br>
+                <strong class="text-red-600">Perhatian:</strong> Data yang sudah disetujui dan ditandatangani tidak dapat diubah lagi.
+                <br><br>
+                Pastikan semua informasi sudah benar sebelum melanjutkan.`,
+                async function() {
+                    // User confirmed, proceed with saving
+                    await saveIA02Data();
+                },
+                function() {
+                    // User cancelled
+                }
+            );
+        });
     }
 
-    // Save and sign IA02 function
-    async function saveAndSignIA02() {
+    // Function to save IA02 data similar to AK01
+    async function saveIA02Data() {
+        console.log('=== Starting saveIA02Data ===');
+        console.log('currentAsesiId:', currentAsesiId);
+        console.log('asesorSignatureUrl:', asesorSignatureUrl);
+        console.log('apiConfig.asesorId:', apiConfig.asesorId);
+        console.log('currentIA02Data:', currentIA02Data);
+        
         if (!currentAsesiId) {
-            showNotificationModal('Error', 'Tidak ada asesi yang dipilih', 'error');
+            showNotificationModal('Error', 'ID Asesi tidak ditemukan', 'error');
             return;
         }
 
-        const button = document.getElementById('simpanIA02');
-        const originalText = button.innerHTML;
+        if (!asesorSignatureUrl) {
+            showNotificationModal('Error', 'Anda belum memiliki tanda tangan di biodata atau file tanda tangan tidak dapat diakses. Silakan periksa biodata Anda dan pastikan tanda tangan sudah ter-upload dengan benar.', 'error');
+            return;
+        }
+
+        // Additional check: try to verify if signature file is actually accessible
+        console.log('Checking signature file accessibility...');
+        try {
+            const imageCheck = new Image();
+            imageCheck.onload = function() {
+                console.log('✅ Signature image file is accessible');
+            };
+            imageCheck.onerror = function() {
+                console.log('❌ Signature image file is NOT accessible (404)');
+                console.log('This might cause API validation to fail');
+            };
+            imageCheck.src = asesorSignatureUrl;
+        } catch (error) {
+            console.log('Error checking signature file:', error);
+        }
+
+        // Check if checkbox is checked
+        const signingCheckbox = document.getElementById('is_asesor_signing');
+        console.log('Signing checkbox:', signingCheckbox);
+        console.log('Checkbox checked:', signingCheckbox?.checked);
+        
+        if (!signingCheckbox || !signingCheckbox.checked) {
+            showNotificationModal('Error', 'Silakan setujui untuk menandatangani formulir', 'error');
+            return;
+        }
+
+        if (!currentIA02Data || !currentIA02Data.detail_ia02 || !currentIA02Data.detail_ia02.id) {
+            showNotificationModal('Error', 'Data IA02 tidak ditemukan. Silakan muat ulang halaman.', 'error');
+            return;
+        }
+
+        showNotificationModal('Info', 'Menyimpan dan menandatangani IA02...', 'info');
 
         try {
-            // Show loading state
-            button.disabled = true;
-            button.innerHTML = `
-                <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Menyimpan...
-            `;
-
-            // First, save the instruksi kerja content
-            if (typeof quillEditor !== 'undefined' && quillEditor) {
-                const instruksiKerjaContent = quillEditor.root.innerHTML;
+            // First, save instruksi kerja if there's content from Quill editor
+            if (typeof window.quillEditor !== 'undefined' && window.quillEditor) {
+                const instruksiKerjaContent = window.quillEditor.root.innerHTML;
+                console.log('Saving instruksi kerja content:', instruksiKerjaContent);
                 
-                const updateResponse = await fetch(`${apiConfig.url}/asesmen/ia02/asesor/${currentAsesiId}/update`, {
-                    method: 'POST',
+                const updateResponse = await fetch(`${apiConfig.url}/asesmen/ia02/${currentIA02Data.detail_ia02.id}/update-instruksi-kerja`, {
+                    method: 'PUT',
                     headers: apiHeaders,
                     body: JSON.stringify({
-                        instruksi_kerja: instruksiKerjaContent,
-                        status: 'approved'
+                        instruksi_kerja: instruksiKerjaContent
                     })
                 });
 
+                console.log('Update instruksi kerja response status:', updateResponse.status);
+
                 if (!updateResponse.ok) {
-                    throw new Error(`HTTP error! status: ${updateResponse.status}`);
+                    const errorText = await updateResponse.text();
+                    console.error('Update instruksi kerja error:', errorText);
+                    throw new Error(`HTTP error saat menyimpan instruksi kerja! status: ${updateResponse.status}`);
                 }
 
                 const updateResult = await updateResponse.json();
+                console.log('Update instruksi kerja result:', updateResult);
+                
                 if (updateResult.status !== 'success') {
-                    throw new Error(updateResult.message || 'Gagal menyimpan data');
+                    throw new Error(updateResult.message || 'Gagal menyimpan instruksi kerja');
                 }
             }
 
-            // Then, sign the IA02
-            const signResponse = await fetch(`${apiConfig.url}/asesmen/ia02/asesor/${currentAsesiId}/sign`, {
+            // Then, sign the IA02 with asesor signature
+            const signRequestData = {
+                id_asesi: currentAsesiId,
+                asesor_id: apiConfig.asesorId,
+                waktu_tanda_tangan: new Date().toISOString(),
+                status_ttd: true
+            };
+            
+            console.log('Signing IA02 with data:', signRequestData);
+            console.log('IA02 ID from currentIA02Data:', currentIA02Data.detail_ia02.id);
+            
+            // Try primary endpoint first
+            let signResponse;
+            let apiUrl = `${apiConfig.url}/asesmen/ia02/asesor/${currentAsesiId}/sign`;
+            
+            console.log('Trying primary API URL:', apiUrl);
+            console.log('API Headers:', apiHeaders);
+            
+            signResponse = await fetch(apiUrl, {
                 method: 'POST',
                 headers: apiHeaders,
-                body: JSON.stringify({
-                    signature_data: 'digital_signature_data' // You can implement actual signature here
-                })
+                body: JSON.stringify(signRequestData)
             });
+            
+            // If primary endpoint fails with 404/405, try alternative endpoint
+            if (!signResponse.ok && (signResponse.status === 404 || signResponse.status === 405)) {
+                console.log('Primary endpoint failed, trying alternative endpoint...');
+                apiUrl = `${apiConfig.url}/asesmen/ia02/${currentIA02Data.detail_ia02.id}/sign-asesor`;
+                
+                console.log('Trying alternative API URL:', apiUrl);
+                
+                signResponse = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: apiHeaders,
+                    body: JSON.stringify({
+                        asesor_id: apiConfig.asesorId,
+                        waktu_tanda_tangan: new Date().toISOString()
+                    })
+                });
+            }
+
+            console.log('Sign response status:', signResponse.status);
 
             if (!signResponse.ok) {
-                throw new Error(`HTTP error! status: ${signResponse.status}`);
+                // Try to get the error details from the response
+                let errorDetail = '';
+                let fullErrorData = null;
+                try {
+                    const errorData = await signResponse.json();
+                    console.error('Sign error data:', errorData);
+                    fullErrorData = errorData;
+                    
+                    // Check for detailed validation errors
+                    if (errorData.errors) {
+                        console.error('Validation errors:', errorData.errors);
+                        errorDetail = `Validation errors: ${JSON.stringify(errorData.errors)}`;
+                    } else if (errorData.message) {
+                        errorDetail = errorData.message;
+                    } else if (errorData.error) {
+                        errorDetail = errorData.error;
+                    } else {
+                        errorDetail = JSON.stringify(errorData);
+                    }
+                } catch (e) {
+                    errorDetail = await signResponse.text();
+                    console.error('Sign error text:', errorDetail);
+                }
+                
+                console.error('Full error details:', {
+                    status: signResponse.status,
+                    statusText: signResponse.statusText,
+                    errorDetail: errorDetail,
+                    fullErrorData: fullErrorData,
+                    requestData: signRequestData,
+                    apiUrl: apiUrl,
+                    asesorSignatureUrl: asesorSignatureUrl
+                });
+                
+                // Provide more specific error message for signature issues
+                if (errorDetail.includes('tanda tangan') || errorDetail.includes('signature')) {
+                    throw new Error(`Masalah tanda tangan digital: ${errorDetail}\n\nPastikan:\n1. File tanda tangan tersedia di storage\n2. Path file tanda tangan benar\n3. File dapat diakses oleh sistem`);
+                }
+                
+                throw new Error(`HTTP error saat menandatangani! status: ${signResponse.status}. Detail: ${errorDetail}`);
             }
 
             const signResult = await signResponse.json();
+            console.log('Sign result:', signResult);
+            
             if (signResult.status !== 'success') {
                 throw new Error(signResult.message || 'Gagal menandatangani IA02');
             }
 
-            // Show success message
-            button.innerHTML = `
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Tersimpan!
-            `;
-            button.classList.remove('from-biru', 'to-ungu');
-            button.classList.add('bg-green-600');
+            showNotificationModal('Sukses', 'Data IA02 berhasil disimpan dan ditandatangani!', 'success');
 
-            showNotificationModal('Sukses', 'IA02 berhasil disimpan dan ditandatangani!', 'success');
-
+            // Reload IA02 data to show updated information
             setTimeout(() => {
-                button.innerHTML = originalText;
-                button.classList.remove('bg-green-600');
-                button.classList.add('from-biru', 'to-ungu');
-                button.disabled = false;
-            }, 2000);
+                loadIA02Data(currentAsesiId);
+                // Also reload the asesi list to update the progress status
+                loadAsesiData();
+            }, 1500);
 
         } catch (error) {
-            console.error('Save/Sign error:', error);
-            showNotificationModal('Error', `Gagal menyimpan: ${error.message}`, 'error');
-
-            // Restore button
-            button.innerHTML = originalText;
-            button.disabled = false;
+            console.error('Complete error in saveIA02Data:', error);
+            showNotificationModal('Error', 'Error menyimpan data IA02: ' + error.message, 'error');
         }
     }
 
     // Load initial data
     loadAsesiData();
+    loadAsesorSignature();
+
+    // Test function to load data for existing record - for debugging
+    window.testLoadIA02WithData = function() {
+        // Use data we know exists from database
+        const testAsesiId = 'ASESI202500001';
+        currentAsesiId = testAsesiId;
+        
+        loadIA02Data(testAsesiId);
+    };
 });
 
 // Quill.js Helper Functions
 function saveEditorContent() {
     // Get content from Quill.js
-    if (typeof quillEditor !== 'undefined' && quillEditor) {
-        const content = quillEditor.root.innerHTML;
+    if (typeof window.quillEditor !== 'undefined' && window.quillEditor) {
+        const content = window.quillEditor.root.innerHTML;
         console.log('Editor content:', content);
         return content;
     }
@@ -1369,8 +1879,8 @@ function saveEditorContent() {
 
 function loadEditorContent(content) {
     // Load content into Quill.js
-    if (typeof quillEditor !== 'undefined' && quillEditor) {
-        quillEditor.root.innerHTML = content;
+    if (typeof window.quillEditor !== 'undefined' && window.quillEditor) {
+        window.quillEditor.root.innerHTML = content;
     }
 }
 

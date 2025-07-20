@@ -239,6 +239,11 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     })->name('asesi.logout');
 });
 
+// Temporary test route for FRIA02 without middleware (remove in production)
+Route::get('/test-fria02', function () {
+    return view('home/home-asesor/fria02-asesor');
+})->name('test-fria02');
+
 
 //Level: asesor
 Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
