@@ -17,6 +17,11 @@ class HasilAsesmen extends Model
     protected $fillable = [
         'id_rincian_asesmen',
         'status',
+        'tanggal_selesai',
+    ];
+
+    protected $casts = [
+        'tanggal_selesai' => 'date',
     ];
 
     public function rincianAsesmen(): BelongsTo
