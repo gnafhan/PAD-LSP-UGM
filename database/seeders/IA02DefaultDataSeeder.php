@@ -83,7 +83,7 @@ class IA02DefaultDataSeeder extends Seeder
         foreach ($defaultProcesses as $processData) {
             // This seeder creates template data that can be used when creating IA02 records
             $this->command->info("Template data for Process {$processData['nomor_proses']}: {$processData['judul_proses']}");
-            
+
             // You can uncomment below if you want to create actual template records in database
             /*
             $process = IA02ProsesAssessment::create([
