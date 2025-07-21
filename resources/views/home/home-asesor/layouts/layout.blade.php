@@ -72,6 +72,6 @@
         @yield('content')
     </main>
 
-    @include('home.home-asesor.partials.footer')
+    {{-- @include('home.home-asesor.partials.footer') --}}
 </body>
 </html>

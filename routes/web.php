@@ -231,7 +231,7 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
 
     // FRIA-02
     Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
-    Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('ia2.detail');
+    Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
 
 
     // Jadwal Uji Kompetensi
@@ -440,7 +440,7 @@ Route::get('/load-content/{ia02Id}/{contentType?}', [IA02ContentController::clas
 Route::delete('/delete-content/{ia02Id}/{contentType?}', [IA02ContentController::class, 'deleteContent'])->name('delete.content');
 
 // Temporary Image Management Routes
-Route::post('/upload-temp-image', [TempImageController::class, 'uploadTempImage'])->name('upload.temp.image');
+// Route::post('/upload-temp-image', [TempImageController::class, 'uploadTempImage'])->name('upload.temp.image');
 Route::post('/save-content-with-images', [IA02ContentController::class, 'saveContentWithImages'])->name('save.content.with.images');
 
 // Legacy CKEditor routes (keep for backward compatibility)

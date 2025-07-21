@@ -155,5 +155,6 @@ Route::middleware('api_key')->group(function () {
         // New routes for instruksi kerja and signing
         Route::put('/{id}/update-instruksi-kerja', [IA02Controller::class, 'updateInstruksiKerja']);
         Route::post('/{id}/sign-asesor', [IA02Controller::class, 'signByAsesor']);
+        Route::post('/{id}/sign-asesi', [IA02Controller::class, 'signByAsesi']);
     });
 });

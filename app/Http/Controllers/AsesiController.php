@@ -18,7 +18,12 @@ use App\Models\Skema;
 use App\Models\Asesor;
 use App\Models\UK;
 use App\Models\AsesiUK;
-use App\Models\AsesiApl02;;
+use App\Models\AsesiApl02;
+use App\Models\EventSkema;
+use App\Models\RincianAsesmen;
+use App\Models\TandaTanganAsesor;
+
+;
 
 class AsesiController extends Controller
 {
@@ -198,6 +203,10 @@ class AsesiController extends Controller
     }
     public function detail_fria02(Request $request)
     {
+        $rincianAsesmen = RincianAsesmen::where('id_rincian_asesmen', $request->id)->first();
+        $skema = EventSkema::where('id_event', $rincianAsesmen->id_event)->first()->skema;
+        // dd($skema);
+
         $user = Auth::user();
         $asesi = Asesi::where('id_user', $user->id_user)->first();
 
@@ -215,16 +224,36 @@ class AsesiController extends Controller
             ->whereIn('id_uk', $daftar_id_uk)
             ->get();
 
-        $data = IA02::where('id_asesi', $asesi->id_asesi)
-            ->where('id_skema', $asesi->id_skema)
-            ->where('id_asesor', $asesor ? $asesor->id_asesor : null)
+        // dd($rincianAsesmen->id_asesor,$asesi->id_asesi,$skema->id_skema);
+
+        $data = IA02::where('id_asesi', $rincianAsesmen->id_asesi)
+            // ->where('id_skema', $skema->id_skema)
+            ->where('id_asesor', $rincianAsesmen->id_asesor)
+            ->orderBy('created_at', 'desc')
             ->first();
-//        @dd($data->id);
+
+        if (!$data) {
+            return redirect()->back()->with('error', 'IA02 Belum Dibuat.');
+        }
 
         $defaultProcess = IA02ProsesAssessment::where('ia02_id', $data->id)->get();
 
+        $ttdAsesor = null;
+        $ttdAsesi = null;
+        if ($data->waktu_tanda_tangan_asesor != null) {
+            $ttdAsesor = "tanda_tangan/" . TandaTanganAsesor::where('id_asesor', $rincianAsesmen->id_asesor)->first()->file_tanda_tangan;
+        }
+
+        if ($data->waktu_tanda_tangan_asesi != null) {
+            $ttdAsesi =  Asesi::where('id_asesi', $rincianAsesmen->id_asesi)->first()->ttd_pemohon;
+        }
+
+        // dd($ttdAse);
+
+        // dd($ttdAsesor,$ttdAsesi);
+
 //        @dd($defaultProcess);
-        return view('home/home-asesi/FRIA-02/detail', compact('data','uks', 'defaultProcess'));
+        return view('home/home-asesi/FRIA-02/detail', compact('data','uks','defaultProcess','ttdAsesor','ttdAsesi'));
 
     }
 

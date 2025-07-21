@@ -10,7 +10,7 @@
                 <i class="fas fa-home text-blue-600"></i>
                 <a href="{{ route('asesi.index') }}" class="breadcrumb-item">Home</a>
                 <i class="fas fa-chevron-right text-xs text-gray-400"></i>
-                <a href="{{ route('asesi.fr.ia2') }}" class="breadcrumb-item">Formulir IA.02</a>
+                <a href="{{ route('asesi.index') }}" class="breadcrumb-item">Formulir IA.02</a>
                 <i class="fas fa-chevron-right text-xs text-gray-400"></i>
                 <span class="breadcrumb-item">Detail</span>
             </div>
@@ -219,34 +219,41 @@
                         <div class="text-center">
                             <div class="mb-4">
                                 <p class="text-sm text-gray-600 mb-2">Tanggal:</p>
-                                <p class="text-sm font-medium">15 Maret 2023</p>
+                                <p id="tanggalTtdAsesiIA02" class="text-sm font-medium">{{ $data->waktu_tanda_tangan_asesi ? date('d M Y', strtotime($data->waktu_tanda_tangan_asesi)) : 'Belum ditandatangani' }}</p>
                             </div>
-
                             <!-- Area Tanda Tangan -->
-                            <div
-                                class="h-24 border border-dashed border-gray-300 rounded-lg mb-4 flex items-center justify-center bg-gray-50">
-                                <p class="text-gray-400 text-sm">Area Tanda Tangan</p>
+                            <img id="tandaTanganAsesiIA02"
+                                 src="{{ $ttdAsesi ? asset('storage/'.$ttdAsesi) : '' }}"
+                                 alt="Tanda Tangan Asesi"
+                                 class="w-full h-24 object-contain{{ $ttdAsesi ? '' : ' hidden' }}">
+                            <div id="tandaTanganAsesiIA02Placeholder"
+                                 class="h-24 border border-dashed border-gray-300 rounded-lg mb-4 flex items-center justify-center bg-gray-50{{ $ttdAsesi ? ' hidden' : '' }}">
+                                <p class="text-gray-400 text-sm">Belum ditandatangani</p>
                             </div>
-
+                            <div class="mt-3 flex items-center justify-center">
+                                <input id="is_asesi_signing_ia02" name="is_asesi_signing_ia02" type="checkbox" value="true" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="is_asesi_signing_ia02" class="ms-2 text-sm font-medium text-gray-700">Saya setuju menandatangani formulir ini</label>
+                            </div>
                             <div class="border-t border-gray-300 pt-2">
                                 <p class="text-sm font-medium">Asesi</p>
                                 <p class="text-sm text-gray-600">{{ $data->nama_peserta }}</p>
                             </div>
                         </div>
-
                         <!-- Kolom Asesor -->
                         <div class="text-center">
                             <div class="mb-4">
                                 <p class="text-sm text-gray-600 mb-2">Tanggal:</p>
-                                <p class="text-sm font-medium">15 Maret 2023</p>
+                                <p id="tanggalTtdAsesorIA02" class="text-sm font-medium">{{ $data->waktu_tanda_tangan_asesor ? date('d M Y', strtotime($data->waktu_tanda_tangan_asesor)) : 'Belum ditandatangani' }}</p>
                             </div>
-
                             <!-- Area Tanda Tangan -->
-                            <div
+                            @if($ttdAsesor)
+                            <img id="tandaTanganAsesorIA02" src="{{ asset('storage/'.$ttdAsesor) }}" alt="Tanda Tangan Asesor" class="w-full h-24 object-contain">
+                            @else
+                            <div id="tandaTanganAsesorIA02Placeholder"
                                 class="h-24 border border-dashed border-gray-300 rounded-lg mb-4 flex items-center justify-center bg-gray-50">
                                 <p class="text-gray-400 text-sm">Area Tanda Tangan</p>
                             </div>
-
+                            @endif
                             <div class="border-t border-gray-300 pt-2">
                                 <p class="text-sm font-medium">Asesor</p>
                                 <p class="text-sm text-gray-600">{{ $data->nama_asesor }}</p>
@@ -254,14 +261,92 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Button Simpan dan Cetak -->
+                <!-- Button Simpan dan Setujui -->
                 <div class="flex justify-end gap-3 mt-6">
-                    <button id="simpanIA02" type="button"
+                    <button id="btnSetujuiIA02" type="button"
                             class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none">
-                        Simpan Dan Setujui
+                        Saya Setuju
                     </button>
                 </div>
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const btnSetujui = document.getElementById('btnSetujuiIA02');
+                    const checkbox = document.getElementById('is_asesi_signing_ia02');
+                    let isLocked = {{ $data->waktu_tanda_tangan_asesi ? 'true' : 'false' }};
+                    // Disable button if already signed
+                    if (isLocked) {
+                        btnSetujui.disabled = true;
+                        btnSetujui.textContent = 'Sudah Disetujui';
+                        btnSetujui.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu');
+                        btnSetujui.classList.add('bg-green-500', 'hover:bg-green-600');
+                        checkbox.checked = true;
+                        checkbox.disabled = true;
+                    }
+                    // Enable button only if checkbox checked and not locked
+                    checkbox.addEventListener('change', function() {
+                        if (checkbox.checked && !isLocked) {
+                            btnSetujui.disabled = false;
+                        } else {
+                            btnSetujui.disabled = true;
+                        }
+                    });
+                    // Initial state
+                    if (!checkbox.checked) btnSetujui.disabled = true;
+                    btnSetujui.addEventListener('click', function() {
+                        if (isLocked) return;
+                        if (!checkbox.checked) {
+                            alert('Silakan setujui untuk menandatangani formulir');
+                            return;
+                        }
+                        btnSetujui.disabled = true;
+                        btnSetujui.textContent = 'Menyimpan...';
+                        fetch(`/api/v1/asesmen/ia02/{{ $data->id }}/sign-asesi`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'API-KEY': '{{ config('services.api.key') }}',
+                            },
+                            body: JSON.stringify({ is_signing: true })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.status === 'success') {
+                                btnSetujui.textContent = 'Sudah Disetujui';
+                                btnSetujui.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu');
+                                btnSetujui.classList.add('bg-gray-500', 'hover:bg-green-600');
+                                checkbox.disabled = true;
+                                isLocked = true;
+                                // Optionally update signature image and date
+                                if (result.data && result.data.waktu_tanda_tangan_asesi) {
+                                    document.getElementById('tanggalTtdAsesiIA02').textContent = new Date(result.data.waktu_tanda_tangan_asesi).toLocaleDateString('id-ID');
+                                }
+                                if (result.data && result.data.ttd_asesi) {
+                                    const img = document.getElementById('tandaTanganAsesiIA02');
+                                    const placeholder = document.getElementById('tandaTanganAsesiIA02Placeholder');
+                                    if (img) {
+                                        img.src = result.data.ttd_asesi;
+                                        img.classList.remove('hidden');
+                                    }
+                                    if (placeholder) placeholder.classList.add('hidden');
+                                }
+                                alert('Berhasil menandatangani IA02!');
+                            } else {
+                                btnSetujui.disabled = false;
+                                btnSetujui.textContent = 'Saya Setuju';
+                                alert(result.message || 'Gagal menandatangani IA02');
+                            }
+                        })
+                        .catch(err => {
+                            btnSetujui.disabled = false;
+                            btnSetujui.textContent = 'Saya Setuju';
+                            alert('Terjadi kesalahan: ' + err.message);
+                        });
+                    });
+                });
+                </script>
             @else
                 <p class="text-gray-500 text-center text-lg mt-8">Data FR.IA-02 tidak ditemukan.</p>
             @endif

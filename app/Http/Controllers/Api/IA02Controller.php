@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\IA02Service;
+use App\Services\ProgressTrackingService;
 use App\Models\IA02;
 use App\Models\Asesor;
 use Illuminate\Http\Request;
@@ -16,10 +17,12 @@ use Carbon\Carbon;
 class IA02Controller extends Controller
 {
     protected $ia02Service;
+    protected $progressService;
 
-    public function __construct(IA02Service $ia02Service)
+    public function __construct(IA02Service $ia02Service, ProgressTrackingService $progressService)
     {
         $this->ia02Service = $ia02Service;
+        $this->progressService = $progressService;
     }
 
     /**
@@ -275,6 +278,95 @@ class IA02Controller extends Controller
                 ]
             ]);
 
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    // sign by asesi
+    public function signByAsesi(Request $request, $id)
+    {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'is_signing' => 'required|boolean',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $ia02 = IA02::find($id);
+            if (!$ia02) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'IA02 tidak ditemukan'
+                ], 404);
+            }
+
+            // Get asesi
+            $asesi = $ia02->asesi;
+            if (!$asesi) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data asesi tidak ditemukan'
+                ], 404);
+            }
+
+            // Ensure asesor has signed first
+            if (!$ia02->waktu_tanda_tangan_asesor) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'IA02 belum ditandatangani oleh asesor'
+                ], 422);
+            }
+
+            // Check if asesi has a signature file
+            if ($request->is_signing && empty($asesi->ttd_pemohon)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Asesi belum memiliki tanda tangan',
+                ], 422);
+            }
+
+            // Set signature timestamp and file if signing
+            if ($request->is_signing) {
+                $ia02->waktu_tanda_tangan_asesi = Carbon::now();
+                $ia02->ttd_asesi = $asesi->ttd_pemohon;
+                $ia02->save();
+            }
+
+            // Optionally, update status if both signatures present
+            if ($ia02->waktu_tanda_tangan_asesi && $ia02->waktu_tanda_tangan_asesor) {
+                $ia02->status = 'completed';
+                $ia02->save();
+                // Update progress tracking (mirroring APL02Controller)
+                $this->progressService->completeStep(
+                    $ia02->id_asesi,
+                    'ia02',
+                    'Completed by Asesi ID: ' . $ia02->id_asesi . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
+                );
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'IA02 berhasil ditandatangani oleh Asesi',
+                'data' => [
+                    'id' => $ia02->id,
+                    'waktu_tanda_tangan_asesi' => $ia02->waktu_tanda_tangan_asesi,
+                    'ttd_asesi' => $ia02->ttd_asesi,
+                    'waktu_tanda_tangan_asesor' => $ia02->waktu_tanda_tangan_asesor,
+                    'ttd_asesor' => $ia02->ttd_asesor,
+                    'status' => $ia02->status,
+                ]
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
