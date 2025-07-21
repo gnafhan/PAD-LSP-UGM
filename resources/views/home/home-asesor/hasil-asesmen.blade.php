@@ -24,14 +24,10 @@
     <div id="frameHasil" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir IA.02 Tugas Praktik dan Demonstrasi</p>
         <!-- Search Form -->
-        <form id="searchHasil" class="max-w-md mb-4 rounded-xl">
+        <form id="searchHasil" class="max-w-md mb-4 rounded-xl" method="GET" action="">
             <div class="relative">
-            <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
-                <button type="submit" class="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
-                    <svg class="w-4 h-4 text-biru" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                    </svg>
-                </button>
+            <input type="search" id="default-search" name="search" value="{{ old('search', isset($search) ? $search : request('search')) }}" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" />
+                
             </div>
         </form>
         <div class="overflow-x-auto shadow-sm rounded-lg">
@@ -46,21 +42,36 @@
                         <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(5)">Hasil</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 text-black text-center">
+            <tbody class="divide-y divide-gray-200 text-black text-center">
+                @forelse($hasilAsesmens as $index => $hasil)
                     <tr>
-                        <td class="px-4 py-3 text-sm text-gray-700">1</td>
-
-                        <td class="px-4 py-3 text-gray-700 text-left">Muhammad Rifai</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">Sertifikasi Frontend</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">SK1234567890</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">TUK 1</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">{{ $index + 1 }}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $hasil->nama_asesi }}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $hasil->nama_skema }}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $hasil->nomor_skema }}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $hasil->nama_tuk }}</td>
                         <td class="px-4 py-0">
-                            <div class="my-4 mx-5 justify-center items-center rounded-md bg-green-100">
-                                <P class="text-hijau">KOMPETEN</P>
-                            </div>
+                            @if($hasil->status === 'kompeten')
+                                <div class="my-4 mx-5 justify-center items-center rounded-md bg-green-100">
+                                    <p class="text-hijau font-semibold">KOMPETEN</p>
+                                </div>
+                            @elseif($hasil->status === 'tidak_kompeten')
+                                <div class="my-4 mx-5 justify-center items-center rounded-md bg-red-100">
+                                    <p class="text-red-500 font-semibold">TIDAK KOMPETEN</p>
+                                </div>
+                            @else
+                                <div class="my-4 mx-5 justify-center items-center rounded-md bg-gray-100">
+                                    <p class="text-gray-500 font-semibold">-</p>
+                                </div>
+                            @endif
                         </td>
                     </tr>
-                </tbody>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-4 py-6 text-gray-500 text-center">Tidak ada data hasil asesmen.</td>
+                    </tr>
+                @endforelse
+            </tbody>
             </table>
         </div>
 

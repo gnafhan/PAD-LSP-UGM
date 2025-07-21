@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\ManajemenPengguna\AdminUserController;
 use App\Http\Controllers\Admin\ManajemenPengguna\KompetensiTeknisController;
 use App\Http\Controllers\Admin\ManajemenTUK\TukController;
 use App\Http\Controllers\Admin\ManajemenTUK\PenanggungJawabController;
+use App\Http\Controllers\Asesor\FRAK04Controller;
+use App\Http\Controllers\Asesor\HasilAsesmenController;
 use App\Http\Controllers\SwaggerController;
 use App\Http\Controllers\IA02ContentController;
 use App\Http\Controllers\TempImageController;
@@ -321,9 +323,7 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/fria07-asesor');
     })->name('fria07-asesor');
 
-    Route::get('/hasilasesmen', function () {
-        return view('home/home-asesor/hasil-asesmen');
-    })->name('hasil-asesmen-asesor');
+    Route::get('/hasilasesmen', [HasilAsesmenController::class, 'index'])->name('hasil-asesmen-asesor');
 
     Route::get('/frak02', function () {
         return view('home/home-asesor/frak02-asesor');
@@ -333,9 +333,8 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/frak03-asesor');
     })->name('frak03-asesor');
 
-    Route::get('/frak04', function () {
-        return view('home/home-asesor/frak04-asesor');
-    })->name('frak04-asesor');
+    Route::get('/frak04', [FRAK04Controller::class, 'index'])->name('frak04-asesor');
+    Route::get('/frak04/{id_asesi}', [FRAK04Controller::class, 'show'])->name('frak04-asesor.show');
 
     // Aksi Asesor
     Route::get('/aksi/aktif', function () {
