@@ -362,7 +362,7 @@ async function loadAk01Data(idAsesi) {
         const headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'API_KEY': apiConfig.key,
+            'API-KEY': apiConfig.key,
             'X-CSRF-TOKEN': apiConfig.csrfToken,
             'X-Requested-With': 'XMLHttpRequest'
         };
@@ -663,7 +663,7 @@ async function saveAk01Asesi(isSigning = false) {
         const headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'API_KEY': apiConfig.key,
+            'API-KEY': apiConfig.key,
             'X-CSRF-TOKEN': apiConfig.csrfToken,
             'X-Requested-With': 'XMLHttpRequest'
         };

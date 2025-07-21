@@ -21,11 +21,18 @@ use App\Http\Controllers\Admin\ManajemenTUK\PenanggungJawabController;
 use App\Http\Controllers\Asesor\FRAK04Controller;
 use App\Http\Controllers\Asesor\HasilAsesmenController;
 use App\Http\Controllers\SwaggerController;
+use App\Http\Controllers\IA02ContentController;
+use App\Http\Controllers\TempImageController;
 
 
 // API Documentation
 Route::get('api/documentation', [SwaggerController::class, 'index'])
     ->name('l5-swagger.default.api');
+
+// Test routes
+Route::get('/test-custom-resize', function () {
+    return view('test-custom-resize');
+})->name('test.custom.resize');
 
 // Level: user
 Route::middleware(['role:user'])->prefix('user')->group(function () {
@@ -218,8 +225,14 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     Route::prefix('fr')->name('asesi.fr.')->group(function () {
         Route::view('/ak1', 'home/home-asesi/FRAK-01/frak01')->name('ak1');
         Route::view('/ak3', 'home/home-asesi/FRAK-03/frak3')->name('ak3');
-        Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
+//        Route::view('/ia2/hasil', 'home/home-asesi/FRIA-02/hasilv')->name('ia2.hasil');
+//        Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
     });
+
+    // FRIA-02
+    Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
+    Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
+
 
     // Jadwal Uji Kompetensi
     Route::view('/jadwal-uji-kompetensi', 'home/home-asesi/APL-02/jadwal-uji-kompetensi')->name('asesi.jadwal-uji-kompetensi');
@@ -233,6 +246,11 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
         return redirect('/login');
     })->name('asesi.logout');
 });
+
+// Temporary test route for FRIA02 without middleware (remove in production)
+Route::get('/test-fria02', function () {
+    return view('home/home-asesor/fria02-asesor');
+})->name('test-fria02');
 
 
 //Level: asesor
@@ -389,6 +407,44 @@ Route::get('password/reset', [PasswordResetController::class, 'showResetForm'])-
 Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.update'); // buat isi token
+
+// Test Image Resize
+Route::get('/test-resize', function () {
+    return view('test-resize');
+});
+
+// Manual Image Test
+Route::get('/test-manual-image', function () {
+    return view('test-manual-image');
+});
+
+// URL Test route
+Route::get('/test-url', function () {
+    return view('test-url');
+});
+
+// Debug routes (remove in production)
+Route::get('/debug-quill', function () {
+    return view('debug-quill');
+});
+
+// Test routes (remove in production)
+Route::get('/test-quill', function () {
+    return view('test-quill');
+});
+
+// Quill.js Content Management Routes
+Route::post('/upload-image', [IA02ContentController::class, 'uploadImage'])->name('upload.image');
+Route::post('/save-content', [IA02ContentController::class, 'saveContent'])->name('save.content');
+Route::get('/load-content/{ia02Id}/{contentType?}', [IA02ContentController::class, 'loadContent'])->name('load.content');
+Route::delete('/delete-content/{ia02Id}/{contentType?}', [IA02ContentController::class, 'deleteContent'])->name('delete.content');
+
+// Temporary Image Management Routes
+// Route::post('/upload-temp-image', [TempImageController::class, 'uploadTempImage'])->name('upload.temp.image');
+Route::post('/save-content-with-images', [IA02ContentController::class, 'saveContentWithImages'])->name('save.content.with.images');
+
+// Legacy CKEditor routes (keep for backward compatibility)
+Route::post('/save-instruksi-kerja', [HomeController::class, 'saveInstruksiKerja'])->name('save.instruksi');
 
 // Page informasi
 Route::get('/panduan', function () {

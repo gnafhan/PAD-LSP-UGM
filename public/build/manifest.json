@@ -1,12 +1,38 @@
 {
+  "_flowbite-a98d8933.js": {
+    "file": "assets/flowbite-a98d8933.js"
+  },
   "resources/css/app.css": {
-    "file": "assets/app-d040344a.css",
+    "file": "assets/app-cb10b922.css",
     "isEntry": true,
     "src": "resources/css/app.css"
   },
   "resources/js/app.js": {
-    "file": "assets/app-881c7369.js",
+    "file": "assets/app-c29003fa.js",
+    "imports": [
+      "_flowbite-a98d8933.js"
+    ],
     "isEntry": true,
     "src": "resources/js/app.js"
+  },
+  "resources/js/asesor.js": {
+    "file": "assets/asesor-fea688b7.js",
+    "imports": [
+      "_flowbite-a98d8933.js"
+    ],
+    "isEntry": true,
+    "src": "resources/js/asesor.js"
+  },
+  "resources/js/quill-editor.css": {
+    "file": "assets/quill-editor-4ffab3b8.css",
+    "src": "resources/js/quill-editor.css"
+  },
+  "resources/js/quill-editor.js": {
+    "css": [
+      "assets/quill-editor-4ffab3b8.css"
+    ],
+    "file": "assets/quill-editor-e0125f85.js",
+    "isEntry": true,
+    "src": "resources/js/quill-editor.js"
   }
 }
