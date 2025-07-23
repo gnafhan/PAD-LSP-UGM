@@ -77,10 +77,11 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 text-black text-center">
+                @foreach($daftarAsesi as $i => $rincian)
                     <tr>
-                        <td class="px-4 py-3 text-sm text-gray-700">1</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">{{ $i+1 }}</td>
                         <td class="px-4 py-3 text-center">
-                            <button onclick="showSummary()" class="">
+                            <button onclick="showSummary('{{ $rincian->asesi->id_asesi }}')" class="">
                                 <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                     width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd"
@@ -88,23 +89,33 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             </button>
-                            <button onclick="showDocument()" class="">
+                            <button onclick="showDocument('{{ $rincian->asesi->id_asesi }}')" class="">
                                 <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
                                 </svg>
                             </button>
                         </td>
-                        <td class="px-4 py-3 text-gray-700 text-left">Muhammad Rifai</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">Sertifikasi Frontend</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">SK1234567890</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $rincian->asesi->nama_asesi ?? '-' }}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $rincian->asesi->skema->nama_skema ?? '-' }}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $rincian->asesi->skema->nomor_skema ?? '-' }}</td>
                         <td class="px-4 py-0">
                             <div class="flex px-4 py-3 justify-center items-center">
-                                <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                                </svg>
+                                @php
+                                    $progress = $rincian->asesi->progresAsesmen->ia01['completed'] ?? false;
+                                @endphp
+                                @if($progress)
+                                    <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                                    </svg>
+                                @else
+                                    <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+                                    </svg>
+                                @endif
                             </div>
                         </td>
                     </tr>
+                @endforeach
                 </tbody>
             </table>
         </div>
@@ -519,7 +530,6 @@ function showSummary() {
     // Tampilkan bagian info awal (panduan & kelompok pekerjaan)
     document.getElementById('infoAwal').classList.remove('hidden');
 
-    document.getElementById('detailIA01').scrollIntoView({ behavior: 'smooth' });
 }
 </script>
 
