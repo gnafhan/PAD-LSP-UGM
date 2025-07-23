@@ -19,7 +19,7 @@ class ApiKeyMiddleware
     {
         // Support ALL possible variations that the team might use
         $apiKey = $request->header('API-KEY')          // Standard format with dash
-               ?? $request->header('API_KEY')          // Original format with underscore  
+               ?? $request->header('API_KEY')          // Original format with underscore
                ?? $request->header('Api-Key')          // Capitalized format
                ?? $request->header('api-key')          // Lowercase format
                ?? $request->header('X-API-KEY')        // X-prefixed format

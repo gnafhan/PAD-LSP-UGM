@@ -1,17 +1,18 @@
 <?php
 
-use App\Http\Controllers\Api\DataUser\DataAsesorController;
-use App\Http\Controllers\Api\DataUser\DataAsesiController;
-use App\Http\Controllers\Api\Kompetensi\KompetensiTeknisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KonsultasiPraUjiController;
-use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa02Controller;
-use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak01Controller;
-use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa01Controller;
-use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KetidakberpihakkanController;
-use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Apl02Controller;
 use App\Http\Controllers\Api\IA02Controller;
+use App\Http\Controllers\Api\DataUser\DataAsesiController;
+use App\Http\Controllers\Api\DataUser\DataAsesorController;
+use App\Http\Controllers\Api\Kompetensi\KompetensiTeknisController;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak01Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak03Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Apl02Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa01Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa02Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KonsultasiPraUjiController;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KetidakberpihakkanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,7 @@ use App\Http\Controllers\Api\IA02Controller;
  *         email="admin@lsp.ugm.ac.id"
  *     )
  * )
- * 
+ *
  * @OA\Server(
  *     url="/api",
  *     description="API Server"
@@ -75,7 +76,7 @@ Route::middleware('api_key')->group(function () {
     Route::prefix('/v1/asesmen/konsultasi-prauji')->group(function () {
         // Get data (common endpoint for both Asesi and Asesor)
         Route::get('/{id_asesi}', [KonsultasiPraUjiController::class, 'getKonsultasiPraUji']);
-        
+
         // Save data - separate endpoints for Asesi and Asesor
         Route::post('/asesi/save', [KonsultasiPraUjiController::class, 'saveKonsultasiPraUjiAsesi']);
         Route::post('/asesor/save', [KonsultasiPraUjiController::class, 'saveKonsultasiPraUjiAsesor']);
@@ -85,9 +86,9 @@ Route::middleware('api_key')->group(function () {
 // Route for MAPA01
 Route::middleware('api_key')->group(function () {
     Route::prefix('/v1/asesmen/mapa01')->group(function () {
-        // Get data 
+        // Get data
         Route::get('/{id_asesi}', [Mapa01Controller::class, 'getMapa01']);
-        
+
         // Save data
         Route::post('/save', [Mapa01Controller::class, 'saveMapa01']);
     });
@@ -96,9 +97,9 @@ Route::middleware('api_key')->group(function () {
 // Route for MAPA.02
 Route::middleware('api_key')->group(function () {
     Route::prefix('/v1/asesmen/mapa02')->group(function () {
-        // Get data 
+        // Get data
         Route::get('/{id_asesi}', [Mapa02Controller::class, 'getMapa02']);
-        
+
         // Save data
         Route::post('/save', [Mapa02Controller::class, 'saveMapa02']);
     });
@@ -107,12 +108,19 @@ Route::middleware('api_key')->group(function () {
 // Route for AK01
 Route::middleware('api_key')->group(function () {
     Route::prefix('/v1/asesmen/ak01')->group(function () {
-        // Get data 
+        // Get data
         Route::get('/{id_asesi}', [Ak01Controller::class, 'getAk01']);
-        
+
         // Save data - separate endpoints for Asesi and Asesor
         Route::post('/asesi/save', [Ak01Controller::class, 'saveAk01Asesi']);
         Route::post('/asesor/save', [Ak01Controller::class, 'saveAk01Asesor']);
+    });
+    Route::prefix('/v1/asesmen/ak03')->group(function () {
+        // Get data
+        Route::get('/{id_asesi}', [Ak03Controller::class, 'getAk03']);
+
+        // Save data - only for Asesi
+        Route::post('/asesi/save', [Ak03Controller::class, 'saveAk03Asesi']);
     });
 });
 
@@ -121,7 +129,7 @@ Route::middleware('api_key')->group(function () {
     Route::prefix('/v1/asesmen/ketidakberpihakan')->group(function () {
         // Get data
         Route::get('/{id_asesi}', [KetidakberpihakkanController::class, 'getKetidakberpihakan']);
-        
+
         // Sign form
         Route::post('/sign', [KetidakberpihakkanController::class, 'signKetidakberpihakan']);
     });
@@ -133,7 +141,7 @@ Route::middleware('api_key')->group(function () {
         // Get data
         Route::get('/asesor/{id_asesi}', [Apl02Controller::class, 'getApl02Asesor']);
         Route::get('/asesi/{id_asesi}', [Apl02Controller::class, 'getApl02Asesi']);
-        
+
         // Save data
         Route::post('/asesor/save', [Apl02Controller::class, 'saveApl02Asesor']);
         Route::post('/asesi/sign', [Apl02Controller::class, 'signApl02Asesi']);
@@ -147,11 +155,11 @@ Route::middleware('api_key')->group(function () {
         Route::get('/asesor/{id_asesi}', [IA02Controller::class, 'getIA02ForAsesor']);
         Route::get('/list', [IA02Controller::class, 'getIA02ListForAsesor']);
         Route::get('/{id}', [IA02Controller::class, 'getDetail']);
-        
+
         // Save/Update data
         Route::post('/asesor/{id_asesi}/update', [IA02Controller::class, 'updateIA02']);
         Route::post('/asesor/{id_asesi}/sign', [IA02Controller::class, 'signByAsesor']);
-        
+
         // New routes for instruksi kerja and signing
         Route::put('/{id}/update-instruksi-kerja', [IA02Controller::class, 'updateInstruksiKerja']);
         Route::post('/{id}/sign-asesor', [IA02Controller::class, 'signByAsesor']);
