@@ -49,11 +49,10 @@
             </ol>
         </nav>
     </div>
-    <div id="bgGradient"
-        class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
-    </div>
+
     <div id="frameIA01" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir IA.01 Observasi Aktifitas di Tempat Kerja atau Tempat Kerja Simulasi</p>
+        
         <!-- Search Form -->
         <form id="searchIA01" class="max-w-md mb-4 rounded-xl">
             <div class="relative">
@@ -109,6 +108,7 @@
                 </tbody>
             </table>
         </div>
+        
         <div id="detailIA01" class="hidden p-4 text-black">
 
             <!-- Input Formulir IA.01 -->
@@ -159,6 +159,112 @@
                 </div>
             </div>
 
+            <div id="infoAwal" class="hidden">
+            <!-- Panduan Bagi Asesor -->
+            <div id="panduanAsesor" class="mb-6 p-4 mt-10">
+                <h3 class="text-lg font-semibold text-black mb-4 text-center">PANDUAN BAGI ASESOR</h3>
+                <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start">
+                        <span class="inline-block w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span>Lengkapi nama unit kompetensi, elemen, dan kriteria untuk kerja sesuai kolom dalam tabel.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="inline-block w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span>Isilah standar industri atau tempat kerja</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="inline-block w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span>Beri tanda centang ( √ ) pada kolom "YA" jika Anda yakin asesi dapat melaksanakan/mendemonstrasikan tugas sesuai KUK, atau centang ( √ ) pada kolom "Tidak" bila sebaliknya.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="inline-block w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span>Penilaian Lanjut diisi bila hasil belum dapat disimpulkan, untuk itu gunakan metode lain sehingga keputusan dapat dibuat.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="inline-block w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span>Isilah kolom KUK sesuai dengan Unit Kompetensi/ SKKNI</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Kelompok Pekerjaan Kegiatan Rekreasi -->
+            <div id="kelompokPekerjaan" class="mb-6 p-4 bg-white">
+                <h3 class="text-lg font-semibold text-black mb-4">Kelompok Pekerjaan Kegiatan Rekreasi</h3>
+                <div class="overflow-x-auto shadow-sm rounded-lg">
+                    <table class="min-w-full bg-white overflow-hidden">
+                        <thead class="bg-bg_dashboard text-center">
+                            <tr>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Kode Unit</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Menangani Situasi Konflik</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 text-black text-center">
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Mengidentifikasi situasi konflik ?</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Mengikuti Prosedur Kesehatan, Keselamatan dan Keamanan di Tempat Kerja</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">3</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Melakukan Pekerjaan Dalam Lingkungan Sosial yang Berbeda</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">4</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Melakukan Komunikasi Melalui Telepon</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">5</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Melakukan Prosedur Administrasi</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">6</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Mencari Data di Komputer</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">7</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Mengembangkan dan Memutakhirkan Pengetahuan Pariwisata</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">8</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">9</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Mengembangkan Pengetahuan Tentang Koleksi dan Tata Pameran Museum</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">10</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Menyajikan Informasi tentang Koleksi dan Tata Pameran Museum</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">11</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Melakukan Kegiatan Interpretatif</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">12</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 text-left">Memandu Rombongan Pengunjung</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Checklist Kompeten -->
             <div id="clKompeten" class="p-4">
                 <form class="max-w-full mx-auto">
@@ -173,21 +279,26 @@
 
             <!-- Tabel 1 AK01 -->
             <div class="p-4">
-                <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">No 1.  Kode Unit : R.93KPW00.011.2</p>
+                <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-4 text-2xl">Unit Kompetensi No 1</p>
+                <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">Kode Unit : R.93KPW00.011.2</p>
+                <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">Judul : Mengimplementasikan Dasar-dasar Kepemanduan Museum</p>
 
-                <div class="overflow-x-auto shadow-md rounded-lg mb-4">
+                  <div class="overflow-x-auto shadow-md rounded-lg mb-4">
                     <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
                         <thead class="bg-bg_dashboard text-center">
                             <tr>
                                 <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Elemen</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Benchmark(SOP / Spesifikasi Produk Industri)</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(3)">Kompetensi</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(4)">Penilaian Lanjut</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 text-black text-center items-center">
                             <tr>
                                 <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik?</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">Menerapkan Prinsip “Edutainment”</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">SOP Menerapkan Prosedur</td>
                                 <td class="flex px-4 py-3 justify-center">
                                     <form id="ddKompetensi" class="w-40">
                                         <select id="selectKompetensi" onchange="ubahWarnaSelect()"
@@ -198,29 +309,39 @@
                                         </select>
                                     </form>
                                 </td>
+                                <td class="px-4 py-3 text-gray-700 text-left">
+                                    <textarea placeholder="Lainnya..." class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black"></textarea>
+                                </td>
+                
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
+                
             <!-- Tabel 2 APL02 -->
             <div class="p-4">
-                <p id="judulTabelAPL02" class="text-sidebar_font font-semibold pb-2">No 2.  Kode Unit : R.93KPW00.011.2</p>
+                <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-4 text-2xl">Unit Kompetensi No 2</p>
+                <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">Kode Unit : R.93KPW00.011.2</p>
+                <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">Judul : Mengimplementasikan Dasar-dasar Kepemanduan Museum</p>
+
 
                 <div class="overflow-x-auto shadow-md rounded-lg mb-4">
                     <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
                         <thead class="bg-bg_dashboard text-center">
                             <tr>
                                 <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Elemen</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Benchmark(SOP / Spesifikasi Produk Industri)</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(3)">Kompetensi</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(4)">Penilaian Lanjut</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 text-black text-center items-center">
                             <tr>
                                 <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik?</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">Menerapkan Prinsip “Edutainment”</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">SOP Menerapkan Prosedur</td>
                                 <td class="flex px-4 py-3 justify-center">
                                     <form id="ddKompetensi" class="w-40">
                                         <select id="selectKompetensi" onchange="ubahWarnaSelect()"
@@ -230,6 +351,45 @@
                                             <option value="tidak_kompeten">Tidak Kompeten</option>
                                         </select>
                                     </form>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-left">
+                                    <textarea placeholder="Lainnya..." class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">2</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">Menerapkan Pengetahuan tentang Museum</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">SOP Menerapkan Prosedur</td>
+                                <td class="flex px-4 py-3 justify-center">
+                                    <form id="ddKompetensi" class="w-40">
+                                        <select id="selectKompetensi" onchange="ubahWarnaSelect()"
+                                            class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
+                                            <option selected value="">Pilih</option>
+                                            <option value="kompeten">Kompeten</option>
+                                            <option value="tidak_kompeten">Tidak Kompeten</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-left">
+                                    <textarea placeholder="Lainnya..." class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">3</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">Mengembangkan Pengetahuan</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">SOP Menerapkan Prosedur</td>
+                                <td class="flex px-4 py-3 justify-center">
+                                    <form id="ddKompetensi" class="w-40">
+                                        <select id="selectKompetensi" onchange="ubahWarnaSelect()"
+                                            class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
+                                            <option selected value="">Pilih</option>
+                                            <option value="kompeten">Kompeten</option>
+                                            <option value="tidak_kompeten">Tidak Kompeten</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-left">
+                                    <textarea placeholder="Lainnya..." class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black"></textarea>
                                 </td>
                             </tr>
                         </tbody>
@@ -245,37 +405,104 @@
             </div>
 
             <div class="my-6 px-4 space-y-6">
-                <!-- Hasil Kompetensi -->
-                <div id="hasilAPL02" class="">
-                    <label for="hasilKompetensi" class="block mb-2 font-semibold text-sidebar_font">Hasil Kompetensi</label>
-                    <p type="text" id="hasilKompetensi" aria-label="hasil kompetensi"
-                        class="border border-border_input text-sidebar_font text-sm rounded-lg block w-full p-2" disabled readonly>
-                        Belum dinilai
-                    </p>
+                <!-- Hasil -->
+                <div class="p-4">
+                    <h3 class="text-sidebar_font font-semibold pb-4 text-xl">Hasil</h3>
+                    <div class="overflow-x-auto shadow-md rounded-lg mb-4">
+                        <table class="min-w-full bg-white overflow-hidden">
+                            <thead class="bg-bg_dashboard text-center">
+                                <tr>
+                                    <th class="px-6 py-3 text-sm font-semibold text-gray-600 tracking-wider">Kinerja</th>
+                                    <th class="px-6 py-3 text-sm font-semibold text-gray-600 tracking-wider">Kompeten</th>
+                                    <th class="px-6 py-3 text-sm font-semibold text-gray-600 tracking-wider">Tidak Kompeten</th>
+                                    <th class="px-6 py-3 text-sm font-semibold text-gray-600 tracking-wider">Umpan Balik</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 text-black">
+                                <tr>
+                                    <td class="px-6 py-4 text-sm text-gray-700 text-left">Kinerja Asesi adalah</td>
+                                    <td class="px-6 py-4 text-center">
+                                        <input type="radio" name="kinerja_asesi" value="kompeten" class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <input type="radio" name="kinerja_asesi" value="tidak_kompeten" class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <textarea placeholder="Lainnya..." class="w-full border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru px-3 py-2 bg-white text-black resize-none" rows="3"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <!-- Rekomendasi -->
 
-                <div class="mb-6">
-                    <label for="rekomendasi" class="block mb-2 text-sm font-medium text-sidebar_font">Rekomendasi</label>
-                    <textarea id="rekomendasi" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Masukkan Rekomendasi Anda"></textarea>
-                </div>
+                <!-- Tanda tangan -->
+                <div class="p-4 mb-6">
+                <h3 class="text-sidebar_font font-semibold pb-4 text-xl">Tandatangan</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Kolom Asesi -->
+                    <div class="text-center space-y-4">
+                        <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd ?? '15 Maret 2025' }}</p>
+                        <div class="h-32 flex items-center justify-center bg-white">
+                            @if(isset($ttd_asesi) && $ttd_asesi)
+                                <!-- Gambar tanda tangan asesi -->
+                                <img src="{{ asset('storage/ttd/' . $ttd_asesi) }}" 
+                                    alt="Tanda Tangan Asesi" 
+                                    class="max-h-24 max-w-full object-contain">
+                            @else
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
+                                    <span class="text-gray-400 text-sm">Belum ada tanda tangan</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="border-t border-gray-400 pt-2">
+                            <p class="text-sm font-medium text-gray-700">Asesi</p>
+                            <p class="text-sm text-gray-600">{{ $nama_asesi ?? 'Muhammad Rifai' }}</p>
+                        </div>
+                    </div>
 
-                <!-- Button Simpan -->
-                <div class="flex justify-end pe-4">
-                    <button id="simpanRekomendasi" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                        Simpan Rekomendasi
-                    </button>
+                    <!-- Kolom Asesor -->
+                    <div class="text-center space-y-4">
+                        <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd ?? '15 Maret 2025' }}</p>
+                        <div class="h-32 flex items-center justify-center bg-white">
+                            @if(isset($ttd_asesor) && $ttd_asesor)
+                                <!-- Gambar tanda tangan asesor -->
+                                <img src="{{ asset('storage/ttd/' . $ttd_asesor) }}" 
+                                    alt="Tanda Tangan Asesor" 
+                                    class="max-h-24 max-w-full object-contain">
+                            @else
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
+                                    <span class="text-gray-400 text-sm">Belum ada tanda tangan</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="border-t border-gray-400 pt-2">
+                            <p class="text-sm font-medium text-gray-700">Asesor</p>
+                            <p class="text-sm text-gray-600">{{ $nama_asesor ?? 'Nafa Popcorn' }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
-    <div id="bgGradient"
-        class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
-    </div>
+
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+// Handle error jika gambar tidak ditemukan
+const ttdImages = document.querySelectorAll('img[alt*="Tanda Tangan"]');
+
+ttdImages.forEach(function(img) {
+    img.addEventListener('error', function() {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50';
+        placeholder.innerHTML = '<span class="text-gray-400 text-sm">Gambar tidak ditemukan</span>';
+        
+        this.parentNode.replaceChild(placeholder, this);
+    });
+});
+});
 function showSummary() {
     // Sembunyikan elemen pencarian utama
     document.getElementById('searchIA01').classList.add('hidden');
@@ -289,7 +516,9 @@ function showSummary() {
     // Tampilkan bagian detail asesi
     document.getElementById('detailIA01').classList.remove('hidden');
 
-    // Optional: scroll ke bagian detail
+    // Tampilkan bagian info awal (panduan & kelompok pekerjaan)
+    document.getElementById('infoAwal').classList.remove('hidden');
+
     document.getElementById('detailIA01').scrollIntoView({ behavior: 'smooth' });
 }
 </script>
