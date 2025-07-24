@@ -110,6 +110,7 @@ class Ak03Controller extends Controller
                 'waktu_tanda_tangan_asesi' => DateTimeHelper::toWIB($ak03->waktu_tanda_tangan_asesi),
                 'tanda_tangan_asesi' => $ak03->waktu_tanda_tangan_asesi ? asset('storage/' . $asesi->ttd_pemohon) : null,
                 'umpan_balik' => $ak03->umpanBalikItems,
+                'general_feedback' => $ak03->general_feedback,
             ];
         }
 
@@ -150,6 +151,7 @@ class Ak03Controller extends Controller
             'umpan_balik.*.komponen_id' => 'required|integer',
             'umpan_balik.*.hasil' => 'nullable|string|in:ya,tidak',
             'umpan_balik.*.catatan' => 'nullable|string|max:255',
+            'general_feedback' => 'nullable|string|max:255',
         ]);
 
         $asesiResult = $this->validationService->validateAsesiExists($validated['id_asesi'], ['rincianAsesmen.asesor']);
@@ -169,6 +171,7 @@ class Ak03Controller extends Controller
                 if ($validated['is_signing'] && !$ak03->waktu_tanda_tangan_asesi) {
                     $ak03->waktu_tanda_tangan_asesi = now();
                 }
+                $ak03->general_feedback = $validated['general_feedback'];
                 $ak03->save();
 
                 // Hapus item lama dan buat yang baru
@@ -180,7 +183,7 @@ class Ak03Controller extends Controller
                 if ($validated['is_signing']) {
                     $this->progressService->completeStep(
                         $validated['id_asesi'],
-                        'ak03',
+                        'umpan_balik',
                         'Completed by Asesi at ' . Carbon::now()->format('d-m-Y H:i:s')
                     );
                     Log::info('AK03 completed by Asesi', ['id_asesi' => $validated['id_asesi']]);

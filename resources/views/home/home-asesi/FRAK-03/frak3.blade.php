@@ -96,6 +96,12 @@
                         </form>
                     </div>
 
+                    {{-- Bagian Umpan Balik Umum --}}
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold">Komentar Peserta</h3>
+                        <textarea id="general-feedback" class="w-full border-gray-300 rounded text-sm p-1" rows="3"></textarea>
+                    </div>
+
                     {{-- Bagian Tanda Tangan --}}
                     <div class="flex justify-end">
                         <div>
@@ -250,7 +256,7 @@ async function loadAk03Data(idAsesi) {
         const ak03Data = ak03Response.ok ? await ak03Response.json() : { data: null };
 
         if (generalData.status === 'success') {
-            displayData(generalData.data.general_info, ak03Data.data ? ak03Data.data.ak03 : null);
+            displayData(generalData.data.general_info, ak03Data.data ? ak03Data.data.ak03 : null, ak03Data.data ? ak03Data.data.ak03.general_feedback : null);
             showMainContent();
         } else {
             throw new Error(generalData.message || 'Format data umum tidak sesuai');
@@ -262,7 +268,7 @@ async function loadAk03Data(idAsesi) {
     }
 }
 
-function displayData(general_info, ak03) {
+function displayData(general_info, ak03, general_feedback) {
     // Tampilkan informasi umum
     updateElementText('judul-skema', general_info.judul_skema);
     updateElementText('kode-skema', general_info.kode_skema);
@@ -282,6 +288,10 @@ function displayData(general_info, ak03) {
             const catatan = document.querySelector(`input[name="catatan-${id}"]`);
             if (catatan) catatan.value = item.catatan || '';
         });
+
+        if (general_feedback) {
+            document.getElementById('general-feedback').value = general_feedback;
+        }
     }
 
     // Tampilkan informasi tanda tangan
@@ -299,6 +309,7 @@ function displayData(general_info, ak03) {
         asesiCheckbox.checked = true;
         asesiCheckbox.disabled = true;
         formInputs.forEach(input => input.disabled = true);
+        document.getElementById('general-feedback').disabled = true;
         saveBtn.textContent = 'SUDAH DITANDATANGANI';
         saveBtn.disabled = true;
         saveBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
@@ -348,7 +359,8 @@ async function saveAk03Asesi(isSigning = false) {
         const payload = {
             id_asesi: apiConfig.asesiId,
             umpan_balik: collectFeedbackData(),
-            is_signing: isSigning
+            is_signing: isSigning,
+            general_feedback: document.getElementById('general-feedback').value
         };
 
         const response = await fetch(`${apiConfig.url}/asesmen/ak03/asesi/save`, {

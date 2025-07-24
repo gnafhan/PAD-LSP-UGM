@@ -16,6 +16,7 @@ class Ak03 extends Model
         'id_asesi',
         'id_asesor',
         'waktu_tanda_tangan_asesi',
+        'general_feedback',
     ];
 
     protected $casts = [
