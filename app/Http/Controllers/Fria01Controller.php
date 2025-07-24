@@ -19,7 +19,7 @@ class Fria01Controller extends Controller
             'data_tambahan' => 'nullable|string', 
         ]);
 
-        // Decode data_tambahan JSON string to array
+        // Decode data_tambahan
         $dataTambahan = [];
         if (!empty($validated['data_tambahan'])) {
             $decoded = json_decode($validated['data_tambahan'], true);
@@ -28,7 +28,6 @@ class Fria01Controller extends Controller
             }
         }
 
-        // Cari data lama berdasarkan asesi, asesor, skema, event, rincian_asesmen
         $fria01 = Fria01::where('id_asesi', $validated['id_asesi'])
             ->where('id_asesor', $validated['id_asesor'])
             ->where('id_skema', $validated['id_skema'])

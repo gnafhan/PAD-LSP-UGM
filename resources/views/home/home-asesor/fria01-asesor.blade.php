@@ -226,7 +226,7 @@
                 $unitKompetensiList = $detailRincian->asesi->skema->unit_kompetensi ?? collect();
             @endphp
             @foreach($unitKompetensiList as $idx => $unit)
-            <div class="p-4">
+            <div class="p-4" data-unit-kode="{{ $unit->kode_uk }}" data-unit-nama="{{ $unit->nama_uk }}">
                 <p class="text-sidebar_font font-semibold pb-4 text-2xl">Unit Kompetensi No {{ $idx+1 }}</p>
                 <p class="text-sidebar_font font-semibold pb-2">Kode Unit : {{ $unit->kode_uk }}</p>
                 <p class="text-sidebar_font font-semibold pb-2">Judul : {{ $unit->nama_uk }}</p>
@@ -249,7 +249,7 @@
                                 <td class="px-4 py-3 text-gray-700 text-left">SOP Menerapkan Prosedur</td>
                                 <td class="flex px-4 py-3 justify-center">
                                     <form class="w-40">
-                                        <select onchange="ubahWarnaSelect()" class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
+                                        <select name="kompetensi_{{ $unit->kode_uk }}_{{ $elemen->id_elemen }}" onchange="ubahWarnaSelect()" class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
                                             <option selected value="">Pilih</option>
                                             <option value="kompeten">Kompeten</option>
                                             <option value="tidak_kompeten">Tidak Kompeten</option>
@@ -257,7 +257,7 @@
                                     </form>
                                 </td>
                                 <td class="px-4 py-3 text-gray-700 text-left">
-                                    <textarea placeholder="Lainnya..." class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black"></textarea>
+                                    <textarea name="catatan_{{ $unit->kode_uk }}_{{ $elemen->id_elemen }}" placeholder="Lainnya..." class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black"></textarea>
                                 </td>
                             </tr>
                             @empty
@@ -383,63 +383,51 @@
 
 <script>
 document.getElementById('formFria01').addEventListener('submit', function(e) {
-    let dataTambahan = {};
+    let dataTambahan = {
+        hasil: [],
+        ttd_asesor: "{{ $ttd_asesor ?? '' }}",
+        nama_asesor: "{{ $nama_asesor ?? '' }}",
+        tanggal_ttd: "{{ $tanggal_ttd ?? '' }}",
+        unit_kompetensi: []
+    };
 
-    dataTambahan['kompetensi'] = [];
-    document.querySelectorAll('select[id^="selectKompetensi"], select[id^="pilihKompetensi"]').forEach(function(select) {
-        dataTambahan['kompetensi'].push({
-            name: select.name || select.id,
-            value: select.value
-        });
-    });
-
-    // Kumpulkan semua unit kompetensi
-    dataTambahan['unit_kompetensi'] = [];
-    document.querySelectorAll('[data-unit-kode]').forEach(function(el) {
-        let unit = {
-            kode_uk: el.getAttribute('data-unit-kode'),
-            nama_uk: el.getAttribute('data-unit-nama')
+    // Kumpulkan data unit_kompetensi dan elemennya
+    document.querySelectorAll('[data-unit-kode]').forEach(function(unitDiv) {
+        let unitObj = {
+            kode_uk: unitDiv.getAttribute('data-unit-kode'),
+            nama_uk: unitDiv.getAttribute('data-unit-nama'),
+            elemen: []
         };
-        let textarea = el.querySelector('textarea');
-        if (textarea) {
-            unit['catatan'] = textarea.value;
-        }
-        let radios = el.querySelectorAll('input[type="radio"]');
-        radios.forEach(function(radio) {
-            if (radio.checked) {
-                unit[radio.name] = radio.value;
+        unitDiv.querySelectorAll('tbody tr').forEach(function(row) {
+            let nama_elemen = row.querySelector('td:nth-child(2)')?.innerText?.trim() || '';
+            let kompetensi = row.querySelector('select[name^="kompetensi_"]')?.value || '';
+            let catatan = row.querySelector('textarea[name^="catatan_"]')?.value || '';
+            if (nama_elemen) { 
+                unitObj.elemen.push({
+                    nama_elemen: nama_elemen,
+                    kompetensi: kompetensi,
+                    catatan: catatan
+                });
             }
         });
-        dataTambahan['unit_kompetensi'].push(unit);
+        dataTambahan.unit_kompetensi.push(unitObj);
     });
 
-    dataTambahan['textareas'] = [];
-    document.querySelectorAll('textarea:not([data-unit-kode] textarea)').forEach(function(textarea) {
-        dataTambahan['textareas'].push({
-            name: textarea.name || textarea.id,
-            value: textarea.value
+    let kinerjaAsesiRadio = document.querySelector('input[name="kinerja_asesi"]:checked');
+    let umpanBalikKinerjaAsesiTextarea = document.querySelector('input[name="kinerja_asesi"]').closest('tr').querySelector('td:last-child textarea');
+
+    if (kinerjaAsesiRadio) {
+        dataTambahan.hasil.push({
+            name: 'kinerja_asesi',
+            value: kinerjaAsesiRadio.value,
+            umpan_balik: umpanBalikKinerjaAsesiTextarea ? umpanBalikKinerjaAsesiTextarea.value : ''
         });
-    });
+    }
 
-    dataTambahan['hasil'] = [];
-    document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
-        if (radio.checked && !radio.closest('[data-unit-kode]')) {
-            dataTambahan['hasil'].push({
-                name: radio.name,
-                value: radio.value
-            });
-        }
-    });
-
-    dataTambahan['ttd_asesor'] = "{{ $ttd_asesor ?? '' }}";
-    dataTambahan['nama_asesor'] = "{{ $nama_asesor ?? '' }}";
-    dataTambahan['tanggal_ttd'] = "{{ $tanggal_ttd ?? '' }}";
-
-    // Simpan ke input hidden
     document.getElementById('dataTambahanInput').value = JSON.stringify(dataTambahan);
 });
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle error jika gambar tidak ditemukan
     const ttdImages = document.querySelectorAll('img[alt*="Tanda Tangan"]');
 
     ttdImages.forEach(function(img) {
@@ -452,9 +440,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Fungsi untuk mengubah warna select berdasarkan pilihan
+
     function ubahWarnaSelect() {
-        const selects = document.querySelectorAll('select[id="selectKompetensi"]');
+        const selects = document.querySelectorAll('select[name^="kompetensi_"]'); // Target all selects with name starting with 'kompetensi_'
         selects.forEach(select => {
             select.classList.remove('text-green-600', 'text-red-600', 'text-black'); 
             if (select.value === 'kompeten') {
@@ -469,10 +457,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     ubahWarnaSelect();
 
-    const selectKompetensiElements = document.querySelectorAll('select[id="selectKompetensi"]');
+    const selectKompetensiElements = document.querySelectorAll('select[name^="kompetensi_"]');
     selectKompetensiElements.forEach(select => {
         select.addEventListener('change', ubahWarnaSelect);
     });
+
+    const pilihKompetensiSelect = document.getElementById('pilihKompetensi');
+    if (pilihKompetensiSelect) {
+        pilihKompetensiSelect.addEventListener('change', function() {
+            const selectedValue = this.value;
+            document.querySelectorAll('select[name^="kompetensi_"]').forEach(select => {
+                select.value = selectedValue;
+                const event = new Event('change');
+                select.dispatchEvent(event);
+            });
+            ubahWarnaSelect(); 
+        });
+    }
 });
 
 function sortTable(n) {
@@ -502,7 +503,7 @@ function sortTable(n) {
         if (shouldSwitch) {
             rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
             switching = true;
-            switchcount ++;      
+            switchcount ++;       
         } else {
             if (switchcount == 0 && dir == "asc") {
                 dir = "desc";
