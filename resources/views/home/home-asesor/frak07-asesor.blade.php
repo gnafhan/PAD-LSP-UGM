@@ -933,6 +933,7 @@
         defaultOptions.forEach((option, index) => {
             const isChecked1 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.item && obj.penyesuaian === 1) ? 'checked' : '';
             const isChecked0 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.item && obj.penyesuaian === 0) ? 'checked' : '';
+            const isDisabled = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.item) ? 'disabled' : '';
             const rowspan = option.keterangan.length > 1 ? option.keterangan.length : 1;
             // console.log(isChecked1);
             // console.log(isChecked0);
@@ -942,10 +943,10 @@
         <td rowspan="${rowspan}" class="border border-gray-300 text-center align-top px-2 py-2">${index+1}</td>
         <td rowspan="${rowspan}" class="border border-gray-300 align-top px-2 py-2">${option.item}</td>
         <td rowspan="${rowspan}" class="border border-gray-300 text-center align-middle">
-          <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="${option.item}" value=1 ${isChecked1}>
+          <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="${option.item}" value=1 ${isChecked1} ${isDisabled}>
         </td>
         <td rowspan="${rowspan}" class="border border-gray-300 text-center align-middle">
-          <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="${option.item}" value=0 ${isChecked0}>
+          <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="${option.item}" value=0 ${isChecked0} ${isDisabled}>
         </td>
         `;
         option.keterangan.forEach((ket, index2) => {
@@ -983,6 +984,7 @@
         defaultOptions.forEach((option, index) => {
             const isChecked1 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option && obj.penyesuaian === 1) ? 'checked' : '';
             const isChecked0 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option && obj.penyesuaian === 0) ? 'checked' : '';
+            const isDisabled = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option) ? 'disabled' : '';
             const lainnya = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option) ? selectedResults.find(obj => obj.item === option).lainnya : '';
             // console.log(option.item);
             // console.log(isChecked1);
@@ -995,13 +997,13 @@
             ${option}
             </td>
             <td class="border border-gray-300 text-center align-middle">
-            <input type="radio" class="bagian_b_yang_akan_dikumpulkan mx-auto" name="${option}" value=1 ${isChecked1}>
+            <input type="radio" class="bagian_b_yang_akan_dikumpulkan mx-auto" name="${option}" value=1 ${isChecked1} ${isDisabled}>
             </td>
             <td class="border border-gray-300 text-center align-middle">
-            <input type="radio" class="bagian_b_yang_akan_dikumpulkan mx-auto" name="${option}" value=0 ${isChecked0}>
+            <input type="radio" class="bagian_b_yang_akan_dikumpulkan mx-auto" name="${option}" value=0 ${isChecked0} ${isDisabled}>
             </td>
             <td class="border border-gray-300 px-2 py-2 align-top">
-            <textarea name="${option}" placeholder="Lainnya.." class="w-full border border-gray-300 rounded px-2 py-1 resize-none">${lainnya}</textarea>
+            <textarea name="${option}" placeholder="Lainnya.." class="w-full border border-gray-300 rounded px-2 py-1 resize-none" ${isDisabled}>${lainnya}</textarea>
             </td>
         </tr>
             `;
