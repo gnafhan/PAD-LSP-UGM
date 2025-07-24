@@ -17,7 +17,7 @@
         <p class="ms-2 text-xl font-bold text-black">IA.01</p>
     </div>
     
-    {{-- Breadcrumb (Visible when $detailRincian is true) --}}
+    {{-- Breadcrumb --}}
     <div id="breadcrumbs" class="@if($detailRincian) pb-4 px-6 @else hidden @endif">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -51,9 +51,14 @@
     </div>
 
     <div id="frameIA01" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
+        @if(session('success'))
+            <div class="mb-4 p-4 rounded bg-green-100 border border-green-400 text-green-700 text-center">
+                {{ session('success') }}
+            </div>
+        @endif
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir IA.01 Observasi Aktifitas di Tempat Kerja atau Tempat Kerja Simulasi</p>
         
-        {{-- Search Form (Hidden when $detailRincian is true) --}}
+        {{-- Search Form --}}
         <form id="searchIA01" class="max-w-md mb-4 rounded-xl @if($detailRincian) hidden @endif">
             <div class="relative">
             <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
@@ -65,7 +70,7 @@
             </div>
         </form>
 
-        {{-- Table Daftar Asesi (Hidden when $detailRincian is true) --}}
+        {{-- Table Daftar Asesi --}}
         <div class="overflow-x-auto shadow-sm rounded-lg @if($detailRincian) hidden @endif">
             <table id="daftarIA01" class="min-w-full bg-white overflow-hidden">
                 <thead class="bg-bg_dashboard text-center">
@@ -122,7 +127,7 @@
             </table>
         </div>
         
-        {{-- Detail Section (Visible when $detailRincian is true) --}}
+        {{-- Detail Section --}}
         <div id="detailIA01" class="@if($detailRincian) p-4 text-black @else hidden @endif">
 
             {{-- Input Formulir IA.01 Dinamis --}}
@@ -173,7 +178,7 @@
                 </div>
             </div>
 
-            {{-- Panduan Bagi Asesor (Always visible if detailIA01 is visible) --}}
+            {{-- Panduan Bagi Asesor --}}
             <div id="panduanAsesor" class="mb-6 p-4 mt-10">
                 <h3 class="text-lg font-semibold text-black mb-4 text-center">PANDUAN BAGI ASESOR</h3>
                 <ul class="space-y-2 text-sm text-gray-700">
@@ -201,7 +206,7 @@
             </div>
 
 
-            {{-- Checklist Kompeten (Always visible if detailIA01 is visible) --}}
+            {{-- Checklist Kompeten --}}
             <div id="clKompeten" class="p-4">
                 <form class="max-w-full mx-auto">
                     <label for="pilihKompetensi" class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">Checklist Kompetensi</label>
@@ -268,7 +273,7 @@
             
 
             <div class="my-6 px-4 space-y-6">
-                {{-- Hasil (Always visible if detailIA01 is visible) --}}
+                {{-- Hasil --}}
                 <div class="p-4">
                     <h3 class="text-sidebar_font font-semibold pb-4 text-xl">Hasil</h3>
                     <div class="overflow-x-auto shadow-md rounded-lg mb-4">
@@ -299,15 +304,15 @@
                     </div>
                 </div>
 
-                {{-- Tanda tangan (Always visible if detailIA01 is visible) --}}
+                {{-- Tanda tangan --}}
                 <div class="p-4 mb-6">
                     <h3 class="text-sidebar_font font-semibold pb-4 text-xl">Tandatangan</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {{-- Kolom Asesi --}}
                         <div class="text-center space-y-4">
                             @php
-                                $tanggal_ttd = $tanggal_ttd ?? date('d F Y'); // Default jika tidak ada
-                                $nama_asesi = $detailRincian->asesi->nama_asesi ?? 'Nama Asesi'; // Default jika tidak ada
+                                $tanggal_ttd = $tanggal_ttd ?? date('d F Y'); 
+                                $nama_asesi = $detailRincian->asesi->nama_asesi ?? 'Nama Asesi'; 
                             @endphp
                             <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd }}</p>
                             <div class="h-32 flex items-center justify-center bg-white">
@@ -331,7 +336,7 @@
                         {{-- Kolom Asesor --}}
                         <div class="text-center space-y-4">
                             @php
-                                $nama_asesor = $detailRincian->asesor->nama_asesor ?? 'Nama Asesor'; // Default jika tidak ada
+                                $nama_asesor = $detailRincian->asesor->nama_asesor ?? 'Nama Asesor';
                             @endphp
                             <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd }}</p>
                             <div class="h-32 flex items-center justify-center bg-white">
@@ -354,12 +359,21 @@
                     </div>
                 </div>
 
-                {{-- Button Simpan (Always visible if detailIA01 is visible) --}}
-                <div class="flex justify-end pe-4">
-                    <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                        Simpan dan Setujui
-                    </button>
-                </div>
+                {{-- Button Simpan --}}
+                <form id="formFria01" method="POST" action="{{ route('fria01.store') }}">
+                    @csrf
+                    <input type="hidden" name="id_asesi" value="{{ $detailRincian->asesi->id_asesi ?? '' }}">
+                    <input type="hidden" name="id_asesor" value="{{ $detailRincian->asesor->id_asesor ?? '' }}">
+                    <input type="hidden" name="id_skema" value="{{ $detailRincian->asesi->skema->id_skema ?? '' }}">
+                    <input type="hidden" name="id_event" value="{{ $detailRincian->event->id_event ?? '' }}">
+                    <input type="hidden" name="id_rincian_asesmen" value="{{ $detailRincian->id_rincian_asesmen ?? '' }}">
+                    <input type="hidden" id="dataTambahanInput" name="data_tambahan">
+                    <div class="flex justify-end pe-4">
+                        <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
+                            Simpan dan Setujui
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -367,6 +381,62 @@
 </div>
 
 <script>
+document.getElementById('formFria01').addEventListener('submit', function(e) {
+    let dataTambahan = {};
+
+    dataTambahan['kompetensi'] = [];
+    document.querySelectorAll('select[id^="selectKompetensi"], select[id^="pilihKompetensi"]').forEach(function(select) {
+        dataTambahan['kompetensi'].push({
+            name: select.name || select.id,
+            value: select.value
+        });
+    });
+
+    // Kumpulkan semua unit kompetensi
+    dataTambahan['unit_kompetensi'] = [];
+    document.querySelectorAll('[data-unit-kode]').forEach(function(el) {
+        let unit = {
+            kode_uk: el.getAttribute('data-unit-kode'),
+            nama_uk: el.getAttribute('data-unit-nama')
+        };
+        let textarea = el.querySelector('textarea');
+        if (textarea) {
+            unit['catatan'] = textarea.value;
+        }
+        let radios = el.querySelectorAll('input[type="radio"]');
+        radios.forEach(function(radio) {
+            if (radio.checked) {
+                unit[radio.name] = radio.value;
+            }
+        });
+        dataTambahan['unit_kompetensi'].push(unit);
+    });
+
+    dataTambahan['textareas'] = [];
+    document.querySelectorAll('textarea:not([data-unit-kode] textarea)').forEach(function(textarea) {
+        dataTambahan['textareas'].push({
+            name: textarea.name || textarea.id,
+            value: textarea.value
+        });
+    });
+
+    dataTambahan['hasil'] = [];
+    document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+        if (radio.checked && !radio.closest('[data-unit-kode]')) {
+            dataTambahan['hasil'].push({
+                name: radio.name,
+                value: radio.value
+            });
+        }
+    });
+
+    dataTambahan['ttd_asesor'] = "{{ $ttd_asesor ?? '' }}";
+    dataTambahan['nama_asesor'] = "{{ $nama_asesor ?? '' }}";
+    dataTambahan['tanggal_ttd'] = "{{ $tanggal_ttd ?? '' }}";
+
+    // Simpan ke input hidden
+    document.getElementById('dataTambahanInput').value = JSON.stringify(dataTambahan);
+});
 document.addEventListener('DOMContentLoaded', function() {
     // Handle error jika gambar tidak ditemukan
     const ttdImages = document.querySelectorAll('img[alt*="Tanda Tangan"]');
@@ -385,31 +455,28 @@ document.addEventListener('DOMContentLoaded', function() {
     function ubahWarnaSelect() {
         const selects = document.querySelectorAll('select[id="selectKompetensi"]');
         selects.forEach(select => {
-            select.classList.remove('text-green-600', 'text-red-600', 'text-black'); // Remove previous colors
+            select.classList.remove('text-green-600', 'text-red-600', 'text-black'); 
             if (select.value === 'kompeten') {
                 select.classList.add('text-green-600');
             } else if (select.value === 'tidak_kompeten') {
                 select.classList.add('text-red-600');
             } else {
-                select.classList.add('text-black'); // Default color
+                select.classList.add('text-black'); 
             }
         });
     }
 
-    // Panggil fungsi saat halaman dimuat untuk mengatur warna awal
     ubahWarnaSelect();
 
-    // Event listener untuk setiap select dengan id "selectKompetensi"
     const selectKompetensiElements = document.querySelectorAll('select[id="selectKompetensi"]');
     selectKompetensiElements.forEach(select => {
         select.addEventListener('change', ubahWarnaSelect);
     });
 });
 
-// Pastikan fungsi sortTable() ada jika digunakan
 function sortTable(n) {
     let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("daftarIA01"); // Sesuaikan ID tabel jika diperlukan
+    table = document.getElementById("daftarIA01"); 
     switching = true;
     dir = "asc"; 
     while (switching) {
