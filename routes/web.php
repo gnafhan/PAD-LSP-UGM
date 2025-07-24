@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\ManajemenPengguna\AdminUserController;
 use App\Http\Controllers\Admin\ManajemenPengguna\KompetensiTeknisController;
 use App\Http\Controllers\Admin\ManajemenTUK\TukController;
 use App\Http\Controllers\Admin\ManajemenTUK\PenanggungJawabController;
+use App\Http\Controllers\Asesor\FRAK04Controller;
+use App\Http\Controllers\Asesor\HasilAsesmenController;
 use App\Http\Controllers\SwaggerController;
 use App\Http\Controllers\IA02ContentController;
 use App\Http\Controllers\TempImageController;
@@ -223,8 +225,14 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     Route::prefix('fr')->name('asesi.fr.')->group(function () {
         Route::view('/ak1', 'home/home-asesi/FRAK-01/frak01')->name('ak1');
         Route::view('/ak3', 'home/home-asesi/FRAK-03/frak3')->name('ak3');
-        Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
+//        Route::view('/ia2/hasil', 'home/home-asesi/FRIA-02/hasilv')->name('ia2.hasil');
+//        Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
     });
+
+    // FRIA-02
+    Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
+    Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
+
 
     // Jadwal Uji Kompetensi
     Route::view('/jadwal-uji-kompetensi', 'home/home-asesi/APL-02/jadwal-uji-kompetensi')->name('asesi.jadwal-uji-kompetensi');
@@ -315,9 +323,7 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/fria07-asesor');
     })->name('fria07-asesor');
 
-    Route::get('/hasilasesmen', function () {
-        return view('home/home-asesor/hasil-asesmen');
-    })->name('hasil-asesmen-asesor');
+    Route::get('/hasilasesmen', [HasilAsesmenController::class, 'index'])->name('hasil-asesmen-asesor');
 
     Route::get('/frak02', function () {
         return view('home/home-asesor/frak02-asesor');
@@ -327,9 +333,8 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/frak03-asesor');
     })->name('frak03-asesor');
 
-    Route::get('/frak04', function () {
-        return view('home/home-asesor/frak04-asesor');
-    })->name('frak04-asesor');
+    Route::get('/frak04', [FRAK04Controller::class, 'index'])->name('frak04-asesor');
+    Route::get('/frak04/{id_asesi}', [FRAK04Controller::class, 'show'])->name('frak04-asesor.show');
 
     // Aksi Asesor
     Route::get('/aksi/aktif', function () {
@@ -435,7 +440,7 @@ Route::get('/load-content/{ia02Id}/{contentType?}', [IA02ContentController::clas
 Route::delete('/delete-content/{ia02Id}/{contentType?}', [IA02ContentController::class, 'deleteContent'])->name('delete.content');
 
 // Temporary Image Management Routes
-Route::post('/upload-temp-image', [TempImageController::class, 'uploadTempImage'])->name('upload.temp.image');
+// Route::post('/upload-temp-image', [TempImageController::class, 'uploadTempImage'])->name('upload.temp.image');
 Route::post('/save-content-with-images', [IA02ContentController::class, 'saveContentWithImages'])->name('save.content.with.images');
 
 // Legacy CKEditor routes (keep for backward compatibility)

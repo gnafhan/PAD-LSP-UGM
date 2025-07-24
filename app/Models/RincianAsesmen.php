@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 class RincianAsesmen extends Model
@@ -20,6 +21,7 @@ class RincianAsesmen extends Model
         'id_asesi',
         'id_asesor',
         'id_event',
+        'banding_date',
     ];
 
     public function asesi(): BelongsTo
@@ -37,6 +39,11 @@ class RincianAsesmen extends Model
         return $this->belongsTo(Event::class, 'id_event', 'id_event');
     }
     
+    public function jawaban_banding(): HasMany
+    {
+        return $this->hasMany(JawabanBanding::class, 'id_rincian_asesmen', 'id_rincian_asesmen');
+    }
+
     /**
      * Get skema statistics grouped by periode and tahun
      * 
