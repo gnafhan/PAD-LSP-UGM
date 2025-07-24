@@ -406,8 +406,14 @@ function initializeModals() {
         hideSignatureModal();
         document.getElementById('approve-feedback').checked = false;
     });
-    document.getElementById('confirm-signature').addEventListener('click', () => saveAk03Asesi(true));
-    document.getElementById('close-success-modal').addEventListener('click', hideSuccessModal);
+    document.getElementById('confirm-signature').addEventListener('click', () => {
+        hideSignatureModal();
+        saveAk03Asesi(true);
+    });
+    document.getElementById('close-success-modal').addEventListener('click', () => {
+        hideSuccessModal();
+        loadAk03Data(apiConfig.asesiId);
+    });
 
     // Klik di luar modal untuk menutup
     signatureModal.addEventListener('click', e => { if(e.target === signatureModal) document.getElementById('cancel-signature').click(); });
@@ -426,6 +432,8 @@ function showSignatureModal() {
 
 function hideSignatureModal() {
     document.getElementById('signature-modal').classList.add('hidden');
+    document.getElementById('signature-modal').style.display = 'none';
+    document.getElementById('main-content').classList.remove('hidden');
 }
 
 function showSuccessModal(message) {
@@ -436,6 +444,8 @@ function showSuccessModal(message) {
 
 function hideSuccessModal() {
     document.getElementById('success-modal').classList.add('hidden');
+    document.getElementById('success-modal').style.display = 'none';
+    document.getElementById('main-content').classList.remove('hidden');
 }
 
 // ===================================================================================
