@@ -4,6 +4,11 @@
 
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
+    @if(session('success'))
+        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
     <div id="judulPage" class="relative z-10 flex items-center mx-4 pb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 15 15" fill="url(#icon-gradient)">
             <defs>
@@ -51,11 +56,7 @@
     </div>
 
     <div id="frameIA01" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
-        @if(session('success'))
-            <div class="mb-4 p-4 rounded bg-green-100 border border-green-400 text-green-700 text-center">
-                {{ session('success') }}
-            </div>
-        @endif
+
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir IA.01 Observasi Aktifitas di Tempat Kerja atau Tempat Kerja Simulasi</p>
         
         {{-- Search Form --}}
