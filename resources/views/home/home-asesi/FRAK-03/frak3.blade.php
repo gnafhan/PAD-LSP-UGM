@@ -449,7 +449,7 @@ function updateElementText(id, text) {
 function buildImageUrl(path) {
     if (!path || path === 'null') return '';
     const baseUrl = "{{ url('') }}";
-    return path.startsWith('http') ? path : `${baseUrl}/storage/${path.replace(/^\//, '')}`;
+    return path.startsWith('http') ? path : `${baseUrl}/${path.replace(/^\//, '')}`;
 }
 
 function showLoading(show) {
