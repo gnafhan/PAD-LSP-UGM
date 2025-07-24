@@ -211,10 +211,33 @@
             <div id="clKompeten" class="p-4">
                 <form class="max-w-full mx-auto">
                     <label for="pilihKompetensi" class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">Checklist Kompetensi</label>
-                    <select id="pilihKompetensi" class="border border-border_input text-sidebar_font text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2">
-                        <option selected>Pilih Kompetensi</option>
-                        <option value="kompeten">Kompeten</option>
-                        <option value="tidak_kompeten">Tidak Kompeten</option>
+                    @php
+                        $dominantKompetensi = '';
+                        $kompeten = 0;
+                        $tidakKompeten = 0;
+                        
+                        if ($formData && isset($formData->data_tambahan['unit_kompetensi'])) {
+                            foreach ($formData->data_tambahan['unit_kompetensi'] as $unitData) {
+                                foreach ($unitData['elemen'] as $elemenData) {
+                                    if ($elemenData['kompetensi'] === 'kompeten') {
+                                        $kompeten++;
+                                    } elseif ($elemenData['kompetensi'] === 'tidak_kompeten') {
+                                        $tidakKompeten++;
+                                    }
+                                }
+                            }
+                            
+                            if ($kompeten > $tidakKompeten) {
+                                $dominantKompetensi = 'kompeten';
+                            } elseif ($tidakKompeten > $kompeten) {
+                                $dominantKompetensi = 'tidak_kompeten';
+                            }
+                        }
+                    @endphp
+                    <select id="pilihKompetensi" class="border border-border_input text-sidebar_font text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2 {{ $dominantKompetensi === 'kompeten' ? 'text-green-600' : ($dominantKompetensi === 'tidak_kompeten' ? 'text-red-600' : '') }}">
+                        <option {{ $dominantKompetensi === '' ? 'selected' : '' }}>Pilih Kompetensi</option>
+                        <option value="kompeten" {{ $dominantKompetensi === 'kompeten' ? 'selected' : '' }}>Kompeten</option>
+                        <option value="tidak_kompeten" {{ $dominantKompetensi === 'tidak_kompeten' ? 'selected' : '' }}>Tidak Kompeten</option>
                     </select>
                 </form>
             </div>
@@ -249,15 +272,45 @@
                                 <td class="px-4 py-3 text-gray-700 text-left">SOP Menerapkan Prosedur</td>
                                 <td class="flex px-4 py-3 justify-center">
                                     <form class="w-40">
-                                        <select name="kompetensi_{{ $unit->kode_uk }}_{{ $elemen->id_elemen }}" onchange="ubahWarnaSelect()" class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
-                                            <option selected value="">Pilih</option>
-                                            <option value="kompeten">Kompeten</option>
-                                            <option value="tidak_kompeten">Tidak Kompeten</option>
+                                        @php
+                                            $selectedValue = '';
+                                            if ($formData && isset($formData->data_tambahan['unit_kompetensi'])) {
+                                                foreach ($formData->data_tambahan['unit_kompetensi'] as $ukData) {
+                                                    if ($ukData['kode_uk'] === $unit->kode_uk) {
+                                                        foreach ($ukData['elemen'] as $elemenData) {
+                                                            if ($elemenData['nama_elemen'] === $elemen->nama_elemen) {
+                                                                $selectedValue = $elemenData['kompetensi'];
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        <select name="kompetensi_{{ $unit->kode_uk }}_{{ $elemen->id_elemen }}" onchange="ubahWarnaSelect()" class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black {{ $selectedValue === 'kompeten' ? 'text-green-600' : ($selectedValue === 'tidak_kompeten' ? 'text-red-600' : 'text-black') }}">
+                                            <option value="" {{ $selectedValue === '' ? 'selected' : '' }}>Pilih</option>
+                                            <option value="kompeten" {{ $selectedValue === 'kompeten' ? 'selected' : '' }}>Kompeten</option>
+                                            <option value="tidak_kompeten" {{ $selectedValue === 'tidak_kompeten' ? 'selected' : '' }}>Tidak Kompeten</option>
                                         </select>
                                     </form>
                                 </td>
                                 <td class="px-4 py-3 text-gray-700 text-left">
-                                    <textarea name="catatan_{{ $unit->kode_uk }}_{{ $elemen->id_elemen }}" placeholder="Lainnya..." class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black"></textarea>
+                                    @php
+                                        $catatanValue = '';
+                                        if ($formData && isset($formData->data_tambahan['unit_kompetensi'])) {
+                                            foreach ($formData->data_tambahan['unit_kompetensi'] as $ukData) {
+                                                if ($ukData['kode_uk'] === $unit->kode_uk) {
+                                                    foreach ($ukData['elemen'] as $elemenData) {
+                                                        if ($elemenData['nama_elemen'] === $elemen->nama_elemen) {
+                                                            $catatanValue = $elemenData['catatan'];
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    @endphp
+                                    <textarea name="catatan_{{ $unit->kode_uk }}_{{ $elemen->id_elemen }}" placeholder="Lainnya..." class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">{{ $catatanValue }}</textarea>
                                 </td>
                             </tr>
                             @empty
@@ -291,13 +344,26 @@
                                 <tr>
                                     <td class="px-6 py-4 text-sm text-gray-700 text-left">Kinerja Asesi adalah</td>
                                     <td class="px-6 py-4 text-center">
-                                        <input type="radio" name="kinerja_asesi" value="kompeten" class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
+                                        @php
+                                            $kinerjaValue = '';
+                                            $umpanBalik = '';
+                                            if ($formData && isset($formData->data_tambahan['hasil'])) {
+                                                foreach ($formData->data_tambahan['hasil'] as $hasil) {
+                                                    if ($hasil['name'] === 'kinerja_asesi') {
+                                                        $kinerjaValue = $hasil['value'];
+                                                        $umpanBalik = $hasil['umpan_balik'];
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        <input type="radio" name="kinerja_asesi" value="kompeten" {{ $kinerjaValue === 'kompeten' ? 'checked' : '' }} class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
                                     </td>
                                     <td class="px-6 py-4 text-center">
-                                        <input type="radio" name="kinerja_asesi" value="tidak_kompeten" class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
+                                        <input type="radio" name="kinerja_asesi" value="tidak_kompeten" {{ $kinerjaValue === 'tidak_kompeten' ? 'checked' : '' }} class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
                                     </td>
                                     <td class="px-6 py-4">
-                                        <textarea placeholder="Lainnya..." class="w-full border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru px-3 py-2 bg-white text-black resize-none" rows="3"></textarea>
+                                        <textarea name="umpan_balik_kinerja_asesi" placeholder="Lainnya..." class="w-full border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru px-3 py-2 bg-white text-black resize-none" rows="3">{{ $umpanBalik }}</textarea>
                                     </td>
                                 </tr>
                             </tbody>
@@ -337,7 +403,17 @@
                         {{-- Kolom Asesor --}}
                         <div class="text-center space-y-4">
                             @php
-                                $nama_asesor = $detailRincian->asesor->nama_asesor ?? 'Nama Asesor';
+                                $nama_asesor = $formData && isset($formData->data_tambahan['nama_asesor']) ? 
+                                    $formData->data_tambahan['nama_asesor'] : 
+                                    ($detailRincian->asesor->nama_asesor ?? 'Nama Asesor');
+                                
+                                $tanggal_ttd = $formData && isset($formData->data_tambahan['tanggal_ttd']) ? 
+                                    $formData->data_tambahan['tanggal_ttd'] : 
+                                    ($tanggal_ttd ?? date('d F Y'));
+                                
+                                $ttd_asesor = $formData && isset($formData->data_tambahan['ttd_asesor']) ? 
+                                    $formData->data_tambahan['ttd_asesor'] : 
+                                    ($ttd_asesor ?? '');
                             @endphp
                             <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd }}</p>
                             <div class="h-32 flex items-center justify-center bg-white">
@@ -385,9 +461,9 @@
 document.getElementById('formFria01').addEventListener('submit', function(e) {
     let dataTambahan = {
         hasil: [],
-        ttd_asesor: "{{ $ttd_asesor ?? '' }}",
-        nama_asesor: "{{ $nama_asesor ?? '' }}",
-        tanggal_ttd: "{{ $tanggal_ttd ?? '' }}",
+        ttd_asesor: "{{ $formData && isset($formData->data_tambahan['ttd_asesor']) ? $formData->data_tambahan['ttd_asesor'] : ($ttd_asesor ?? '') }}",
+        nama_asesor: "{{ $formData && isset($formData->data_tambahan['nama_asesor']) ? $formData->data_tambahan['nama_asesor'] : ($nama_asesor ?? '') }}",
+        tanggal_ttd: "{{ $formData && isset($formData->data_tambahan['tanggal_ttd']) ? $formData->data_tambahan['tanggal_ttd'] : ($tanggal_ttd ?? '') }}",
         unit_kompetensi: []
     };
 
@@ -414,7 +490,7 @@ document.getElementById('formFria01').addEventListener('submit', function(e) {
     });
 
     let kinerjaAsesiRadio = document.querySelector('input[name="kinerja_asesi"]:checked');
-    let umpanBalikKinerjaAsesiTextarea = document.querySelector('input[name="kinerja_asesi"]').closest('tr').querySelector('td:last-child textarea');
+    let umpanBalikKinerjaAsesiTextarea = document.querySelector('textarea[name="umpan_balik_kinerja_asesi"]');
 
     if (kinerjaAsesiRadio) {
         dataTambahan.hasil.push({
@@ -442,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     function ubahWarnaSelect() {
-        const selects = document.querySelectorAll('select[name^="kompetensi_"]'); // Target all selects with name starting with 'kompetensi_'
+        const selects = document.querySelectorAll('select[name^="kompetensi_"]'); 
         selects.forEach(select => {
             select.classList.remove('text-green-600', 'text-red-600', 'text-black'); 
             if (select.value === 'kompeten') {
@@ -464,8 +540,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const pilihKompetensiSelect = document.getElementById('pilihKompetensi');
     if (pilihKompetensiSelect) {
+        if (pilihKompetensiSelect.value === 'kompeten') {
+            pilihKompetensiSelect.classList.add('text-green-600');
+        } else if (pilihKompetensiSelect.value === 'tidak_kompeten') {
+            pilihKompetensiSelect.classList.add('text-red-600');
+        }
+        
         pilihKompetensiSelect.addEventListener('change', function() {
             const selectedValue = this.value;
+            
+            // Update select color
+            this.classList.remove('text-green-600', 'text-red-600');
+            if (selectedValue === 'kompeten') {
+                this.classList.add('text-green-600');
+            } else if (selectedValue === 'tidak_kompeten') {
+                this.classList.add('text-red-600');
+            }
+            
+            // Update all kompetensi selects
             document.querySelectorAll('select[name^="kompetensi_"]').forEach(select => {
                 select.value = selectedValue;
                 const event = new Event('change');
