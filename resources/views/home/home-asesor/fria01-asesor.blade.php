@@ -8,9 +8,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 15 15" fill="url(#icon-gradient)">
             <defs>
                 <linearGradient id="icon-gradient" x1="0" y1="1" x2="0" y2="0">
-                    <stop offset="0%" stop-color="#3B82F6" /> <!-- Biru -->
-                    <stop offset="100%" stop-color="#8B5CF6" /> <!-- Ungu -->
-                </linearGradient>
+                    <stop offset="0%" stop-color="#3B82F6" /> <stop offset="100%" stop-color="#8B5CF6" /> </linearGradient>
             </defs>
             <path
                 d="M10.7907 7.5L11.5257 6.765C11.7823 6.50833 12.109 6.36833 12.4648 6.33333V5.75L8.96484 2.25H3.13151C2.48401 2.25 1.96484 2.76917 1.96484 3.41667V11.5833C1.96484 11.8928 2.08776 12.1895 2.30655 12.4083C2.52534 12.6271 2.82209 12.75 3.13151 12.75H6.63151V11.6592L6.70734 11.5833H3.13151V3.41667H7.21484V7.5H10.7907ZM8.38151 3.125L11.5898 6.33333H8.38151V3.125ZM11.374 8.5675L12.564 9.7575L8.98818 13.3333H7.79818V12.1433L11.374 8.5675ZM13.544 8.7775L12.9723 9.34917L11.7823 8.15917L12.354 7.5875C12.4648 7.47083 12.6573 7.47083 12.774 7.5875L13.544 8.3575C13.6607 8.47417 13.6607 8.66667 13.544 8.7775Z"
@@ -18,8 +16,9 @@
         </svg>
         <p class="ms-2 text-xl font-bold text-black">IA.01</p>
     </div>
-    <div id="breadcrumbs" class="hidden pb-4 px-6">
-        <!-- Breadcrumb -->
+    
+    {{-- Breadcrumb (Visible when $detailRincian is true) --}}
+    <div id="breadcrumbs" class="@if($detailRincian) pb-4 px-6 @else hidden @endif">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -37,15 +36,16 @@
                         </a>
                     </div>
                 </li>
-                <!-- Memanggil data nama asesi -->
+                @if($detailRincian && $detailRincian->asesi)
                 <li aria-current="page">
                     <div class="flex items-center">
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 9l4-4-4-4"/>
                         </svg>
-                        <span class="ms-1 text-sm font-medium text-black">Muhammad Rifai</span>
+                        <span class="ms-1 text-sm font-medium text-black">{{ $detailRincian->asesi->nama_asesi ?? '-' }}</span>
                     </div>
                 </li>
+                @endif
             </ol>
         </nav>
     </div>
@@ -53,8 +53,8 @@
     <div id="frameIA01" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
         <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir IA.01 Observasi Aktifitas di Tempat Kerja atau Tempat Kerja Simulasi</p>
         
-        <!-- Search Form -->
-        <form id="searchIA01" class="max-w-md mb-4 rounded-xl">
+        {{-- Search Form (Hidden when $detailRincian is true) --}}
+        <form id="searchIA01" class="max-w-md mb-4 rounded-xl @if($detailRincian) hidden @endif">
             <div class="relative">
             <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
                 <button type="submit" class="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
@@ -64,7 +64,9 @@
                 </button>
             </div>
         </form>
-        <div class="overflow-x-auto shadow-sm rounded-lg">
+
+        {{-- Table Daftar Asesi (Hidden when $detailRincian is true) --}}
+        <div class="overflow-x-auto shadow-sm rounded-lg @if($detailRincian) hidden @endif">
             <table id="daftarIA01" class="min-w-full bg-white overflow-hidden">
                 <thead class="bg-bg_dashboard text-center">
                     <tr>
@@ -81,7 +83,7 @@
                     <tr>
                         <td class="px-4 py-3 text-sm text-gray-700">{{ $i+1 }}</td>
                         <td class="px-4 py-3 text-center">
-                            <button onclick="showSummary('{{ $rincian->asesi->id_asesi }}')" class="">
+                            <button onclick="window.location.href='{{ route('fria01-asesor') }}?id_asesi={{ $rincian->asesi->id_asesi }}'" class="">
                                 <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                     width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd"
@@ -120,9 +122,10 @@
             </table>
         </div>
         
-        <div id="detailIA01" class="hidden p-4 text-black">
+        {{-- Detail Section (Visible when $detailRincian is true) --}}
+        <div id="detailIA01" class="@if($detailRincian) p-4 text-black @else hidden @endif">
 
-            <!-- Input Formulir IA.01 -->
+            {{-- Input Formulir IA.01 Dinamis --}}
             <div id="FRIA01" class="pt-0 p-4 space-y-6">
                 <div class="max-w-full space-y-1">
                     <div class="flex">
@@ -130,7 +133,7 @@
                             Judul Sertifikasi
                         </span>
                         <p id="judulSertifikasi" type="text" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Sertifikasi Frontend
+                        {{ $detailRincian->asesi->skema->nama_skema ?? '-' }}
                         </p>
                     </div>
                     <div class="flex">
@@ -138,7 +141,7 @@
                             Nomor Sertifikasi
                         </span>
                         <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        SKM/1602/00023/2/19
+                        {{ $detailRincian->asesi->skema->nomor_skema ?? '-' }}
                         </p>
                     </div>
                 </div>
@@ -148,7 +151,7 @@
                             Nama Peserta Sertifikasi
                         </span>
                         <p id="namaPeserta" type="text" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Muhammad Rifai
+                        {{ $detailRincian->asesi->nama_asesi ?? '-' }}
                         </p>
                     </div>
                     <div class="flex">
@@ -156,7 +159,7 @@
                             Nama Asesor
                         </span>
                         <p id="namaAsesor" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            Nafa Popcorn
+                            {{ $detailRincian->asesor->nama_asesor ?? '-' }}
                         </p>
                     </div>
                     <div class="flex">
@@ -164,14 +167,13 @@
                             TUK
                         </span>
                         <p id="tuk" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Satu Web
+                        {{ $detailRincian->event->tuk->nama_tuk ?? '-' }}
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div id="infoAwal" class="hidden">
-            <!-- Panduan Bagi Asesor -->
+            {{-- Panduan Bagi Asesor (Always visible if detailIA01 is visible) --}}
             <div id="panduanAsesor" class="mb-6 p-4 mt-10">
                 <h3 class="text-lg font-semibold text-black mb-4 text-center">PANDUAN BAGI ASESOR</h3>
                 <ul class="space-y-2 text-sm text-gray-700">
@@ -198,7 +200,7 @@
                 </ul>
             </div>
 
-            <!-- Kelompok Pekerjaan Kegiatan Rekreasi -->
+            {{-- Kelompok Pekerjaan Kegiatan Rekreasi (Always visible if detailIA01 is visible) --}}
             <div id="kelompokPekerjaan" class="mb-6 p-4 bg-white">
                 <h3 class="text-lg font-semibold text-black mb-4">Kelompok Pekerjaan Kegiatan Rekreasi</h3>
                 <div class="overflow-x-auto shadow-sm rounded-lg">
@@ -276,7 +278,7 @@
                 </div>
             </div>
 
-            <!-- Checklist Kompeten -->
+            {{-- Checklist Kompeten (Always visible if detailIA01 is visible) --}}
             <div id="clKompeten" class="p-4">
                 <form class="max-w-full mx-auto">
                     <label for="pilihKompetensi" class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">Checklist Kompetensi</label>
@@ -288,7 +290,7 @@
                 </form>
             </div>
 
-            <!-- Tabel 1 AK01 -->
+            {{-- Tabel 1 AK01 (Always visible if detailIA01 is visible) --}}
             <div class="p-4">
                 <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-4 text-2xl">Unit Kompetensi No 1</p>
                 <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">Kode Unit : R.93KPW00.011.2</p>
@@ -323,19 +325,17 @@
                                 <td class="px-4 py-3 text-gray-700 text-left">
                                     <textarea placeholder="Lainnya..." class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black"></textarea>
                                 </td>
-                
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
                 
-            <!-- Tabel 2 APL02 -->
+            {{-- Tabel 2 APL02 (Always visible if detailIA01 is visible) --}}
             <div class="p-4">
                 <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-4 text-2xl">Unit Kompetensi No 2</p>
                 <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">Kode Unit : R.93KPW00.011.2</p>
                 <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">Judul : Mengimplementasikan Dasar-dasar Kepemanduan Museum</p>
-
 
                 <div class="overflow-x-auto shadow-md rounded-lg mb-4">
                     <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
@@ -408,15 +408,10 @@
                 </div>
             </div>
 
-            <!-- Button Simpan -->
-            <div class="flex justify-end pe-4">
-                <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                    Simpan dan Setujui
-                </button>
-            </div>
+            
 
             <div class="my-6 px-4 space-y-6">
-                <!-- Hasil -->
+                {{-- Hasil (Always visible if detailIA01 is visible) --}}
                 <div class="p-4">
                     <h3 class="text-sidebar_font font-semibold pb-4 text-xl">Hasil</h3>
                     <div class="overflow-x-auto shadow-md rounded-lg mb-4">
@@ -447,89 +442,149 @@
                     </div>
                 </div>
 
-                <!-- Tanda tangan -->
+                {{-- Tanda tangan (Always visible if detailIA01 is visible) --}}
                 <div class="p-4 mb-6">
-                <h3 class="text-sidebar_font font-semibold pb-4 text-xl">Tandatangan</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Kolom Asesi -->
-                    <div class="text-center space-y-4">
-                        <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd ?? '15 Maret 2025' }}</p>
-                        <div class="h-32 flex items-center justify-center bg-white">
-                            @if(isset($ttd_asesi) && $ttd_asesi)
-                                <!-- Gambar tanda tangan asesi -->
-                                <img src="{{ asset('storage/ttd/' . $ttd_asesi) }}" 
-                                    alt="Tanda Tangan Asesi" 
-                                    class="max-h-24 max-w-full object-contain">
-                            @else
-                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
-                                    <span class="text-gray-400 text-sm">Belum ada tanda tangan</span>
-                                </div>
-                            @endif
+                    <h3 class="text-sidebar_font font-semibold pb-4 text-xl">Tandatangan</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {{-- Kolom Asesi --}}
+                        <div class="text-center space-y-4">
+                            @php
+                                $tanggal_ttd = $tanggal_ttd ?? date('d F Y'); // Default jika tidak ada
+                                $nama_asesi = $detailRincian->asesi->nama_asesi ?? 'Nama Asesi'; // Default jika tidak ada
+                            @endphp
+                            <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd }}</p>
+                            <div class="h-32 flex items-center justify-center bg-white">
+                                @if(isset($ttd_asesi) && $ttd_asesi)
+                                    {{-- Gambar tanda tangan asesi --}}
+                                    <img src="{{ asset('storage/ttd/' . $ttd_asesi) }}" 
+                                        alt="Tanda Tangan Asesi" 
+                                        class="max-h-24 max-w-full object-contain">
+                                @else
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
+                                        <span class="text-gray-400 text-sm">Belum ada tanda tangan</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="border-t border-gray-400 pt-2">
+                                <p class="text-sm font-medium text-gray-700">Asesi</p>
+                                <p class="text-sm text-gray-600">{{ $nama_asesi }}</p>
+                            </div>
                         </div>
-                        <div class="border-t border-gray-400 pt-2">
-                            <p class="text-sm font-medium text-gray-700">Asesi</p>
-                            <p class="text-sm text-gray-600">{{ $nama_asesi ?? 'Muhammad Rifai' }}</p>
-                        </div>
-                    </div>
 
-                    <!-- Kolom Asesor -->
-                    <div class="text-center space-y-4">
-                        <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd ?? '15 Maret 2025' }}</p>
-                        <div class="h-32 flex items-center justify-center bg-white">
-                            @if(isset($ttd_asesor) && $ttd_asesor)
-                                <!-- Gambar tanda tangan asesor -->
-                                <img src="{{ asset('storage/ttd/' . $ttd_asesor) }}" 
-                                    alt="Tanda Tangan Asesor" 
-                                    class="max-h-24 max-w-full object-contain">
-                            @else
-                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
-                                    <span class="text-gray-400 text-sm">Belum ada tanda tangan</span>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="border-t border-gray-400 pt-2">
-                            <p class="text-sm font-medium text-gray-700">Asesor</p>
-                            <p class="text-sm text-gray-600">{{ $nama_asesor ?? 'Nafa Popcorn' }}</p>
+                        {{-- Kolom Asesor --}}
+                        <div class="text-center space-y-4">
+                            @php
+                                $nama_asesor = $detailRincian->asesor->nama_asesor ?? 'Nama Asesor'; // Default jika tidak ada
+                            @endphp
+                            <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd }}</p>
+                            <div class="h-32 flex items-center justify-center bg-white">
+                                @if(isset($ttd_asesor) && $ttd_asesor)
+                                    {{-- Gambar tanda tangan asesor --}}
+                                    <img src="{{ asset('storage/ttd/' . $ttd_asesor) }}" 
+                                        alt="Tanda Tangan Asesor" 
+                                        class="max-h-24 max-w-full object-contain">
+                                @else
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
+                                        <span class="text-gray-400 text-sm">Belum ada tanda tangan</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="border-t border-gray-400 pt-2">
+                                <p class="text-sm font-medium text-gray-700">Asesor</p>
+                                <p class="text-sm text-gray-600">{{ $nama_asesor }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
+                {{-- Button Simpan (Always visible if detailIA01 is visible) --}}
+                <div class="flex justify-end pe-4">
+                    <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
+                        Simpan dan Setujui
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
+    </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-// Handle error jika gambar tidak ditemukan
-const ttdImages = document.querySelectorAll('img[alt*="Tanda Tangan"]');
+    // Handle error jika gambar tidak ditemukan
+    const ttdImages = document.querySelectorAll('img[alt*="Tanda Tangan"]');
 
-ttdImages.forEach(function(img) {
-    img.addEventListener('error', function() {
-        const placeholder = document.createElement('div');
-        placeholder.className = 'border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50';
-        placeholder.innerHTML = '<span class="text-gray-400 text-sm">Gambar tidak ditemukan</span>';
-        
-        this.parentNode.replaceChild(placeholder, this);
+    ttdImages.forEach(function(img) {
+        img.addEventListener('error', function() {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50';
+            placeholder.innerHTML = '<span class="text-gray-400 text-sm">Gambar tidak ditemukan</span>';
+            
+            this.parentNode.replaceChild(placeholder, this);
+        });
+    });
+
+    // Fungsi untuk mengubah warna select berdasarkan pilihan
+    function ubahWarnaSelect() {
+        const selects = document.querySelectorAll('select[id="selectKompetensi"]');
+        selects.forEach(select => {
+            select.classList.remove('text-green-600', 'text-red-600', 'text-black'); // Remove previous colors
+            if (select.value === 'kompeten') {
+                select.classList.add('text-green-600');
+            } else if (select.value === 'tidak_kompeten') {
+                select.classList.add('text-red-600');
+            } else {
+                select.classList.add('text-black'); // Default color
+            }
+        });
+    }
+
+    // Panggil fungsi saat halaman dimuat untuk mengatur warna awal
+    ubahWarnaSelect();
+
+    // Event listener untuk setiap select dengan id "selectKompetensi"
+    const selectKompetensiElements = document.querySelectorAll('select[id="selectKompetensi"]');
+    selectKompetensiElements.forEach(select => {
+        select.addEventListener('change', ubahWarnaSelect);
     });
 });
-});
-function showSummary() {
-    // Sembunyikan elemen pencarian utama
-    document.getElementById('searchIA01').classList.add('hidden');
 
-    // Sembunyikan elemen daftar asesi
-    document.getElementById('daftarIA01').classList.add('hidden');
-
-    // Tampilkan bagian breadcrumbs
-    document.getElementById('breadcrumbs').classList.remove('hidden');
-
-    // Tampilkan bagian detail asesi
-    document.getElementById('detailIA01').classList.remove('hidden');
-
-    // Tampilkan bagian info awal (panduan & kelompok pekerjaan)
-    document.getElementById('infoAwal').classList.remove('hidden');
-
+// Pastikan fungsi sortTable() ada jika digunakan
+function sortTable(n) {
+    let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    table = document.getElementById("daftarIA01"); // Sesuaikan ID tabel jika diperlukan
+    switching = true;
+    dir = "asc"; 
+    while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+            if (dir == "asc") {
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch= true;
+                    break;
+                }
+            } else if (dir == "desc") {
+                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+        }
+        if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            switchcount ++;      
+        } else {
+            if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
 }
 </script>
 
