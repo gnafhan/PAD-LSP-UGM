@@ -97,7 +97,7 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             </button>
-                            <button onclick="showDocument('{{ $rincian->asesi->id_asesi }}')" class="">
+                            <button onclick="showDocument('{{ $rincian->asesi->id_asesi }}')" class="ml-2" title="Print/Download PDF">
                                 <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
                                 </svg>
@@ -131,7 +131,7 @@
         {{-- Detail Section --}}
         <div id="detailIA01" class="@if($detailRincian) p-4 text-black @else hidden @endif">
 
-            {{-- Input Formulir IA.01 Dinamis --}}
+            {{-- Input Formulir IA.01 --}}
             <div id="FRIA01" class="pt-0 p-4 space-y-6">
                 <div class="max-w-full space-y-1">
                     <div class="flex">
@@ -244,7 +244,7 @@
 
 
 
-            {{-- Tabel Unit Kompetensi Dinamis --}}
+            {{-- Tabel Unit Kompetensi --}}
             @php
                 $unitKompetensiList = $detailRincian->asesi->skema->unit_kompetensi ?? collect();
             @endphp
@@ -603,6 +603,10 @@ function sortTable(n) {
             }
         }
     }
+}
+
+function showDocument(id_asesi) {
+    window.open('/asesor/fria01/pdf/' + id_asesi, "_blank");
 }
 </script>
 

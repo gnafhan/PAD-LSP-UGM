@@ -48,14 +48,15 @@ class Skema extends Model
 
     public function unitKompetensi()
     {
-        return $this->hasMany(UK::class, 'id_uk', 'daftar_id_uk');
+        $idArray = is_array($this->daftar_id_uk) ? $this->daftar_id_uk : json_decode($this->daftar_id_uk, true);
+        return UK::with('elemen_uk')->whereIn('id_uk', $idArray ?? []);
     }
 
     public function getUnitKompetensiAttribute()
     {
         $idArray = is_array($this->daftar_id_uk) ? $this->daftar_id_uk : json_decode($this->daftar_id_uk, true);
 
-        return UK::whereIn('id_uk', $idArray ?? [])->get();
+        return UK::with('elemen_uk')->whereIn('id_uk', $idArray ?? [])->get();
     }
 
     public function eventSkemas()
