@@ -30,6 +30,12 @@ class Fria01Controller extends Controller
         }
 
         $hasilAsesmen = HasilAsesmen::where('id_rincian_asesmen', $validated['id_rincian_asesmen'] ?? null)->first();
+        // if hasilAsesmen is null, create new hasilAsesmen
+        if (!$hasilAsesmen) {
+            $hasilAsesmen = new HasilAsesmen();
+            $hasilAsesmen->id_rincian_asesmen = $validated['id_rincian_asesmen'] ?? null;
+            $hasilAsesmen->save();
+        }
         $hasilAsesmen->status = $dataTambahan["hasil"][0]["value"];
         $hasilAsesmen->tanggal_selesai = now();
         $hasilAsesmen->save();
