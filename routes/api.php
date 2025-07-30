@@ -166,3 +166,13 @@ Route::middleware('api_key')->group(function () {
         Route::post('/{id}/sign-asesi', [IA02Controller::class, 'signByAsesi']);
     });
 });
+
+// Route for FRIA01
+Route::middleware('api_key')->group(function () {
+    Route::prefix('/v1/asesmen/fria01')->group(function () {
+        // Sign asesi
+        Route::post('/{id}/sign-asesi', [\App\Http\Controllers\Api\Fria01Controller::class, 'signAsesi']);
+        // Sign asesor
+        Route::post('/{id}/sign-asesor', [\App\Http\Controllers\Api\Fria01Controller::class, 'signAsesor']);
+    });
+});

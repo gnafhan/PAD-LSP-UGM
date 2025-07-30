@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             JadwalMUKSeeder::class,
             EventSkemaSeeder::class,
             BidangKompetensiSeeder::class,
+            Fria01TestSeeder::class,
             PertanyaanBandingSeeder::class,
             JawabanBandingSeeder::class,
         ]);
