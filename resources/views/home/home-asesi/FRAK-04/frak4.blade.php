@@ -136,11 +136,11 @@
                                         <td class="px-4 py-3 text-sm text-gray-700">{{ $index + 1 }}</td>
                                         <td class="px-4 py-3 text-gray-700 text-left">{{ $pertanyaan->pertanyaan }}</td>
                                         <td class="px-4 py-3">
-                                            <input type="radio" name="jawaban[{{ $pertanyaan->id }}]" value="ya" class="form-radio h-4 w-4 text-biru"
+                                            <input type="radio" {{ $jawaban ? 'disabled' : '' }} name="jawaban[{{ $pertanyaan->id }}]" value="ya" class="form-radio h-4 w-4 text-biru"
                                                    @if(isset($jawaban) && ($jawaban->jawaban === 'ya' || $jawaban->jawaban === 'true')) checked @endif >
                                         </td>
                                         <td class="px-4 py-3">
-                                            <input type="radio" name="jawaban[{{ $pertanyaan->id }}]" value="tidak" class="form-radio h-4 w-4 text-biru"
+                                            <input type="radio" {{ $jawaban ? 'disabled' : '' }} name="jawaban[{{ $pertanyaan->id }}]" value="tidak" class="form-radio h-4 w-4 text-biru"
                                                    @if(isset($jawaban) && ($jawaban->jawaban === 'tidak' || $jawaban->jawaban === 'false')) checked @endif>
                                         </td>
                                     </tr>
@@ -161,16 +161,22 @@
                                         <label for="jawaban_{{ $pertanyaan->id }}" class="block mb-2 font-semibold text-sidebar_font">
                                             {{ $pertanyaan->pertanyaan }}
                                         </label>
-                                        <textarea name="jawaban[{{ $pertanyaan->id }}]" id="jawaban_{{ $pertanyaan->id }}" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input " placeholder="---">{{ $jawaban ? $jawaban->jawaban : '' }}</textarea>
+                                        <textarea {{ $jawaban ? 'disabled' : '' }} name="jawaban[{{ $pertanyaan->id }}]" id="jawaban_{{ $pertanyaan->id }}" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input " placeholder="---">{{ $jawaban ? $jawaban->jawaban : '' }}</textarea>
                                     </div>
                                 @endforeach
                             </div>
                         @endif
                     </div>
                     <div class="flex justify-end mt-4">
-                        <button type="submit" class="px-6 py-2 bg-biru text-white rounded-lg hover:bg-blue-700 transition">
-                            Kirim Banding
-                        </button>
+                        @if ($jawaban_banding->count() > 0)
+                            <button type="" disabled class="px-6 py-2 bg-biru text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                                Kirim Banding
+                            </button>
+                        @else
+                            <button type="submit" class="px-6 py-2 bg-biru text-white rounded-lg hover:bg-blue-700 transition">
+                                Kirim Banding
+                            </button>
+                        @endif
                     </div>
                 </form>
             </div>

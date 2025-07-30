@@ -5,12 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Asesi;
 use App\Models\JawabanBanding;
 use App\Models\PertanyaanBanding;
+use App\Models\RincianAsesmen;
+use App\Services\ProgressTrackingService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AK04Controller extends Controller
 {
+    protected $progressService;
+
+    public function __construct(ProgressTrackingService $progressService)
+    {
+        $this->progressService = $progressService;
+    }
+
     public function index()
     {
         $user = Auth::user();
@@ -88,6 +98,12 @@ class AK04Controller extends Controller
                     ]);
                 }
             }
+
+            // Update banding_date pada rincian_asesmen
+            RincianAsesmen::where('id_rincian_asesmen', $asesi_detail->id_rincian_asesmen)->update(['banding_date' => now()]);
+
+            // Update progress tracking
+            $this->progressService->completeStep($asesi->id_asesi, 'ak04', 'Completed by Asesi at ' . Carbon::now()->format('d-m-Y H:i:s'));
 
             return redirect()->route('asesi.index')->with('success', 'Jawaban banding berhasil disimpan.');
 
