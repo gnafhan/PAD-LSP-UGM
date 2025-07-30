@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Fria01;
+use App\Models\HasilAsesmen;
 use Illuminate\Support\Str;
 
 class Fria01Controller extends Controller
@@ -27,6 +28,12 @@ class Fria01Controller extends Controller
                 $dataTambahan = $decoded;
             }
         }
+
+        $hasilAsesmen = HasilAsesmen::where('id_rincian_asesmen', $validated['id_rincian_asesmen'] ?? null)->first();
+        $hasilAsesmen->status = $dataTambahan["hasil"][0]["value"];
+        $hasilAsesmen->tanggal_selesai = now();
+        $hasilAsesmen->save();
+
 
         $fria01 = Fria01::where('id_asesi', $validated['id_asesi'])
             ->where('id_asesor', $validated['id_asesor'])
