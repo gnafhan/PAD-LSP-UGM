@@ -68,7 +68,7 @@ class DataAsesiController extends Controller
         $asesor = Asesor::where('id_asesor', $id)->first();
 
         if ($asesor){
-            // Get base asesi data
+            // Get base asesi data - using asesi_muk table which has consistent assignment data
             $asesisQuery = DB::table('rincian_asesmen')
                 ->join('asesi', 'rincian_asesmen.id_asesi', '=', 'asesi.id_asesi')
                 ->where('rincian_asesmen.id_asesor', $id)
@@ -76,6 +76,7 @@ class DataAsesiController extends Controller
                 ->select('asesi.id_asesi', 'asesi.nama_asesi', 'skema.nama_skema', 'skema.nomor_skema');
             
             $asesis = $asesisQuery->get();
+            // @dd($asesis);
             
             if ($asesis){
                 // Get progress data and calculate percentage for each asesi

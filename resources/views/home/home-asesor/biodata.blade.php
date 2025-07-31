@@ -479,7 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Headers configuration
     const headers = {
         'accept': 'application/json',
-        'API_KEY': apiConfig.key,
+        'API-KEY': apiConfig.key,
         'X-CSRF-TOKEN': apiConfig.csrfToken
     };
 
@@ -910,7 +910,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Headers untuk PUT request (tanpa Content-Type untuk multipart/form-data)
         const putHeaders = {
             'accept': 'application/json',
-            'API_KEY': apiConfig.key,
+            'API-KEY': apiConfig.key,
             'X-CSRF-TOKEN': apiConfig.csrfToken
         };
 
