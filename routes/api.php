@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KonsultasiPraUjiController;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa02Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak01Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak02Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak07Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa01Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KetidakberpihakkanController;
@@ -122,6 +123,15 @@ Route::middleware('api_key')->group(function () {
         // Save data - separate endpoints for Asesi and Asesor
         Route::post('/asesi/save', [Ak07Controller::class, 'saveAk07Asesi']);
         Route::post('/asesor/save', [Ak07Controller::class, 'saveAk07Asesor']);
+    });
+// Route for AK02
+    Route::prefix('/v1/asesmen/ak02')->group(function () {
+        // Get data 
+        Route::get('/{id_asesi}', [Ak02Controller::class, 'getAk02']);
+        
+        // Save data - separate endpoints for Asesi and Asesor
+        Route::post('/asesi/save', [Ak02Controller::class, 'saveAk02Asesi']);
+        Route::post('/asesor/save', [Ak02Controller::class, 'saveAk02Asesor']);
     });
 });
 
