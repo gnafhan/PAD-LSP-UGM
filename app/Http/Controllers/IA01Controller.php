@@ -22,6 +22,8 @@ class IA01Controller extends Controller
         $detailRincian = null;
         $notFound = false;
         $formData = null;
+        $isAsesorSigned = false;
+        $isAsesiSigned = false;
         
         if (request()->has('id_asesi')) {
             $detailRincian = $daftarAsesi->where('id_asesi', request('id_asesi'))->first();
@@ -36,7 +38,7 @@ class IA01Controller extends Controller
             }
         }
 
-        return view('home.home-asesor.fria01-asesor', compact('daftarAsesi', 'detailRincian', 'notFound', 'formData'));
+        return view('home.home-asesor.fria01-asesor', compact('daftarAsesi', 'detailRincian', 'notFound', 'formData', 'isAsesorSigned', 'isAsesiSigned'));
     }
     
     public function generatePdf($id_asesi)

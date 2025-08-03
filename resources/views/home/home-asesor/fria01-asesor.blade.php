@@ -9,6 +9,58 @@
             {{ session('success') }}
         </div>
     @endif
+    
+    <!-- Custom Modal for Success Notification -->
+    <div id="successModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+            <div class="flex items-center mb-4">
+                <div class="flex-shrink-0">
+                    <svg class="h-8 w-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-gray-900">Berhasil!</h3>
+                </div>
+            </div>
+            <div class="mt-2">
+                <p class="text-sm text-gray-500">Formulir berhasil ditandatangani.</p>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button id="closeModal" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Save First Warning -->
+    <div id="saveFirstModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+            <div class="flex items-center mb-4">
+                <div class="flex-shrink-0">
+                    <svg class="h-8 w-8 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-gray-900">Simpan Form Terlebih Dahulu</h3>
+                </div>
+            </div>
+            <div class="mt-2">
+                <p class="text-sm text-gray-500">Formulir harus disimpan terlebih dahulu sebelum dapat ditandatangani.</p>
+            </div>
+            <div class="mt-4 flex justify-end space-x-2">
+                <button id="cancelSaveModal" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                    Batal
+                </button>
+                <button id="saveFormBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Simpan Form
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <div id="judulPage" class="relative z-10 flex items-center mx-4 pb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 15 15" fill="url(#icon-gradient)">
             <defs>
@@ -378,10 +430,9 @@
                         {{-- Kolom Asesi --}}
                         <div class="text-center space-y-4">
                             @php
-                                $tanggal_ttd = $tanggal_ttd ?? date('d F Y'); 
                                 $nama_asesi = $detailRincian->asesi->nama_asesi ?? 'Nama Asesi'; 
                             @endphp
-                            <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd }}</p>
+                            <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd ?? "-" }}</p>
                             <div class="h-32 flex items-center justify-center bg-white">
                                 @if(isset($ttd_asesi) && $ttd_asesi)
                                     {{-- Gambar tanda tangan asesi --}}
@@ -403,25 +454,38 @@
                         {{-- Kolom Asesor --}}
                         <div class="text-center space-y-4">
                             @php
-                                $nama_asesor = $formData && isset($formData->data_tambahan['nama_asesor']) ? 
-                                    $formData->data_tambahan['nama_asesor'] : 
-                                    ($detailRincian->asesor->nama_asesor ?? 'Nama Asesor');
-                                
-                                $tanggal_ttd = $formData && isset($formData->data_tambahan['tanggal_ttd']) ? 
-                                    $formData->data_tambahan['tanggal_ttd'] : 
-                                    ($tanggal_ttd ?? date('d F Y'));
-                                
-                                $ttd_asesor = $formData && isset($formData->data_tambahan['ttd_asesor']) ? 
-                                    $formData->data_tambahan['ttd_asesor'] : 
-                                    ($ttd_asesor ?? '');
+                                $isAsesorSigned = $formData && $formData->isAsesorSigned();
+                                $currentAsesorId = Auth::user()->asesor->id_asesor ?? null;
+                                $assignedAsesorId = $detailRincian->asesor->id_asesor ?? null;
+                                $ttd_asesor = null;
+                                $waktu_ttd_asesor = $formData->waktu_tanda_tangan_asesor ?? null;
+                                if ($isAsesorSigned) {
+                                    // Get latest valid signature from TandaTanganAsesor
+                                    $ttdModel = \App\Models\TandaTanganAsesor::where('id_asesor', $assignedAsesorId)
+                                        ->where(function($q){ $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()); })
+                                        ->orderByDesc('created_at')->first();
+                                    $ttd_asesor = $ttdModel ? $ttdModel->file_tanda_tangan : null;
+                                }
                             @endphp
-                            <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd }}</p>
+                            <p class="text-sm text-gray-600 mb-2">
+                                @if($waktu_ttd_asesor)
+                                    {{ \Carbon\Carbon::parse($waktu_ttd_asesor)->format('d F Y') }}
+                                @else
+                                    Belum ditandatangani
+                                @endif
+                            </p>
                             <div class="h-32 flex items-center justify-center bg-white">
-                                @if(isset($ttd_asesor) && $ttd_asesor)
-                                    {{-- Gambar tanda tangan asesor --}}
-                                    <img src="{{ asset('storage/ttd/' . $ttd_asesor) }}" 
-                                        alt="Tanda Tangan Asesor" 
-                                        class="max-h-24 max-w-full object-contain">
+                                @if($isAsesorSigned && $ttd_asesor)
+                                    <img id="imgTtdAsesor" src="{{ asset('storage/tanda_tangan/' . $ttd_asesor) }}" alt="Tanda Tangan Asesor" class="max-h-24 max-w-full object-contain">
+                                @elseif($isAsesorSigned)
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
+                                        <span class="text-gray-400 text-sm">Tanda tangan tidak ditemukan</span>
+                                    </div>
+                                @elseif($currentAsesorId && $assignedAsesorId && $currentAsesorId == $assignedAsesorId)
+                                    <button id="btnSignAsesor" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm font-medium hover:bg-biru_soft focus:outline-none" data-fria01-id="{{ $formData->id_fria01 ?? '' }}">
+                                        Tandatangani
+                                    </button>
+                                    <div id="signAsesorStatus" class="mt-2 text-sm text-gray-500"></div>
                                 @else
                                     <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
                                         <span class="text-gray-400 text-sm">Belum ada tanda tangan</span>
@@ -430,7 +494,7 @@
                             </div>
                             <div class="border-t border-gray-400 pt-2">
                                 <p class="text-sm font-medium text-gray-700">Asesor</p>
-                                <p class="text-sm text-gray-600">{{ $nama_asesor }}</p>
+                                <p class="text-sm text-gray-600">{{ $detailRincian->asesor->nama_asesor ?? 'Nama Asesor' }}</p>
                             </div>
                         </div>
                     </div>
@@ -446,8 +510,12 @@
                     <input type="hidden" name="id_rincian_asesmen" value="{{ $detailRincian->id_rincian_asesmen ?? '' }}">
                     <input type="hidden" id="dataTambahanInput" name="data_tambahan">
                     <div class="flex justify-end pe-4">
-                        <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                            Simpan dan Setujui
+                        <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6" @if($formData && $formData->isAsesorSigned()) disabled @endif>
+                            @if($formData && $formData->isAsesorSigned())
+                                Sudah Ditandatangani
+                            @else
+                                Simpan dan Setujui
+                            @endif
                         </button>
                     </div>
                 </form>
@@ -503,7 +571,76 @@ document.getElementById('formFria01').addEventListener('submit', function(e) {
     document.getElementById('dataTambahanInput').value = JSON.stringify(dataTambahan);
 });
 
+function formatTanggalIndo(dateStr) {
+    const date = new Date(dateStr);
+    const day = date.getDate().toString().padStart(2, '0');
+    const monthNames = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`; // Output: 30 Juli 2025
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Disable form jika sudah ditandatangani
+    function disableFormIfSigned() {
+        const isSigned = {{ $formData && $formData->isAsesorSigned() ? 'true' : 'false' }};
+        if (isSigned) {
+            // Disable semua input dan select
+            document.querySelectorAll('select[name^="kompetensi_"]').forEach(select => {
+                select.disabled = true;
+            });
+            document.querySelectorAll('textarea[name^="catatan_"]').forEach(textarea => {
+                textarea.disabled = true;
+            });
+            document.querySelectorAll('input[name="kinerja_asesi"]').forEach(radio => {
+                radio.disabled = true;
+            });
+            document.querySelectorAll('textarea[name="umpan_balik_kinerja_asesi"]').forEach(textarea => {
+                textarea.disabled = true;
+            });
+            document.getElementById('pilihKompetensi').disabled = true;
+            
+            // Update button state
+            const simpanBtn = document.getElementById('simpanKompeten');
+            if (simpanBtn) {
+                simpanBtn.disabled = true;
+                simpanBtn.textContent = 'Sudah Ditandatangani';
+                simpanBtn.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru_soft');
+                simpanBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            }
+        }
+    }
+    
+    // Validasi form sebelum bisa ditandatangani
+    function validateForm() {
+        let isValid = true;
+        let emptyFields = [];
+        
+        // Check kompetensi selects
+        document.querySelectorAll('select[name^="kompetensi_"]').forEach(select => {
+            if (!select.value) {
+                isValid = false;
+                emptyFields.push('Kompetensi');
+            }
+        });
+        
+        // Check kinerja asesi
+        const kinerjaRadios = document.querySelectorAll('input[name="kinerja_asesi"]');
+        const kinerjaSelected = Array.from(kinerjaRadios).some(radio => radio.checked);
+        if (!kinerjaSelected) {
+            isValid = false;
+            emptyFields.push('Kinerja Asesi');
+        }
+        
+        return { isValid, emptyFields };
+    }
+    
+    // Initialize form state
+    disableFormIfSigned();
+    
     const ttdImages = document.querySelectorAll('img[alt*="Tanda Tangan"]');
 
     ttdImages.forEach(function(img) {
@@ -515,7 +652,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.parentNode.replaceChild(placeholder, this);
         });
     });
-
 
     function ubahWarnaSelect() {
         const selects = document.querySelectorAll('select[name^="kompetensi_"]'); 
@@ -539,6 +675,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const pilihKompetensiSelect = document.getElementById('pilihKompetensi');
+    
     if (pilihKompetensiSelect) {
         if (pilihKompetensiSelect.value === 'kompeten') {
             pilihKompetensiSelect.classList.add('text-green-600');
@@ -558,12 +695,182 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Update all kompetensi selects
-            document.querySelectorAll('select[name^="kompetensi_"]').forEach(select => {
+            const kompetensiSelects = document.querySelectorAll('select[name^="kompetensi_"]');
+            
+            kompetensiSelects.forEach(select => {
                 select.value = selectedValue;
                 const event = new Event('change');
                 select.dispatchEvent(event);
             });
             ubahWarnaSelect(); 
+        });
+    }
+
+    // Signature button logic (separate from checklist logic)
+    const btnSignAsesor = document.getElementById('btnSignAsesor');
+    if (btnSignAsesor) {
+        btnSignAsesor.addEventListener('click', async function() {
+            // Validasi form sebelum tanda tangan
+            const validation = validateForm();
+            if (!validation.isValid) {
+                alert('Form belum lengkap. Silakan isi: ' + validation.emptyFields.join(', '));
+                return;
+            }
+            
+            const fria01Id = btnSignAsesor.getAttribute('data-fria01-id');
+            
+            // Jika form belum disimpan (fria01Id kosong), tampilkan modal warning
+            if (!fria01Id || fria01Id === '') {
+                const saveFirstModal = document.getElementById('saveFirstModal');
+                saveFirstModal.classList.remove('hidden');
+                return;
+            }
+            
+            btnSignAsesor.disabled = true;
+            btnSignAsesor.textContent = 'Menyimpan...';
+            try {
+                const response = await fetch(`/api/v1/asesmen/fria01/${fria01Id}/sign-asesor`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'API-KEY': '{{ config('services.api.key') }}',
+                    },
+                    body: JSON.stringify({ id_asesor: @json(Auth::user()->asesor->id_asesor ?? null) })
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    // Update image and date
+                    if (data.data && data.data.ttd_asesor) {
+                        let img = document.getElementById('imgTtdAsesor');
+                        if (!img) {
+                            img = document.createElement('img');
+                            img.id = 'imgTtdAsesor';
+                            img.className = 'max-h-24 max-w-full object-contain';
+                            btnSignAsesor.parentNode.insertBefore(img, btnSignAsesor);
+                        }
+                        img.src = '/storage/tanda_tangan/' + data.data.ttd_asesor;
+                        img.alt = 'Tanda Tangan Asesor';
+                    }
+                    // Update date
+                    const dateElem = btnSignAsesor.closest('.space-y-4').querySelector('p.text-sm.text-gray-600.mb-2');
+                    if (dateElem && data.data && data.data.waktu_tanda_tangan_asesor) {
+                        dateElem.textContent = formatTanggalIndo(data.data.waktu_tanda_tangan_asesor);
+                    }
+                    btnSignAsesor.remove();
+                    
+                    // Disable form setelah ditandatangani
+                    disableFormIfSigned();
+                    
+                    const successModal = document.getElementById('successModal');
+                    successModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        successModal.classList.add('hidden');
+                    }, 3000);
+                } else {
+                    btnSignAsesor.disabled = false;
+                    btnSignAsesor.textContent = 'Tandatangani';
+                    alert(data.message || 'Gagal menandatangani.');
+                }
+            } catch (err) {
+                btnSignAsesor.disabled = false;
+                btnSignAsesor.textContent = 'Tandatangani';
+                alert('Terjadi kesalahan: ' + err.message);
+            }
+        });
+    }
+    
+    // Event listener for custom modal close button
+    const closeModal = document.getElementById('closeModal');
+    if (closeModal) {
+        closeModal.addEventListener('click', function() {
+            const successModal = document.getElementById('successModal');
+            successModal.classList.add('hidden');
+        });
+    }
+
+    // Close modal if clicked outside
+    const successModal = document.getElementById('successModal');
+    if (successModal) {
+        successModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+    }
+
+    // Modal for Save First Warning
+    const saveFirstModal = document.getElementById('saveFirstModal');
+    const cancelSaveModalBtn = document.getElementById('cancelSaveModal');
+    const saveFormBtn = document.getElementById('saveFormBtn');
+
+    if (cancelSaveModalBtn) {
+        cancelSaveModalBtn.addEventListener('click', function() {
+            saveFirstModal.classList.add('hidden');
+        });
+    }
+
+    if (saveFormBtn) {
+        saveFormBtn.addEventListener('click', function() {
+            saveFirstModal.classList.add('hidden');
+            
+            // Kumpulkan data seperti form submit yang asli
+            let dataTambahan = {
+                hasil: [],
+                ttd_asesor: "{{ $formData && isset($formData->data_tambahan['ttd_asesor']) ? $formData->data_tambahan['ttd_asesor'] : ($ttd_asesor ?? '') }}",
+                nama_asesor: "{{ $formData && isset($formData->data_tambahan['nama_asesor']) ? $formData->data_tambahan['nama_asesor'] : ($nama_asesor ?? '') }}",
+                tanggal_ttd: "{{ $formData && isset($formData->data_tambahan['tanggal_ttd']) ? $formData->data_tambahan['tanggal_ttd'] : ($tanggal_ttd ?? '') }}",
+                unit_kompetensi: []
+            };
+
+            // Kumpulkan data unit_kompetensi dan elemennya
+            document.querySelectorAll('[data-unit-kode]').forEach(function(unitDiv) {
+                let unitObj = {
+                    kode_uk: unitDiv.getAttribute('data-unit-kode'),
+                    nama_uk: unitDiv.getAttribute('data-unit-nama'),
+                    elemen: []
+                };
+                unitDiv.querySelectorAll('tbody tr').forEach(function(row) {
+                    let nama_elemen = row.querySelector('td:nth-child(2)')?.innerText?.trim() || '';
+                    let kompetensi = row.querySelector('select[name^="kompetensi_"]')?.value || '';
+                    let catatan = row.querySelector('textarea[name^="catatan_"]')?.value || '';
+                    if (nama_elemen) { 
+                        unitObj.elemen.push({
+                            nama_elemen: nama_elemen,
+                            kompetensi: kompetensi,
+                            catatan: catatan
+                        });
+                    }
+                });
+                dataTambahan.unit_kompetensi.push(unitObj);
+            });
+
+            let kinerjaAsesiRadio = document.querySelector('input[name="kinerja_asesi"]:checked');
+            let umpanBalikKinerjaAsesiTextarea = document.querySelector('textarea[name="umpan_balik_kinerja_asesi"]');
+
+            if (kinerjaAsesiRadio) {
+                dataTambahan.hasil.push({
+                    name: 'kinerja_asesi',
+                    value: kinerjaAsesiRadio.value,
+                    umpan_balik: umpanBalikKinerjaAsesiTextarea ? umpanBalikKinerjaAsesiTextarea.value : ''
+                });
+            }
+
+            // Set data tambahan ke input hidden
+            document.getElementById('dataTambahanInput').value = JSON.stringify(dataTambahan);
+            
+            // Submit form
+            document.getElementById('formFria01').submit();
+        });
+    }
+
+    if (saveFirstModal) {
+        saveFirstModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
         });
     }
 });
