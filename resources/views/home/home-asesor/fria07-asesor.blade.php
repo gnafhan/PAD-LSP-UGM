@@ -159,19 +159,7 @@
                 </div>
             </div>
 
-            <!-- Checklist Kompeten -->
-            <div id="clKompeten" class="p-4">
-                <form class="max-w-full mx-auto">
-                    <label for="pilihKompetensi" class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">Checklist Kompetensi</label>
-                    <select id="pilihKompetensi" class="border border-border_input text-sidebar_font text-sm rounded-lg focus:ring-biru focus:border-biru block w-full p-2">
-                        <option selected>Pilih Kompetensi</option>
-                        <option value="kompeten">Kompeten</option>
-                        <option value="tidak_kompeten">Tidak Kompeten</option>
-                    </select>
-                </form>
-            </div>
-
-            <!-- Tabel 1 iA07 -->
+            {{-- Tabel Kode Unit --}}
             <div class="p-4">
                 <p id="judulTabelIA07" class="text-sidebar_font font-semibold pb-2">No 1.  Kode Unit : R.93KPW00.011.2</p>
 
@@ -179,24 +167,96 @@
                     <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
                         <thead class="bg-bg_dashboard text-center">
                             <tr>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
+                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-12">Kirim Jawaban</th>
+                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider text-left">Judul Unit Kompetensi</th>
+                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-32">Kode Unit Kompetensi</th>
+                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-24">Kompetensi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 text-black text-center items-center">
-                            <tr>
-                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik?</td>
-                                <td class="flex px-4 py-3 justify-center">
-                                    <form id="ddKompetensi" class="w-40">
-                                        <select id="selectKompetensi" onchange="ubahWarnaSelect()"
-                                            class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
-                                            <option selected value="">Pilih</option>
-                                            <option value="kompeten">Kompeten</option>
-                                            <option value="tidak_kompeten">Tidak Kompeten</option>
-                                        </select>
-                                    </form>
+                        <tbody class="divide-y divide-gray-200 text-black text-center">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-center">
+                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                                        </svg>
+                                        Kirim
+                                    </button>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
+                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
+                                <td class="px-8 py-3 text-center">
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
+                                        Sudah Diisi
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-center">
+                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                                        </svg>
+                                        Kirim
+                                    </button>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
+                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
+                                <td class="px-8 py-3 text-center">
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
+                                        Sudah Diisi
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-center">
+                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                                        </svg>
+                                        Kirim
+                                    </button>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
+                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
+                                <td class="px-8 py-3 text-center">
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
+                                        Sudah Diisi
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-center">
+                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                                        </svg>
+                                        Kirim
+                                    </button>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
+                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
+                                <td class="px-8 py-3 text-center">
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
+                                        Sudah Diisi
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-center">
+                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                                        </svg>
+                                        Kirim
+                                    </button>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
+                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
+                                <td class="px-8 py-3 text-center">
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg">
+                                        Belum Diisi
+                                    </span>
                                 </td>
                             </tr>
                         </tbody>
@@ -204,69 +264,7 @@
                 </div>
             </div>
 
-            <!-- Tabel 2 APL02 -->
-            <div class="p-4">
-                <p id="judulTabelAPL02" class="text-sidebar_font font-semibold pb-2">No 2.  Kode Unit : R.93KPW00.011.2</p>
-
-                <div class="overflow-x-auto shadow-md rounded-lg mb-4">
-                    <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
-                        <thead class="bg-bg_dashboard text-center">
-                            <tr>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 text-black text-center items-center">
-                            <tr>
-                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik?</td>
-                                <td class="flex px-4 py-3 justify-center">
-                                    <form id="ddKompetensi" class="w-40">
-                                        <select id="selectKompetensi" onchange="ubahWarnaSelect()"
-                                            class="border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru block w-full px-2 py-1 bg-white text-black">
-                                            <option selected value="">Pilih</option>
-                                            <option value="kompeten">Kompeten</option>
-                                            <option value="tidak_kompeten">Tidak Kompeten</option>
-                                        </select>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Button Simpan -->
-            <div class="flex justify-end pe-4">
-                <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                    Simpan dan Setujui
-                </button>
-            </div>
-
-            <div class="my-6 px-4 space-y-6">
-                <!-- Hasil Kompetensi -->
-                <div id="hasilAPL02" class="">
-                    <label for="hasilKompetensi" class="block mb-2 font-semibold text-sidebar_font">Hasil Kompetensi</label>
-                    <p type="text" id="hasilKompetensi" aria-label="hasil kompetensi"
-                        class="border border-border_input text-sidebar_font text-sm rounded-lg block w-full p-2" disabled readonly>
-                        Belum dinilai
-                    </p>
-                </div>
-                <!-- Rekomendasi -->
-
-                <div class="mb-6">
-                    <label for="rekomendasi" class="block mb-2 text-sm font-medium text-sidebar_font">Rekomendasi</label>
-                    <textarea id="rekomendasi" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Masukkan Rekomendasi Anda"></textarea>
-                </div>
-
-                <!-- Button Simpan -->
-                <div class="flex justify-end pe-4">
-                    <button id="simpanRekomendasi" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6">
-                        Simpan Rekomendasi
-                    </button>
-                </div>
-            </div>
+            
 
         </div>
     </div>
