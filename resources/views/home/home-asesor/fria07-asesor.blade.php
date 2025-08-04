@@ -260,8 +260,36 @@
                                             <td class="px-4 py-3 text-gray-700 text-left text-sm break-words">{{ $elemen->nama_elemen }}</td>
                                             <td class="px-4 py-3 text-gray-700 text-sm w-32">{{ $uk->kode_uk }}</td>
                                             <td class="px-4 py-3 text-center w-32">
-                                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg whitespace-nowrap">
-                                                    Belum Diisi
+                                                @php
+                                                    $statusPenilaian = 'Belum Diisi';
+                                                    $statusClass = 'text-red-800 bg-red-100';
+                                                    
+                                                    if ($formData && isset($formData->data_tambahan['unit_kompetensi'])) {
+                                                        foreach ($formData->data_tambahan['unit_kompetensi'] as $ukData) {
+                                                            if ($ukData['id_uk'] == $uk->id_uk || $ukData['kode_uk'] == $uk->kode_uk) {
+                                                                if (isset($ukData['elemen_kompetensi'])) {
+                                                                    foreach ($ukData['elemen_kompetensi'] as $elemenData) {
+                                                                        if ($elemenData['id_elemen'] == $elemen->id_elemen_uk) {
+                                                                            if (isset($elemenData['penilaian'])) {
+                                                                                if ($elemenData['penilaian'] === 'kompeten') {
+                                                                                    $statusPenilaian = 'Kompeten';
+                                                                                    $statusClass = 'text-green-800 bg-green-100';
+                                                                                } elseif ($elemenData['penilaian'] === 'belum_kompeten') {
+                                                                                    $statusPenilaian = 'Belum Kompeten';
+                                                                                    $statusClass = 'text-red-800 bg-red-100';
+                                                                                }
+                                                                            }
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                @endphp
+                                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium {{ $statusClass }} rounded-lg whitespace-nowrap">
+                                                    {{ $statusPenilaian }}
                                                 </span>
                                             </td>
                                         </tr>
@@ -297,14 +325,26 @@
                                 <tr>
                                     <td class="px-6 py-4 text-sm text-gray-700 text-left">Kinerja Asesi adalah</td>
                                     <td class="px-6 py-4 text-center">
-                                       
-                                        <input type="radio" name="kinerja_asesi" value="kompeten" class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
+                                        @php
+                                            $kinerjaValue = '';
+                                            $umpanBalik = '';
+                                            if ($formData && isset($formData->data_tambahan['hasil'])) {
+                                                foreach ($formData->data_tambahan['hasil'] as $hasil) {
+                                                    if ($hasil['name'] === 'kinerja_asesi') {
+                                                        $kinerjaValue = $hasil['value'];
+                                                        $umpanBalik = $hasil['umpan_balik'] ?? '';
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+                                        <input type="radio" name="kinerja_asesi" value="kompeten" {{ $kinerjaValue === 'kompeten' ? 'checked' : '' }} class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
                                     </td>
                                     <td class="px-6 py-4 text-center">
-                                        <input type="radio" name="kinerja_asesi" value="tidak_kompeten" class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
+                                        <input type="radio" name="kinerja_asesi" value="tidak_kompeten" {{ $kinerjaValue === 'tidak_kompeten' ? 'checked' : '' }} class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
                                     </td>
                                     <td class="px-6 py-4">
-                                        <textarea name="umpan_balik_kinerja_asesi" placeholder="Lainnya..." class="w-full border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru px-3 py-2 bg-white text-black resize-none" rows="3"></textarea>
+                                        <textarea name="umpan_balik_kinerja_asesi" placeholder="Lainnya..." class="w-full border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru px-3 py-2 bg-white text-black resize-none" rows="3">{{ $umpanBalik }}</textarea>
                                     </td>
                                 </tr>
                             </tbody>
@@ -413,7 +453,7 @@
     </div>
 
     {{-- Modal Kirim --}}
-    <div id="modal-container" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-start py-4 overflow-y-auto">
+    <div id="modal-container" class="fixed inset-0 z-50 bg-black bg-opacity-50 justify-center items-start py-4 overflow-y-auto" style="display: none;">
         <div class="relative bg-white w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-hidden rounded-lg shadow-xl mx-4 my-auto">
             <div class="flex justify-between items-center p-6 border-b border-gray-200">
                 <h3 class="text-xl font-bold text-gray-900">Unit Kompetensi</h3>
@@ -442,6 +482,9 @@
 const fria07Data = @json($detailRincian ? ($detailRincian->fria07->data_tambahan ?? []) : []);
 let currentUkId = null;
 let currentElemenId = null;
+
+// Debug: log data saat dimuat
+console.log('FRIA07 Data loaded:', fria07Data);
 
 function showSummary() {
     // Sembunyikan elemen pencarian utama
@@ -479,29 +522,45 @@ function showModal(ukId, elemenId) {
         loadEmptyModalContent();
     }
     
-    document.getElementById('modal-container').classList.remove('hidden');
+    document.getElementById('modal-container').style.display = 'flex';
 }
 
 function findUkData(ukId) {
-    if (!fria07Data.unit_kompetensi) return null;
+    if (!fria07Data.unit_kompetensi) {
+        console.log('No unit_kompetensi data found');
+        return null;
+    }
+    
+    console.log('Searching for UK ID:', ukId, 'in data:', fria07Data.unit_kompetensi);
     
     return fria07Data.unit_kompetensi.find(uk => {
         // Try to match by id_uk, kode_uk, or string comparison
-        return uk.id_uk == ukId || 
+        const match = uk.id_uk == ukId || 
                uk.kode_uk == ukId || 
                uk.id_uk?.toString() === ukId?.toString() ||
                uk.kode_uk?.toString() === ukId?.toString();
+        
+        console.log('Checking UK:', uk, 'Match result:', match);
+        return match;
     });
 }
 
 function findElemenData(ukData, elemenId) {
-    if (!ukData || !ukData.elemen_kompetensi) return null;
+    if (!ukData || !ukData.elemen_kompetensi) {
+        console.log('No elemen_kompetensi data found in ukData:', ukData);
+        return null;
+    }
+    
+    console.log('Searching for element ID:', elemenId, 'in elemen data:', ukData.elemen_kompetensi);
     
     return ukData.elemen_kompetensi.find(el => {
         // Try different ways to match the element ID
-        return el.id_elemen == elemenId || 
+        const match = el.id_elemen == elemenId || 
                el.id_elemen === elemenId ||
                el.id_elemen?.toString() === elemenId?.toString();
+        
+        console.log('Checking element:', el, 'Match result:', match);
+        return match;
     });
 }
 
@@ -678,10 +737,10 @@ function updateTableStatus(elemenId, penilaian) {
         const statusCell = targetRow.querySelector('td:last-child span');
         if (statusCell) {
             if (penilaian === 'kompeten') {
-                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-lg';
+                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-lg whitespace-nowrap';
                 statusCell.textContent = 'Kompeten';
             } else if (penilaian === 'belum_kompeten') {
-                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg';
+                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg whitespace-nowrap';
                 statusCell.textContent = 'Belum Kompeten';
             }
             console.log('Table status updated successfully');
@@ -694,7 +753,7 @@ function updateTableStatus(elemenId, penilaian) {
 }
 
 function closeModal() {
-    document.getElementById('modal-container').classList.add('hidden');
+    document.getElementById('modal-container').style.display = 'none';
     currentUkId = null;
     currentElemenId = null;
 }
@@ -707,7 +766,7 @@ function initializeTableStatus() {
         if (uk.elemen_kompetensi) {
             uk.elemen_kompetensi.forEach(elemen => {
                 if (elemen.penilaian) {
-                    updateTableStatusInit(uk.kode_uk, elemen.id_elemen, elemen.penilaian);
+                    updateTableStatusInit(uk.id_uk || uk.kode_uk, elemen.id_elemen, elemen.penilaian);
                 }
             });
         }
@@ -715,16 +774,27 @@ function initializeTableStatus() {
 }
 
 function updateTableStatusInit(ukId, elemenId, penilaian) {
-    const targetRow = document.getElementById(`row_${ukId}_${elemenId}`);
+    // Try both possible row ID formats
+    let targetRow = document.getElementById(`row_${ukId}_${elemenId}`);
+    if (!targetRow) {
+        // If not found, try to find it by searching all rows
+        const allRows = document.querySelectorAll('[id^="row_"]');
+        allRows.forEach(row => {
+            const rowId = row.id;
+            if (rowId.includes(`_${elemenId}`)) {
+                targetRow = row;
+            }
+        });
+    }
     
     if (targetRow) {
         const statusCell = targetRow.querySelector('td:last-child span');
         if (statusCell) {
             if (penilaian === 'kompeten') {
-                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-lg';
+                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-lg whitespace-nowrap';
                 statusCell.textContent = 'Kompeten';
             } else if (penilaian === 'belum_kompeten') {
-                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg';
+                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg whitespace-nowrap';
                 statusCell.textContent = 'Belum Kompeten';
             }
         }
@@ -803,7 +873,7 @@ function validateFormForSubmission() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize table status when page loads
+    // Initialize table status when page loads - pastikan dipanggil pertama kali
     initializeTableStatus();
     
     // Disable form jika sudah ditandatangani
@@ -816,6 +886,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             document.querySelectorAll('textarea[name="umpan_balik_kinerja_asesi"]').forEach(textarea => {
                 textarea.disabled = true;
+            });
+            
+            // Disable semua tombol modal
+            document.querySelectorAll('button[onclick^="showModal"]').forEach(button => {
+                button.disabled = true;
+                button.classList.add('opacity-50', 'cursor-not-allowed');
             });
             
             // Update button state

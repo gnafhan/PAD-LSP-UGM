@@ -37,10 +37,12 @@ class Fria07Controller extends Controller
             $hasilAsesmen->save();
         }
         
-        // Update hasil asesmen if evaluations exist
+        // Update hasil asesmen if evaluations exist - safe array access
         if (isset($dataTambahan["hasil"]) && 
             is_array($dataTambahan["hasil"]) && 
             !empty($dataTambahan["hasil"]) && 
+            isset($dataTambahan["hasil"][0]) && 
+            is_array($dataTambahan["hasil"][0]) && 
             isset($dataTambahan["hasil"][0]["value"])) {
             $hasilAsesmen->status = $dataTambahan["hasil"][0]["value"];
             $hasilAsesmen->tanggal_selesai = now();
