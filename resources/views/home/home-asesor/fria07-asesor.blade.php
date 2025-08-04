@@ -4,6 +4,62 @@
 
 @section('content')
 <div id="backFrame" class="pt-[88px] pb-80 px-4 md:px-16 bg-bg_dashboard sm:ml-64">
+    @if(session('success'))
+        <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
+    
+    <!-- Custom Modal for Success Notification -->
+    <div id="successModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+            <div class="flex items-center mb-4">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-gray-900">Berhasil!</h3>
+                </div>
+            </div>
+            <div class="mt-2">
+                <p class="text-sm text-gray-500">Formulir berhasil ditandatangani.</p>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button id="closeModal" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Save First Warning -->
+    <div id="saveFirstModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+            <div class="flex items-center mb-4">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-lg font-medium text-gray-900">Peringatan</h3>
+                </div>
+            </div>
+            <div class="mt-2">
+                <p class="text-sm text-gray-500">Formulir harus disimpan terlebih dahulu sebelum dapat ditandatangani.</p>
+            </div>
+            <div class="mt-4 flex justify-end space-x-2">
+                <button id="cancelSaveModal" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                    Batal
+                </button>
+                <button id="saveFormBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Simpan
+                </button>
+            </div>
+        </div>
+    </div>
     <div id="judulPage" class="relative z-10 flex items-center mx-4 pb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 15 15" fill="url(#icon-gradient)">
             <defs>
@@ -16,10 +72,10 @@
                 d="M10.7907 7.5L11.5257 6.765C11.7823 6.50833 12.109 6.36833 12.4648 6.33333V5.75L8.96484 2.25H3.13151C2.48401 2.25 1.96484 2.76917 1.96484 3.41667V11.5833C1.96484 11.8928 2.08776 12.1895 2.30655 12.4083C2.52534 12.6271 2.82209 12.75 3.13151 12.75H6.63151V11.6592L6.70734 11.5833H3.13151V3.41667H7.21484V7.5H10.7907ZM8.38151 3.125L11.5898 6.33333H8.38151V3.125ZM11.374 8.5675L12.564 9.7575L8.98818 13.3333H7.79818V12.1433L11.374 8.5675ZM13.544 8.7775L12.9723 9.34917L11.7823 8.15917L12.354 7.5875C12.4648 7.47083 12.6573 7.47083 12.774 7.5875L13.544 8.3575C13.6607 8.47417 13.6607 8.66667 13.544 8.7775Z"
             />
         </svg>
-        <p class="ms-2 text-xl font-bold text-black">IA.01</p>
+        <p class="ms-2 text-xl font-bold text-black">IA.07</p>
     </div>
-    <div id="breadcrumbs" class="hidden pb-4 px-6">
-        <!-- Breadcrumb -->
+    {{-- Breadcrumb --}}
+    <div id="breadcrumbs" class="@if($detailRincian) pb-4 px-6 @else hidden @endif">
         <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
@@ -37,15 +93,16 @@
                         </a>
                     </div>
                 </li>
-                <!-- Memanggil data nama asesi -->
+                @if($detailRincian)
                 <li aria-current="page">
                     <div class="flex items-center">
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 9l4-4-4-4"/>
                         </svg>
-                        <span class="ms-1 text-sm font-medium text-black">Muhammad Rifai</span>
+                        <span class="ms-1 text-sm font-medium text-black">{{ $detailRincian->asesi->nama_asesi ?? '-' }}</span>
                     </div>
                 </li>
+                @endif
             </ol>
         </nav>
     </div>
@@ -53,9 +110,9 @@
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[0%] translate-y-[5%] rounded-full bg-gradient-to-br from-biru to-ungu opacity-20 blur-[80px]">
     </div>
     <div id="frameIA07" class="relative z-10 pt-4 p-8 border border-border bg-white rounded-2xl">
-        <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir IA.02 Tugas Praktik dan Demonstrasi</p>
+        <p id="titlePage" class="mb-4 text-lg font-medium text-black">Formulir IA.07 Pertanyaan Lisan</p>
         <!-- Search Form -->
-        <form id="searchIA07" class="max-w-md mb-4 rounded-xl">
+        <form id="searchIA07" class="max-w-md mb-4 rounded-xl @if($detailRincian) hidden @endif">
             <div class="relative">
             <input type="search" id="default-search" class="block w-full p-2 text-sm border rounded-lg bg-white text-abu border-abu focus:ring-biru focus:border-biru" placeholder="Cari Skema Sertifikasi" required />
                 <button type="submit" class="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
@@ -65,7 +122,8 @@
                 </button>
             </div>
         </form>
-        <div class="overflow-x-auto shadow-sm rounded-lg">
+        {{-- List Asesi --}}
+        <div class="overflow-x-auto shadow-sm rounded-lg @if($detailRincian) hidden @endif">
             <table id="daftarIA07" class="min-w-full bg-white overflow-hidden">
                 <thead class="bg-bg_dashboard text-center">
                     <tr>
@@ -78,10 +136,11 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 text-black text-center">
+                @forelse($daftarAsesi as $i => $rincian)
                     <tr>
-                        <td class="px-4 py-3 text-sm text-gray-700">1</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">{{ $i+1 }}</td>
                         <td class="px-4 py-3 text-center">
-                            <button onclick="showSummary()" class="">
+                            <button onclick="window.location.href='{{ route('fria07-asesor') }}?id_asesi={{ $rincian->asesi->id_asesi }}'" class="">
                                 <svg class="w-6 h-6 text-biru hover:text-ungu" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                     width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd"
@@ -89,29 +148,40 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             </button>
-                            <button onclick="showDocument()" class="">
+                            <button onclick="showDocument('{{ $rincian->asesi->id_asesi }}')" class="">
                                 <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
                                 </svg>
                             </button>
                         </td>
-                        <td class="px-4 py-3 text-gray-700 text-left">Muhammad Rifai</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">Sertifikasi Frontend</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">SK1234567890</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $rincian->asesi->nama_asesi ?? 'Nama tidak tersedia' }}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $rincian->asesi->skema->nama_skema ?? 'Skema tidak tersedia' }}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">{{ $rincian->asesi->skema->nomor_skema ?? 'Kode tidak tersedia' }}</td>
                         <td class="px-4 py-0">
                             <div class="flex px-4 py-3 justify-center items-center">
-                                <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                                </svg>
+                                @if($rincian->asesi->progresAsesmen && isset($rincian->asesi->progresAsesmen->ia07) && $rincian->asesi->progresAsesmen->ia07['completed'] ?? false)
+                                    <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                                    </svg>
+                                @else
+                                    <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+                                    </svg>
+                                @endif
                             </div>
                         </td>
                     </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data asesi</td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
         </div>
-        <div id="detailIA07" class="hidden p-4 text-black">
+        <div id="detailIA07" class="@if($detailRincian) p-4 text-black @else hidden @endif">
 
-            <!-- Input Formulir APL.02 -->
+            <!-- Input Formulir IA.07 -->
             <div id="FRIA07" class="pt-0 p-4 space-y-6">
                 <div class="max-w-full space-y-1">
                     <div class="flex">
@@ -119,7 +189,7 @@
                             Judul Sertifikasi
                         </span>
                         <p id="judulSertifikasi" type="text" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Sertifikasi Frontend
+                        {{ $detailRincian->asesi->skema->nama_skema ?? 'Nama Skema tidak tersedia' }}
                         </p>
                     </div>
                     <div class="flex">
@@ -127,7 +197,7 @@
                             Nomor Sertifikasi
                         </span>
                         <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        SKM/1602/00023/2/19
+                        {{ $detailRincian->asesi->skema->kode_skema ?? 'Kode Skema tidak tersedia' }}
                         </p>
                     </div>
                 </div>
@@ -137,7 +207,7 @@
                             Nama Peserta Sertifikasi
                         </span>
                         <p id="namaPeserta" type="text" class="peer font-semibold text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Muhammad Rifai
+                        {{ $detailRincian->asesi->nama_asesi ?? 'Nama Asesi tidak tersedia' }}
                         </p>
                     </div>
                     <div class="flex">
@@ -145,7 +215,7 @@
                             Nama Asesor
                         </span>
                         <p id="namaAsesor" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            Nafa Popcorn
+                            {{ $detailRincian->asesor->nama_asesor ?? 'Nama Asesor tidak tersedia' }}
                         </p>
                     </div>
                     <div class="flex">
@@ -153,7 +223,7 @@
                             TUK
                         </span>
                         <p id="tuk" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                        Satu Web
+                        {{ $detailRincian->event->tuk->nama_tuk ?? 'TUK tidak tersedia' }}
                         </p>
                     </div>
                 </div>
@@ -161,112 +231,185 @@
 
             {{-- Tabel Kode Unit --}}
             <div class="p-4">
-                <p id="judulTabelIA07" class="text-sidebar_font font-semibold pb-2">No 1.  Kode Unit : R.93KPW00.011.2</p>
+                @if($detailRincian && $detailRincian->asesi && $detailRincian->asesi->skema && $detailRincian->asesi->skema->unitKompetensiLoaded)
+                    @foreach($detailRincian->asesi->skema->unitKompetensiLoaded as $index => $uk)
+                        <p id="judulTabelIA07" class="text-sidebar_font font-semibold pb-2">No {{ $index + 1 }}.  Kode Unit : {{ $uk->kode_uk }}</p>
 
-                <div class="overflow-x-auto shadow-md rounded-lg mb-4">
-                    <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
-                        <thead class="bg-bg_dashboard text-center">
-                            <tr>
-                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-12">Kirim Jawaban</th>
-                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider text-left">Judul Unit Kompetensi</th>
-                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-32">Kode Unit Kompetensi</th>
-                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-36">Kompetensi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 text-black text-center">
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3 text-center">
-                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
-                                        </svg>
-                                        Kirim
-                                    </button>
-                                </td>
-                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
-                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-4 py-3 text-center">
-                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
-                                        Sudah Diisi
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3 text-center">
-                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
-                                        </svg>
-                                        Kirim
-                                    </button>
-                                </td>
-                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
-                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-4 py-3 text-center">
-                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
-                                        Sudah Diisi
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3 text-center">
-                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
-                                        </svg>
-                                        Kirim
-                                    </button>
-                                </td>
-                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
-                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-4 py-3 text-center">
-                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
-                                        Sudah Diisi
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3 text-center">
-                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
-                                        </svg>
-                                        Kirim
-                                    </button>
-                                </td>
-                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
-                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-4 py-3 text-center">
-                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
-                                        Sudah Diisi
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3 text-center">
-                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
-                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
-                                        </svg>
-                                        Kirim
-                                    </button>
-                                </td>
-                                <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
-                                <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-4 py-3 text-center">
-                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg">
-                                        Belum Diisi
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        <div class="overflow-x-auto shadow-md rounded-lg mb-4">
+                            <table id="pelaksanaanAsesmen_{{ $index }}" class="w-full bg-white overflow-hidden table-fixed">
+
+                                <thead class="bg-bg_dashboard text-center">
+                                    <tr>
+                                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-1/6">Kirim Jawaban</th>
+                                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider text-left w-3/6">Judul Unit Kompetensi</th>
+                                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-1/6">Kode Unit Kompetensi</th>
+                                        <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-1/6">Kompetensi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 text-black text-center">
+                                    @forelse($uk->elemen_uk as $elemen)
+                                        <tr class="hover:bg-gray-50" id="row_{{ $uk->id_uk }}_{{ $elemen->id_elemen_uk }}">
+                                            <td class="px-4 py-3 text-center w-24">
+                                                <button onclick="showModal('{{ $uk->id_uk }}', '{{ $elemen->id_elemen_uk }}')" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                                                    </svg>
+                                                    Kirim
+                                                </button>
+                                            </td>
+                                            <td class="px-4 py-3 text-gray-700 text-left text-sm break-words">{{ $elemen->nama_elemen }}</td>
+                                            <td class="px-4 py-3 text-gray-700 text-sm w-32">{{ $uk->kode_uk }}</td>
+                                            <td class="px-4 py-3 text-center w-32">
+                                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg whitespace-nowrap">
+                                                    Belum Diisi
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="px-4 py-3 text-center text-gray-500">Tidak ada elemen kompetensi</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-sidebar_font font-semibold pb-2">Pilih asesi untuk melihat unit kompetensi</p>
+                @endif
             </div>
 
-            
+            <div class="my-6 px-4 space-y-6">
+                {{-- Hasil --}}
+                <div class>
+                    <h3 class=" text-black font-semibold pb-4 text-xl">Hasil</h3>
+                    <div class="overflow-x-auto shadow-md rounded-lg mb-4">
+                        <table class="min-w-full bg-white overflow-hidden">
+                            <thead class="bg-bg_dashboard text-center">
+                                <tr>
+                                    <th class="px-6 py-3 text-sm font-semibold text-gray-600 tracking-wider">Kinerja</th>
+                                    <th class="px-6 py-3 text-sm font-semibold text-gray-600 tracking-wider">Kompeten</th>
+                                    <th class="px-6 py-3 text-sm font-semibold text-gray-600 tracking-wider">Tidak Kompeten</th>
+                                    <th class="px-6 py-3 text-sm font-semibold text-gray-600 tracking-wider">Umpan Balik</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 text-black">
+                                <tr>
+                                    <td class="px-6 py-4 text-sm text-gray-700 text-left">Kinerja Asesi adalah</td>
+                                    <td class="px-6 py-4 text-center">
+                                       
+                                        <input type="radio" name="kinerja_asesi" value="kompeten" class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <input type="radio" name="kinerja_asesi" value="tidak_kompeten" class="w-4 h-4 text-biru bg-gray-100 border-gray-300 focus:ring-biru focus:ring-2">
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <textarea name="umpan_balik_kinerja_asesi" placeholder="Lainnya..." class="w-full border border-border_input text-sm rounded-lg focus:ring-biru focus:border-biru px-3 py-2 bg-white text-black resize-none" rows="3"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+            </div>
+                {{-- Tanda tangan --}}
+                <div class="p-4 mb-6">
+                    <h3 class="text-black font-semibold pb-4 text-xl">Tandatangan</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {{-- Kolom Asesi --}}
+                        <div class="text-center space-y-4">
+                            @php
+                                $nama_asesi = $detailRincian->asesi->nama_asesi ?? 'Nama Asesi'; 
+                            @endphp
+                            <p class="text-sm text-gray-600 mb-2">{{ $tanggal_ttd ?? "-" }}</p>
+                            <div class="h-32 flex items-center justify-center bg-white">
+                                @if(isset($ttd_asesi) && $ttd_asesi)
+                                    {{-- Gambar tanda tangan asesi --}}
+                                    <img src="{{ asset('storage/ttd/' . $ttd_asesi) }}" 
+                                        alt="Tanda Tangan Asesi" 
+                                        class="max-h-24 max-w-full object-contain">
+                                @else
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
+                                        <span class="text-gray-400 text-sm">Belum ada tanda tangan</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="border-t border-gray-400 pt-2">
+                                <p class="text-sm font-medium text-gray-700">Asesi</p>
+                                <p class="text-sm text-gray-600">{{ $nama_asesi }}</p>
+                            </div>
+                        </div>
 
-        </div>
+                        {{-- Kolom Asesor --}}
+                        <div class="text-center space-y-4">
+                            @php
+                                $isAsesorSigned = $formData && $formData->isAsesorSigned();
+                                $currentAsesorId = Auth::user()->asesor->id_asesor ?? null;
+                                $assignedAsesorId = $detailRincian->asesor->id_asesor ?? null;
+                                $ttd_asesor = null;
+                                $waktu_ttd_asesor = $formData->waktu_tanda_tangan_asesor ?? null;
+                                if ($isAsesorSigned) {
+                                    // Get latest valid signature from TandaTanganAsesor
+                                    $ttdModel = \App\Models\TandaTanganAsesor::where('id_asesor', $assignedAsesorId)
+                                        ->where(function($q){ $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()); })
+                                        ->orderByDesc('created_at')->first();
+                                    $ttd_asesor = $ttdModel ? $ttdModel->file_tanda_tangan : null;
+                                }
+                            @endphp
+                            <p class="text-sm text-gray-600 mb-2">
+                                @if($waktu_ttd_asesor)
+                                    {{ \Carbon\Carbon::parse($waktu_ttd_asesor)->format('d F Y') }}
+                                @else
+                                    Belum ditandatangani
+                                @endif
+                            </p>
+                            <div class="h-32 flex items-center justify-center bg-white">
+                                @if($isAsesorSigned && $ttd_asesor)
+                                    <img id="imgTtdAsesor" src="{{ asset('storage/tanda_tangan/' . $ttd_asesor) }}" alt="Tanda Tangan Asesor" class="max-h-24 max-w-full object-contain">
+                                @elseif($isAsesorSigned)
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
+                                        <span class="text-gray-400 text-sm">Tanda tangan tidak ditemukan</span>
+                                    </div>
+                                @elseif($currentAsesorId && $assignedAsesorId && $currentAsesorId == $assignedAsesorId)
+                                    <button id="btnSignAsesor" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm font-medium hover:bg-biru_soft focus:outline-none" data-fria01-id="{{ $formData->id_fria01 ?? '' }}">
+                                        Tandatangani
+                                    </button>
+                                    <div id="signAsesorStatus" class="mt-2 text-sm text-gray-500"></div>
+                                @else
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 w-full h-full flex items-center justify-center bg-gray-50">
+                                        <span class="text-gray-400 text-sm">Belum ada tanda tangan</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="border-t border-gray-400 pt-2">
+                                <p class="text-sm font-medium text-gray-700">Asesor</p>
+                                <p class="text-sm text-gray-600">{{ $detailRincian->asesor->nama_asesor ?? 'Nama Asesor' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Button Simpan --}}
+                <form id="formFria01" method="POST" action="{{ route('fria01.store') }}">
+                    @csrf
+                    <input type="hidden" name="id_asesi" value="{{ $detailRincian->asesi->id_asesi ?? '' }}">
+                    <input type="hidden" name="id_asesor" value="{{ $detailRincian->asesor->id_asesor ?? '' }}">
+                    <input type="hidden" name="id_skema" value="{{ $detailRincian->asesi->skema->id_skema ?? '' }}">
+                    <input type="hidden" name="id_event" value="{{ $detailRincian->event->id_event ?? '' }}">
+                    <input type="hidden" name="id_rincian_asesmen" value="{{ $detailRincian->id_rincian_asesmen ?? '' }}">
+                    <input type="hidden" id="dataTambahanInput" name="data_tambahan">
+                    <div class="flex justify-end pe-4">
+                        <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6" @if($formData && $formData->isAsesorSigned()) disabled @endif>
+                            @if($formData && $formData->isAsesorSigned())
+                                Sudah Ditandatangani
+                            @else
+                                Simpan dan Setujui
+                            @endif
+                        </button>
+                    </div>
+                </form>
+            </div>
     </div>
 
     {{-- Modal Kirim --}}
@@ -280,44 +423,12 @@
                     </svg>
                 </button>
             </div>
-            <div class="p-6 overflow-y-auto max-h-[calc(100vh-10rem)] space-y-4">
-                <div class="mb-5">
-                    <label for="keterangan" class="block mb-2 text-sm font-medium text-gray-900">Apa yang anda lakukan dalam menerapkan prinsip dasar Edutainment?</label>
-                    <div class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] max-h-[150px] overflow-y-auto">
-                        Saya mengidentifikasi kebutuhan pengunjung melalui beberapa cara: 1) Melakukan observasi terhadap perilaku dan respons pengunjung saat berkeliling museum, 2) Mengajukan pertanyaan sederhana untuk mengetahui latar belakang dan minat mereka, 3) Memperhatikan kelompok usia dan demografi pengunjung untuk menyesuaikan gaya komunikasi, 4) Memberikan kuesioner singkat atau feedback form untuk mendapatkan masukan langsung dari pengunjung tentang pengalaman mereka.
-                        Saya mengidentifikasi kebutuhan pengunjung melalui beberapa cara: 1) Melakukan observasi terhadap perilaku dan respons pengunjung saat berkeliling museum, 2) Mengajukan pertanyaan sederhana untuk mengetahui latar belakang dan minat mereka, 3) Memperhatikan kelompok usia dan demografi pengunjung untuk menyesuaikan gaya komunikasi, 4) Memberikan kuesioner singkat atau feedback form untuk mendapatkan masukan langsung dari pengunjung tentang pengalaman mereka.
-                        Saya mengidentifikasi kebutuhan pengunjung melalui beberapa cara: 1) Melakukan observasi terhadap perilaku dan respons pengunjung saat berkeliling museum, 2) Mengajukan pertanyaan sederhana untuk mengetahui latar belakang dan minat mereka, 3) Memperhatikan kelompok usia dan demografi pengunjung untuk menyesuaikan gaya komunikasi, 4) Memberikan kuesioner singkat atau feedback form untuk mendapatkan masukan langsung dari pengunjung tentang pengalaman mereka.
-                    
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">*Jawaban dari asesi (tidak dapat diedit)</p>
-                </div>
-                <div class="mb-5">
-                    <label for="kompetensi" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi</label>
-                    <select id="kompetensi" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="">-- Pilih Penilaian --</option>
-                        <option value="kompeten">Kompeten</option>
-                        <option value="belum_kompeten">Belum Kompeten</option>
-                    </select>
-                </div>
-                <div class="mb-5">
-                    <label for="keterangan2" class="block mb-2 text-sm font-medium text-gray-900">Bagaimana cara anda mengidentifikasi kebutuhan dan karakteristik pengunjung museum?</label>
-                    <div class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] max-h-[150px] overflow-y-auto">
-                        Saya mengidentifikasi kebutuhan pengunjung melalui beberapa cara: 1) Melakukan observasi terhadap perilaku dan respons pengunjung saat berkeliling museum, 2) Mengajukan pertanyaan sederhana untuk mengetahui latar belakang dan minat mereka, 3) Memperhatikan kelompok usia dan demografi pengunjung untuk menyesuaikan gaya komunikasi, 4) Memberikan kuesioner singkat atau feedback form untuk mendapatkan masukan langsung dari pengunjung tentang pengalaman mereka.
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">*Jawaban dari asesi (tidak dapat diedit)</p>
-                </div>
-                <div class="mb-5">
-                    <label for="kompetensi2" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi</label>
-                    <select id="kompetensi2" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="">-- Pilih Penilaian --</option>
-                        <option value="kompeten">Kompeten</option>
-                        <option value="belum_kompeten">Belum Kompeten</option>
-                    </select>
-                </div>
+            <div id="modal-content" class="p-6 overflow-y-auto max-h-[calc(100vh-10rem)] space-y-4">
+                <!-- Dynamic content will be loaded here -->
             </div>
             <div class="flex justify-end p-6 border-t border-gray-200 space-x-2">
                 <button type="button" onclick="closeModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">Tutup</button>
-                <button type="button" class="px-4 py-2 text-white bg-gradient-to-br from-biru to-ungu rounded-lg hover:from-ungu hover:to-biru transition-colors">Simpan</button>
+                <button type="button" onclick="saveModalData()" class="px-4 py-2 text-white bg-gradient-to-br from-biru to-ungu rounded-lg hover:from-ungu hover:to-biru transition-colors">Simpan</button>
             </div>
         </div>
     </div>
@@ -327,6 +438,11 @@
 </div>
 
 <script>
+// Data untuk FRIA07 dari backend
+const fria07Data = @json($detailRincian ? ($detailRincian->fria07->data_tambahan ?? []) : []);
+let currentUkId = null;
+let currentElemenId = null;
+
 function showSummary() {
     // Sembunyikan elemen pencarian utama
     document.getElementById('searchIA07').classList.add('hidden');
@@ -343,12 +459,400 @@ function showSummary() {
     // Optional: scroll ke bagian detail
     document.getElementById('detailIA07').scrollIntoView({ behavior: 'smooth' });
 }
-function showModal() {
+
+function showModal(ukId, elemenId) {
+    currentUkId = ukId;
+    currentElemenId = elemenId;
+    
+    // Find data for this UK and elemen
+    const ukData = findUkData(ukId);
+    const elemenData = findElemenData(ukData, elemenId);
+    
+    if (ukData && elemenData) {
+        loadModalContent(ukData, elemenData);
+    } else {
+        loadEmptyModalContent();
+    }
+    
     document.getElementById('modal-container').classList.remove('hidden');
+}
+
+function findUkData(ukId) {
+    if (!fria07Data.unit_kompetensi) return null;
+    
+    return fria07Data.unit_kompetensi.find(uk => {
+        // Try to match by both id_uk and kode_uk
+        return uk.id_uk == ukId || uk.kode_uk == ukId;
+    });
+}
+
+function findElemenData(ukData, elemenId) {
+    if (!ukData || !ukData.elemen_kompetensi) return null;
+    
+    return ukData.elemen_kompetensi.find(el => {
+        // Try different ways to match the element ID
+        return el.id_elemen == elemenId || 
+               el.id_elemen === elemenId ||
+               el.id_elemen?.toString() === elemenId?.toString();
+    });
+}
+
+function loadModalContent(ukData, elemenData) {
+    const modalContent = document.getElementById('modal-content');
+    
+    const pertanyaan = elemenData.pertanyaan_lisan || 'Belum ada pertanyaan lisan';
+    const jawaban = elemenData.jawaban_asesi || 'Belum ada jawaban dari asesi';
+    const penilaian = elemenData.penilaian || '';
+    
+    modalContent.innerHTML = `
+        <div class="mb-5">
+            <label class="block mb-2 text-sm font-medium text-gray-900">Pertanyaan Lisan</label>
+            <div class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200 min-h-[80px]">
+                ${pertanyaan}
+            </div>
+            <p class="text-xs text-gray-500 mt-1">*Pertanyaan yang diajukan kepada asesi</p>
+        </div>
+        <div class="mb-5">
+            <label class="block mb-2 text-sm font-medium text-gray-900">Jawaban Asesi</label>
+            <div class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] max-h-[150px] overflow-y-auto">
+                ${jawaban}
+            </div>
+            <p class="text-xs text-gray-500 mt-1">*Jawaban dari asesi (tidak dapat diedit)</p>
+        </div>
+        <div class="mb-5">
+            <label for="modal-penilaian" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi</label>
+            <select id="modal-penilaian" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                <option value="">-- Pilih Penilaian --</option>
+                <option value="kompeten" ${penilaian === 'kompeten' ? 'selected' : ''}>Kompeten</option>
+                <option value="belum_kompeten" ${penilaian === 'belum_kompeten' ? 'selected' : ''}>Belum Kompeten</option>
+            </select>
+        </div>
+    `;
+}
+
+function loadEmptyModalContent() {
+    const modalContent = document.getElementById('modal-content');
+    
+    modalContent.innerHTML = `
+        <div class="mb-5">
+            <p class="text-center text-gray-500">Data tidak ditemukan untuk elemen kompetensi ini.</p>
+        </div>
+    `;
+}
+
+function saveModalData() {
+    const penilaian = document.getElementById('modal-penilaian')?.value;
+    
+    if (!penilaian) {
+        alert('Harap pilih penilaian kompetensi terlebih dahulu');
+        return;
+    }
+    
+    // Update data in memory
+    updateFria07Data(currentUkId, currentElemenId, penilaian);
+    
+    // Update status in table
+    updateTableStatus(currentElemenId, penilaian);
+    
+    // Close modal
+    closeModal();
+    
+    alert('Penilaian berhasil disimpan!');
+}
+
+function updateFria07Data(ukId, elemenId, penilaian) {
+    if (!fria07Data.unit_kompetensi) {
+        fria07Data.unit_kompetensi = [];
+    }
+    
+    let ukData = findUkData(ukId);
+    if (!ukData) {
+        // Create new UK data if not exists
+        ukData = {
+            kode_uk: ukId,
+            nama_uk: '',
+            elemen_kompetensi: []
+        };
+        fria07Data.unit_kompetensi.push(ukData);
+    }
+    
+    let elemenData = findElemenData(ukData, elemenId);
+    if (elemenData) {
+        elemenData.penilaian = penilaian;
+    } else {
+        // Create new elemen data if not exists
+        ukData.elemen_kompetensi.push({
+            id_elemen: elemenId,
+            penilaian: penilaian,
+            pertanyaan_lisan: '',
+            jawaban_asesi: ''
+        });
+    }
+}
+
+function updateTableStatus(elemenId, penilaian) {
+    // Find the specific row using unique row ID
+    const targetRow = document.getElementById(`row_${currentUkId}_${elemenId}`);
+    
+    if (targetRow) {
+        const statusCell = targetRow.querySelector('td:last-child span');
+        if (statusCell) {
+            if (penilaian === 'kompeten') {
+                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-lg';
+                statusCell.textContent = 'Kompeten';
+            } else if (penilaian === 'belum_kompeten') {
+                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg';
+                statusCell.textContent = 'Belum Kompeten';
+            }
+        }
+    }
 }
 
 function closeModal() {
     document.getElementById('modal-container').classList.add('hidden');
+    currentUkId = null;
+    currentElemenId = null;
+}
+
+// Initialize table status based on existing data
+function initializeTableStatus() {
+    if (!fria07Data.unit_kompetensi) return;
+    
+    fria07Data.unit_kompetensi.forEach(uk => {
+        if (uk.elemen_kompetensi) {
+            uk.elemen_kompetensi.forEach(elemen => {
+                if (elemen.penilaian) {
+                    updateTableStatusInit(uk.kode_uk, elemen.id_elemen, elemen.penilaian);
+                }
+            });
+        }
+    });
+}
+
+function updateTableStatusInit(ukId, elemenId, penilaian) {
+    const targetRow = document.getElementById(`row_${ukId}_${elemenId}`);
+    
+    if (targetRow) {
+        const statusCell = targetRow.querySelector('td:last-child span');
+        if (statusCell) {
+            if (penilaian === 'kompeten') {
+                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-lg';
+                statusCell.textContent = 'Kompeten';
+            } else if (penilaian === 'belum_kompeten') {
+                statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg';
+                statusCell.textContent = 'Belum Kompeten';
+            }
+        }
+    }
+}
+
+// Initialize table status when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeTableStatus();
+});
+
+// Update form before submit
+document.getElementById('formFria07')?.addEventListener('submit', function(e) {
+    let dataTambahan = {
+        hasil: [],
+        ttd_asesor: "{{ $formData && isset($formData->data_tambahan['ttd_asesor']) ? $formData->data_tambahan['ttd_asesor'] : ($ttd_asesor ?? '') }}",
+        nama_asesor: "{{ $formData && isset($formData->data_tambahan['nama_asesor']) ? $formData->data_tambahan['nama_asesor'] : ($nama_asesor ?? '') }}",
+        tanggal_ttd: "{{ $formData && isset($formData->data_tambahan['tanggal_ttd']) ? $formData->data_tambahan['tanggal_ttd'] : ($tanggal_ttd ?? '') }}",
+        unit_kompetensi: fria07Data.unit_kompetensi || []
+    };
+
+    // Collect hasil data
+    let kinerjaAsesiRadio = document.querySelector('input[name="kinerja_asesi"]:checked');
+    let umpanBalikKinerjaAsesiTextarea = document.querySelector('textarea[name="umpan_balik_kinerja_asesi"]');
+
+    if (kinerjaAsesiRadio) {
+        dataTambahan.hasil.push({
+            name: 'kinerja_asesi',
+            value: kinerjaAsesiRadio.value,
+            umpan_balik: umpanBalikKinerjaAsesiTextarea ? umpanBalikKinerjaAsesiTextarea.value : ''
+        });
+    }
+
+    // Set the data_tambahan input with updated fria07Data
+    const dataTambahanInput = document.getElementById('dataTambahanInput');
+    if (dataTambahanInput) {
+        dataTambahanInput.value = JSON.stringify(dataTambahan);
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize table status when page loads
+    initializeTableStatus();
+    
+    // Disable form jika sudah ditandatangani
+    function disableFormIfSigned() {
+        const isSigned = {{ $formData && $formData->isAsesorSigned() ? 'true' : 'false' }};
+        if (isSigned) {
+            // Disable semua input dan select
+            document.querySelectorAll('input[name="kinerja_asesi"]').forEach(radio => {
+                radio.disabled = true;
+            });
+            document.querySelectorAll('textarea[name="umpan_balik_kinerja_asesi"]').forEach(textarea => {
+                textarea.disabled = true;
+            });
+            
+            // Update button state
+            const simpanBtn = document.getElementById('simpanFria07');
+            if (simpanBtn) {
+                simpanBtn.disabled = true;
+                simpanBtn.textContent = 'Form Sudah Ditandatangani';
+                simpanBtn.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru_soft');
+                simpanBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            }
+        }
+    }
+    
+    // Validasi form sebelum bisa ditandatangani
+    function validateForm() {
+        let isValid = true;
+        let emptyFields = [];
+        
+        // Check kinerja asesi
+        const kinerjaRadios = document.querySelectorAll('input[name="kinerja_asesi"]');
+        const kinerjaSelected = Array.from(kinerjaRadios).some(radio => radio.checked);
+        if (!kinerjaSelected) {
+            isValid = false;
+            emptyFields.push('Kinerja Asesi');
+        }
+        
+        return { isValid, emptyFields };
+    }
+    
+    // Initialize form state
+    disableFormIfSigned();
+    
+    // Signature button logic
+    const btnSignAsesor = document.getElementById('btnSignAsesor');
+    if (btnSignAsesor) {
+        btnSignAsesor.addEventListener('click', async function() {
+            // Validasi form sebelum tanda tangan
+            const validation = validateForm();
+            if (!validation.isValid) {
+                alert('Form belum lengkap. Silakan isi: ' + validation.emptyFields.join(', '));
+                return;
+            }
+            
+            const fria07Id = btnSignAsesor.getAttribute('data-fria07-id');
+            
+            // Jika form belum disimpan (fria07Id kosong), tampilkan modal warning
+            if (!fria07Id || fria07Id === '') {
+                const saveFirstModal = document.getElementById('saveFirstModal');
+                saveFirstModal.classList.remove('hidden');
+                return;
+            }
+            
+            btnSignAsesor.disabled = true;
+            btnSignAsesor.textContent = 'Menyimpan...';
+            try {
+                const response = await fetch('/asesor/fria07/sign', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        fria07_id: fria07Id,
+                        signature_type: 'asesor'
+                    })
+                });
+                
+                if (response.ok) {
+                    const successModal = document.getElementById('successModal');
+                    successModal.classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    throw new Error('Gagal menyimpan tanda tangan');
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+                btnSignAsesor.disabled = false;
+                btnSignAsesor.textContent = 'Tandatangani Sebagai Asesor';
+            }
+        });
+    }
+    
+    // Event listener for custom modal close button
+    const closeModal = document.getElementById('closeModal');
+    if (closeModal) {
+        closeModal.addEventListener('click', function() {
+            const successModal = document.getElementById('successModal');
+            successModal.classList.add('hidden');
+        });
+    }
+
+    // Close modal if clicked outside
+    const successModal = document.getElementById('successModal');
+    if (successModal) {
+        successModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+    }
+
+    // Modal for Save First Warning
+    const saveFirstModal = document.getElementById('saveFirstModal');
+    const cancelSaveModalBtn = document.getElementById('cancelSaveModal');
+    const saveFormBtn = document.getElementById('saveFormBtn');
+
+    if (cancelSaveModalBtn) {
+        cancelSaveModalBtn.addEventListener('click', function() {
+            saveFirstModal.classList.add('hidden');
+        });
+    }
+
+    if (saveFormBtn) {
+        saveFormBtn.addEventListener('click', function() {
+            saveFirstModal.classList.add('hidden');
+            
+            // Trigger form submission like the original form submit
+            let dataTambahan = {
+                hasil: [],
+                ttd_asesor: "{{ $formData && isset($formData->data_tambahan['ttd_asesor']) ? $formData->data_tambahan['ttd_asesor'] : ($ttd_asesor ?? '') }}",
+                nama_asesor: "{{ $formData && isset($formData->data_tambahan['nama_asesor']) ? $formData->data_tambahan['nama_asesor'] : ($nama_asesor ?? '') }}",
+                tanggal_ttd: "{{ $formData && isset($formData->data_tambahan['tanggal_ttd']) ? $formData->data_tambahan['tanggal_ttd'] : ($tanggal_ttd ?? '') }}",
+                unit_kompetensi: fria07Data.unit_kompetensi || []
+            };
+
+            // Collect hasil data
+            let kinerjaAsesiRadio = document.querySelector('input[name="kinerja_asesi"]:checked');
+            let umpanBalikKinerjaAsesiTextarea = document.querySelector('textarea[name="umpan_balik_kinerja_asesi"]');
+
+            if (kinerjaAsesiRadio) {
+                dataTambahan.hasil.push({
+                    name: 'kinerja_asesi',
+                    value: kinerjaAsesiRadio.value,
+                    umpan_balik: umpanBalikKinerjaAsesiTextarea ? umpanBalikKinerjaAsesiTextarea.value : ''
+                });
+            }
+
+            // Set data tambahan ke input hidden
+            document.getElementById('dataTambahanInput').value = JSON.stringify(dataTambahan);
+            
+            // Submit form
+            document.getElementById('formFria07').submit();
+        });
+    }
+
+    if (saveFirstModal) {
+        saveFirstModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+    }
+});
+
+function showDocument(id_asesi) {
+    window.open('/asesor/fria07/pdf/' + id_asesi, "_blank");
 }
 </script>
 
