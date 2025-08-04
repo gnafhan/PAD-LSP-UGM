@@ -38,7 +38,10 @@ class Fria07Controller extends Controller
         }
         
         // Update hasil asesmen if evaluations exist
-        if (isset($dataTambahan["hasil"][0]["value"])) {
+        if (isset($dataTambahan["hasil"]) && 
+            is_array($dataTambahan["hasil"]) && 
+            !empty($dataTambahan["hasil"]) && 
+            isset($dataTambahan["hasil"][0]["value"])) {
             $hasilAsesmen->status = $dataTambahan["hasil"][0]["value"];
             $hasilAsesmen->tanggal_selesai = now();
             $hasilAsesmen->save();

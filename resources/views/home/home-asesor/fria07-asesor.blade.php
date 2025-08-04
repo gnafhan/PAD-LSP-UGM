@@ -372,7 +372,7 @@
                                         <span class="text-gray-400 text-sm">Tanda tangan tidak ditemukan</span>
                                     </div>
                                 @elseif($currentAsesorId && $assignedAsesorId && $currentAsesorId == $assignedAsesorId)
-                                    <button id="btnSignAsesor" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm font-medium hover:bg-biru_soft focus:outline-none" data-fria01-id="{{ $formData->id_fria01 ?? '' }}">
+                                    <button id="btnSignAsesor" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm font-medium hover:bg-biru_soft focus:outline-none" data-fria07-id="{{ $formData->id_fria07 ?? '' }}">
                                         Tandatangani
                                     </button>
                                     <div id="signAsesorStatus" class="mt-2 text-sm text-gray-500"></div>
@@ -391,7 +391,7 @@
                 </div>
 
                 {{-- Button Simpan --}}
-                <form id="formFria01" method="POST" action="{{ route('fria01.store') }}">
+                <form id="formFria07" method="POST" action="{{ route('fria07.store') }}">
                     @csrf
                     <input type="hidden" name="id_asesi" value="{{ $detailRincian->asesi->id_asesi ?? '' }}">
                     <input type="hidden" name="id_asesor" value="{{ $detailRincian->asesor->id_asesor ?? '' }}">
@@ -400,7 +400,7 @@
                     <input type="hidden" name="id_rincian_asesmen" value="{{ $detailRincian->id_rincian_asesmen ?? '' }}">
                     <input type="hidden" id="dataTambahanInput" name="data_tambahan">
                     <div class="flex justify-end pe-4">
-                        <button id="simpanKompeten" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6" @if($formData && $formData->isAsesorSigned()) disabled @endif>
+                        <button id="simpanFria07" type="submit" class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru_soft focus:outline-none mt-6" @if($formData && $formData->isAsesorSigned()) disabled @endif>
                             @if($formData && $formData->isAsesorSigned())
                                 Sudah Ditandatangani
                             @else
@@ -464,9 +464,14 @@ function showModal(ukId, elemenId) {
     currentUkId = ukId;
     currentElemenId = elemenId;
     
+    console.log('Opening modal for UK:', ukId, 'Element:', elemenId);
+    
     // Find data for this UK and elemen
     const ukData = findUkData(ukId);
     const elemenData = findElemenData(ukData, elemenId);
+    
+    console.log('Found UK data:', ukData);
+    console.log('Found element data:', elemenData);
     
     if (ukData && elemenData) {
         loadModalContent(ukData, elemenData);
@@ -481,8 +486,11 @@ function findUkData(ukId) {
     if (!fria07Data.unit_kompetensi) return null;
     
     return fria07Data.unit_kompetensi.find(uk => {
-        // Try to match by both id_uk and kode_uk
-        return uk.id_uk == ukId || uk.kode_uk == ukId;
+        // Try to match by id_uk, kode_uk, or string comparison
+        return uk.id_uk == ukId || 
+               uk.kode_uk == ukId || 
+               uk.id_uk?.toString() === ukId?.toString() ||
+               uk.kode_uk?.toString() === ukId?.toString();
     });
 }
 
@@ -500,27 +508,23 @@ function findElemenData(ukData, elemenId) {
 function loadModalContent(ukData, elemenData) {
     const modalContent = document.getElementById('modal-content');
     
-    const pertanyaan = elemenData.pertanyaan_lisan || 'Belum ada pertanyaan lisan';
-    const jawaban = elemenData.jawaban_asesi || 'Belum ada jawaban dari asesi';
+    const pertanyaan = elemenData.pertanyaan_lisan || '';
+    const jawaban = elemenData.jawaban_asesi || '';
     const penilaian = elemenData.penilaian || '';
     
     modalContent.innerHTML = `
         <div class="mb-5">
-            <label class="block mb-2 text-sm font-medium text-gray-900">Pertanyaan Lisan</label>
-            <div class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200 min-h-[80px]">
-                ${pertanyaan}
-            </div>
-            <p class="text-xs text-gray-500 mt-1">*Pertanyaan yang diajukan kepada asesi</p>
+            <label for="modal-pertanyaan" class="block mb-2 text-sm font-medium text-gray-900">Pertanyaan Lisan <span class="text-red-500">*</span></label>
+            <textarea id="modal-pertanyaan" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] resize-none" placeholder="Masukkan pertanyaan lisan untuk asesi...">${pertanyaan}</textarea>
+            <p class="text-xs text-gray-500 mt-1">*Pertanyaan yang akan diajukan kepada asesi</p>
         </div>
         <div class="mb-5">
-            <label class="block mb-2 text-sm font-medium text-gray-900">Jawaban Asesi</label>
-            <div class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] max-h-[150px] overflow-y-auto">
-                ${jawaban}
-            </div>
-            <p class="text-xs text-gray-500 mt-1">*Jawaban dari asesi (tidak dapat diedit)</p>
+            <label for="modal-jawaban" class="block mb-2 text-sm font-medium text-gray-900">Jawaban Asesi <span class="text-red-500">*</span></label>
+            <textarea id="modal-jawaban" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 min-h-[100px] max-h-[150px] resize-none" placeholder="Masukkan jawaban dari asesi...">${jawaban}</textarea>
+            <p class="text-xs text-gray-500 mt-1">*Jawaban yang diberikan oleh asesi</p>
         </div>
         <div class="mb-5">
-            <label for="modal-penilaian" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi</label>
+            <label for="modal-penilaian" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi <span class="text-red-500">*</span></label>
             <select id="modal-penilaian" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                 <option value="">-- Pilih Penilaian --</option>
                 <option value="kompeten" ${penilaian === 'kompeten' ? 'selected' : ''}>Kompeten</option>
@@ -535,21 +539,48 @@ function loadEmptyModalContent() {
     
     modalContent.innerHTML = `
         <div class="mb-5">
-            <p class="text-center text-gray-500">Data tidak ditemukan untuk elemen kompetensi ini.</p>
+            <label for="modal-pertanyaan" class="block mb-2 text-sm font-medium text-gray-900">Pertanyaan Lisan <span class="text-red-500">*</span></label>
+            <textarea id="modal-pertanyaan" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] resize-none" placeholder="Masukkan pertanyaan lisan untuk asesi..."></textarea>
+            <p class="text-xs text-gray-500 mt-1">*Pertanyaan yang akan diajukan kepada asesi</p>
+        </div>
+        <div class="mb-5">
+            <label for="modal-jawaban" class="block mb-2 text-sm font-medium text-gray-900">Jawaban Asesi <span class="text-red-500">*</span></label>
+            <textarea id="modal-jawaban" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 min-h-[100px] max-h-[150px] resize-none" placeholder="Masukkan jawaban dari asesi..."></textarea>
+            <p class="text-xs text-gray-500 mt-1">*Jawaban yang diberikan oleh asesi</p>
+        </div>
+        <div class="mb-5">
+            <label for="modal-penilaian" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi <span class="text-red-500">*</span></label>
+            <select id="modal-penilaian" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                <option value="">-- Pilih Penilaian --</option>
+                <option value="kompeten">Kompeten</option>
+                <option value="belum_kompeten">Belum Kompeten</option>
+            </select>
         </div>
     `;
 }
 
 function saveModalData() {
+    const pertanyaan = document.getElementById('modal-pertanyaan')?.value?.trim();
+    const jawaban = document.getElementById('modal-jawaban')?.value?.trim();
     const penilaian = document.getElementById('modal-penilaian')?.value;
     
-    if (!penilaian) {
-        alert('Harap pilih penilaian kompetensi terlebih dahulu');
+    console.log('Saving modal data:', { pertanyaan, jawaban, penilaian });
+    
+    // Validasi input
+    const errors = [];
+    if (!pertanyaan) errors.push('Pertanyaan Lisan');
+    if (!jawaban) errors.push('Jawaban Asesi');
+    if (!penilaian) errors.push('Penilaian Kompetensi');
+    
+    if (errors.length > 0) {
+        alert('Harap lengkapi field berikut: ' + errors.join(', '));
         return;
     }
     
     // Update data in memory
-    updateFria07Data(currentUkId, currentElemenId, penilaian);
+    updateFria07Data(currentUkId, currentElemenId, penilaian, pertanyaan, jawaban);
+    
+    console.log('Updated fria07Data:', fria07Data);
     
     // Update status in table
     updateTableStatus(currentElemenId, penilaian);
@@ -557,20 +588,24 @@ function saveModalData() {
     // Close modal
     closeModal();
     
-    alert('Penilaian berhasil disimpan!');
+    alert('Data berhasil disimpan!');
 }
 
-function updateFria07Data(ukId, elemenId, penilaian) {
+function updateFria07Data(ukId, elemenId, penilaian, pertanyaan = '', jawaban = '') {
     if (!fria07Data.unit_kompetensi) {
         fria07Data.unit_kompetensi = [];
     }
     
     let ukData = findUkData(ukId);
     if (!ukData) {
+        // Get UK info from the page for nama_uk
+        const ukName = getUkNameFromPage(ukId);
+        
         // Create new UK data if not exists
         ukData = {
+            id_uk: ukId,
             kode_uk: ukId,
-            nama_uk: '',
+            nama_uk: ukName,
             elemen_kompetensi: []
         };
         fria07Data.unit_kompetensi.push(ukData);
@@ -578,19 +613,64 @@ function updateFria07Data(ukId, elemenId, penilaian) {
     
     let elemenData = findElemenData(ukData, elemenId);
     if (elemenData) {
+        // Update existing elemen data
         elemenData.penilaian = penilaian;
+        if (pertanyaan) elemenData.pertanyaan_lisan = pertanyaan;
+        if (jawaban) elemenData.jawaban_asesi = jawaban;
     } else {
+        // Get elemen name from the page
+        const elemenName = getElemenNameFromPage(elemenId);
+        
         // Create new elemen data if not exists
         ukData.elemen_kompetensi.push({
             id_elemen: elemenId,
-            penilaian: penilaian,
-            pertanyaan_lisan: '',
-            jawaban_asesi: ''
+            nama_elemen: elemenName,
+            pertanyaan_lisan: pertanyaan,
+            jawaban_asesi: jawaban,
+            penilaian: penilaian
         });
     }
 }
 
+// Helper function to get UK name from the page
+function getUkNameFromPage(ukId) {
+    // Try to find UK name from the table headers or data attributes
+    const ukElement = document.querySelector(`[data-uk-id="${ukId}"]`);
+    if (ukElement) {
+        const ukName = ukElement.getAttribute('data-uk-name');
+        if (ukName) return ukName;
+    }
+    
+    // Alternative: look for the UK name in the table structure
+    const tables = document.querySelectorAll('[id^="pelaksanaanAsesmen_"]');
+    for (let table of tables) {
+        const ukHeader = table.closest('.mb-4')?.querySelector('p[id="judulTabelIA07"]');
+        if (ukHeader && ukHeader.textContent.includes(ukId)) {
+            // Extract unit name if available in the context
+            return `Unit Kompetensi ${ukId}`;
+        }
+    }
+    
+    return `Unit Kompetensi ${ukId}`;
+}
+
+// Helper function to get elemen name from the page
+function getElemenNameFromPage(elemenId) {
+    // Find the row containing this elemen
+    const row = document.getElementById(`row_${currentUkId}_${elemenId}`);
+    if (row) {
+        const elemenNameCell = row.querySelector('td:nth-child(2)');
+        if (elemenNameCell) {
+            return elemenNameCell.textContent.trim();
+        }
+    }
+    
+    return `Elemen ${elemenId}`;
+}
+
 function updateTableStatus(elemenId, penilaian) {
+    console.log('Updating table status for:', elemenId, 'with penilaian:', penilaian);
+    
     // Find the specific row using unique row ID
     const targetRow = document.getElementById(`row_${currentUkId}_${elemenId}`);
     
@@ -604,7 +684,12 @@ function updateTableStatus(elemenId, penilaian) {
                 statusCell.className = 'inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg';
                 statusCell.textContent = 'Belum Kompeten';
             }
+            console.log('Table status updated successfully');
+        } else {
+            console.error('Status cell not found in row:', targetRow);
         }
+    } else {
+        console.error('Target row not found for:', `row_${currentUkId}_${elemenId}`);
     }
 }
 
@@ -653,12 +738,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Update form before submit
 document.getElementById('formFria07')?.addEventListener('submit', function(e) {
+    // Validate form before submission
+    const validation = validateFormForSubmission();
+    if (!validation.isValid) {
+        e.preventDefault(); // Prevent form submission
+        alert('Form belum lengkap. Silakan lengkapi: ' + validation.emptyFields.join(', '));
+        return false;
+    }
+    
     let dataTambahan = {
-        hasil: [],
-        ttd_asesor: "{{ $formData && isset($formData->data_tambahan['ttd_asesor']) ? $formData->data_tambahan['ttd_asesor'] : ($ttd_asesor ?? '') }}",
-        nama_asesor: "{{ $formData && isset($formData->data_tambahan['nama_asesor']) ? $formData->data_tambahan['nama_asesor'] : ($nama_asesor ?? '') }}",
-        tanggal_ttd: "{{ $formData && isset($formData->data_tambahan['tanggal_ttd']) ? $formData->data_tambahan['tanggal_ttd'] : ($tanggal_ttd ?? '') }}",
-        unit_kompetensi: fria07Data.unit_kompetensi || []
+        unit_kompetensi: fria07Data.unit_kompetensi || [],
+        hasil: []
     };
 
     // Collect hasil data
@@ -679,6 +769,38 @@ document.getElementById('formFria07')?.addEventListener('submit', function(e) {
         dataTambahanInput.value = JSON.stringify(dataTambahan);
     }
 });
+
+// Separate validation function for form submission
+function validateFormForSubmission() {
+    let isValid = true;
+    let emptyFields = [];
+    
+    // Check kinerja asesi
+    const kinerjaRadios = document.querySelectorAll('input[name="kinerja_asesi"]');
+    const kinerjaSelected = Array.from(kinerjaRadios).some(radio => radio.checked);
+    if (!kinerjaSelected) {
+        isValid = false;
+        emptyFields.push('Kinerja Asesi harus dipilih');
+    }
+    
+    // Check if all elemen kompetensi have been assessed
+    const allRows = document.querySelectorAll('[id^="row_"]');
+    let unassessedCount = 0;
+    
+    allRows.forEach(row => {
+        const statusSpan = row.querySelector('td:last-child span');
+        if (statusSpan && statusSpan.textContent.trim() === 'Belum Diisi') {
+            unassessedCount++;
+        }
+    });
+    
+    if (unassessedCount > 0) {
+        isValid = false;
+        emptyFields.push(`${unassessedCount} elemen kompetensi belum dinilai`);
+    }
+    
+    return { isValid, emptyFields };
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize table status when page loads
@@ -718,6 +840,24 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!kinerjaSelected) {
             isValid = false;
             emptyFields.push('Kinerja Asesi');
+        }
+        
+        // Check if all elemen kompetensi have been assessed
+        const allRows = document.querySelectorAll('[id^="row_"]');
+        let unassessedElements = [];
+        
+        allRows.forEach(row => {
+            const statusSpan = row.querySelector('td:last-child span');
+            if (statusSpan && statusSpan.textContent.trim() === 'Belum Diisi') {
+                const elemenNameCell = row.querySelector('td:nth-child(2)');
+                const elemenName = elemenNameCell ? elemenNameCell.textContent.trim() : 'Elemen tidak diketahui';
+                unassessedElements.push(elemenName);
+            }
+        });
+        
+        if (unassessedElements.length > 0) {
+            isValid = false;
+            emptyFields.push(`Penilaian untuk: ${unassessedElements.slice(0, 3).join(', ')}${unassessedElements.length > 3 ? ` dan ${unassessedElements.length - 3} lainnya` : ''}`);
         }
         
         return { isValid, emptyFields };
@@ -811,15 +951,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (saveFormBtn) {
         saveFormBtn.addEventListener('click', function() {
+            // Validate form before saving
+            const validation = validateFormForSubmission();
+            if (!validation.isValid) {
+                alert('Form belum lengkap. Silakan lengkapi: ' + validation.emptyFields.join(', '));
+                return;
+            }
+            
             saveFirstModal.classList.add('hidden');
             
             // Trigger form submission like the original form submit
             let dataTambahan = {
-                hasil: [],
-                ttd_asesor: "{{ $formData && isset($formData->data_tambahan['ttd_asesor']) ? $formData->data_tambahan['ttd_asesor'] : ($ttd_asesor ?? '') }}",
-                nama_asesor: "{{ $formData && isset($formData->data_tambahan['nama_asesor']) ? $formData->data_tambahan['nama_asesor'] : ($nama_asesor ?? '') }}",
-                tanggal_ttd: "{{ $formData && isset($formData->data_tambahan['tanggal_ttd']) ? $formData->data_tambahan['tanggal_ttd'] : ($tanggal_ttd ?? '') }}",
-                unit_kompetensi: fria07Data.unit_kompetensi || []
+                unit_kompetensi: fria07Data.unit_kompetensi || [],
+                hasil: []
             };
 
             // Collect hasil data
