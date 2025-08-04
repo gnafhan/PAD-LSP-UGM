@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             Fria01TestSeeder::class,
             PertanyaanBandingSeeder::class,
             JawabanBandingSeeder::class,
+            Ak07SeederASeeder::class,
         ]);
     }
 }
