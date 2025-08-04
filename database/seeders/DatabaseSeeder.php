@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             EventSkemaSeeder::class,
             BidangKompetensiSeeder::class,
             Fria01TestSeeder::class,
+            Fria07TestSeeder::class,
             PertanyaanBandingSeeder::class,
             JawabanBandingSeeder::class,
         ]);
