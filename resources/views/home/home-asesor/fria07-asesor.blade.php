@@ -170,13 +170,13 @@
                                 <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-12">Kirim Jawaban</th>
                                 <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider text-left">Judul Unit Kompetensi</th>
                                 <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-32">Kode Unit Kompetensi</th>
-                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-24">Kompetensi</th>
+                                <th class="px-4 py-3 text-xs font-semibold text-gray-600 tracking-wider w-36">Kompetensi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 text-black text-center">
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 text-center">
-                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
                                         </svg>
@@ -185,7 +185,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
                                 <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-8 py-3 text-center">
+                                <td class="px-4 py-3 text-center">
                                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
                                         Sudah Diisi
                                     </span>
@@ -193,7 +193,7 @@
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 text-center">
-                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
                                         </svg>
@@ -202,7 +202,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
                                 <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-8 py-3 text-center">
+                                <td class="px-4 py-3 text-center">
                                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
                                         Sudah Diisi
                                     </span>
@@ -210,7 +210,7 @@
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 text-center">
-                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
                                         </svg>
@@ -219,7 +219,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
                                 <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-8 py-3 text-center">
+                                <td class="px-4 py-3 text-center">
                                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
                                         Sudah Diisi
                                     </span>
@@ -227,7 +227,7 @@
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 text-center">
-                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
                                         </svg>
@@ -236,7 +236,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
                                 <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-8 py-3 text-center">
+                                <td class="px-4 py-3 text-center">
                                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg">
                                         Sudah Diisi
                                     </span>
@@ -244,7 +244,7 @@
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 text-center">
-                                    <button class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
+                                    <button onclick="showModal()" class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
                                         </svg>
@@ -253,7 +253,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-gray-700 text-left text-sm">Mengimplementasikan Dasar-dasar Kepemanduan Museum</td>
                                 <td class="px-4 py-3 text-gray-700 text-sm">BUD.PM02.001.01</td>
-                                <td class="px-8 py-3 text-center">
+                                <td class="px-4 py-3 text-center">
                                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-lg">
                                         Belum Diisi
                                     </span>
@@ -266,6 +266,59 @@
 
             
 
+        </div>
+    </div>
+
+    {{-- Modal Kirim --}}
+    <div id="modal-container" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-start py-4 overflow-y-auto">
+        <div class="relative bg-white w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-hidden rounded-lg shadow-xl mx-4 my-auto">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 class="text-xl font-bold text-gray-900">Unit Kompetensi</h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 flex justify-center items-center" onclick="closeModal()">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(100vh-10rem)] space-y-4">
+                <div class="mb-5">
+                    <label for="keterangan" class="block mb-2 text-sm font-medium text-gray-900">Apa yang anda lakukan dalam menerapkan prinsip dasar Edutainment?</label>
+                    <div class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] max-h-[150px] overflow-y-auto">
+                        Saya mengidentifikasi kebutuhan pengunjung melalui beberapa cara: 1) Melakukan observasi terhadap perilaku dan respons pengunjung saat berkeliling museum, 2) Mengajukan pertanyaan sederhana untuk mengetahui latar belakang dan minat mereka, 3) Memperhatikan kelompok usia dan demografi pengunjung untuk menyesuaikan gaya komunikasi, 4) Memberikan kuesioner singkat atau feedback form untuk mendapatkan masukan langsung dari pengunjung tentang pengalaman mereka.
+                        Saya mengidentifikasi kebutuhan pengunjung melalui beberapa cara: 1) Melakukan observasi terhadap perilaku dan respons pengunjung saat berkeliling museum, 2) Mengajukan pertanyaan sederhana untuk mengetahui latar belakang dan minat mereka, 3) Memperhatikan kelompok usia dan demografi pengunjung untuk menyesuaikan gaya komunikasi, 4) Memberikan kuesioner singkat atau feedback form untuk mendapatkan masukan langsung dari pengunjung tentang pengalaman mereka.
+                        Saya mengidentifikasi kebutuhan pengunjung melalui beberapa cara: 1) Melakukan observasi terhadap perilaku dan respons pengunjung saat berkeliling museum, 2) Mengajukan pertanyaan sederhana untuk mengetahui latar belakang dan minat mereka, 3) Memperhatikan kelompok usia dan demografi pengunjung untuk menyesuaikan gaya komunikasi, 4) Memberikan kuesioner singkat atau feedback form untuk mendapatkan masukan langsung dari pengunjung tentang pengalaman mereka.
+                    
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">*Jawaban dari asesi (tidak dapat diedit)</p>
+                </div>
+                <div class="mb-5">
+                    <label for="kompetensi" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi</label>
+                    <select id="kompetensi" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="">-- Pilih Penilaian --</option>
+                        <option value="kompeten">Kompeten</option>
+                        <option value="belum_kompeten">Belum Kompeten</option>
+                    </select>
+                </div>
+                <div class="mb-5">
+                    <label for="keterangan2" class="block mb-2 text-sm font-medium text-gray-900">Bagaimana cara anda mengidentifikasi kebutuhan dan karakteristik pengunjung museum?</label>
+                    <div class="block p-2.5 w-full text-sm text-gray-700 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] max-h-[150px] overflow-y-auto">
+                        Saya mengidentifikasi kebutuhan pengunjung melalui beberapa cara: 1) Melakukan observasi terhadap perilaku dan respons pengunjung saat berkeliling museum, 2) Mengajukan pertanyaan sederhana untuk mengetahui latar belakang dan minat mereka, 3) Memperhatikan kelompok usia dan demografi pengunjung untuk menyesuaikan gaya komunikasi, 4) Memberikan kuesioner singkat atau feedback form untuk mendapatkan masukan langsung dari pengunjung tentang pengalaman mereka.
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">*Jawaban dari asesi (tidak dapat diedit)</p>
+                </div>
+                <div class="mb-5">
+                    <label for="kompetensi2" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi</label>
+                    <select id="kompetensi2" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="">-- Pilih Penilaian --</option>
+                        <option value="kompeten">Kompeten</option>
+                        <option value="belum_kompeten">Belum Kompeten</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end p-6 border-t border-gray-200 space-x-2">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">Tutup</button>
+                <button type="button" class="px-4 py-2 text-white bg-gradient-to-br from-biru to-ungu rounded-lg hover:from-ungu hover:to-biru transition-colors">Simpan</button>
+            </div>
         </div>
     </div>
     <div id="bgGradient"
@@ -289,6 +342,13 @@ function showSummary() {
 
     // Optional: scroll ke bagian detail
     document.getElementById('detailIA07').scrollIntoView({ behavior: 'smooth' });
+}
+function showModal() {
+    document.getElementById('modal-container').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('modal-container').classList.add('hidden');
 }
 </script>
 
