@@ -10,7 +10,7 @@
         </div>
     @endif
     
-    <!-- Custom Modal for Success Notification -->
+    <!-- Notification -->
     <div id="successModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center">
         <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
             <div class="flex items-center mb-4">
@@ -390,7 +390,6 @@
                                 $ttd_asesor = null;
                                 $waktu_ttd_asesor = $formData->waktu_tanda_tangan_asesor ?? null;
                                 if ($isAsesorSigned) {
-                                    // Get latest valid signature from TandaTanganAsesor
                                     $ttdModel = \App\Models\TandaTanganAsesor::where('id_asesor', $assignedAsesorId)
                                         ->where(function($q){ $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()); })
                                         ->orderByDesc('created_at')->first();
@@ -464,7 +463,6 @@
                 </button>
             </div>
             <div id="modal-content" class="p-6 overflow-y-auto max-h-[calc(100vh-10rem)] space-y-4">
-                <!-- Dynamic content will be loaded here -->
             </div>
             <div class="flex justify-end p-6 border-t border-gray-200 space-x-2">
                 <button type="button" onclick="closeModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">Tutup</button>
@@ -478,13 +476,10 @@
 </div>
 
 <script>
-// Data untuk FRIA07 dari backend
+// Data untuk FRIA07
 const fria07Data = @json($detailRincian ? ($detailRincian->fria07->data_tambahan ?? []) : []);
 let currentUkId = null;
 let currentElemenId = null;
-
-// Debug: log data saat dimuat
-console.log('FRIA07 Data loaded:', fria07Data);
 
 function showSummary() {
     // Sembunyikan elemen pencarian utama
@@ -534,7 +529,6 @@ function findUkData(ukId) {
     console.log('Searching for UK ID:', ukId, 'in data:', fria07Data.unit_kompetensi);
     
     return fria07Data.unit_kompetensi.find(uk => {
-        // Try to match by id_uk, kode_uk, or string comparison
         const match = uk.id_uk == ukId || 
                uk.kode_uk == ukId || 
                uk.id_uk?.toString() === ukId?.toString() ||
@@ -554,7 +548,6 @@ function findElemenData(ukData, elemenId) {
     console.log('Searching for element ID:', elemenId, 'in elemen data:', ukData.elemen_kompetensi);
     
     return ukData.elemen_kompetensi.find(el => {
-        // Try different ways to match the element ID
         const match = el.id_elemen == elemenId || 
                el.id_elemen === elemenId ||
                el.id_elemen?.toString() === elemenId?.toString();
@@ -574,12 +567,12 @@ function loadModalContent(ukData, elemenData) {
     modalContent.innerHTML = `
         <div class="mb-5">
             <label for="modal-pertanyaan" class="block mb-2 text-sm font-medium text-gray-900">Pertanyaan Lisan <span class="text-red-500">*</span></label>
-            <textarea id="modal-pertanyaan" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] resize-none" placeholder="Masukkan pertanyaan lisan untuk asesi...">${pertanyaan}</textarea>
+            <textarea id="modal-pertanyaan" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-100 rounded-lg border border-gray-300 min-h-[80px] resize-none" placeholder="Masukkan pertanyaan lisan untuk asesi..." readonly>${pertanyaan}</textarea>
             <p class="text-xs text-gray-500 mt-1">*Pertanyaan yang akan diajukan kepada asesi</p>
         </div>
         <div class="mb-5">
             <label for="modal-jawaban" class="block mb-2 text-sm font-medium text-gray-900">Jawaban Asesi <span class="text-red-500">*</span></label>
-            <textarea id="modal-jawaban" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 min-h-[100px] max-h-[150px] resize-none" placeholder="Masukkan jawaban dari asesi...">${jawaban}</textarea>
+            <textarea id="modal-jawaban" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-100 rounded-lg border border-gray-300 min-h-[100px] max-h-[150px] resize-none" placeholder="Masukkan jawaban dari asesi..." readonly>${jawaban}</textarea>
             <p class="text-xs text-gray-500 mt-1">*Jawaban yang diberikan oleh asesi</p>
         </div>
         <div class="mb-5">
@@ -599,12 +592,12 @@ function loadEmptyModalContent() {
     modalContent.innerHTML = `
         <div class="mb-5">
             <label for="modal-pertanyaan" class="block mb-2 text-sm font-medium text-gray-900">Pertanyaan Lisan <span class="text-red-500">*</span></label>
-            <textarea id="modal-pertanyaan" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] resize-none" placeholder="Masukkan pertanyaan lisan untuk asesi..."></textarea>
+            <textarea id="modal-pertanyaan" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-100 rounded-lg border border-gray-300 min-h-[80px] resize-none" placeholder="Masukkan pertanyaan lisan untuk asesi..." readonly></textarea>
             <p class="text-xs text-gray-500 mt-1">*Pertanyaan yang akan diajukan kepada asesi</p>
         </div>
         <div class="mb-5">
             <label for="modal-jawaban" class="block mb-2 text-sm font-medium text-gray-900">Jawaban Asesi <span class="text-red-500">*</span></label>
-            <textarea id="modal-jawaban" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 min-h-[100px] max-h-[150px] resize-none" placeholder="Masukkan jawaban dari asesi..."></textarea>
+            <textarea id="modal-jawaban" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-100 rounded-lg border border-gray-300 min-h-[100px] max-h-[150px] resize-none" placeholder="Masukkan jawaban dari asesi..." readonly></textarea>
             <p class="text-xs text-gray-500 mt-1">*Jawaban yang diberikan oleh asesi</p>
         </div>
         <div class="mb-5">
@@ -627,8 +620,6 @@ function saveModalData() {
     
     // Validasi input
     const errors = [];
-    if (!pertanyaan) errors.push('Pertanyaan Lisan');
-    if (!jawaban) errors.push('Jawaban Asesi');
     if (!penilaian) errors.push('Penilaian Kompetensi');
     
     if (errors.length > 0) {
@@ -636,7 +627,6 @@ function saveModalData() {
         return;
     }
     
-    // Update data in memory
     updateFria07Data(currentUkId, currentElemenId, penilaian, pertanyaan, jawaban);
     
     console.log('Updated fria07Data:', fria07Data);
@@ -644,7 +634,6 @@ function saveModalData() {
     // Update status in table
     updateTableStatus(currentElemenId, penilaian);
     
-    // Close modal
     closeModal();
     
     alert('Data berhasil disimpan!');
@@ -657,10 +646,8 @@ function updateFria07Data(ukId, elemenId, penilaian, pertanyaan = '', jawaban = 
     
     let ukData = findUkData(ukId);
     if (!ukData) {
-        // Get UK info from the page for nama_uk
         const ukName = getUkNameFromPage(ukId);
         
-        // Create new UK data if not exists
         ukData = {
             id_uk: ukId,
             kode_uk: ukId,
@@ -672,15 +659,12 @@ function updateFria07Data(ukId, elemenId, penilaian, pertanyaan = '', jawaban = 
     
     let elemenData = findElemenData(ukData, elemenId);
     if (elemenData) {
-        // Update existing elemen data
         elemenData.penilaian = penilaian;
         if (pertanyaan) elemenData.pertanyaan_lisan = pertanyaan;
         if (jawaban) elemenData.jawaban_asesi = jawaban;
     } else {
-        // Get elemen name from the page
         const elemenName = getElemenNameFromPage(elemenId);
         
-        // Create new elemen data if not exists
         ukData.elemen_kompetensi.push({
             id_elemen: elemenId,
             nama_elemen: elemenName,
@@ -693,19 +677,16 @@ function updateFria07Data(ukId, elemenId, penilaian, pertanyaan = '', jawaban = 
 
 // Helper function to get UK name from the page
 function getUkNameFromPage(ukId) {
-    // Try to find UK name from the table headers or data attributes
     const ukElement = document.querySelector(`[data-uk-id="${ukId}"]`);
     if (ukElement) {
         const ukName = ukElement.getAttribute('data-uk-name');
         if (ukName) return ukName;
     }
     
-    // Alternative: look for the UK name in the table structure
     const tables = document.querySelectorAll('[id^="pelaksanaanAsesmen_"]');
     for (let table of tables) {
         const ukHeader = table.closest('.mb-4')?.querySelector('p[id="judulTabelIA07"]');
         if (ukHeader && ukHeader.textContent.includes(ukId)) {
-            // Extract unit name if available in the context
             return `Unit Kompetensi ${ukId}`;
         }
     }
@@ -715,7 +696,6 @@ function getUkNameFromPage(ukId) {
 
 // Helper function to get elemen name from the page
 function getElemenNameFromPage(elemenId) {
-    // Find the row containing this elemen
     const row = document.getElementById(`row_${currentUkId}_${elemenId}`);
     if (row) {
         const elemenNameCell = row.querySelector('td:nth-child(2)');
@@ -730,7 +710,6 @@ function getElemenNameFromPage(elemenId) {
 function updateTableStatus(elemenId, penilaian) {
     console.log('Updating table status for:', elemenId, 'with penilaian:', penilaian);
     
-    // Find the specific row using unique row ID
     const targetRow = document.getElementById(`row_${currentUkId}_${elemenId}`);
     
     if (targetRow) {
@@ -758,7 +737,7 @@ function closeModal() {
     currentElemenId = null;
 }
 
-// Initialize table status based on existing data
+// Initialize table status
 function initializeTableStatus() {
     if (!fria07Data.unit_kompetensi) return;
     
@@ -774,10 +753,8 @@ function initializeTableStatus() {
 }
 
 function updateTableStatusInit(ukId, elemenId, penilaian) {
-    // Try both possible row ID formats
     let targetRow = document.getElementById(`row_${ukId}_${elemenId}`);
     if (!targetRow) {
-        // If not found, try to find it by searching all rows
         const allRows = document.querySelectorAll('[id^="row_"]');
         allRows.forEach(row => {
             const rowId = row.id;
@@ -801,17 +778,15 @@ function updateTableStatusInit(ukId, elemenId, penilaian) {
     }
 }
 
-// Initialize table status when page loads
 document.addEventListener('DOMContentLoaded', function() {
     initializeTableStatus();
 });
 
 // Update form before submit
 document.getElementById('formFria07')?.addEventListener('submit', function(e) {
-    // Validate form before submission
     const validation = validateFormForSubmission();
     if (!validation.isValid) {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault(); 
         alert('Form belum lengkap. Silakan lengkapi: ' + validation.emptyFields.join(', '));
         return false;
     }
@@ -833,19 +808,16 @@ document.getElementById('formFria07')?.addEventListener('submit', function(e) {
         });
     }
 
-    // Set the data_tambahan input with updated fria07Data
     const dataTambahanInput = document.getElementById('dataTambahanInput');
     if (dataTambahanInput) {
         dataTambahanInput.value = JSON.stringify(dataTambahan);
     }
 });
 
-// Separate validation function for form submission
 function validateFormForSubmission() {
     let isValid = true;
     let emptyFields = [];
     
-    // Check kinerja asesi
     const kinerjaRadios = document.querySelectorAll('input[name="kinerja_asesi"]');
     const kinerjaSelected = Array.from(kinerjaRadios).some(radio => radio.checked);
     if (!kinerjaSelected) {
@@ -853,7 +825,6 @@ function validateFormForSubmission() {
         emptyFields.push('Kinerja Asesi harus dipilih');
     }
     
-    // Check if all elemen kompetensi have been assessed
     const allRows = document.querySelectorAll('[id^="row_"]');
     let unassessedCount = 0;
     
@@ -873,14 +844,11 @@ function validateFormForSubmission() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize table status when page loads - pastikan dipanggil pertama kali
     initializeTableStatus();
     
-    // Disable form jika sudah ditandatangani
     function disableFormIfSigned() {
         const isSigned = {{ $formData && $formData->isAsesorSigned() ? 'true' : 'false' }};
         if (isSigned) {
-            // Disable semua input dan select
             document.querySelectorAll('input[name="kinerja_asesi"]').forEach(radio => {
                 radio.disabled = true;
             });
@@ -888,7 +856,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 textarea.disabled = true;
             });
             
-            // Disable semua tombol modal
             document.querySelectorAll('button[onclick^="showModal"]').forEach(button => {
                 button.disabled = true;
                 button.classList.add('opacity-50', 'cursor-not-allowed');
@@ -905,12 +872,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Validasi form sebelum bisa ditandatangani
     function validateForm() {
         let isValid = true;
         let emptyFields = [];
         
-        // Check kinerja asesi
         const kinerjaRadios = document.querySelectorAll('input[name="kinerja_asesi"]');
         const kinerjaSelected = Array.from(kinerjaRadios).some(radio => radio.checked);
         if (!kinerjaSelected) {
@@ -918,7 +883,6 @@ document.addEventListener('DOMContentLoaded', function() {
             emptyFields.push('Kinerja Asesi');
         }
         
-        // Check if all elemen kompetensi have been assessed
         const allRows = document.querySelectorAll('[id^="row_"]');
         let unassessedElements = [];
         
@@ -939,14 +903,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return { isValid, emptyFields };
     }
     
-    // Initialize form state
     disableFormIfSigned();
     
-    // Signature button logic
     const btnSignAsesor = document.getElementById('btnSignAsesor');
     if (btnSignAsesor) {
         btnSignAsesor.addEventListener('click', async function() {
-            // Validasi form sebelum tanda tangan
             const validation = validateForm();
             if (!validation.isValid) {
                 alert('Form belum lengkap. Silakan isi: ' + validation.emptyFields.join(', '));
@@ -955,7 +916,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const fria07Id = btnSignAsesor.getAttribute('data-fria07-id');
             
-            // Jika form belum disimpan (fria07Id kosong), tampilkan modal warning
             if (!fria07Id || fria07Id === '') {
                 const saveFirstModal = document.getElementById('saveFirstModal');
                 saveFirstModal.classList.remove('hidden');
@@ -995,7 +955,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Event listener for custom modal close button
     const closeModal = document.getElementById('closeModal');
     if (closeModal) {
         closeModal.addEventListener('click', function() {
@@ -1004,7 +963,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Close modal if clicked outside
     const successModal = document.getElementById('successModal');
     if (successModal) {
         successModal.addEventListener('click', function(e) {
@@ -1014,7 +972,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Modal for Save First Warning
     const saveFirstModal = document.getElementById('saveFirstModal');
     const cancelSaveModalBtn = document.getElementById('cancelSaveModal');
     const saveFormBtn = document.getElementById('saveFormBtn');
@@ -1027,7 +984,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (saveFormBtn) {
         saveFormBtn.addEventListener('click', function() {
-            // Validate form before saving
             const validation = validateFormForSubmission();
             if (!validation.isValid) {
                 alert('Form belum lengkap. Silakan lengkapi: ' + validation.emptyFields.join(', '));
@@ -1036,13 +992,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             saveFirstModal.classList.add('hidden');
             
-            // Trigger form submission like the original form submit
             let dataTambahan = {
                 unit_kompetensi: fria07Data.unit_kompetensi || [],
                 hasil: []
             };
 
-            // Collect hasil data
             let kinerjaAsesiRadio = document.querySelector('input[name="kinerja_asesi"]:checked');
             let umpanBalikKinerjaAsesiTextarea = document.querySelector('textarea[name="umpan_balik_kinerja_asesi"]');
 
@@ -1054,10 +1008,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            // Set data tambahan ke input hidden
             document.getElementById('dataTambahanInput').value = JSON.stringify(dataTambahan);
             
-            // Submit form
             document.getElementById('formFria07').submit();
         });
     }

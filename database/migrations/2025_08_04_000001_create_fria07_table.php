@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('id_skema', 20);
             $table->string('id_event', 20)->nullable();
             $table->unsignedBigInteger('id_rincian_asesmen')->nullable();
-            $table->json('data_tambahan')->nullable(); // For unit competency evaluations
+            $table->json('data_tambahan')->nullable(); 
             $table->datetime('waktu_tanda_tangan_asesor')->nullable();
             $table->datetime('waktu_tanda_tangan_asesi')->nullable();
             $table->timestamps();

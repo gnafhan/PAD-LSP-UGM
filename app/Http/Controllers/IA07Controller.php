@@ -13,14 +13,13 @@ class IA07Controller extends Controller
 {
     public function index()
     {
-        // Get current asesor from authenticated user
         $currentAsesor = auth()->user()->asesor;
         
         if (!$currentAsesor) {
             return redirect()->route('home-asesor')->with('error', 'Data asesor tidak ditemukan');
         }
 
-        // Get daftar asesi untuk asesor yang sedang login
+        // Daftar asesi
         $daftarAsesi = RincianAsesmen::with([
             'asesi.skema',
             'asesi.progresAsesmen',
@@ -39,7 +38,7 @@ class IA07Controller extends Controller
             if (!$detailRincian) {
                 $notFound = true;
             } else {
-                // Load unit kompetensi untuk skema
+                // Load unit kompetensi
                 if ($detailRincian->asesi && $detailRincian->asesi->skema) {
                     $idArray = is_array($detailRincian->asesi->skema->daftar_id_uk) 
                         ? $detailRincian->asesi->skema->daftar_id_uk 
@@ -51,12 +50,11 @@ class IA07Controller extends Controller
                     }
                 }
 
-                // Load FRIA07 data if exists
+                // Load FRIA07 data
                 $fria07Data = \App\Models\Fria07::where('id_asesi', request('id_asesi'))
                     ->where('id_asesor', $currentAsesor->id_asesor)
                     ->first();
                 
-                // Attach FRIA07 data to detailRincian object
                 if ($fria07Data) {
                     $detailRincian->setAttribute('fria07', $fria07Data);
                 }

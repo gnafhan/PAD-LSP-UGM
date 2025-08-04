@@ -25,19 +25,17 @@ class Fria07TestSeeder extends Seeder
         }
 
         foreach ($asesiList as $asesi) {
-            // Create or update progress for related assessments (ia02 instead of ia07)
             $progres = ProgresAsesmen::firstOrCreate([
                 'id_asesi' => $asesi->id_asesi,
             ]);
 
-            // Ensure ia02 field exists (since ia07 is not in the database schema)
             if (!$progres->ia02) {
                 $progres->update([
                     'ia02' => ['completed' => false, 'completed_at' => null],
                 ]);
             }
 
-            // Create rincian asesmen if not exists
+            // Create rincian asesmen
             $rincianAsesmen = RincianAsesmen::firstOrCreate([
                 'id_asesi' => $asesi->id_asesi,
             ], [
@@ -45,7 +43,7 @@ class Fria07TestSeeder extends Seeder
                 'id_event' => $event->id_event,
             ]);
 
-            // Get skema and unit kompetensi for this asesi
+            // Get skema and unit kompetensi
             $skema = Skema::find($asesi->id_skema);
             if (!$skema) continue;
 
@@ -60,27 +58,25 @@ class Fria07TestSeeder extends Seeder
             // Get unit kompetensi with elemen
             $unitKompetensi = UK::with('elemen_uk')
                 ->whereIn('id_uk', $daftarIdUk)
-                ->take(2) // Limit for demo
+                ->take(2) 
                 ->get();
 
             if ($unitKompetensi->isEmpty()) continue;
 
-            // Build dynamic evaluation data based on actual UK
             $sampleEvaluations = [];
             foreach ($unitKompetensi as $uk) {
                 $ukData = [
-                    'id_uk' => $uk->id_uk,  // Add id_uk for matching
+                    'id_uk' => $uk->id_uk, 
                     'kode_uk' => $uk->kode_uk,
                     'nama_uk' => $uk->nama_uk,
                     'elemen_kompetensi' => []
                 ];
 
-                foreach ($uk->elemen_uk->take(3) as $index => $elemen) { // 3 elemen per UK
-                    // Generate multiple questions for some elements
+                foreach ($uk->elemen_uk->take(3) as $index => $elemen) { 
+                    // Generate multiple questions 
                     $questions = $this->generateQuestionsForElement($elemen->nama_elemen);
                     $answers = $this->generateAnswersForElement($elemen->nama_elemen);
                     
-                    // For variety, some elements have multiple questions (1-3 questions)
                     $numQuestions = ($index == 0 && count($uk->elemen_uk) > 1) ? rand(2, 3) : 1;
                     
                     for ($q = 0; $q < $numQuestions; $q++) {
@@ -92,7 +88,6 @@ class Fria07TestSeeder extends Seeder
                             'nama_elemen' => $elemen->nama_elemen . ($q > 0 ? ' (Pertanyaan ' . ($q + 1) . ')' : ''),
                             'pertanyaan_lisan' => $selectedQuestion,
                             'jawaban_asesi' => $selectedAnswer,
-                            // Tidak ada penilaian dan catatan, akan diisi oleh asesor
                         ];
                     }
                 }
@@ -122,7 +117,7 @@ class Fria07TestSeeder extends Seeder
                 'data_tambahan' => $dataEvaluasi,
             ]);
 
-            // Update progress for ia02 (since ia07 doesn't exist in schema)
+            // Update progress for ia02
             if (rand(0, 10) > 3) {
                 ProgresAsesmen::where('id_asesi', $asesi->id_asesi)
                     ->update([

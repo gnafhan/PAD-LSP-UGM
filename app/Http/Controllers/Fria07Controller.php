@@ -30,14 +30,14 @@ class Fria07Controller extends Controller
         }
 
         $hasilAsesmen = HasilAsesmen::where('id_rincian_asesmen', $validated['id_rincian_asesmen'] ?? null)->first();
-        // if hasilAsesmen is null, create new hasilAsesmen
+        //  create new hasilAsesmen
         if (!$hasilAsesmen) {
             $hasilAsesmen = new HasilAsesmen();
             $hasilAsesmen->id_rincian_asesmen = $validated['id_rincian_asesmen'] ?? null;
             $hasilAsesmen->save();
         }
         
-        // Update hasil asesmen if evaluations exist - safe array access
+        // Update hasil asesmen
         if (isset($dataTambahan["hasil"]) && 
             is_array($dataTambahan["hasil"]) && 
             !empty($dataTambahan["hasil"]) && 
@@ -76,7 +76,6 @@ class Fria07Controller extends Controller
             ]);
         }
 
-        // Redirect dengan pesan sukses
         return redirect()->back()->with('success', 'Data FRIA07 berhasil disimpan.');
     }
 }
