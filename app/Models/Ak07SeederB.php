@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Ak07SeederB extends Model
 {
     use HasFactory;
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $fillable = [
+        'rekaman_rencana_asesmen',
+    ];
 }

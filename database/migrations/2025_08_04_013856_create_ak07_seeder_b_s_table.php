@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,6 +12,7 @@ return new class extends Migration
     {
         Schema::create('ak07_seeder_b_s', function (Blueprint $table) {
             $table->id();
+            $table->text('rekaman_rencana_asesmen');
             $table->timestamps();
         });
     }

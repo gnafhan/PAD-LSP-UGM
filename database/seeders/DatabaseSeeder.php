@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             PertanyaanBandingSeeder::class,
             JawabanBandingSeeder::class,
             Ak07SeederASeeder::class,
+            Ak07SeederBSeeder::class,
         ]);
     }
 }
