@@ -1,7 +1,6 @@
 <?php
 use App\Http\Controllers\Admin\ManajemenEvent\EventController;
 use App\Http\Controllers\AK04Controller;
-use App\Http\Controllers\Asesor\FRAK07Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
@@ -309,7 +308,6 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/frak07', function () {
         return view('home/home-asesor/frak07-asesor');
     })->name('frak07-asesor');
-    Route::get('/frak07/{id_asesi}', [FRAK07Controller::class, 'show'])->name('frak07-asesor.show');
 
     Route::get('/fria01', [\App\Http\Controllers\IA01Controller::class, 'index'])->name('fria01-asesor');
     Route::post('/fria01/store', [\App\Http\Controllers\Fria01Controller::class, 'store'])->name('fria01.store');

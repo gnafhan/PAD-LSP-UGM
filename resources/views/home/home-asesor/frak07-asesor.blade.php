@@ -181,28 +181,11 @@
             </div>
 
             <!-- Checklist Potensi Asesi -->
-            <div id="clPotensi" class="flex flex-row p-8 border border-border_input rounded-md">
-                <div class="flex basis-1/4 items-center">
+            <div id="clPotensi" class="flex flex-col md:flex-row p-4 md:p-8 border border-border_input rounded-md gap-4 md:gap-0">
+                <div class="md:basis-1/4 flex items-center">
                     <p>Potensi Asesi</p>
                 </div>
-                <div id="hasil_yang_akan_dikumpulkan" class="flex-col basis-3/4 items-center">
-                    <!-- <div class="flex items-center mb-4">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm focus:ring-biru">
-                        <label for="default-checkbox" class="ms-2 text-sidebar_font">Hasil pelatihan dan / atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi</label>
-                    </div>
-                    <div class="flex items-center mb-4">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm focus:ring-biru">
-                        <label for="default-checkbox" class="ms-2 text-sidebar_font">Hasil pelatihan dan / atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi0</label>
-                    </div>
-                    <div class="flex items-center mb-4">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm focus:ring-biru">
-                        <label for="default-checkbox" class="ms-2 text-sidebar_font">Hasil pelatihan dan / atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi1</label>
-                    </div>
-                    <div class="flex items-center mb-4">
-                        <input id="default-checkbox" type="checkbox" value="" class="w-4 h-4 text-biru border-border_input rounded-sm focus:ring-biru">
-                        <label for="default-checkbox" class="ms-2 text-sidebar_font">Pelatihan / belajar mandiri atau otodidak</label>
-                    </div> -->
-                        <!-- Checkboxes will be populated dynamically -->
+                <div id="hasil_yang_akan_dikumpulkan" class="md:basis-3/4 flex flex-col space-y-2">
                         <div class="text-gray-500">Memuat opsi hasil yang akan dikumpulkan...</div>
                 </div>
             </div>
@@ -788,7 +771,7 @@
 
                 // Populate hasil yang akan dikumpulkan
                 // console.log(data.ak07);
-                populateHasilCheckboxes(data.ak07?.hasil_yang_akan_dikumpulkan || []);
+                populateHasilCheckboxes(data.ak07?.hasil_yang_akan_dikumpulkan || [],data.potensi_asesi);
                 populateBagianA(data.ak07?.bagian_a || [],data.seeder_a);
                 populateBagianB(data.ak07?.bagian_b || [],data.seeder_b);
 
@@ -871,125 +854,121 @@
         });
     }
 
-      function populateBagianA(selectedResults = [], seeder) {
-          // console.log(seeder);
-          const container = document.getElementById('bagiana_yang_akan_dikumpulkan');
+    function populateHasilCheckboxes(selectedResults = [], seeder) {
+      const container = document.getElementById('hasil_yang_akan_dikumpulkan');
 
-          // Menggunakan data dari seeder menggantikan data dummy
-          const items = seeder.map(item => {
-              // Parse opsi_penyesuaian dari string JSON menjadi array
-              let keteranganArray = [];
-              try {
-                  keteranganArray = JSON.parse(item.opsi_penyesuaian);
-              } catch (error) {
-                  console.error('Error parsing opsi_penyesuaian:', error);
-                  keteranganArray = [];
+      let checkboxContent = '';
+      // Iterasi melalui data dari 'seeder' yang telah disediakan
+      seeder.forEach((item, index) => {
+          // Menggunakan 'deskripsi' dari setiap item seeder sebagai opsi
+          const option = item.deskripsi;
+          // Memeriksa apakah opsi ini sudah terpilih di 'selectedResults'
+          const isChecked = Array.isArray(selectedResults) && selectedResults.includes(option) ? 'checked' : '';
+
+          checkboxContent += `
+            <div class="flex items-center pb-2">
+                <input id="hasil_checkbox_${index}" name="hasil_yang_akan_dikumpulkan[]" type="checkbox" value="${option}" class="w-4 h-4 text-biru border-border_input rounded-sm" ${isChecked}>
+                <label for="hasil_checkbox_${index}" class="ms-2 text-sm font-medium text-sidebar_font">${option}</label>
+            </div>
+          `;
+      });
+
+      container.innerHTML = checkboxContent;
+    }
+
+    function populateBagianA(selectedResults = [], seeder) {
+      // console.log(seeder);
+      const container = document.getElementById('bagiana_yang_akan_dikumpulkan');
+
+      // Menggunakan data dari seeder menggantikan data dummy
+      const items = seeder.map(item => {
+          // Parse opsi_penyesuaian dari string JSON menjadi array
+          let keteranganArray = [];
+          try {
+              keteranganArray = JSON.parse(item.opsi_penyesuaian);
+          } catch (error) {
+              console.error('Error parsing opsi_penyesuaian:', error);
+              keteranganArray = [];
+          }
+
+          return {
+              item: item.deskripsi,
+              keterangan: keteranganArray
+          };
+      });
+
+      let checkboxContent = ``;
+      items.forEach((option, index) => {
+          const isChecked1 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.item && obj.penyesuaian === 1) ? 'checked' : '';
+          const isChecked0 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.item && obj.penyesuaian === 0) ? 'checked' : '';
+          const isDisabled = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.item) ? 'disabled' : '';
+          const rowspan = option.keterangan.length > 1 ? option.keterangan.length : 1;
+
+          checkboxContent += `
+                              <tr>
+                          <td rowspan="${rowspan}" class="border border-gray-300 text-center align-top px-2 py-2">${index + 1}</td>
+                          <td rowspan="${rowspan}" class="border border-gray-300 align-top px-2 py-2">${option.item}</td>
+                          <td rowspan="${rowspan}" class="border border-gray-300 text-center align-middle">
+                            <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="${option.item}" value=1 ${isChecked1} ${isDisabled}>
+                          </td>
+                          <td rowspan="${rowspan}" class="border border-gray-300 text-center align-middle">
+                            <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="${option.item}" value=0 ${isChecked0} ${isDisabled}>
+                          </td>
+                          `;
+
+          option.keterangan.forEach((ket, index2) => {
+              if (index2 != 0) {
+                  checkboxContent += `<tr>`;
               }
-
-              return {
-                  item: item.deskripsi,
-                  keterangan: keteranganArray
-              };
-          });
-
-          let checkboxContent = ``;
-          items.forEach((option, index) => {
-              const isChecked1 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.item && obj.penyesuaian === 1) ? 'checked' : '';
-              const isChecked0 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.item && obj.penyesuaian === 0) ? 'checked' : '';
-              const isDisabled = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.item) ? 'disabled' : '';
-              const rowspan = option.keterangan.length > 1 ? option.keterangan.length : 1;
-
               checkboxContent += `
-                                  <tr>
-                              <td rowspan="${rowspan}" class="border border-gray-300 text-center align-top px-2 py-2">${index + 1}</td>
-                              <td rowspan="${rowspan}" class="border border-gray-300 align-top px-2 py-2">${option.item}</td>
-                              <td rowspan="${rowspan}" class="border border-gray-300 text-center align-middle">
-                                <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="${option.item}" value=1 ${isChecked1} ${isDisabled}>
-                              </td>
-                              <td rowspan="${rowspan}" class="border border-gray-300 text-center align-middle">
-                                <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="${option.item}" value=0 ${isChecked0} ${isDisabled}>
-                              </td>
-                              `;
-
-              option.keterangan.forEach((ket, index2) => {
-                  if (index2 != 0) {
-                      checkboxContent += `<tr>`;
-                  }
-                  checkboxContent += `
-                      <td class="border border-gray-300 px-2 py-2">
-                        <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="" value=0>
-                        ${ket}
-                      </td>
-                    </tr>
-                      `;
-              });
-
-              if (option.keterangan.length < 1) {
-                  checkboxContent += `
-                    </tr>`;
-              }
+                  <td class="border border-gray-300 px-2 py-2">
+                    <input type="radio" class="bagian_a_yang_akan_dikumpulkan mx-auto" name="" value=0>
+                    ${ket}
+                  </td>
+                </tr>
+                  `;
           });
 
-          container.innerHTML = checkboxContent;
-      }
-
-      function populateBagianB(selectedResults = [], seeder) {
-          const container = document.getElementById('bagianb_yang_akan_dikumpulkan');
-
-          let checkboxContent = '';
-          seeder.forEach((item, index) => {
-              const option = item.rekaman_rencana_asesmen;
-              const isChecked1 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option && obj.penyesuaian === 1) ? 'checked' : '';
-              const isChecked0 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option && obj.penyesuaian === 0) ? 'checked' : '';
-              const isDisabled = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option) ? 'disabled' : '';
-              const lainnya = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option) ? selectedResults.find(obj => obj.item === option).lainnya : '';
-
+          if (option.keterangan.length < 1) {
               checkboxContent += `
-            <tr class="border-t border-gray-200">
-                <td class="border border-gray-300 text-center align-top px-4 py-4">${index + 1}</td>
-                <td class="border border-gray-300 px-4 py-4 align-top">
-                    ${option}
-                </td>
-                <td class="border border-gray-300 text-center align-middle">
-                    <input type="radio" class="bagian_b_yang_akan_dikumpulkan mx-auto" name="${option}" value=1 ${isChecked1} ${isDisabled}>
-                </td>
-                <td class="border border-gray-300 text-center align-middle">
-                    <input type="radio" class="bagian_b_yang_akan_dikumpulkan mx-auto" name="${option}" value=0 ${isChecked0} ${isDisabled}>
-                </td>
-                <td class="border border-gray-300 px-2 py-2 align-top">
-                    <textarea name="${option}" placeholder="Lainnya.." class="w-full border border-gray-300 rounded px-2 py-1 resize-none" ${isDisabled}>${lainnya}</textarea>
-                </td>
-            </tr>
-        `;
-          });
+                </tr>`;
+          }
+      });
 
-          container.innerHTML = checkboxContent;
-      }
+      container.innerHTML = checkboxContent;
+    }
 
-      // Populate hasil checkboxes
-    function populateHasilCheckboxes(selectedResults = []) {
-        const container = document.getElementById('hasil_yang_akan_dikumpulkan');
+    function populateBagianB(selectedResults = [], seeder) {
+      const container = document.getElementById('bagianb_yang_akan_dikumpulkan');
 
-        const defaultOptions = [
-            'Hasil pelatihan dan / atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi',
-            'Hasil pelatihan dan / atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi0',
-            'Hasil pelatihan dan / atau pendidikan, dimana kurikulum dan fasilitas praktek mampu telusur terhadap standar kompetensi1',
-            'Pelatihan / belajar mandiri atau otodidak'
-        ];
+      let checkboxContent = '';
+      seeder.forEach((item, index) => {
+          const option = item.rekaman_rencana_asesmen;
+          const isChecked1 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option && obj.penyesuaian === 1) ? 'checked' : '';
+          const isChecked0 = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option && obj.penyesuaian === 0) ? 'checked' : '';
+          const isDisabled = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option) ? 'disabled' : '';
+          const lainnya = Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option) ? selectedResults.find(obj => obj.item === option).lainnya : '';
 
-        let checkboxContent = '';
-        defaultOptions.forEach((option, index) => {
-            const isChecked = Array.isArray(selectedResults) && selectedResults.includes(option) ? 'checked' : '';
+          checkboxContent += `
+        <tr class="border-t border-gray-200">
+            <td class="border border-gray-300 text-center align-top px-4 py-4">${index + 1}</td>
+            <td class="border border-gray-300 px-4 py-4 align-top">
+                ${option}
+            </td>
+            <td class="border border-gray-300 text-center align-middle">
+                <input type="radio" class="bagian_b_yang_akan_dikumpulkan mx-auto" name="${option}" value=1 ${isChecked1} ${isDisabled}>
+            </td>
+            <td class="border border-gray-300 text-center align-middle">
+                <input type="radio" class="bagian_b_yang_akan_dikumpulkan mx-auto" name="${option}" value=0 ${isChecked0} ${isDisabled}>
+            </td>
+            <td class="border border-gray-300 px-2 py-2 align-top">
+                <textarea name="${option}" placeholder="Lainnya.." class="w-full border border-gray-300 rounded px-2 py-1 resize-none" ${isDisabled}>${lainnya}</textarea>
+            </td>
+        </tr>
+    `;
+      });
 
-            checkboxContent += `
-                <div class="flex items-center">
-                    <input id="hasil_checkbox_${index}" name="hasil_yang_akan_dikumpulkan[]" type="checkbox" value="${option}" class="w-4 h-4 text-biru border-border_input rounded-sm" ${isChecked}>
-                    <label for="hasil_checkbox_${index}" class="ms-2 text-sm font-medium text-sidebar_font">${option}</label>
-                </div>
-            `;
-        });
-
-        container.innerHTML = checkboxContent;
+      container.innerHTML = checkboxContent;
     }
 
     // Function to save AK07 data

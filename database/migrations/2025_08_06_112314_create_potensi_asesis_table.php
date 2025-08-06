@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('potensi_asesis', function (Blueprint $table) {
             $table->id();
+            $table->text('deskripsi');
             $table->timestamps();
         });
     }
