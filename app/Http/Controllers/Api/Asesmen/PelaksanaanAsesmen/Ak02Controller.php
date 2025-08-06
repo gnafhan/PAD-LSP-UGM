@@ -128,6 +128,30 @@ class Ak02Controller extends Controller
             'pelaksanaan_asesmen_disepakati_mulai' => $asesi->created_at->format('d-m-Y')
         ];
 
+        $skema = $asesi->skema;
+        $detailSkema = [];
+        
+        if ($skema) {
+            foreach ($skema->unitKompetensi as $uk) {
+                $unitData = [
+                    'id_uk' => $uk->id_uk,
+                    'kode_uk' => $uk->kode_uk,
+                    'nama_uk' => $uk->nama_uk,
+                    'elemen_uk' => []
+                ];
+                
+                foreach ($uk->elemen_uk as $elemen) {
+                    $unitData['elemen_uk'][] = [
+                        'nama_elemen' => $elemen->nama_elemen,
+                        'kompeten' => null // Null because not yet assessed
+                    ];
+                }
+                
+                $detailSkema[] = $unitData;
+            }
+        }
+        
+
         // Check if the AK02 record exists
         if ($ak02) {
             // Check if the asesor has a valid signature
@@ -138,15 +162,16 @@ class Ak02Controller extends Controller
 
             // Retrieve ketentuan kompetensi
             $ketentuanKompetensis = $ak02->ketentuanKompetensis()->get(['item', 'bukti']);
-            $instruksiKerja = $ak02->value('instruksi_kerja');
-            $rekomendasiHasil = $ak02->value('rekomendasi_hasil');
-            $tindakLanjut = $ak02->value('tindak_lanjut');
-            $komentarObservasi = $ak02->value('komentar_observasi');
+            $instruksiKerja = $ak02->instruksi_kerja;
+            $rekomendasiHasil = $ak02->rekomendasi_hasil;
+            $tindakLanjut = $ak02->tindak_lanjut;
+            $komentarObservasi = $ak02->komentar_observasi;
 
             return response()->json([
                 'status' => 'success',
                 'data' => [
                     'general_info' => $generalInfo,
+                    'detail_skema' => $detailSkema,
                     'ak02' => [
                         'ketentuan_kompetensi' => $ketentuanKompetensis,
                         'instruksi_kerja' => $instruksiKerja,
@@ -168,6 +193,7 @@ class Ak02Controller extends Controller
                 'status' => 'success',
                 'data' => [
                     'general_info' => $generalInfo,
+                    'detail_skema' => $detailSkema,
                     'record_exists' => false
                 ]
             ]);

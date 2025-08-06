@@ -165,15 +165,15 @@
                             <thead class="bg-bg_dashboard text-center">
                                 <tr>
                                     <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                    <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
+                                    <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Kode Unit</th>
                                     <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Menangani Situasi Konfik</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 text-black text-center items-center" id="hasilKelompokPekerjaan">
                                 <tr>
-                                    <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                    <td class="px-4 py-3 text-gray-700 text-left">R.93KPW00.011.2</td>
-                                    <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik ?</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700"></td>
+                                    <td class="px-4 py-3 text-gray-700 text-left">Memuat ...</td>
+                                    <td class="px-4 py-3 text-gray-700 text-left"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -184,21 +184,8 @@
                     <h1 class="justify-center text-center block mb-2 font-semibold text-sidebar_Font text-sidebar_font">
                         Instruksi Kerja
                     </h1>
-                        <textarea id="inputInstruksiKerja" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Masukkan Instruksi Kerja">
+                        <textarea id="inputInstruksiKerja" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Tulis Instruksi Kerja di sini:">
                             Tulis disini:
-Skenario
-Narasikan tugas yang harus dikerjakan oleh Asesi.
-A. Studi Kasus
-Anda sebagai seorang Pemandu Museum/Edukator mendapat tugas untuk melakukan pemanduan di museum dengan peserta 10 orang pengunjung, dengan latar belakang yang berbeda. Bagaimana strategi anda sebagai Pemandu Museum dalam mengelola kunjungan, terkait dengan pemanduan museum!
-B. Instruksi Kerja dan demonstrasikan unjuk kerja di bawah ini :
-1. Grooming / Penampilan kerja dari edukator.
-2. Salam pembuka (Greeting dalam Bahasa Inggris).
-3. Briefing / panduan awal pengunjung (Informasikan Prosedur Protokol kesehatan dan pembagian tugas antar edukator).
-a. Informasikan waktu kunjungan di museum dan peraturan selama kunjungan.
-b. Informasikan kepada pungunjung aksesibilitas dari setiap museum diatas, baik dalam hal sarana prasarananya, etika di museum tersebut. (baik etika secara umum maupun etika secara lokal di museum tersebut).
-4. Siapkan perangkat pemanduan/sarana dan prasarana.
-5. Memberi informasi yang atraktif dan edutainment.
-6. Closing pemanduan.
                         </textarea>
                     
 </div>
@@ -227,8 +214,8 @@ b. Informasikan kepada pungunjung aksesibilitas dari setiap museum diatas, baik 
                             </thead>
                             <tbody id="hasilKetentuanKompetensi" class="divide-y divide-gray-200 text-black text-center items-center">
                                 <tr>
-                                    <td class="px-4 py-3 text-sm text-gray-700">1</td>
-                                    <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik?</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700"></td>
+                                    <td class="px-4 py-3 text-gray-700 text-left">Memuat ...</td>
                                     <td class="px-4 py-3 justify-center"><input type="checkbox"></td>
                                     <td class="px-4 py-3 justify-center"><input type="checkbox"></td>
                                     <td class="px-4 py-3 justify-center"><input type="checkbox"></td>
@@ -260,7 +247,7 @@ Rekomendasi Hasil Asesmen
                     <h1 class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">
                         Tindak Lanjut Yang Dibutuhkan (Masukkan pekerjaan tambahan dan asesmen yang diperlukan untuk mencapai kompetensi)
                     </h1>
-                        <textarea id="inputTindakLanjut" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Masukkan Instruksi Kerja">
+                        <textarea id="inputTindakLanjut" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Tulis Tindak Lanjut di sini:">
                             Tulis disini:
 ---- Tidak Ada
                         </textarea>
@@ -271,7 +258,7 @@ Rekomendasi Hasil Asesmen
                     <h1 class="block mb-2 font-semibold text-sidebar_Font text-sidebar_font">
                         Komentar/Observasi oleh Asesor
                     </h1>
-                        <textarea id="inputKomentarObservasi" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Masukkan Instruksi Kerja">
+                        <textarea id="inputKomentarObservasi" rows="4" class="block p-2.5 w-full text-sm text-sidebar_font rounded-lg border border-border_input focus:ring-biru focus:border-biru" placeholder="Tulis Komentar/Observasi di sini:">
                             Tulis disini:
 ---- Tidak Ada
                         </textarea>
@@ -791,7 +778,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 //     data.ak02.tindak_lanjut="tidak ada";
                 //     data.ak02.komentar_observasi="bagus";
                 // }
-                console.log(data);
+                // console.log(data);
                 recordExists = data.record_exists || false;
                 // Populate general info
                 if (data.general_info) {
@@ -805,20 +792,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Populate hasil yang akan dikumpulkan
                 // populateHasilCheckboxes(data.ak02?.hasil_yang_akan_dikumpulkan || []);
-                populateKelompokPekerjaan();
-                populateKetentuanKompetensi(data.ak02?.ketentuan_kompetensi || []);
+                populateKelompokPekerjaan(data.detail_skema || []);
+                populateKetentuanKompetensi((data.ak02?.ketentuan_kompetensi || []),(data.detail_skema || []));
                 document.getElementById('inputRekomendasiHasil').value = data.ak02?.rekomendasi_hasil || 0;
-                document.getElementById('inputTindakLanjut').value = data.ak02?.tindak_lanjut || "Tulis disini:";
-                document.getElementById('inputInstruksiKerja').value = data.ak02?.instruksi_kerja || "Tulis disini:";
-                document.getElementById('inputKomentarObservasi').value = data.ak02?.komentar_observasi || "Tulis disini:";
+                document.getElementById('inputTindakLanjut').value = data.ak02?.tindak_lanjut || "";
+                document.getElementById('inputInstruksiKerja').value = data.ak02?.instruksi_kerja || "";
+                document.getElementById('inputKomentarObservasi').value = data.ak02?.komentar_observasi || "";
 
 
                 // Show existing signatures if available
                 if (recordExists && data.ak02) {
-                    console.log('asndjax');
+                    // console.log('asndjax');
                     // Show asesor signature if available and disable form
                     if (data.ak02.tanda_tangan_asesor && data.ak02.tanda_tangan_asesor !== "null") {
-                    console.log('wooah');
+                    // console.log('wooah');
                         const asesorImage = document.getElementById('asesor-signature-image');
                         const asesorContent = document.getElementById('asesor-signature-content');
                         const asesorPreview = document.getElementById('asesor-signature-preview');
@@ -927,60 +914,60 @@ document.addEventListener('DOMContentLoaded', function () {
     //     // container.innerHTML = checkboxContent;
     // }
 
-    function populateKelompokPekerjaan() {
+    function populateKelompokPekerjaan(defaultOptions = [
+            {
+                kode_uk: "R.93KPW00.011.2",
+                nama_uk: "Mengidentifikasi situasi konflik ?"
+            },
+            {
+                kode_uk: "R.93KPW00.011.3",
+                nama_uk: "Mengikuti Prosedur Kesehatan, Keselamatan dan Keamanan di Tempat Kerja"
+            },
+            {
+                kode_uk: "R.93KPW00.011.4",
+                nama_uk: "Melakukan Pekerjaan Dalam Lingkungan Sosial yang Berbeda"
+            },
+            {
+                kode_uk: "R.93KPW00.011.5",
+                nama_uk: "Melakukan Komunikasi Melalui Telepon"
+            },
+            {
+                kode_uk: "R.93KPW00.011.6",
+                nama_uk: "Melakukan Prosedur Administrasi"
+            },
+            {
+                kode_uk: "R.93KPW00.011.7",
+                nama_uk: "Mencari Data di Komputer"
+            },
+            {
+                kode_uk: "R.93KPW00.011.8",
+                nama_uk: "Mengembangkan dan Memutakhirkan Pengetahuan Pariwisata"
+            },
+            {
+                kode_uk: "R.93KPW00.011.9",
+                nama_uk: "Mengimplementasikan Dasar-dasar Kepemanduan Museum"
+            },
+            {
+                kode_uk: "R.93KPW00.011.0",
+                nama_uk: "Mengembangkan Pengetahuan Tentang Koleksi dan Tata Pameran Museum"
+            },
+            {
+                kode_uk: "R.93KPW00.011.1",
+                nama_uk: "Menyajikan Informasi tentang Koleksi dan Tata Pameran Museum"
+            },
+            {
+                kode_uk: "R.93KPW00.012.2",
+                nama_uk: "Melakukan Kegiatan Interpretatif"
+            },
+            {
+                kode_uk: "R.93KPW00.013.2",
+                nama_uk: "Memandu Rombongan Pengunjung"
+            }
+        ]) {
         const container = document.getElementById('hasilKelompokPekerjaan');
 
         // data skema di sini
-        const defaultOptions = [
-            {
-                nomor: "R.93KPW00.011.2",
-                deskripsi: "Mengidentifikasi situasi konflik ?"
-            },
-            {
-                nomor: "R.93KPW00.011.3",
-                deskripsi: "Mengikuti Prosedur Kesehatan, Keselamatan dan Keamanan di Tempat Kerja"
-            },
-            {
-                nomor: "R.93KPW00.011.4",
-                deskripsi: "Melakukan Pekerjaan Dalam Lingkungan Sosial yang Berbeda"
-            },
-            {
-                nomor: "R.93KPW00.011.5",
-                deskripsi: "Melakukan Komunikasi Melalui Telepon"
-            },
-            {
-                nomor: "R.93KPW00.011.6",
-                deskripsi: "Melakukan Prosedur Administrasi"
-            },
-            {
-                nomor: "R.93KPW00.011.7",
-                deskripsi: "Mencari Data di Komputer"
-            },
-            {
-                nomor: "R.93KPW00.011.8",
-                deskripsi: "Mengembangkan dan Memutakhirkan Pengetahuan Pariwisata"
-            },
-            {
-                nomor: "R.93KPW00.011.9",
-                deskripsi: "Mengimplementasikan Dasar-dasar Kepemanduan Museum"
-            },
-            {
-                nomor: "R.93KPW00.011.0",
-                deskripsi: "Mengembangkan Pengetahuan Tentang Koleksi dan Tata Pameran Museum"
-            },
-            {
-                nomor: "R.93KPW00.011.1",
-                deskripsi: "Menyajikan Informasi tentang Koleksi dan Tata Pameran Museum"
-            },
-            {
-                nomor: "R.93KPW00.012.2",
-                deskripsi: "Melakukan Kegiatan Interpretatif"
-            },
-            {
-                nomor: "R.93KPW00.013.2",
-                deskripsi: "Memandu Rombongan Pengunjung"
-            }
-        ];
+        // const ;
 
         let checkboxContent = '';
         defaultOptions.forEach((option, index) => {
@@ -989,34 +976,24 @@ document.addEventListener('DOMContentLoaded', function () {
             checkboxContent += `
                     <tr>
                         <td class="px-4 py-3 text-sm text-gray-700">${index+1}</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${option.nomor}</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${option.deskripsi}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">${option.kode_uk}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">${option.nama_uk}</td>
                     </tr>
             `;
         });
 
         container.innerHTML = checkboxContent;
     }
-    function populateKetentuanKompetensi(selectedResults = []) {
+    function populateKetentuanKompetensi(selectedResults = [], defaultOptions = []) {
         const container = document.getElementById('hasilKetentuanKompetensi');
 
         // data skema di sini
-        const defaultOptions = [
-            "Menangani Situasi Konflik",
-            "Menangani Situasi Konflik0",
-            "Menangani Situasi Konflik1",
-            "Menangani Situasi Konflik2",
-            "Menangani Situasi Konflik3",
-            "Menangani Situasi Konflik4",
-            "Menangani Situasi Konflik5",
-            "Menangani Situasi Konflik6",
-            "Menangani Situasi Konflik7",
-        ];
+        // const;
 
         let checkboxContent = '';
         defaultOptions.forEach((option, index) => {
             const isChecked = (val) => {
-                return Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option && obj.bukti === val)
+                return Array.isArray(selectedResults) && selectedResults.some(obj => obj.item === option.kode_uk && obj.bukti === val)
                     ? 'checked'
                     : '';
             };
@@ -1025,14 +1002,14 @@ document.addEventListener('DOMContentLoaded', function () {
             checkboxContent += `
                     <tr>
                                     <td class="px-4 py-3 text-sm text-gray-700">${index+1}</td>
-                                    <td class="px-4 py-3 text-gray-700 text-left">${option}</td>
-                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option}" value=0 ${isChecked(0)}></td>
-                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option}" value=1 ${isChecked(1)}></td>
-                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option}" value=2 ${isChecked(2)}></td>
-                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option}" value=3 ${isChecked(3)}></td>
-                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option}" value=4 ${isChecked(4)}></td>
-                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option}" value=5 ${isChecked(5)}></td>
-                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option}" value=6 ${isChecked(6)}></td>
+                                    <td class="px-4 py-3 text-gray-700 text-left">${option.nama_uk}</td>
+                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option.kode_uk}" value=0 ${isChecked(0)}></td>
+                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option.kode_uk}" value=1 ${isChecked(1)}></td>
+                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option.kode_uk}" value=2 ${isChecked(2)}></td>
+                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option.kode_uk}" value=3 ${isChecked(3)}></td>
+                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option.kode_uk}" value=4 ${isChecked(4)}></td>
+                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option.kode_uk}" value=5 ${isChecked(5)}></td>
+                                    <td class="px-4 py-3 justify-center"><input class="inputKetentuanKompetensi" type="checkbox" name="${option.kode_uk}" value=6 ${isChecked(6)}></td>
                                 </tr>
             `;
         });
@@ -1092,7 +1069,7 @@ document.addEventListener('DOMContentLoaded', function () {
             komentar_observasi: selectedKomentarObservasi,
             is_signing: true
         };
-        console.log(JSON.stringify(requestData));
+        // console.log(JSON.stringify(requestData));
         // Submit to API
         const saveApiUrl = `${apiConfig.url}/asesmen/ak02/asesor/save`;
 
