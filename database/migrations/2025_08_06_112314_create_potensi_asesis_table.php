@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ak07_seeder_a_s', function (Blueprint $table) {
+        Schema::create('potensi_asesis', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kategori');
-            $table->text('deskripsi');
-            $table->json('opsi_penyesuaian'); // kolom baru
             $table->timestamps();
         });
-
     }
 
     /**
@@ -26,7 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ak07_seeder_a_s');
-        Schema::dropIfExists('opsi_penyesuaian');
+        Schema::dropIfExists('potensi_asesis');
     }
 };
