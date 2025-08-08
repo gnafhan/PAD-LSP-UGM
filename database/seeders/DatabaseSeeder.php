@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SkemaSeeder::class,
             UsersSeeder::class,
             AsesorSeeder::class,
+            TandaTanganAsesorSeeder::class,
             AsesisSeeder::class,
             PenanggungJawabSeeder::class,
             TUKSeeder::class,
@@ -32,6 +33,9 @@ class DatabaseSeeder extends Seeder
             BidangKompetensiSeeder::class,
             PertanyaanBandingSeeder::class,
             JawabanBandingSeeder::class,
+            HasilAsesmenSeeder::class,
+            IA02DefaultDataSeeder::class,
+            IA02ComprehensiveDataSeeder::class,
         ]);
     }
 }

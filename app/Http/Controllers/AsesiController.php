@@ -265,6 +265,47 @@ class AsesiController extends Controller
 
     }
 
+    public function soal_praktek_fria02(Request $request)
+    {
+        $rincianAsesmen = RincianAsesmen::where('id_rincian_asesmen', $request->id)->first();
+        $skema = EventSkema::where('id_event', $rincianAsesmen->id_event)->first()->skema;
+        
+        $user = Auth::user();
+        $asesi = Asesi::where('id_user', $user->id_user)->first();
+
+        if (!$asesi) {
+            return redirect()->back()->with('error', 'Data Asesi tidak ditemukan.');
+        }
+
+        // Jadwal pelaksanaan asesmen
+        $jadwal = JadwalMUK::where('id_asesi', $asesi->id_asesi)->first();
+        $asesor = Asesor::find($jadwal->id_asesor ?? null);
+
+        // Mengambil UK
+        $daftar_id_uk = json_decode($asesi->skema->daftar_id_uk, true);
+        $uks = UK::with('elemen_uk')
+            ->whereIn('id_uk', $daftar_id_uk)
+            ->get();
+
+        $data = IA02::where('id_asesi', $rincianAsesmen->id_asesi)
+            ->where('id_asesor', $rincianAsesmen->id_asesor)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$data) {
+            return redirect()->back()->with('error', 'IA02 Belum Dibuat.');
+        }
+
+        $defaultProcess = IA02ProsesAssessment::where('ia02_id', $data->id)->get();
+
+        // Get submitted tasks for this asesi
+        $tugasSubmitted = \App\Models\IA02Tugas::where('id_asesi', $asesi->id_asesi)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('home/home-asesi/FRIA-02/soal-praktek-upload-jawaban', compact('data','uks','defaultProcess','tugasSubmitted'));
+    }
+
 
 
 }
