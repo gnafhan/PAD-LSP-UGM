@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Admin\ManajemenEvent\EventController;
+use App\Http\Controllers\AK04Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
@@ -227,8 +228,8 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     Route::prefix('fr')->name('asesi.fr.')->group(function () {
         Route::view('/ak1', 'home/home-asesi/FRAK-01/frak01')->name('ak1');
         Route::view('/ak3', 'home/home-asesi/FRAK-03/frak3')->name('ak3');
-//        Route::view('/ia2/hasil', 'home/home-asesi/FRIA-02/hasilv')->name('ia2.hasil');
-//        Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
+        // Route::view('/ia2/hasil', 'home/home-asesi/FRIA-02/hasilv')->name('ia2.hasil');
+        // Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
     });
 
     // FRIA-02
@@ -245,6 +246,11 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
         Route::get('/{id}/download', [IA02TugasController::class, 'downloadFile'])->name('download');
         Route::get('/data/json', [IA02TugasController::class, 'getTasks'])->name('data');
     });
+
+    // FRAK-04
+    Route::get('/frak04', [AK04Controller::class, 'index'])->name('asesi.frak04');
+    Route::post('/frak04', [AK04Controller::class, 'storeBanding'])->name('store.banding.asesi');
+
 
 
     // Jadwal Uji Kompetensi
@@ -316,9 +322,9 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/frak07-asesor');
     })->name('frak07-asesor');
 
-    Route::get('/fria01', function () {
-        return view('home/home-asesor/fria01-asesor');
-    })->name('fria01-asesor');
+    Route::get('/fria01', [\App\Http\Controllers\IA01Controller::class, 'index'])->name('fria01-asesor');
+    Route::post('/fria01/store', [\App\Http\Controllers\Fria01Controller::class, 'store'])->name('fria01.store');
+    Route::get('/fria01/pdf/{id_asesi}', [\App\Http\Controllers\IA01Controller::class, 'generatePdf'])->name('fria01.pdf');
 
     Route::get('/fria02', function () {
         return view('home/home-asesor/fria02-asesor');
