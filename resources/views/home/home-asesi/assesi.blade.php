@@ -428,12 +428,15 @@
                             @php
                               $currentAsesmen =  App\Models\RincianAsesmen::where('id_asesi', App\Models\Asesi::where('id_user', auth()->user()->id_user)->first()->id_asesi ?? null)->first();
                             @endphp
-                          <a href="{{ route('asesi.fr.ia2.detail', $currentAsesmen->id_rincian_asesmen) }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
-                              <span>Detail</span>
-                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                              </svg>
-                            </a>
+                            <div class="flex space-x-2">
+                              <a href="{{ route('asesi.fr.ia2.detail', $currentAsesmen->id_rincian_asesmen) }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                                <span>Detail</span>
+                                <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                              </a>
+                              
+                            </div>
                           </td>
                         </tr>
 
@@ -464,7 +467,10 @@
                             <span id="date-ia01">-</span>
                           </td>
                           <td class="px-5 py-4 whitespace-nowrap text-sm">
-                            <a href="#" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                            @php
+                              $currentAsesmen =  App\Models\RincianAsesmen::where('id_asesi', App\Models\Asesi::where('id_user', auth()->user()->id_user)->first()->id_asesi ?? null)->first();
+                            @endphp
+                            <a href="{{ route('asesi.fr.ia2.soal', $currentAsesmen->id_rincian_asesmen) }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
                               <span>Detail</span>
                               <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

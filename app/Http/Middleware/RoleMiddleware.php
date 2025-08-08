@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RoleMiddleware
 {
@@ -17,25 +18,27 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, ...$roles)
     {
         // Log session information
-        \Log::info('Role Middleware Check', [
+        Log::info('Role Middleware Check', [
             'authenticated' => Auth::check(),
             'session_id' => $request->session()->getId(),
             'cookies' => $request->cookies->all()
         ]);
         
         if (!Auth::check()) {
-            // Store intended URL before redirecting 
-            redirect()->setIntendedUrl($request->url());
+            // Only store intended URL if it's not a file upload request to avoid serialization issues
+            if (!$request->hasFile('file_upload')) {
+                redirect()->setIntendedUrl($request->url());
+            }
             
             // Log the status for debugging
-            \Log::info('Auth check failed in middleware');
+            Log::info('Auth check failed in middleware');
             return redirect('/login');
         }
     
         $user = Auth::user();
         
         // Log the user for debugging
-        \Log::info('User in middleware', ['user' => $user, 'level' => $user->level]);
+        Log::info('User in middleware', ['user' => $user, 'level' => $user->level]);
         
         if (!in_array($user->level, $roles)) {
             return abort(403, 'Unauthorized');
