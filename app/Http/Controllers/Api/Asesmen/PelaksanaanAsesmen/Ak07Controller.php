@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ak07SeederA;
+use App\Models\Ak07SeederB;
+use App\Models\PotensiAsesi;
 use Illuminate\Http\Request;
 use App\Helpers\DateTimeHelper;
 use App\Models\Ak07;
@@ -11,7 +14,6 @@ use App\Services\AsesmenValidationService;
 use App\Models\TandaTanganAsesor;
 use App\Services\ProgressTrackingService;
 use Illuminate\Support\Facades\Log;
-
 
 
 /**
@@ -128,6 +130,11 @@ class Ak07Controller extends Controller
             'pelaksanaan_asesmen_disepakati_mulai' => $asesi->created_at->format('d-m-Y')
         ];
 
+        // seeder a dan b + potensi
+        $seederA = Ak07SeederA::all();
+        $seederB = Ak07SeederB::all();
+        $potensiAsesi = PotensiAsesi::all();
+
         // Check if the AK07 record exists
         if ($ak07) {
             // Check if the asesor has a valid signature
@@ -147,6 +154,9 @@ class Ak07Controller extends Controller
                 'status' => 'success',
                 'data' => [
                     'general_info' => $generalInfo,
+                    'seeder_a' => $seederA,
+                    'seeder_b' => $seederB,
+                    'potensi_asesi' => $potensiAsesi,
                     'ak07' => [
                         'hasil_yang_akan_dikumpulkan' => $hasilItems,
                         'bagian_a' => $bagianA,
@@ -165,6 +175,9 @@ class Ak07Controller extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
+                    'potensi_asesi' => $potensiAsesi,
+                    'seeder_a' => $seederA,
+                    'seeder_b' => $seederB,
                     'general_info' => $generalInfo,
                     'record_exists' => false
                 ]
