@@ -311,11 +311,16 @@
                                 $penilaian = '';
                                 
                                 // Get data from form data
-                                if (isset($formDataTambahan['unit_kompetensi'])) {
+                                if (isset($formDataTambahan['unit_kompetensi']) && is_array($formDataTambahan['unit_kompetensi'])) {
                                     foreach ($formDataTambahan['unit_kompetensi'] as $ukData) {
-                                        if (($ukData['id_uk'] == $unit->id_uk || $ukData['kode_uk'] == $unit->kode_uk) && isset($ukData['elemen_kompetensi'])) {
+                                        if (is_array($ukData) && 
+                                            (array_key_exists('id_uk', $ukData) && $ukData['id_uk'] == $unit->id_uk || 
+                                             array_key_exists('kode_uk', $ukData) && $ukData['kode_uk'] == $unit->kode_uk) && 
+                                            array_key_exists('elemen_kompetensi', $ukData) && is_array($ukData['elemen_kompetensi'])) {
                                             foreach ($ukData['elemen_kompetensi'] as $elemenData) {
-                                                if ($elemenData['id_elemen'] == $elemen->id_elemen_uk) {
+                                                if (is_array($elemenData) && 
+                                                    array_key_exists('id_elemen', $elemenData) && 
+                                                    $elemenData['id_elemen'] == $elemen->id_elemen_uk) {
                                                     $pertanyaan = $elemenData['pertanyaan_lisan'] ?? '';
                                                     $jawaban = $elemenData['jawaban_asesi'] ?? '';
                                                     $penilaian = $elemenData['penilaian'] ?? '';
@@ -389,10 +394,26 @@
                         @php
                             $kinerjaValue = '';
                             $umpanBalik = '';
-                            if (isset($formDataTambahan['hasil'])) {
+                            
+                            if (isset($formDataTambahan['hasil']) && 
+                                is_array($formDataTambahan['hasil']) &&
+                                !empty($formDataTambahan['hasil'])) {
+                                
                                 foreach ($formDataTambahan['hasil'] as $hasil) {
-                                    if ($hasil['name'] === 'kinerja_asesi') {
-                                        $kinerjaValue = $hasil['value'];
+                                    // Check if $hasil is an array and has the required keys
+                                    if (is_array($hasil) && 
+                                        array_key_exists('name', $hasil) && 
+                                        $hasil['name'] === 'kinerja_asesi') {
+                                        $kinerjaValue = $hasil['value'] ?? '';
+                                        $umpanBalik = $hasil['umpan_balik'] ?? '';
+                                        break;
+                                    }
+                                    // Handle old data format where hasil might be stored differently
+                                    elseif (is_array($hasil) && 
+                                             array_key_exists('value', $hasil) && 
+                                             !array_key_exists('name', $hasil)) {
+                                        // This might be old format, assume it's kinerja_asesi if it's the first item
+                                        $kinerjaValue = $hasil['value'] ?? '';
                                         $umpanBalik = $hasil['umpan_balik'] ?? '';
                                         break;
                                     }

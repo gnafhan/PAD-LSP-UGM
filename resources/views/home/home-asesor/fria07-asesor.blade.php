@@ -328,10 +328,27 @@
                                         @php
                                             $kinerjaValue = '';
                                             $umpanBalik = '';
-                                            if ($formData && isset($formData->data_tambahan['hasil'])) {
+                                            
+                                            if ($formData && 
+                                                isset($formData->data_tambahan['hasil']) && 
+                                                is_array($formData->data_tambahan['hasil']) &&
+                                                !empty($formData->data_tambahan['hasil'])) {
+                                                
                                                 foreach ($formData->data_tambahan['hasil'] as $hasil) {
-                                                    if ($hasil['name'] === 'kinerja_asesi') {
-                                                        $kinerjaValue = $hasil['value'];
+                                                    // Check if $hasil is an array and has the required keys
+                                                    if (is_array($hasil) && 
+                                                        array_key_exists('name', $hasil) && 
+                                                        $hasil['name'] === 'kinerja_asesi') {
+                                                        $kinerjaValue = $hasil['value'] ?? '';
+                                                        $umpanBalik = $hasil['umpan_balik'] ?? '';
+                                                        break;
+                                                    }
+                                                    // Handle old data format where hasil might be stored differently
+                                                    elseif (is_array($hasil) && 
+                                                             array_key_exists('value', $hasil) && 
+                                                             !array_key_exists('name', $hasil)) {
+                                                        // This might be old format, assume it's kinerja_asesi if it's the first item
+                                                        $kinerjaValue = $hasil['value'] ?? '';
                                                         $umpanBalik = $hasil['umpan_balik'] ?? '';
                                                         break;
                                                     }
@@ -477,7 +494,7 @@
 
 <script>
 // Data untuk FRIA07
-const fria07Data = @json($detailRincian ? ($detailRincian->fria07->data_tambahan ?? []) : []);
+const fria07Data = @json($formData && $formData->data_tambahan ? $formData->data_tambahan : []);
 let currentUkId = null;
 let currentElemenId = null;
 
