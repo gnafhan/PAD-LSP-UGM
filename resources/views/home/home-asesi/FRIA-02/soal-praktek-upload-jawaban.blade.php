@@ -1360,14 +1360,16 @@ function viewTaskDetail(taskId) {
                         </div>
                     `;
                 }
+
+                console.log(task)
                 
                 // Add status and timestamp info
                 contentHtml += `
                     <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Status:</label>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${task.status === 'submitted' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">
-                                ${task.status === 'submitted' ? 'Menunggu Review' : 'Sudah Direview'}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${task.status === 'Submitted' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">
+                                ${task.status === 'Submitted' ? 'Menunggu Review' : 'Sudah Direview'}
                             </span>
                         </div>
                         <div>
