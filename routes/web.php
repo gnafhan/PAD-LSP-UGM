@@ -325,9 +325,10 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/fria05-asesor');
     })->name('fria05-asesor');
 
-    Route::get('/fria07', function () {
-        return view('home/home-asesor/fria07-asesor');
-    })->name('fria07-asesor');
+    Route::get('/fria07', [\App\Http\Controllers\IA07Controller::class, 'index'])->name('fria07-asesor');
+    Route::post('/fria07/store', [\App\Http\Controllers\Fria07Controller::class, 'store'])->name('fria07.store');
+    Route::post('/fria07/sign', [\App\Http\Controllers\Fria07Controller::class, 'signAsesor'])->name('fria07.sign');
+    Route::get('/fria07/pdf/{id_asesi}', [\App\Http\Controllers\IA07Controller::class, 'generatePdf'])->name('fria07.pdf');
 
     Route::get('/hasilasesmen', [HasilAsesmenController::class, 'index'])->name('hasil-asesmen-asesor');
 
