@@ -44,6 +44,11 @@ class RincianAsesmen extends Model
         return $this->hasMany(JawabanBanding::class, 'id_rincian_asesmen', 'id_rincian_asesmen');
     }
 
+    public function fria07()
+    {
+        return $this->hasOne(Fria07::class, 'id_rincian_asesmen', 'id_rincian_asesmen');
+    }
+
     /**
      * Get skema statistics grouped by periode and tahun
      * 

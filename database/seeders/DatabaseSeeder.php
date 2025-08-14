@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SkemaSeeder::class,
             UsersSeeder::class,
             AsesorSeeder::class,
+            TandaTanganAsesorSeeder::class,
             AsesisSeeder::class,
             PenanggungJawabSeeder::class,
             TUKSeeder::class,
@@ -31,11 +32,15 @@ class DatabaseSeeder extends Seeder
             EventSkemaSeeder::class,
             BidangKompetensiSeeder::class,
             Fria01TestSeeder::class,
+            Fria07TestSeeder::class,
             PertanyaanBandingSeeder::class,
             JawabanBandingSeeder::class,
             Ak07SeederASeeder::class,
             Ak07SeederBSeeder::class,
             PotensiAsesiSeeder::class,
+            HasilAsesmenSeeder::class,
+            IA02DefaultDataSeeder::class,
+            IA02ComprehensiveDataSeeder::class,
         ]);
     }
 }

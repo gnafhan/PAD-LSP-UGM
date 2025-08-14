@@ -34,6 +34,11 @@ class Handler extends ExceptionHandler
         'current_password',
         'password',
         'password_confirmation',
+        'file_upload',
+        'file',
+        'files',
+        'image',
+        'document',
     ];
 
     /**
