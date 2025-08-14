@@ -498,6 +498,16 @@ const fria07Data = @json($formData && $formData->data_tambahan ? $formData->data
 let currentUkId = null;
 let currentElemenId = null;
 
+// Initialize fria07Data structure if empty
+if (!fria07Data.unit_kompetensi) {
+    fria07Data.unit_kompetensi = [];
+}
+if (!fria07Data.hasil) {
+    fria07Data.hasil = [];
+}
+
+console.log('Initial fria07Data:', fria07Data);
+
 function showSummary() {
     // Sembunyikan elemen pencarian utama
     document.getElementById('searchIA07').classList.add('hidden');
@@ -577,20 +587,42 @@ function findElemenData(ukData, elemenId) {
 function loadModalContent(ukData, elemenData) {
     const modalContent = document.getElementById('modal-content');
     
-    const pertanyaan = elemenData.pertanyaan_lisan || '';
-    const jawaban = elemenData.jawaban_asesi || '';
+    // Handle existing data - only use new format
+    let pertanyaanJawabanList = [];
+    
+    if (elemenData.pertanyaan_jawaban && Array.isArray(elemenData.pertanyaan_jawaban)) {
+        // New format with multiple questions
+        pertanyaanJawabanList = elemenData.pertanyaan_jawaban;
+    } else if (elemenData.pertanyaan_lisan || elemenData.jawaban_asesi) {
+        // Legacy format with single question - convert to new format
+        pertanyaanJawabanList = [{
+            pertanyaan: elemenData.pertanyaan_lisan || '',
+            jawaban: elemenData.jawaban_asesi || ''
+        }];
+    }
+    
+    // If no data, create one empty set
+    if (pertanyaanJawabanList.length === 0) {
+        pertanyaanJawabanList = [{ pertanyaan: '', jawaban: '' }];
+    }
+    
     const penilaian = elemenData.penilaian || '';
     
-    modalContent.innerHTML = `
-        <div class="mb-5">
-            <label for="modal-pertanyaan" class="block mb-2 text-sm font-medium text-gray-900">Pertanyaan Lisan <span class="text-red-500">*</span></label>
-            <textarea id="modal-pertanyaan" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-100 rounded-lg border border-gray-300 min-h-[80px] resize-none" placeholder="Masukkan pertanyaan lisan untuk asesi..." readonly>${pertanyaan}</textarea>
-            <p class="text-xs text-gray-500 mt-1">*Pertanyaan yang akan diajukan kepada asesi</p>
+    let contentHTML = '<div id="pertanyaan-jawaban-container">';
+    
+    pertanyaanJawabanList.forEach((item, index) => {
+        contentHTML += createPertanyaanJawabanHTML(index + 1, item.pertanyaan, item.jawaban);
+    });
+    
+    contentHTML += `
         </div>
-        <div class="mb-5">
-            <label for="modal-jawaban" class="block mb-2 text-sm font-medium text-gray-900">Jawaban Asesi <span class="text-red-500">*</span></label>
-            <textarea id="modal-jawaban" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-100 rounded-lg border border-gray-300 min-h-[100px] max-h-[150px] resize-none" placeholder="Masukkan jawaban dari asesi..." readonly>${jawaban}</textarea>
-            <p class="text-xs text-gray-500 mt-1">*Jawaban yang diberikan oleh asesi</p>
+        <div class="mb-5 flex justify-center">
+            <button type="button" onclick="addNewPertanyaanJawaban()" class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                </svg>
+                Tambah Pertanyaan & Jawaban
+            </button>
         </div>
         <div class="mb-5">
             <label for="modal-penilaian" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi <span class="text-red-500">*</span></label>
@@ -601,21 +633,24 @@ function loadModalContent(ukData, elemenData) {
             </select>
         </div>
     `;
+    
+    modalContent.innerHTML = contentHTML;
 }
 
 function loadEmptyModalContent() {
     const modalContent = document.getElementById('modal-content');
     
-    modalContent.innerHTML = `
-        <div class="mb-5">
-            <label for="modal-pertanyaan" class="block mb-2 text-sm font-medium text-gray-900">Pertanyaan Lisan <span class="text-red-500">*</span></label>
-            <textarea id="modal-pertanyaan" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-100 rounded-lg border border-gray-300 min-h-[80px] resize-none" placeholder="Masukkan pertanyaan lisan untuk asesi..." readonly></textarea>
-            <p class="text-xs text-gray-500 mt-1">*Pertanyaan yang akan diajukan kepada asesi</p>
+    let contentHTML = '<div id="pertanyaan-jawaban-container">';
+    contentHTML += createPertanyaanJawabanHTML(1, '', '');
+    contentHTML += `
         </div>
-        <div class="mb-5">
-            <label for="modal-jawaban" class="block mb-2 text-sm font-medium text-gray-900">Jawaban Asesi <span class="text-red-500">*</span></label>
-            <textarea id="modal-jawaban" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-100 rounded-lg border border-gray-300 min-h-[100px] max-h-[150px] resize-none" placeholder="Masukkan jawaban dari asesi..." readonly></textarea>
-            <p class="text-xs text-gray-500 mt-1">*Jawaban yang diberikan oleh asesi</p>
+        <div class="mb-5 flex justify-center">
+            <button type="button" onclick="addNewPertanyaanJawaban()" class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                </svg>
+                Tambah Pertanyaan & Jawaban
+            </button>
         </div>
         <div class="mb-5">
             <label for="modal-penilaian" class="block mb-2 text-sm font-medium text-gray-900">Penilaian Kompetensi <span class="text-red-500">*</span></label>
@@ -626,25 +661,197 @@ function loadEmptyModalContent() {
             </select>
         </div>
     `;
+    
+    modalContent.innerHTML = contentHTML;
+}
+
+// Helper function to create HTML for one pertanyaan-jawaban pair
+function createPertanyaanJawabanHTML(number, pertanyaan = '', jawaban = '') {
+    const showDeleteButton = number > 1;
+    
+    return `
+        <div class="pertanyaan-jawaban-group mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50" data-number="${number}">
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="text-lg font-semibold text-gray-800">Set ${number}</h4>
+                ${showDeleteButton ? `
+                    <button type="button" onclick="removePertanyaanJawaban(${number})" class="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-100 transition-colors" title="Hapus Set ${number}">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                ` : ''}
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="modal-pertanyaan-${number}" class="block mb-2 text-sm font-medium text-gray-900">
+                        Pertanyaan Lisan ${number} <span class="text-red-500">*</span>
+                    </label>
+                    <textarea 
+                        id="modal-pertanyaan-${number}" 
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 min-h-[100px] resize-none focus:ring-blue-500 focus:border-blue-500" 
+                        placeholder="Masukkan pertanyaan lisan untuk asesi..."
+                    >${pertanyaan}</textarea>
+                </div>
+                
+                <div>
+                    <label for="modal-jawaban-${number}" class="block mb-2 text-sm font-medium text-gray-900">
+                        Jawaban Asesi ${number} <span class="text-gray-400">(Opsional)</span>
+                    </label>
+                    <textarea 
+                        id="modal-jawaban-${number}" 
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 min-h-[100px] resize-none focus:ring-blue-500 focus:border-blue-500" 
+                        placeholder="Masukkan jawaban dari asesi..."
+                    >${jawaban}</textarea>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Function to add new pertanyaan-jawaban pair
+function addNewPertanyaanJawaban() {
+    const container = document.getElementById('pertanyaan-jawaban-container');
+    const existingGroups = container.querySelectorAll('.pertanyaan-jawaban-group');
+    const newNumber = existingGroups.length + 1;
+    
+    const newHTML = createPertanyaanJawabanHTML(newNumber);
+    container.insertAdjacentHTML('beforeend', newHTML);
+    
+    // Update numbering for all groups
+    updatePertanyaanNumbers();
+    
+    // Scroll to the new group
+    const newGroup = container.querySelector(`[data-number="${newNumber}"]`);
+    if (newGroup) {
+        newGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+// Function to remove a pertanyaan-jawaban pair
+function removePertanyaanJawaban(number) {
+    const group = document.querySelector(`[data-number="${number}"]`);
+    if (group) {
+        // Add fade out animation
+        group.style.transition = 'opacity 0.3s ease';
+        group.style.opacity = '0';
+        
+        setTimeout(() => {
+            group.remove();
+            updatePertanyaanNumbers();
+        }, 300);
+    }
+}
+
+// Function to update numbering after add/remove operations
+function updatePertanyaanNumbers() {
+    const container = document.getElementById('pertanyaan-jawaban-container');
+    const groups = container.querySelectorAll('.pertanyaan-jawaban-group');
+    
+    groups.forEach((group, index) => {
+        const newNumber = index + 1;
+        const oldNumber = group.getAttribute('data-number');
+        
+        // Update data-number attribute
+        group.setAttribute('data-number', newNumber);
+        
+        // Update heading
+        const heading = group.querySelector('h4');
+        if (heading) {
+            heading.textContent = `Set ${newNumber}`;
+        }
+        
+        // Update labels
+        const pertanyaanLabel = group.querySelector(`label[for="modal-pertanyaan-${oldNumber}"]`);
+        const jawabanLabel = group.querySelector(`label[for="modal-jawaban-${oldNumber}"]`);
+        if (pertanyaanLabel) {
+            pertanyaanLabel.textContent = `Pertanyaan Lisan ${newNumber} `;
+            pertanyaanLabel.innerHTML += '<span class="text-red-500">*</span>';
+            pertanyaanLabel.setAttribute('for', `modal-pertanyaan-${newNumber}`);
+        }
+        if (jawabanLabel) {
+            jawabanLabel.innerHTML = `Jawaban Asesi ${newNumber} <span class="text-gray-400">(Opsional)</span>`;
+            jawabanLabel.setAttribute('for', `modal-jawaban-${newNumber}`);
+        }
+        
+        // Update textarea IDs
+        const pertanyaanTextarea = group.querySelector(`#modal-pertanyaan-${oldNumber}`);
+        const jawabanTextarea = group.querySelector(`#modal-jawaban-${oldNumber}`);
+        if (pertanyaanTextarea) {
+            pertanyaanTextarea.id = `modal-pertanyaan-${newNumber}`;
+        }
+        if (jawabanTextarea) {
+            jawabanTextarea.id = `modal-jawaban-${newNumber}`;
+        }
+        
+        // Update delete button
+        const deleteButton = group.querySelector('button[onclick^="removePertanyaanJawaban"]');
+        if (deleteButton) {
+            if (newNumber === 1) {
+                deleteButton.style.display = 'none';
+            } else {
+                deleteButton.style.display = 'block';
+                deleteButton.setAttribute('onclick', `removePertanyaanJawaban(${newNumber})`);
+                deleteButton.setAttribute('title', `Hapus Set ${newNumber}`);
+            }
+        }
+    });
 }
 
 function saveModalData() {
-    const pertanyaan = document.getElementById('modal-pertanyaan')?.value?.trim();
-    const jawaban = document.getElementById('modal-jawaban')?.value?.trim();
+    const container = document.getElementById('pertanyaan-jawaban-container');
+    const groups = container.querySelectorAll('.pertanyaan-jawaban-group');
     const penilaian = document.getElementById('modal-penilaian')?.value;
     
-    console.log('Saving modal data:', { pertanyaan, jawaban, penilaian });
+    let pertanyaanList = [];
+    let jawabanList = [];
+    let isValid = true;
+    
+    // Clear any previous error messages
+    container.querySelectorAll('.error-message').forEach(error => error.remove());
+    
+    // Collect data from all question-answer pairs
+    groups.forEach((group, index) => {
+        const pertanyaanTextarea = group.querySelector(`#modal-pertanyaan-${index + 1}`);
+        const jawabanTextarea = group.querySelector(`#modal-jawaban-${index + 1}`);
+        
+        const pertanyaan = pertanyaanTextarea ? pertanyaanTextarea.value.trim() : '';
+        const jawaban = jawabanTextarea ? jawabanTextarea.value.trim() : '';
+        
+        // Validate that pertanyaan is not empty
+        if (!pertanyaan) {
+            isValid = false;
+            if (pertanyaanTextarea) {
+                pertanyaanTextarea.classList.add('border-red-500');
+                const errorMsg = document.createElement('p');
+                errorMsg.className = 'error-message text-red-500 text-xs mt-1';
+                errorMsg.textContent = 'Pertanyaan tidak boleh kosong';
+                pertanyaanTextarea.parentNode.appendChild(errorMsg);
+            }
+        } else {
+            if (pertanyaanTextarea) {
+                pertanyaanTextarea.classList.remove('border-red-500');
+            }
+        }
+        
+        pertanyaanList.push(pertanyaan);
+        jawabanList.push(jawaban);
+    });
+    
+    console.log('Saving modal data:', { pertanyaanList, jawabanList, penilaian });
     
     // Validasi input
     const errors = [];
     if (!penilaian) errors.push('Penilaian Kompetensi');
+    if (!isValid) errors.push('Pertanyaan yang wajib diisi');
     
     if (errors.length > 0) {
         alert('Harap lengkapi field berikut: ' + errors.join(', '));
         return;
     }
     
-    updateFria07Data(currentUkId, currentElemenId, penilaian, pertanyaan, jawaban);
+    // Pass all question-answer pairs to updateFria07Data
+    updateFria07Data(currentUkId, currentElemenId, penilaian, '', '', pertanyaanList, jawabanList);
     
     console.log('Updated fria07Data:', fria07Data);
     
@@ -656,7 +863,7 @@ function saveModalData() {
     alert('Data berhasil disimpan!');
 }
 
-function updateFria07Data(ukId, elemenId, penilaian, pertanyaan = '', jawaban = '') {
+function updateFria07Data(ukId, elemenId, penilaian, pertanyaan = '', jawaban = '', pertanyaanList = [], jawabanList = []) {
     if (!fria07Data.unit_kompetensi) {
         fria07Data.unit_kompetensi = [];
     }
@@ -674,22 +881,40 @@ function updateFria07Data(ukId, elemenId, penilaian, pertanyaan = '', jawaban = 
         fria07Data.unit_kompetensi.push(ukData);
     }
     
+    // Create pertanyaan_jawaban array from the lists
+    let pertanyaanJawabanArray = [];
+    if (pertanyaanList.length > 0 && jawabanList.length > 0) {
+        for (let i = 0; i < pertanyaanList.length; i++) {
+            pertanyaanJawabanArray.push({
+                pertanyaan: pertanyaanList[i] || '',
+                jawaban: jawabanList[i] || ''
+            });
+        }
+    }
+    
+    console.log('pertanyaanJawabanArray yang akan disimpan:', pertanyaanJawabanArray);
+    
     let elemenData = findElemenData(ukData, elemenId);
     if (elemenData) {
         elemenData.penilaian = penilaian;
-        if (pertanyaan) elemenData.pertanyaan_lisan = pertanyaan;
-        if (jawaban) elemenData.jawaban_asesi = jawaban;
+        // Only store new format - remove redundancy
+        elemenData.pertanyaan_jawaban = pertanyaanJawabanArray;
+        // Remove old format fields to eliminate redundancy
+        delete elemenData.pertanyaan_lisan;
+        delete elemenData.jawaban_asesi;
     } else {
         const elemenName = getElemenNameFromPage(elemenId);
         
         ukData.elemen_kompetensi.push({
             id_elemen: elemenId,
             nama_elemen: elemenName,
-            pertanyaan_lisan: pertanyaan,
-            jawaban_asesi: jawaban,
+            pertanyaan_jawaban: pertanyaanJawabanArray, // Only new format
             penilaian: penilaian
         });
     }
+    
+    console.log('Data elemen setelah update:', elemenData || ukData.elemen_kompetensi[ukData.elemen_kompetensi.length - 1]);
+    console.log('Full fria07Data after update:', JSON.stringify(fria07Data, null, 2));
 }
 
 // Helper function to get UK name from the page
@@ -812,6 +1037,9 @@ document.getElementById('formFria07')?.addEventListener('submit', function(e) {
         unit_kompetensi: fria07Data.unit_kompetensi || [],
         hasil: []
     };
+
+    console.log('Data yang akan disimpan ke database:', dataTambahan);
+    console.log('fria07Data.unit_kompetensi:', fria07Data.unit_kompetensi);
 
     // Collect hasil data
     let kinerjaAsesiRadio = document.querySelector('input[name="kinerja_asesi"]:checked');
