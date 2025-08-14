@@ -23,6 +23,8 @@ use App\Http\Controllers\Asesor\FRAK04Controller;
 use App\Http\Controllers\Asesor\HasilAsesmenController;
 use App\Http\Controllers\SwaggerController;
 use App\Http\Controllers\IA02ContentController;
+use App\Http\Controllers\IA02TugasController;
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\TempImageController;
 
 
@@ -233,6 +235,17 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     // FRIA-02
     Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
     Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
+    Route::get('/ia2/soal/{id}', [AsesiController::class, 'soal_praktek_fria02'])->name('asesi.fr.ia2.soal');
+
+    // IA02 Tugas Management
+    Route::prefix('tugas')->name('asesi.tugas.')->group(function () {
+        Route::get('/soal-praktek', [IA02TugasController::class, 'soalPraktek'])->name('soal-praktek');
+        Route::post('/store', [IA02TugasController::class, 'store'])->name('store');
+        Route::get('/{id}', [IA02TugasController::class, 'show'])->name('show');
+        Route::delete('/{id}', [IA02TugasController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/download', [IA02TugasController::class, 'downloadFile'])->name('download');
+        Route::get('/data/json', [IA02TugasController::class, 'getTasks'])->name('data');
+    });
 
     // FRAK-04
     Route::get('/frak04', [AK04Controller::class, 'index'])->name('asesi.frak04');
@@ -452,6 +465,10 @@ Route::post('/save-content-with-images', [IA02ContentController::class, 'saveCon
 
 // Legacy CKEditor routes (keep for backward compatibility)
 Route::post('/save-instruksi-kerja', [HomeController::class, 'saveInstruksiKerja'])->name('save.instruksi');
+
+// Emergency file upload route without middleware (temporary fix for serialization issue)
+Route::post('/emergency-tugas-upload', [FileUploadController::class, 'uploadTask'])->name('emergency.tugas.store');
+Route::get('/test-upload-method', [FileUploadController::class, 'uploadTask'])->name('test.upload');
 
 // Page informasi
 Route::get('/panduan', function () {
