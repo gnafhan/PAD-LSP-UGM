@@ -30,45 +30,10 @@ class Ak03Controller extends Controller
 
     /**
      * Get AK03 data for an Asesi
-     *
-     * @OA\Get(
-     * path="/asesmen/ak03/{id_asesi}",
-     * summary="Mendapatkan data formulir AK03 untuk asesi",
-     * tags={"AK03"},
-     * security={{"api_key":{}}},
-     * @OA\Parameter(name="id_asesi", in="path", required=true, description="ID asesi", @OA\Schema(type="string")),
-     * @OA\Response(
-     * response=200,
-     * description="Data formulir AK03",
-     * @OA\JsonContent(
-     * @OA\Property(property="status", type="string", example="success"),
-     * @OA\Property(property="data", type="object",
-     * @OA\Property(property="general_info", type="object",
-     * @OA\Property(property="nama_asesi", type="string", example="John Doe"),
-     * @OA\Property(property="nama_asesor", type="string", example="Jane Smith"),
-     * @OA\Property(property="nama_tuk", type="string", example="TUK JTTC"),
-     * @OA\Property(property="judul_skema", type="string", example="Programmer"),
-     * @OA\Property(property="kode_skema", type="string", example="SKM-001"),
-     * @OA\Property(property="pelaksanaan_asesmen_disepakati_mulai", type="string", format="date", example="23-07-2025")
-     * ),
-     * @OA\Property(property="ak03", type="object",
-     * @OA\Property(property="waktu_tanda_tangan_asesi", type="string", format="date", example="23-07-2025 18:22:00", nullable=true),
-     * @OA\Property(property="tanda_tangan_asesi", type="string", format="url", example="http://localhost/storage/signature/ttd_asesi.png", nullable=true),
-     * @OA\Property(property="umpan_balik", type="array", @OA\Items(type="object",
-     * @OA\Property(property="komponen_id", type="integer", example=1),
-     * @OA\Property(property="hasil", type="string", example="ya"),
-     * @OA\Property(property="catatan", type="string", example="Penjelasan sangat jelas.")
-     * ))
-     * ),
-     * @OA\Property(property="record_exists", type="boolean", example=true)
-     * )
-     * )
-     * ),
-     * @OA\Response(response=404, description="Asesi tidak ditemukan")
-     * )
      */
     public function getAk03(Request $request, $id_asesi)
     {
+        // ... (Fungsi validasi asesi tetap sama)
         $asesiResult = $this->validationService->validateAsesiExists(
             $id_asesi,
             ['skema', 'rincianAsesmen.asesor', 'rincianAsesmen.event.tuk']
@@ -82,7 +47,6 @@ class Ak03Controller extends Controller
         if ($rincianResult) {
             return response()->json($rincianResult, $rincianResult['code']);
         }
-
         $id_asesor = $asesi->rincianAsesmen->asesor->id_asesor;
 
         $ak03 = Ak03::with('umpanBalikItems')
@@ -90,6 +54,7 @@ class Ak03Controller extends Controller
             ->where('id_asesor', $id_asesor)
             ->first();
 
+        // ... (General Info tetap sama)
         $generalInfo = [
             'nama_asesi' => $asesi->nama_asesi,
             'nama_asesor' => $asesi->rincianAsesmen->asesor->nama_asesor,
@@ -110,7 +75,14 @@ class Ak03Controller extends Controller
                 'waktu_tanda_tangan_asesi' => DateTimeHelper::toWIB($ak03->waktu_tanda_tangan_asesi),
                 'tanda_tangan_asesi' => $ak03->waktu_tanda_tangan_asesi ? asset('storage/' . $asesi->ttd_pemohon) : null,
                 'umpan_balik' => $ak03->umpanBalikItems,
+                // =================================================================
+                // PENAMBAHAN DATA UMPAN BALIK ASESOR UNTUK DIKIRIM KE FRONTEND
+                // =================================================================
                 'general_feedback' => $ak03->general_feedback,
+                'umpan_balik_pencapaian' => $ak03->umpan_balik_pencapaian,
+                'saran_tindak_lanjut' => $ak03->saran_tindak_lanjut,
+                'catatan_pencapaian_kompetensi' => $ak03->catatan_pencapaian_kompetensi,
+                // =================================================================
             ];
         }
 
@@ -119,31 +91,10 @@ class Ak03Controller extends Controller
 
     /**
      * Create or update AK03 data for Asesi
-     *
-     * @OA\Post(
-     * path="/asesmen/ak03/asesi/save",
-     * summary="Menyimpan umpan balik dan tanda tangan Asesi pada formulir AK03",
-     * tags={"AK03"},
-     * security={{"api_key":{}}},
-     * @OA\RequestBody(
-     * required=true,
-     * @OA\JsonContent(
-     * required={"id_asesi", "umpan_balik", "is_signing"},
-     * @OA\Property(property="id_asesi", type="string", example="ASESI2025XXXXX"),
-     * @OA\Property(property="umpan_balik", type="array", @OA\Items(type="object",
-     * @OA\Property(property="komponen_id", type="integer", example=1),
-     * @OA\Property(property="hasil", type="string", example="ya", enum={"ya", "tidak"}),
-     * @OA\Property(property="catatan", type="string", example="Sangat membantu.")
-     * )),
-     * @OA\Property(property="is_signing", type="boolean", example=true, description="Set true untuk menandatangani")
-     * )
-     * ),
-     * @OA\Response(response=200, description="Data AK03 berhasil disimpan"),
-     * @OA\Response(response=422, description="Validasi gagal")
-     * )
      */
     public function saveAk03Asesi(Request $request)
     {
+        // Fungsi ini tetap sama, khusus untuk menyimpan data dari asesi
         $validated = $request->validate([
             'id_asesi' => 'required|string|exists:asesi,id_asesi',
             'is_signing' => 'required|boolean',
@@ -151,7 +102,6 @@ class Ak03Controller extends Controller
             'umpan_balik.*.komponen_id' => 'required|integer',
             'umpan_balik.*.hasil' => 'nullable|string|in:ya,tidak',
             'umpan_balik.*.catatan' => 'nullable|string|max:255',
-            'general_feedback' => 'nullable|string|max:255',
         ]);
 
         $asesiResult = $this->validationService->validateAsesiExists($validated['id_asesi'], ['rincianAsesmen.asesor']);
@@ -171,10 +121,12 @@ class Ak03Controller extends Controller
                 if ($validated['is_signing'] && !$ak03->waktu_tanda_tangan_asesi) {
                     $ak03->waktu_tanda_tangan_asesi = now();
                 }
-                $ak03->general_feedback = $validated['general_feedback'];
+                
+                // Hapus baris 'general_feedback' dari sini jika hanya diisi oleh Asesor
+                // $ak03->general_feedback = $validated['general_feedback']; 
+                
                 $ak03->save();
 
-                // Hapus item lama dan buat yang baru
                 $ak03->umpanBalikItems()->delete();
                 foreach ($validated['umpan_balik'] as $item) {
                     $ak03->umpanBalikItems()->create($item);
@@ -190,13 +142,85 @@ class Ak03Controller extends Controller
                 }
             });
         } catch (\Exception $e) {
-            Log::error('Failed to save AK03 data', ['error' => $e->getMessage()]);
-            return response()->json(['status' => 'error', 'message' => 'Gagal menyimpan data: ' . $e->getMessage()], 500);
+            Log::error('Failed to save AK03 data for Asesi', ['error' => $e->getMessage()]);
+            return response()->json(['status' => 'error', 'message' => 'Gagal menyimpan data umpan balik asesi: ' . $e->getMessage()], 500);
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Data Umpan Balik berhasil disimpan.',
+            'message' => 'Data Umpan Balik Asesi berhasil disimpan.',
         ]);
     }
+    
+    // =================================================================
+    // FUNGSI BARU UNTUK MENYIMPAN UMPAN BALIK DARI ASESOR
+    // Anda perlu membuat route baru untuk fungsi ini, contoh:
+    // Route::post('/asesmen/ak03/asesor/save', [Ak03Controller::class, 'saveAk03Asesor']);
+    // =================================================================
+    /**
+     * @OA\Post(
+     * path="/asesmen/ak03/asesor/save",
+     * summary="Menyimpan umpan balik dan catatan dari Asesor pada formulir AK03",
+     * tags={"AK03"},
+     * security={{"api_key":{}}},
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * required={"id_asesi"},
+     * @OA\Property(property="id_asesi", type="string", example="ASESI2025XXXXX"),
+     * @OA\Property(property="umpan_balik_pencapaian", type="string", example="Pencapaian sudah baik."),
+     * @OA\Property(property="saran_tindak_lanjut", type="string", example="Tingkatkan pemahaman pada unit X."),
+     * @OA\Property(property="catatan_pencapaian_kompetensi", type="string", example="Tidak ada kesenjangan."),
+     * @OA\Property(property="rekomendasi", type="string", example="Secara umum sudah kompeten.")
+     * )
+     * ),
+     * @OA\Response(response=200, description="Data AK03 dari Asesor berhasil disimpan"),
+     * @OA\Response(response=422, description="Validasi gagal")
+     * )
+     */
+    public function saveAk03Asesor(Request $request)
+    {
+        $validated = $request->validate([
+            'id_asesi' => 'required|string|exists:asesi,id_asesi',
+            'umpan_balik_pencapaian' => 'nullable|string',
+            'saran_tindak_lanjut' => 'nullable|string',
+            'catatan_pencapaian_kompetensi' => 'nullable|string',
+            'rekomendasi' => 'nullable|string', // Sesuai dengan id="rekomendasi" di form
+        ]);
+
+        $asesiResult = $this->validationService->validateAsesiExists($validated['id_asesi'], ['rincianAsesmen.asesor']);
+        if (isset($asesiResult['error'])) {
+            return response()->json($asesiResult, $asesiResult['code']);
+        }
+        $asesi = $asesiResult;
+        $id_asesor = $asesi->rincianAsesmen->asesor->id_asesor;
+
+        try {
+            DB::transaction(function () use ($validated, $id_asesor) {
+                $ak03 = Ak03::firstOrNew([
+                    'id_asesi' => $validated['id_asesi'],
+                    'id_asesor' => $id_asesor,
+                ]);
+
+                // Simpan data dari form ke kolom yang sesuai
+                $ak03->umpan_balik_pencapaian = $validated['umpan_balik_pencapaian'] ?? null;
+                $ak03->saran_tindak_lanjut = $validated['saran_tindak_lanjut'] ?? null;
+                $ak03->catatan_pencapaian_kompetensi = $validated['catatan_pencapaian_kompetensi'] ?? null;
+                $ak03->general_feedback = $validated['rekomendasi'] ?? null; // 'rekomendasi' dari form disimpan sebagai 'general_feedback'
+                
+                $ak03->save();
+
+                Log::info('AK03 feedback from Asesor saved', ['id_asesi' => $validated['id_asesi']]);
+            });
+        } catch (\Exception $e) {
+            Log::error('Failed to save AK03 Asesor feedback', ['error' => $e->getMessage()]);
+            return response()->json(['status' => 'error', 'message' => 'Gagal menyimpan umpan balik asesor: ' . $e->getMessage()], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Umpan Balik dari Asesor berhasil disimpan.',
+        ]);
+    }
+
 }

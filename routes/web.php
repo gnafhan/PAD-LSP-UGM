@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Admin\ManajemenEvent\EventController;
+use App\Http\Controllers\AK04Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PasswordResetController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Asesor\HasilAsesmenController;
 use App\Http\Controllers\SwaggerController;
 use App\Http\Controllers\IA02ContentController;
 use App\Http\Controllers\TempImageController;
+use App\Http\Controllers\Frak03AsesorController;
 
 
 // API Documentation
@@ -225,13 +227,18 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     Route::prefix('fr')->name('asesi.fr.')->group(function () {
         Route::view('/ak1', 'home/home-asesi/FRAK-01/frak01')->name('ak1');
         Route::view('/ak3', 'home/home-asesi/FRAK-03/frak3')->name('ak3');
-//        Route::view('/ia2/hasil', 'home/home-asesi/FRIA-02/hasilv')->name('ia2.hasil');
-//        Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
+        // Route::view('/ia2/hasil', 'home/home-asesi/FRIA-02/hasilv')->name('ia2.hasil');
+        // Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
     });
 
     // FRIA-02
     Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
     Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
+
+    // FRAK-04
+    Route::get('/frak04', [AK04Controller::class, 'index'])->name('asesi.frak04');
+    Route::post('/frak04', [AK04Controller::class, 'storeBanding'])->name('store.banding.asesi');
+
 
 
     // Jadwal Uji Kompetensi
@@ -332,6 +339,7 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/frak03', function () {
         return view('home/home-asesor/frak03-asesor');
     })->name('frak03-asesor');
+    Route::get('/home/asesor/frak03/{id}', [Frak03AsesorController::class, 'showDetail'])->name('frak03-asesor.detail');
 
     Route::get('/frak04', [FRAK04Controller::class, 'index'])->name('frak04-asesor');
     Route::get('/frak04/{id_asesi}', [FRAK04Controller::class, 'show'])->name('frak04-asesor.show');

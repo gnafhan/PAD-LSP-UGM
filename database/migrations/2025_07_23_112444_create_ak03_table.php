@@ -23,6 +23,19 @@ return new class extends Migration
             // Waktu tanda tangan asesi
             $table->timestamp('waktu_tanda_tangan_asesi')->nullable();
 
+            // =================================================================
+            // KOLOM BARU UNTUK UMPAN BALIK ASESOR
+            // =================================================================
+            // Kolom ini untuk bagian "Umpan balik kepada asesi"
+            $table->text('umpan_balik_pencapaian')->nullable()->comment('Umpan balik terhadap pencapaian unjuk kerja');
+            $table->text('saran_tindak_lanjut')->nullable()->comment('Saran tindak lanjut hasil asesmen');
+            $table->text('catatan_pencapaian_kompetensi')->nullable()->comment('Catatan pencapaian seluruh elemen/KUK');
+            
+            // Kolom ini untuk "Catatan / Umpan Balik Lainnya (dari Asesor)"
+            // Di controller, ini disebut 'general_feedback'.
+            $table->text('general_feedback')->nullable()->comment('Catatan atau umpan balik lainnya dari asesor');
+            // =================================================================
+
             $table->timestamps();
 
             // Unique constraint to ensure one record per asesi-asesor pair

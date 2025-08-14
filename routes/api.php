@@ -121,6 +121,8 @@ Route::middleware('api_key')->group(function () {
 
         // Save data - only for Asesi
         Route::post('/asesi/save', [Ak03Controller::class, 'saveAk03Asesi']);
+
+        Route::post('/save', [Ak03Controller::class, 'saveAk03Asesor']);
     });
 });
 
