@@ -227,10 +227,10 @@
     <thead class="bg-gray-100 text-gray-900">
       <tr>
         <th class="border border-gray-300 px-4 py-2 text-center w-10">No</th>
-        <th class="border border-gray-300 px-4 py-2 text-left">Rekaman Rencana Asesme</th>
+        <th class="border border-gray-300 px-4 py-2 text-left">Rekaman Rencana Asesmen</th>
         <th class="border border-gray-300 px-4 py-2 text-center w-16">Ya</th>
         <th class="border border-gray-300 px-4 py-2 text-center w-16">Tidak</th>
-        <th class="border border-gray-300 px-4 py-2 text-left w-1/4">Rekaman Rencana Asesme</th>
+        <th class="border border-gray-300 px-4 py-2 text-left w-1/4">Keputusan Penyesuaian</th>
       </tr>
     </thead>
     <tbody id="bagianb_yang_akan_dikumpulkan">
@@ -666,7 +666,7 @@
                                                 clip-rule="evenodd" />
                                         </svg>
                                     </button>
-                                    <button onclick="showDocument('${asesi.id_asesi}', '${asesi.nama_asesi}', '${asesi.nama_skema}', ${progressPercent}, ${completedSteps}, ${totalSteps}, ${hasProgress})" class="">
+                                    <button onclick="showDocument('${asesi.id_asesi}')" class="mr-2">
                                         <svg class="w-6 h-6 text-ungu hover:text-biru" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                             <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd"/>
                                         </svg>
@@ -1104,7 +1104,7 @@
         );
     });
 
-    // Load initial data
+      // Load initial data
     loadAsesiData();
     loadAsesorSignature();
 
@@ -1126,9 +1126,11 @@
     };
 
     // Global function alias for showDocument (if needed)
-    window.showDocument = window.showSummary;
+    // window.showDocument = window.showSummary;
 });
-
+function showDocument(id_asesi) {
+  window.open('/asesor/frak07/pdf/' + id_asesi, "_blank");
+}
 // Table sorting function
 function sortTable(columnIndex) {
     const table = document.getElementById('daftarAK07');
