@@ -103,6 +103,12 @@
             height: 1px;
         }
         
+        .signature-image {
+            max-height: 60px;
+            max-width: 120px;
+            margin: 10px 0;
+        }
+        
         .info-section table td {
             padding: 3px 6px;
         }
@@ -151,6 +157,11 @@
             
             .signature {
                 font-size: 9pt;
+            }
+            
+            .signature-image {
+                max-height: 50px;
+                max-width: 100px;
             }
             
             .signature-line {
@@ -419,7 +430,30 @@
             </div>
             <div class="signature">
                 <p>Tanggal: {{ $tanggal_ttd }}</p>
-                <div class="signature-line"></div>
+                
+                @if($formData && $formData->isAsesorSigned() && $tandaTanganAsesor && $tandaTanganAsesor->file_tanda_tangan)
+                    @php
+                        $imagePath = storage_path('app/public/tanda_tangan/' . $tandaTanganAsesor->file_tanda_tangan);
+                        $imageData = null;
+                        $imageMime = null;
+                        
+                        if (file_exists($imagePath)) {
+                            try {
+                                $imageData = base64_encode(file_get_contents($imagePath));
+                                $imageMime = mime_content_type($imagePath);
+                            } catch (Exception $e) {
+                                $imageData = null;
+                            }
+                        }
+                    @endphp
+                    @if($imageData)
+                        <img src="data:{{ $imageMime }};base64,{{ $imageData }}" alt="Tanda Tangan Asesor" class="signature-image">
+                    @else
+                        <div class="signature-line"></div>
+                    @endif
+                @else
+                    <div class="signature-line"></div>
+                @endif
                 <p>{{ $detailRincian->asesor->nama_asesor ?? 'Nama Asesor' }}</p>
                 <p>Asesor</p>
             </div>

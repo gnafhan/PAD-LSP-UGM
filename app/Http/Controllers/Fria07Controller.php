@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Fria07;
 use App\Models\HasilAsesmen;
+use App\Models\TandaTanganAsesor;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class Fria07Controller extends Controller
 {
@@ -77,5 +80,86 @@ class Fria07Controller extends Controller
         }
 
         return redirect()->back()->with('success', 'Data FRIA07 berhasil disimpan.');
+    }
+
+    public function signAsesor(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'fria07_id' => 'required|string',
+                'signature_type' => 'required|string|in:asesor'
+            ]);
+
+            // Cari FRIA07 berdasarkan ID
+            $fria07 = Fria07::find($validated['fria07_id']);
+            if (!$fria07) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data FRIA07 tidak ditemukan'
+                ], 404);
+            }
+
+            // Verifikasi asesor yang sedang login
+            $currentAsesorId = Auth::user()->asesor->id_asesor ?? null;
+            if (!$currentAsesorId || $currentAsesorId !== $fria07->id_asesor) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Anda tidak memiliki akses untuk menandatangani formulir ini'
+                ], 403);
+            }
+
+            // Cek apakah sudah ditandatangani
+            if ($fria07->isAsesorSigned()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Formulir sudah ditandatangani sebelumnya'
+                ], 400);
+            }
+
+            // Cari tanda tangan asesor yang aktif
+            $tandaTanganAsesor = TandaTanganAsesor::where('id_asesor', $currentAsesorId)
+                ->where(function($q) {
+                    $q->whereNull('valid_until')->orWhere('valid_until', '>=', now());
+                })
+                ->orderByDesc('created_at')
+                ->first();
+
+            if (!$tandaTanganAsesor) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Tanda tangan asesor tidak ditemukan. Silakan upload tanda tangan di halaman biodata terlebih dahulu.'
+                ], 400);
+            }
+
+            // Update waktu tanda tangan asesor
+            $fria07->waktu_tanda_tangan_asesor = now();
+            $fria07->save();
+
+            Log::info('FRIA07 signed by asesor', [
+                'fria07_id' => $fria07->id_fria07,
+                'asesor_id' => $currentAsesorId,
+                'signed_at' => $fria07->waktu_tanda_tangan_asesor
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Formulir berhasil ditandatangani',
+                'data' => [
+                    'ttd_asesor' => $tandaTanganAsesor->file_tanda_tangan,
+                    'waktu_tanda_tangan_asesor' => $fria07->waktu_tanda_tangan_asesor
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error signing FRIA07', [
+                'error' => $e->getMessage(),
+                'request' => $request->all()
+            ]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menandatangani formulir: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

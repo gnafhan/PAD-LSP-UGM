@@ -26,6 +26,14 @@ class IA07Controller extends Controller
             'asesor',
             'event.tuk',
         ])->where('id_asesor', $currentAsesor->id_asesor)->get();
+        
+        // Load FRIA07 data untuk setiap asesi
+        foreach ($daftarAsesi as $rincian) {
+            $fria07 = Fria07::where('id_asesi', $rincian->id_asesi)
+                ->where('id_asesor', $currentAsesor->id_asesor)
+                ->first();
+            $rincian->fria07_data = $fria07;
+        }
 
         $detailRincian = null;
         $notFound = false;
@@ -103,7 +111,15 @@ class IA07Controller extends Controller
             ->where('id_asesor', $detailRincian->id_asesor)
             ->where('id_skema', $detailRincian->asesi->id_skema)
             ->first();
+        
+        // Get tanda tangan asesor
+        $tandaTanganAsesor = null;
+        if ($detailRincian->asesor) {
+            $tandaTanganAsesor = \App\Models\TandaTanganAsesor::where('id_asesor', $detailRincian->asesor->id_asesor)
+                ->orderBy('created_at', 'desc')
+                ->first();
+        }
             
-        return view('home.home-asesor.fria07-pdf', compact('detailRincian', 'formData'));
+        return view('home.home-asesor.fria07-pdf', compact('detailRincian', 'formData', 'tandaTanganAsesor'));
     }
 }

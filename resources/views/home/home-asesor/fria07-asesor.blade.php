@@ -158,8 +158,8 @@
                         <td class="px-4 py-3 text-gray-700 text-left">{{ $rincian->asesi->skema->nama_skema ?? 'Skema tidak tersedia' }}</td>
                         <td class="px-4 py-3 text-gray-700 text-left">{{ $rincian->asesi->skema->nomor_skema ?? 'Kode tidak tersedia' }}</td>
                         <td class="px-4 py-0">
-                            <div class="flex px-4 py-3 justify-center items-center">
-                                @if($rincian->asesi->progresAsesmen && isset($rincian->asesi->progresAsesmen->ia07) && $rincian->asesi->progresAsesmen->ia07['completed'] ?? false)
+                            <div class="flex px-4 py-3 justify-center items-center" id="progress-{{ $rincian->asesi->id_asesi }}">
+                                @if(isset($rincian->fria07_data) && $rincian->fria07_data && $rincian->fria07_data->isAsesorSigned())
                                     <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                         <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
                                     </svg>
@@ -846,6 +846,18 @@ function validateFormForSubmission() {
 document.addEventListener('DOMContentLoaded', function() {
     initializeTableStatus();
     
+    function formatTanggalIndo(dateStr) {
+        const date = new Date(dateStr);
+        const day = date.getDate().toString().padStart(2, '0');
+        const monthNames = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        const month = monthNames[date.getMonth()];
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
+    }
+    
     function disableFormIfSigned() {
         const isSigned = {{ $formData && $formData->isAsesorSigned() ? 'true' : 'false' }};
         if (isSigned) {
@@ -924,6 +936,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             btnSignAsesor.disabled = true;
             btnSignAsesor.textContent = 'Menyimpan...';
+            
             try {
                 const response = await fetch('/asesor/fria07/sign', {
                     method: 'POST',
@@ -937,20 +950,49 @@ document.addEventListener('DOMContentLoaded', function() {
                     })
                 });
                 
-                if (response.ok) {
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update image and date
+                    if (data.data && data.data.ttd_asesor) {
+                        let img = document.getElementById('imgTtdAsesor');
+                        if (!img) {
+                            img = document.createElement('img');
+                            img.id = 'imgTtdAsesor';
+                            img.className = 'max-h-24 max-w-full object-contain';
+                            btnSignAsesor.parentNode.insertBefore(img, btnSignAsesor);
+                        }
+                        img.src = '/storage/tanda_tangan/' + data.data.ttd_asesor;
+                        img.alt = 'Tanda Tangan Asesor';
+                    }
+                    
+                    // Update date
+                    const dateElem = btnSignAsesor.closest('.space-y-4').querySelector('p.text-sm.text-gray-600.mb-2');
+                    if (dateElem && data.data && data.data.waktu_tanda_tangan_asesor) {
+                        dateElem.textContent = formatTanggalIndo(data.data.waktu_tanda_tangan_asesor);
+                    }
+                    
+                    btnSignAsesor.remove();
+                    
+                    // Update progress di list asesi
+                    updateProgressStatus();
+                    
+                    // Disable form setelah ditandatangani
+                    disableFormIfSigned();
+                    
                     const successModal = document.getElementById('successModal');
                     successModal.classList.remove('hidden');
                     
                     setTimeout(() => {
-                        location.reload();
-                    }, 2000);
+                        successModal.classList.add('hidden');
+                    }, 3000);
                 } else {
-                    throw new Error('Gagal menyimpan tanda tangan');
+                    throw new Error(data.message || 'Gagal menandatangani formulir');
                 }
             } catch (err) {
                 alert('Error: ' + err.message);
                 btnSignAsesor.disabled = false;
-                btnSignAsesor.textContent = 'Tandatangani Sebagai Asesor';
+                btnSignAsesor.textContent = 'Tandatangani';
             }
         });
     }
@@ -1022,6 +1064,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function updateProgressStatus() {
+    // Ambil ID asesi yang sedang dipilih dari URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const idAsesi = urlParams.get('id_asesi');
+    
+    if (idAsesi) {
+        const progressElement = document.getElementById('progress-' + idAsesi);
+        if (progressElement) {
+            // Update progress dengan status signed (hanya icon)
+            progressElement.innerHTML = `
+                <svg class="w-6 h-6 text-hijau" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                </svg>
+            `;
+        }
+    }
+}
 
 function showDocument(id_asesi) {
     window.open('/asesor/fria07/pdf/' + id_asesi, "_blank");
