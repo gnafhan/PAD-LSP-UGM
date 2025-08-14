@@ -1,31 +1,32 @@
 <?php
-use App\Http\Controllers\Admin\ManajemenEvent\EventController;
-use App\Http\Controllers\AK04Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PasswordResetController;
-use App\Http\Controllers\AsesiController;
-use App\Http\Controllers\PengajuanController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\LoginRegisterController;
-use App\Http\Controllers\HomeController;
+
 use App\Http\Controllers\Admin\ManajemenAssignAsesiToAsesor\AsesiPengajuanPageController;
-use App\Http\Controllers\Admin\ManajemenSkema\SkemaPageController;
-use App\Http\Controllers\Admin\ManajemenUnitKompetensi\UnitKompetensiPageController;
-use App\Http\Controllers\Admin\ManajemenSkema\RencanaAsesmenController;
-use App\Http\Controllers\Admin\ManajemenPengguna\PenggunaPageController;
-use App\Http\Controllers\Admin\ManajemenPengguna\AsesorController;
+use App\Http\Controllers\Admin\ManajemenEvent\EventController;
 use App\Http\Controllers\Admin\ManajemenPengguna\AdminUserController;
+use App\Http\Controllers\Admin\ManajemenPengguna\AsesorController;
 use App\Http\Controllers\Admin\ManajemenPengguna\KompetensiTeknisController;
-use App\Http\Controllers\Admin\ManajemenTUK\TukController;
+use App\Http\Controllers\Admin\ManajemenPengguna\PenggunaPageController;
+use App\Http\Controllers\Admin\ManajemenSkema\RencanaAsesmenController;
+use App\Http\Controllers\Admin\ManajemenSkema\SkemaPageController;
 use App\Http\Controllers\Admin\ManajemenTUK\PenanggungJawabController;
+use App\Http\Controllers\Admin\ManajemenTUK\TukController;
+use App\Http\Controllers\Admin\ManajemenUnitKompetensi\UnitKompetensiPageController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AK04Controller;
+use App\Http\Controllers\AsesiController;
 use App\Http\Controllers\Asesor\FRAK04Controller;
 use App\Http\Controllers\Asesor\HasilAsesmenController;
-use App\Http\Controllers\SwaggerController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IA02ContentController;
 use App\Http\Controllers\IA02TugasController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\LoginRegisterController;
+use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\SwaggerController;
 use App\Http\Controllers\TempImageController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 
 // API Documentation
@@ -321,6 +322,7 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/frak07', function () {
         return view('home/home-asesor/frak07-asesor');
     })->name('frak07-asesor');
+    Route::get('/frak07/pdf/{id_asesi}', [\App\Http\Controllers\FRAK07Controller::class, 'generatePdf'])->name('frak07-print');
 
     Route::get('/fria01', [\App\Http\Controllers\IA01Controller::class, 'index'])->name('fria01-asesor');
     Route::post('/fria01/store', [\App\Http\Controllers\Fria01Controller::class, 'store'])->name('fria01.store');
