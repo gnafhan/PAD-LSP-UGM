@@ -17,6 +17,7 @@ return new class extends Migration
             $table->longText('jawaban_c')->nullable();
             $table->longText('jawaban_d')->nullable();
             $table->longText('jawaban_e')->nullable();
+            $table->enum('jawaban_benar', ['a','b','c','d','e']);
             $table->timestamps();
 
             $table->foreign('id_skema')->references('id_skema')->on('skema')->onDelete('cascade');

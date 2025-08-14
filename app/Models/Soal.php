@@ -26,6 +26,7 @@ class Soal extends Model
         'jawaban_c',
         'jawaban_d',
         'jawaban_e',
+        'jawaban_benar'
     ];
 
     public function skema()
