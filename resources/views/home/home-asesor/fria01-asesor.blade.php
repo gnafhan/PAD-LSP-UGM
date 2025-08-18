@@ -258,6 +258,38 @@
                 </ul>
             </div>
 
+            {{-- Kelompok Pekerjaan Kegiatan Rekreasi --}}
+            {{-- <div class="p-4">
+                <p class="mb-4 text-lg font-semibold text-black">Kelompok Pekerjaan Kegiatan Rekreasi</p>
+                <div class="overflow-x-auto shadow-md rounded-lg mb-4">
+                    <table class="min-w-full bg-white overflow-hidden">
+                        <thead class="bg-bg_dashboard text-center">
+                            <tr>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">No</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Menangani Situasi Konflik</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Menangani Situasi Konflik</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 text-black text-center items-center">
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik ?</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik ?</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 text-sm text-gray-700">1</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">R.93KPW00.011.2</td>
+                                <td class="px-4 py-3 text-gray-700 text-left">Mengidentifikasi situasi konflik ?</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> --}}
 
             {{-- Checklist Kompeten --}}
             <div id="clKompeten" class="p-4">
@@ -302,7 +334,7 @@
             @endphp
             @foreach($unitKompetensiList as $idx => $unit)
             <div class="p-4" data-unit-kode="{{ $unit->kode_uk }}" data-unit-nama="{{ $unit->nama_uk }}">
-                <p class="text-sidebar_font font-semibold pb-4 text-2xl">Unit Kompetensi No {{ $idx+1 }}</p>
+                <p class=" text-black font-semibold pb-4 text-2xl">Unit Kompetensi No {{ $idx+1 }}</p>
                 <p class="text-sidebar_font font-semibold pb-2">Kode Unit : {{ $unit->kode_uk }}</p>
                 <p class="text-sidebar_font font-semibold pb-2">Judul : {{ $unit->nama_uk }}</p>
                 <div class="overflow-x-auto shadow-md rounded-lg mb-4">
@@ -381,7 +413,7 @@
             <div class="my-6 px-4 space-y-6">
                 {{-- Hasil --}}
                 <div class="p-4">
-                    <h3 class="text-sidebar_font font-semibold pb-4 text-xl">Hasil</h3>
+                    <h3 class=" text-black font-semibold pb-4 text-xl">Hasil</h3>
                     <div class="overflow-x-auto shadow-md rounded-lg mb-4">
                         <table class="min-w-full bg-white overflow-hidden">
                             <thead class="bg-bg_dashboard text-center">
@@ -425,7 +457,7 @@
 
                 {{-- Tanda tangan --}}
                 <div class="p-4 mb-6">
-                    <h3 class="text-sidebar_font font-semibold pb-4 text-xl">Tandatangan</h3>
+                    <h3 class="text-black font-semibold pb-4 text-xl">Tandatangan</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {{-- Kolom Asesi --}}
                         <div class="text-center space-y-4">

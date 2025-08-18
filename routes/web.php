@@ -18,6 +18,8 @@ use App\Http\Controllers\Asesor\FRAK04Controller;
 use App\Http\Controllers\Asesor\HasilAsesmenController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IA02ContentController;
+use App\Http\Controllers\IA02TugasController;
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PengajuanController;
@@ -234,6 +236,17 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     // FRIA-02
     Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
     Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
+    Route::get('/ia2/soal/{id}', [AsesiController::class, 'soal_praktek_fria02'])->name('asesi.fr.ia2.soal');
+
+    // IA02 Tugas Management
+    Route::prefix('tugas')->name('asesi.tugas.')->group(function () {
+        Route::get('/soal-praktek', [IA02TugasController::class, 'soalPraktek'])->name('soal-praktek');
+        Route::post('/store', [IA02TugasController::class, 'store'])->name('store');
+        Route::get('/{id}', [IA02TugasController::class, 'show'])->name('show');
+        Route::delete('/{id}', [IA02TugasController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/download', [IA02TugasController::class, 'downloadFile'])->name('download');
+        Route::get('/data/json', [IA02TugasController::class, 'getTasks'])->name('data');
+    });
 
     // FRAK-04
     Route::get('/frak04', [AK04Controller::class, 'index'])->name('asesi.frak04');
@@ -329,9 +342,10 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/fria05-asesor');
     })->name('fria05-asesor');
 
-    Route::get('/fria07', function () {
-        return view('home/home-asesor/fria07-asesor');
-    })->name('fria07-asesor');
+    Route::get('/fria07', [\App\Http\Controllers\IA07Controller::class, 'index'])->name('fria07-asesor');
+    Route::post('/fria07/store', [\App\Http\Controllers\Fria07Controller::class, 'store'])->name('fria07.store');
+    Route::post('/fria07/sign', [\App\Http\Controllers\Fria07Controller::class, 'signAsesor'])->name('fria07.sign');
+    Route::get('/fria07/pdf/{id_asesi}', [\App\Http\Controllers\IA07Controller::class, 'generatePdf'])->name('fria07.pdf');
 
     Route::get('/hasilasesmen', [HasilAsesmenController::class, 'index'])->name('hasil-asesmen-asesor');
 
@@ -455,6 +469,10 @@ Route::post('/save-content-with-images', [IA02ContentController::class, 'saveCon
 
 // Legacy CKEditor routes (keep for backward compatibility)
 Route::post('/save-instruksi-kerja', [HomeController::class, 'saveInstruksiKerja'])->name('save.instruksi');
+
+// Emergency file upload route without middleware (temporary fix for serialization issue)
+Route::post('/emergency-tugas-upload', [FileUploadController::class, 'uploadTask'])->name('emergency.tugas.store');
+Route::get('/test-upload-method', [FileUploadController::class, 'uploadTask'])->name('test.upload');
 
 // Page informasi
 Route::get('/panduan', function () {
