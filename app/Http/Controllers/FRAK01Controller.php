@@ -4,12 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\DateTimeHelper;
 use App\Models\Ak01;
-use App\Models\Ak07;
-use App\Models\Ak07SeederA;
-use App\Models\Ak07SeederB;
 use App\Models\Asesi;
 use App\Models\Asesor;
-use App\Models\PotensiAsesi;
 use App\Models\RincianAsesmen;
 
 class FRAK01Controller extends Controller
