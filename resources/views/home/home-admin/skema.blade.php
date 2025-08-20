@@ -301,9 +301,9 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="tooltip">
-                                        <strong class="block text-center mb-1 border-b border-gray-600 pb-1">{{ $item->unitKompetensi->count() }} Unit Kompetensi:</strong>
+                                        <strong class="block text-center mb-1 border-b border-gray-600 pb-1">{{ $item->getUnitKompetensi()->count() }} Unit Kompetensi:</strong>
                                         <div class="tooltip-text">
-                                            @foreach($item->unitKompetensi as $uk)
+                                            @foreach($item->getUnitKompetensi() as $uk)
                                                 <div class="mb-1 text-left">
                                                     <span class="font-medium">{{ $uk->kode_uk }}</span>: {{ $uk->nama_uk }}
                                                 </div>

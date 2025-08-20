@@ -100,7 +100,7 @@
                 </h3>
 
                 <div class="space-y-4">
-                  @foreach($skema->unitKompetensi as $index => $uk)
+                  @foreach($skema->getUnitKompetensi() as $index => $uk)
                   <div class="border border-gray-200 rounded-lg overflow-hidden transition-all hover:border-blue-300 hover:shadow-sm">
                     <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-5 py-4 flex justify-between items-center cursor-pointer"
                          onclick="toggleElemen('unit-{{ $uk->id_uk }}')" aria-expanded="false" aria-controls="unit-{{ $uk->id_uk }}">

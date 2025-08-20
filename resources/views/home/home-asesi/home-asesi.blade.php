@@ -223,7 +223,7 @@
 
                         <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Unit Kompetensi</h4>
                         <div class="space-y-3">
-                            @forelse($asesi->skema->unitKompetensi as $index => $uk)
+                            @forelse($asesi->skema->getUnitKompetensi() as $index => $uk)
                             <div class="border border-gray-200 rounded-lg p-4 transition hover:bg-gray-50 hover:shadow-sm">
                                 <div class="flex items-start">
                                     <div class="flex-shrink-0 bg-indigo-100 rounded-md h-8 w-8 flex items-center justify-center text-indigo-700 font-semibold text-xs">

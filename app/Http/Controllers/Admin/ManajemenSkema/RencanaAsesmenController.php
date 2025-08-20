@@ -18,10 +18,10 @@ class RencanaAsesmenController extends Controller
     public function index($id_skema)
     {
         // Get skema details
-        $skema = Skema::with('unitKompetensi')->findOrFail($id_skema);
+        $skema = Skema::findOrFail($id_skema);
         
         // Get unit kompetensi for this skema
-        $unitKompetensi = $skema->unitKompetensi;
+        $unitKompetensi = $skema->getUnitKompetensi();
         
         // Count rencana asesmen for each UK
         $progressData = [];
@@ -50,9 +50,7 @@ class RencanaAsesmenController extends Controller
         $elemenUK = $selectedUK ? ElemenUK::where('id_uk', $selectedUK)->get() : collect();
         
         // Get all rencana asesmen for this skema (for the preview table)
-        $allRencanaAsesmen = RencanaAsesmen::where('id_skema', $id_skema)
-            ->with('unitKompetensi')
-            ->get();
+        $allRencanaAsesmen = RencanaAsesmen::where('id_skema', $id_skema)->get();
         
         return view('home.home-admin.rencana-asesmen.index', compact(
             'skema', 
@@ -184,10 +182,11 @@ class RencanaAsesmenController extends Controller
      */
     private function updateSkemaCompletionStatus($id_skema)
     {
-        $skema = Skema::with('unitKompetensi')->findOrFail($id_skema);
+        $skema = Skema::findOrFail($id_skema);
         $isComplete = true;
         
-        foreach ($skema->unitKompetensi as $uk) {
+        $unitKompetensi = $skema->getUnitKompetensi();
+        foreach ($unitKompetensi as $uk) {
             $elemenCount = ElemenUK::where('id_uk', $uk->id_uk)->count();
             $rencanaCount = RencanaAsesmen::where('id_uk', $uk->id_uk)
                 ->where('id_skema', $id_skema)

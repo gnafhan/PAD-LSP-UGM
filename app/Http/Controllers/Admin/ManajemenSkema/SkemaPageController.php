@@ -14,7 +14,7 @@ class SkemaPageController extends Controller
 {
     public function indexDataSkema(Request $request)
     {
-        $query = Skema::with('unitKompetensi');
+        $query = Skema::query();
         
         // Add search functionality
         if ($request->has('search')) {
@@ -37,11 +37,12 @@ class SkemaPageController extends Controller
 
     public function editDataSkema($id)
     {
-        $skema = Skema::with('unitKompetensi')->findOrFail($id);
+        $skema = Skema::findOrFail($id);
         $ukList = UK::all();
         $daftarBidangUK = UKBidang::all();
-        // Kirim data unit kompetensi dalam format JSON
-        $unitKompetensiJson = json_encode($skema->unitKompetensi);
+        // Get unit kompetensi using the method instead of relationship
+        $unitKompetensi = $skema->getUnitKompetensi();
+        $unitKompetensiJson = json_encode($unitKompetensi);
         $daftarIdUkJson = $skema->daftar_id_uk; // Ambil data daftar_id_uk langsung dari skema
 
         return view('home.home-admin.edit-skema', [
@@ -78,15 +79,15 @@ class SkemaPageController extends Controller
             return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil diperbarui');
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Validation Error: ' . $e->getMessage());
+            Log::error('Validation Error: ' . $e->getMessage());
             return redirect()->back()->withErrors($e->validator)->withInput();
 
         } catch (\Illuminate\Http\Exceptions\PostTooLargeException $e) {
-            \Log::error('File Too Large Error: ' . $e->getMessage());
+            Log::error('File Too Large Error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Ukuran file terlalu besar. Maksimal 2MB.')->withInput();
 
         } catch (\Exception $e) {
-            \Log::error('Error updating skema: ' . $e->getMessage());
+            Log::error('Error updating skema: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui skema.')->withInput();
         }
     }
