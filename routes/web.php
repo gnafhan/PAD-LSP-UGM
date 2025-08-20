@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BidangKompetensiPageController;
 use App\Http\Controllers\Admin\ManajemenAssignAsesiToAsesor\AsesiPengajuanPageController;
 use App\Http\Controllers\Admin\ManajemenEvent\EventController;
 use App\Http\Controllers\Admin\ManajemenPengguna\AdminUserController;
@@ -106,6 +107,15 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::post('create', [UnitKompetensiPageController::class, 'storeDataUk'])->name('store');
         Route::get('{id}/edit', [UnitKompetensiPageController::class, 'editDataUk'])->name('edit');
         Route::put('{id}/update', [UnitKompetensiPageController::class, 'updateDataUk'])->name('update');
+    });
+
+    Route::prefix('bidang-kompetensi')->name('admin.bidang-kompetensi.')->group(function () {
+        Route::get('/', [BidangKompetensiPageController::class, 'indexDataBidangKompetensi'])->name('index');
+        Route::get('create', [BidangKompetensiPageController::class, 'createDataBidangKompetensi'])->name('create');
+        Route::post('create', [BidangKompetensiPageController::class, 'storeDataBidangKompetensi'])->name('store');
+        Route::get('{id}/edit', [BidangKompetensiPageController::class, 'editDataBidangKompetensi'])->name('edit');
+        Route::put('{id}/update', [BidangKompetensiPageController::class, 'updateDataBidangKompetensi'])->name('update');
+        Route::delete('delete/{id}', [BidangKompetensiPageController::class, 'destroyDataBidangKompetensi'])->name('delete');
     });
 
     // Manajemen Rencana Asesmen
