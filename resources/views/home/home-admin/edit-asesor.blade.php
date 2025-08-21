@@ -149,7 +149,7 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id_asesor" value="{{ $asesor->id_asesor }}">
-                    <input type="hidden" id="bidang_kompetensi_hidden" name="bidang_kompetensi" value="{{ json_encode($asesor->daftar_bidang_kompetensi ?? []) }}">
+                    <input type="hidden" id="bidang_kompetensi_hidden" name="bidang_kompetensi" value="{{ json_encode(array_column($asesor->bidang_kompetensi_data ?? [], 'id')) }}">
 
                     <div class="grid grid-cols-1 gap-y-6 gap-x-8 sm:grid-cols-2">
                         <!-- Kolom Kiri - Informasi Utama -->
@@ -264,6 +264,13 @@
                                             <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                                         </svg>
                                     </button>
+                                    <button type="button" id="tambahBidangBaruBtn"
+                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                        </svg>
+                                        Baru
+                                    </button>
                                 </div>
                             </div>
 
@@ -274,12 +281,12 @@
                                     </h4>
                                 </div>
                                 <ul id="bidangList" class="divide-y divide-gray-200 max-h-[350px] overflow-y-auto">
-                                    <li id="empty-bidang-row" class="px-4 py-3 text-center text-sm text-gray-500 italic {{ !empty($asesor->bidang_kompetensi) ? 'hidden' : '' }}">
+                                    <li id="empty-bidang-row" class="px-4 py-3 text-center text-sm text-gray-500 italic {{ !empty($asesor->bidang_kompetensi_data) ? 'hidden' : '' }}">
                                         Belum ada bidang kompetensi yang dipilih
                                     </li>
 
-                                    @if(!empty($asesor->bidang_kompetensi))
-                                        @foreach($asesor->bidang_kompetensi as $bidang)
+                                    @if(!empty($asesor->bidang_kompetensi_data))
+                                        @foreach($asesor->bidang_kompetensi_data as $bidang)
                                             <li class="px-4 py-3 flex justify-between items-center">
                                                 <span class="text-sm text-gray-700">{{ $bidang['nama_bidang'] }}</span>
                                                 <button type="button" class="hapusBidangBtn text-red-500 hover:text-red-700" data-id="{{ $bidang['id'] }}">
@@ -309,7 +316,44 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Tambah Bidang Kompetensi Baru -->
+<div id="modalTambahBidang" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Tambah Bidang Kompetensi Baru</h3>
+                <button type="button" id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="formTambahBidang">
+                <div class="mb-4">
+                    <label for="nama_bidang_baru" class="block text-sm font-medium text-gray-700 mb-2">Nama Bidang Kompetensi <span class="text-red-500">*</span></label>
+                    <input type="text" id="nama_bidang_baru" name="nama_bidang_baru" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                           placeholder="Masukkan nama bidang kompetensi" required>
+                    <div id="error_nama_bidang" class="hidden text-sm text-red-600 mt-1"></div>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelBtn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        Batal
+                    </button>
+                    <button type="submit" id="submitBidangBtn" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
+
+
 
 @section('scripts')
 <script>
@@ -318,8 +362,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.daftarBidangKompetensi = [];
 
     // Isi array dari data yang ada
-    @if(!empty($asesor->bidang_kompetensi))
-        @foreach($asesor->bidang_kompetensi as $bidang)
+    @if(!empty($asesor->bidang_kompetensi_data))
+        @foreach($asesor->bidang_kompetensi_data as $bidang)
             window.daftarBidangKompetensi.push({
                 id: "{{ $bidang['id'] }}",
                 nama: "{{ $bidang['nama_bidang'] }}"
@@ -411,122 +455,97 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Auto dismiss alerts after 5 seconds
-    const alerts = document.querySelectorAll('.bg-green-100, .bg-red-100');
-    alerts.forEach(alert => {
-        setTimeout(() => {
-            if (alert && alert.parentNode) {
-                alert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-                setTimeout(() => {
-                    if (alert && alert.parentNode) {
-                        alert.remove();
-                    }
-                }, 500);
-            }
-        }, 5000);
+    // Event listener untuk tombol tambah bidang baru
+    document.getElementById('tambahBidangBaruBtn').addEventListener('click', function() {
+        document.getElementById('modalTambahBidang').classList.remove('hidden');
+        document.getElementById('nama_bidang_baru').focus();
     });
-});
-</script>
-@endsection
 
-@section('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Inisialisasi array bidang kompetensi global
-    window.daftarBidangKompetensi = [];
+    // Event listener untuk tombol close modal
+    document.getElementById('closeModalBtn').addEventListener('click', function() {
+        document.getElementById('modalTambahBidang').classList.add('hidden');
+        document.getElementById('formTambahBidang').reset();
+        document.getElementById('error_nama_bidang').classList.add('hidden');
+    });
 
-    // Isi array dari data yang ada
-    @if(!empty($asesor->bidang_kompetensi))
-        @foreach($asesor->bidang_kompetensi as $bidang)
-            window.daftarBidangKompetensi.push({
-                id: "{{ $bidang['id'] }}",
-                nama: "{{ $bidang['nama_bidang'] }}"
-            });
-        @endforeach
-    @endif
+    // Event listener untuk tombol cancel
+    document.getElementById('cancelBtn').addEventListener('click', function() {
+        document.getElementById('modalTambahBidang').classList.add('hidden');
+        document.getElementById('formTambahBidang').reset();
+        document.getElementById('error_nama_bidang').classList.add('hidden');
+    });
 
-    // Update hidden input
-    document.getElementById('bidang_kompetensi_hidden').value = JSON.stringify(window.daftarBidangKompetensi.map(b => b.id));
-
-    // Event listener untuk tombol tambah bidang
-    document.getElementById('tambahBidangBtn').addEventListener('click', function() {
-        const select = document.getElementById('id_bidang');
-        if (!select.value) {
-            alert("Pilih bidang kompetensi terlebih dahulu.");
+    // Event listener untuk form tambah bidang
+    document.getElementById('formTambahBidang').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const namaBidang = document.getElementById('nama_bidang_baru').value.trim();
+        const submitBtn = document.getElementById('submitBidangBtn');
+        const errorDiv = document.getElementById('error_nama_bidang');
+        
+        if (!namaBidang) {
+            errorDiv.textContent = 'Nama bidang kompetensi tidak boleh kosong';
+            errorDiv.classList.remove('hidden');
             return;
         }
-
-        const id_bidang = select.value;
-        const namaBidang = select.options[select.selectedIndex].getAttribute('data-nama');
-
-        if (window.daftarBidangKompetensi.some(b => b.id === id_bidang)) {
-            alert("Bidang kompetensi ini sudah ditambahkan.");
-            return;
-        }
-
-        // Tambahkan ke daftar
-        window.daftarBidangKompetensi.push({
-            id: id_bidang,
-            nama: namaBidang
+        
+        // Disable submit button
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Menyimpan...';
+        
+        // Send AJAX request
+        fetch('{{ route("admin.pengguna.bidang-kompetensi.create") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                nama_bidang: namaBidang
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Add new bidang to dropdown
+                const select = document.getElementById('id_bidang');
+                const newOption = document.createElement('option');
+                newOption.value = data.data.id;
+                newOption.setAttribute('data-nama', data.data.nama);
+                newOption.textContent = data.data.nama;
+                select.appendChild(newOption);
+                
+                // Close modal
+                document.getElementById('modalTambahBidang').classList.add('hidden');
+                document.getElementById('formTambahBidang').reset();
+                errorDiv.classList.add('hidden');
+                
+                // Show success message
+                alert('Bidang kompetensi berhasil ditambahkan!');
+                
+                // Auto-select the new bidang
+                select.value = data.data.id;
+                
+            } else {
+                // Show error
+                if (data.errors && data.errors.nama_bidang) {
+                    errorDiv.textContent = data.errors.nama_bidang[0];
+                } else {
+                    errorDiv.textContent = data.message || 'Terjadi kesalahan';
+                }
+                errorDiv.classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            errorDiv.textContent = 'Terjadi kesalahan pada server';
+            errorDiv.classList.remove('hidden');
+        })
+        .finally(() => {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Simpan';
         });
-
-        // Update hidden input
-        document.getElementById('bidang_kompetensi_hidden').value = JSON.stringify(window.daftarBidangKompetensi.map(b => b.id));
-
-        // Sembunyikan pesan kosong
-        const emptyRow = document.getElementById('empty-bidang-row');
-        if (emptyRow) {
-            emptyRow.classList.add('hidden');
-        }
-
-        // Tambahkan ke UI
-        const bidangList = document.getElementById('bidangList');
-        const newItem = document.createElement('li');
-        newItem.className = 'px-4 py-3 flex justify-between items-center';
-        newItem.innerHTML = `
-            <span class="text-sm text-gray-700">${namaBidang}</span>
-            <button type="button" class="hapusBidangBtn text-red-500 hover:text-red-700" data-id="${id_bidang}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-            </button>
-        `;
-        bidangList.appendChild(newItem);
-    });
-
-    // Event delegation untuk tombol hapus bidang
-    document.getElementById('bidangList').addEventListener('click', function(e) {
-        if (e.target.closest('.hapusBidangBtn')) {
-            const button = e.target.closest('.hapusBidangBtn');
-            const id_bidang = button.getAttribute('data-id');
-            const listItem = button.closest('li');
-
-            // Hapus dari array
-            const index = window.daftarBidangKompetensi.findIndex(b => b.id === id_bidang);
-            if (index !== -1) {
-                window.daftarBidangKompetensi.splice(index, 1);
-
-                // Update hidden input
-                document.getElementById('bidang_kompetensi_hidden').value = JSON.stringify(window.daftarBidangKompetensi.map(b => b.id));
-
-                // Animasi hapus
-                listItem.style.opacity = '0';
-                listItem.style.transform = 'translateX(10px)';
-                listItem.style.transition = 'opacity 300ms, transform 300ms';
-
-                setTimeout(() => {
-                    listItem.remove();
-
-                    // Tampilkan pesan kosong jika tidak ada bidang lagi
-                    if (window.daftarBidangKompetensi.length === 0) {
-                        const emptyRow = document.getElementById('empty-bidang-row');
-                        if (emptyRow) {
-                            emptyRow.classList.remove('hidden');
-                        }
-                    }
-                }, 300);
-            }
-        }
     });
 
     // Auto dismiss alerts after 5 seconds

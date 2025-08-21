@@ -174,6 +174,9 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::get('/', [PenggunaPageController::class, 'index'])->name('index');
         Route::get('tambah-pengguna', [PenggunaPageController::class, 'create'])->name('create');
 
+        // Bidang Kompetensi Management
+        Route::post('bidang-kompetensi/create', [PenggunaPageController::class, 'createBidangKompetensi'])->name('bidang-kompetensi.create');
+
         // Admin User Management
         Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('store', [AdminUserController::class, 'store'])->name('store');

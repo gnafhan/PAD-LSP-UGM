@@ -25,7 +25,7 @@ class AsesorController extends Controller
      */
     public function create()
     {
-        $bidangKompetensi = BidangKompetensi::all();
+        $bidangKompetensi = BidangKompetensi::getAllOrdered();
         return view('home.home-admin.tambah-asesor', compact('bidangKompetensi'));
     }
 
@@ -133,7 +133,6 @@ class AsesorController extends Controller
      */
     public function edit($id)
     {
-        // ...existing code...
         $asesor = Asesor::with('user')->findOrFail($id); // Eager load user
         
         // Konversi daftar bidang kompetensi dari JSON ke array
@@ -160,7 +159,7 @@ class AsesorController extends Controller
         }
         
         // Ambil semua bidang kompetensi untuk dropdown
-        $bidangKompetensi = BidangKompetensi::all();
+        $bidangKompetensi = BidangKompetensi::getAllOrdered();
         
         // Ambil data tanda tangan aktif
         $asesor->load('tandaTanganAktif');
