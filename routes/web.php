@@ -316,6 +316,8 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/frak01-asesor');
     })->name('frak01-asesor');
 
+    Route::get('/frak01/pdf/{id_asesi}', [\App\Http\Controllers\FRAK01Controller::class, 'generatePdf'])->name('frak01-print');
+
     Route::get('/konsulprauji', function () {
         return view('home/home-asesor/konsul-prauji');
     })->name('konsul-prauji-asesor');
@@ -323,6 +325,8 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/frmapa01', function () {
         return view('home/home-asesor/frmapa01');
     })->name('frmapa01-asesor');
+
+    Route::get('/frmapa01/pdf/{id_asesi}', [\App\Http\Controllers\MAPA01Controller::class, 'generatePdf'])->name('mapa01-print');
 
     Route::get('/frmapa02', function () {
         return view('home/home-asesor/frmapa02');
