@@ -22,6 +22,7 @@ class Skema extends Model
         'id_skema',
         'nomor_skema',
         'nama_skema',
+        'id_bidang_kompetensi',
         'dokumen_skkni',
         'daftar_id_uk', //json
         'persyaratan_skema',
@@ -43,6 +44,11 @@ class Skema extends Model
     public function events()
     {
         return $this->belongsToMany(Event::class, 'event_skema', 'id_skema', 'id_event');
+    }
+
+    public function bidangKompetensi()
+    {
+        return $this->belongsTo(BidangKompetensi::class, 'id_bidang_kompetensi', 'id_bidang_kompetensi');
     }
 
 
