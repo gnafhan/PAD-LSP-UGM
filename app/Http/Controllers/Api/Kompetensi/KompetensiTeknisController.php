@@ -51,6 +51,8 @@ class KompetensiTeknisController extends Controller
      *                 @OA\Property(property="kompetensi_teknis", type="array",
      *                     @OA\Items(
      *                         @OA\Property(property="id_kompetensi_teknis", type="string", example="1"),
+     *                         @OA\Property(property="id_bidang_kompetensi", type="string", example="1"),
+     *                         @OA\Property(property="nama_bidang_kompetensi", type="string", example="Teknologi Informasi"),
      *                         @OA\Property(property="lembaga_sertifikasi", type="string", example="LSP UGM"),
      *                         @OA\Property(property="skema_kompetensi", type="string", example="Software Developer"),
      *                         @OA\Property(property="masa_berlaku", type="string", example="01-01-2025"),
@@ -74,7 +76,7 @@ class KompetensiTeknisController extends Controller
     public function index(string $id)
     {
         // Cari data Asesor berdasarkan ID dengan eager loading kompetensiTeknis
-        $asesor = Asesor::with('kompetensiTeknis')->find($id);
+        $asesor = Asesor::with(['kompetensiTeknis.bidangKompetensi'])->find($id);
 
         if (!$asesor) {
             return response()->json([
@@ -90,6 +92,8 @@ class KompetensiTeknisController extends Controller
         $kompetensiTeknis = $asesor->kompetensiTeknis->map(function($item) {
             return [
                 'id_kompetensi_teknis' => $item->id_kompetensi_teknis,
+                'id_bidang_kompetensi' => $item->id_bidang_kompetensi,
+                'nama_bidang_kompetensi' => $item->bidangKompetensi ? $item->bidangKompetensi->nama_bidang : null,
                 'lembaga_sertifikasi' => $item->lembaga_sertifikasi,
                 'skema_kompetensi' => $item->skema_kompetensi,
                 'masa_berlaku' => $this->formatTanggal($item->masa_berlaku),

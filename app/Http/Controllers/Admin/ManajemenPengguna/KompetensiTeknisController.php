@@ -23,10 +23,29 @@ class KompetensiTeknisController extends Controller
             // Cari asesor berdasarkan ID
             $asesor = Asesor::findOrFail($id);
             
-            // Get sertifikat kompetensi teknis
-            $sertifikat = KompetensiTeknis::where('id_asesor', $id)->get();
+            // Get sertifikat kompetensi teknis dengan relasi bidangKompetensi
+            $sertifikat = KompetensiTeknis::with('bidangKompetensi')->where('id_asesor', $id)->get();
             
-            return view('home.home-admin.kompetensi-asesor', compact('asesor', 'sertifikat'));
+            // Get bidang kompetensi yang dimiliki asesor (dari daftar_bidang_kompetensi)
+            $asesor = Asesor::findOrFail($id);
+            $bidangKompetensiIds = is_array($asesor->daftar_bidang_kompetensi) 
+                ? $asesor->daftar_bidang_kompetensi 
+                : json_decode($asesor->daftar_bidang_kompetensi, true);
+            
+            $bidangKompetensi = collect();
+            if (is_array($bidangKompetensiIds)) {
+                $bidangKompetensi = \App\Models\BidangKompetensi::whereIn('id_bidang_kompetensi', $bidangKompetensiIds)
+                    ->orderBy('nama_bidang')
+                    ->get();
+            }
+            
+            // Buat mapping status sertifikat untuk setiap bidang
+            $statusBidang = [];
+            foreach ($bidangKompetensi as $bidang) {
+                $statusBidang[$bidang->id_bidang_kompetensi] = $sertifikat->where('id_bidang_kompetensi', $bidang->id_bidang_kompetensi)->count() > 0;
+            }
+            
+            return view('home.home-admin.kompetensi-asesor', compact('asesor', 'sertifikat', 'bidangKompetensi', 'statusBidang'));
         } catch (\Exception $e) {
             return redirect()->route('admin.pengguna.asesor.index')
                 ->with('error', 'Gagal memuat data kompetensi asesor: ' . $e->getMessage());
@@ -53,11 +72,14 @@ class KompetensiTeknisController extends Controller
     public function store(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
+            'id_bidang_kompetensi' => 'required|exists:bidang_kompetensi,id_bidang_kompetensi',
             'lembaga_sertifikasi' => 'required|string|max:255',
             'skema_kompetensi' => 'required|string|max:255',
             'masa_berlaku' => 'required|date',
             'file_sertifikat' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
         ], [
+            'id_bidang_kompetensi.required' => 'Bidang kompetensi harus dipilih',
+            'id_bidang_kompetensi.exists' => 'Bidang kompetensi yang dipilih tidak valid',
             'lembaga_sertifikasi.required' => 'Lembaga sertifikasi tidak boleh kosong',
             'skema_kompetensi.required' => 'Skema kompetensi tidak boleh kosong',
             'masa_berlaku.required' => 'Masa berlaku tidak boleh kosong',
@@ -69,6 +91,17 @@ class KompetensiTeknisController extends Controller
         if ($validator->fails()) {
             return redirect()->route('admin.pengguna.kompetensi.index', $id)
                 ->withErrors($validator)
+                ->withInput();
+        }
+        
+        // Validasi custom: pastikan satu bidang hanya bisa diisi satu sertifikat
+        $existingSertifikat = KompetensiTeknis::where('id_asesor', $id)
+            ->where('id_bidang_kompetensi', $request->id_bidang_kompetensi)
+            ->first();
+            
+        if ($existingSertifikat) {
+            return redirect()->route('admin.pengguna.kompetensi.index', $id)
+                ->withErrors(['id_bidang_kompetensi' => 'Bidang kompetensi ini sudah memiliki sertifikat'])
                 ->withInput();
         }
         
@@ -90,6 +123,7 @@ class KompetensiTeknisController extends Controller
             // Buat kompetensi teknis baru
             KompetensiTeknis::create([
                 'id_asesor' => $asesor->id_asesor,
+                'id_bidang_kompetensi' => $request->id_bidang_kompetensi,
                 'lembaga_sertifikasi' => $request->lembaga_sertifikasi,
                 'skema_kompetensi' => $request->skema_kompetensi,
                 'masa_berlaku' => $request->masa_berlaku,
@@ -158,6 +192,7 @@ class KompetensiTeknisController extends Controller
     public function update(Request $request, $id, $kompetensiId)
     {
         $validator = Validator::make($request->all(), [
+            'id_bidang_kompetensi' => 'nullable|exists:bidang_kompetensi,id_bidang_kompetensi',
             'lembaga_sertifikasi' => 'required|string|max:255',
             'skema_kompetensi' => 'required|string|max:255',
             'masa_berlaku' => 'required|date',
@@ -193,6 +228,7 @@ class KompetensiTeknisController extends Controller
                 $kompetensi->file_sertifikat = $fileName;
             }
             
+            $kompetensi->id_bidang_kompetensi = $request->id_bidang_kompetensi ?: null;
             $kompetensi->lembaga_sertifikasi = $request->lembaga_sertifikasi;
             $kompetensi->skema_kompetensi = $request->skema_kompetensi;
             $kompetensi->masa_berlaku = $request->masa_berlaku;

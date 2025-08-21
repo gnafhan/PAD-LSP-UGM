@@ -17,6 +17,7 @@ class KompetensiTeknis extends Model
     protected $fillable = [
         'id_kompetensi_teknis',
         'id_asesor',
+        'id_bidang_kompetensi',
         'lembaga_sertifikasi',
         'skema_kompetensi',
         'masa_berlaku',
@@ -35,5 +36,14 @@ class KompetensiTeknis extends Model
     public function asesor()
     {
         return $this->belongsTo(Asesor::class, 'id_asesor', 'id_asesor');
+    }
+
+    /**
+     * Relasi Many to One:
+     * Banyak kompetensi_teknis terkait dengan satu bidang kompetensi.
+     */
+    public function bidangKompetensi()
+    {
+        return $this->belongsTo(BidangKompetensi::class, 'id_bidang_kompetensi', 'id_bidang_kompetensi');
     }
 }
