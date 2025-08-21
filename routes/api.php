@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak03Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Apl02Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak02Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Ak07Controller;
+use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Fria05Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa01Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\Mapa02Controller;
 use App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KonsultasiPraUjiController;
@@ -194,5 +195,15 @@ Route::middleware('api_key')->group(function () {
         Route::post('/{id}/sign-asesi', [\App\Http\Controllers\Api\Fria01Controller::class, 'signAsesi']);
         // Sign asesor
         Route::post('/{id}/sign-asesor', [\App\Http\Controllers\Api\Fria01Controller::class, 'signAsesor']);
+    });
+    
+    // Route for FRIA05
+    Route::prefix('/v1/asesmen/fria05')->group(function () {
+        // Get data 
+        Route::get('/{id_asesi}', [Fria05Controller::class, 'getFria05']);
+        
+        // Save data - separate endpoints for Asesi and Asesor
+        Route::post('/asesi/save', [Fria05Controller::class, 'saveFria05Asesi']);
+        Route::post('/asesor/save', [Fria05Controller::class, 'saveFria05Asesor']);
     });
 });
