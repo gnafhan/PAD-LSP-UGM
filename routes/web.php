@@ -313,6 +313,8 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/frmapa01');
     })->name('frmapa01-asesor');
 
+    Route::get('/frmapa01/pdf/{id_asesi}', [\App\Http\Controllers\MAPA01Controller::class, 'generatePdf'])->name('mapa01-print');
+
     Route::get('/frmapa02', function () {
         return view('home/home-asesor/frmapa02');
     })->name('frmapa02-asesor');
