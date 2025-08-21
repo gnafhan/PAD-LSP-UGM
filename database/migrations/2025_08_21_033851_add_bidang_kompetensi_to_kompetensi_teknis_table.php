@@ -12,9 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('kompetensi_teknis', function (Blueprint $table) {
-            // Ubah tipe data id_bidang_kompetensi dari varchar ke bigint unsigned
-            $table->unsignedBigInteger('id_bidang_kompetensi')->nullable()->change();
-            $table->foreign('id_bidang_kompetensi')->references('id_bidang_kompetensi')->on('bidang_kompetensi')->onDelete('set null');
+            // Tambah kolom id_bidang_kompetensi baru
+            $table->unsignedBigInteger('id_bidang_kompetensi')->nullable()->after('id_asesor');
+        });
+        
+        // Tambah foreign key constraint
+        Schema::table('kompetensi_teknis', function (Blueprint $table) {
+            $table->foreign('id_bidang_kompetensi')
+                  ->references('id_bidang_kompetensi')
+                  ->on('bidang_kompetensi')
+                  ->onDelete('set null');
         });
     }
 
@@ -24,8 +31,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('kompetensi_teknis', function (Blueprint $table) {
+            // Drop foreign key constraint dulu
             $table->dropForeign(['id_bidang_kompetensi']);
-            $table->unsignedBigInteger('id_bidang_kompetensi')->nullable()->change();
+        });
+        
+        Schema::table('kompetensi_teknis', function (Blueprint $table) {
+            // Drop kolom id_bidang_kompetensi
+            $table->dropColumn('id_bidang_kompetensi');
         });
     }
 };
