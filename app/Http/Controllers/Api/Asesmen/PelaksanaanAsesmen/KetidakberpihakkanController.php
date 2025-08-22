@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Services\AsesmenValidationService;
 use App\Services\ProgressTrackingService;
 use App\Helpers\DateTimeHelper;
+use App\Models\RincianAsesmen;
 
 /**
  * @OA\Tag(
@@ -261,4 +262,38 @@ class KetidakberpihakkanController extends Controller
             'data' => $ketidakberpihakan
         ]);
     }
+
+    public function generatePdf($id_asesi)
+{
+    // Pull in the same detail info as before
+    $detailRincian = RincianAsesmen::with([
+        'asesi.skema',
+        'asesi.progresAsesmen',
+        'asesor',
+        'event.tuk',
+    ])->where('id_asesi', $id_asesi)->first();
+    
+    if (!$detailRincian) {
+        return redirect()->route('ketidakberpihakan-asesor')
+            ->with('error', 'Data asesi tidak ditemukan');
+    }
+    
+    if ($detailRincian->asesi && $detailRincian->asesi->skema) {
+        $idArray = is_array($detailRincian->asesi->skema->daftar_id_uk) 
+            ? $detailRincian->asesi->skema->daftar_id_uk 
+            : json_decode($detailRincian->asesi->skema->daftar_id_uk, true);
+        
+        $detailRincian->asesi->skema->unitKompetensiLoaded = \App\Models\UK::with('elemen_uk')
+            ->whereIn('id_uk', $idArray ?? [])
+            ->get();
+    }
+
+    // Fetch the impartiality record instead of FRIA01
+    $formData = Ketidakberpihakan::where('id_asesi', $id_asesi)
+        ->where('id_asesor', $detailRincian->id_asesor)
+        ->first();
+
+    return view('home.home-asesor.ketidakberpihakan-pdf', compact('detailRincian', 'formData'));
+}
+
 }

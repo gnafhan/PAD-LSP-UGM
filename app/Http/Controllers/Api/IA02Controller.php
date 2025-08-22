@@ -7,6 +7,7 @@ use App\Services\IA02Service;
 use App\Services\ProgressTrackingService;
 use App\Models\IA02;
 use App\Models\Asesor;
+use App\Models\RincianAsesmen;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -530,4 +531,37 @@ class IA02Controller extends Controller
             ], 500);
         }
     }
+    public function generatePdf($id_asesi)
+{
+    $detailRincian = RincianAsesmen::with([
+        'asesi.skema',
+        'asesi.progresAsesmen',
+        'asesor',
+        'event.tuk',
+    ])->where('id_asesi', $id_asesi)->first();
+    
+    if (!$detailRincian) {
+        return redirect()->route('fria02-asesor')->with('error', 'Data asesi tidak ditemukan');
+    }
+    
+    if ($detailRincian->asesi && $detailRincian->asesi->skema) {
+        $idArray = is_array($detailRincian->asesi->skema->daftar_id_uk) 
+            ? $detailRincian->asesi->skema->daftar_id_uk 
+            : json_decode($detailRincian->asesi->skema->daftar_id_uk, true);
+        
+        $detailRincian->asesi->skema->unitKompetensiLoaded = \App\Models\UK::with('elemen_uk')
+            ->whereIn('id_uk', $idArray ?? [])
+            ->get();
+    }
+    
+    // Fetch IA02
+    $formData = IA02::with(['prosesAssessments.instruksiKerjas'])
+        ->where('id_asesi', $id_asesi)
+        ->where('id_asesor', $detailRincian->id_asesor)
+        ->where('id_skema', $detailRincian->asesi->id_skema)
+        ->first();
+        
+    return view('home.home-asesor.fria02-pdf', compact('detailRincian', 'formData'));
+}
+
 }
