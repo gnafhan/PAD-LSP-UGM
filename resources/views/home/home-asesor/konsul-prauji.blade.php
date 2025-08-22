@@ -1800,7 +1800,9 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Alias for compatibility
-    window.showDocument = window.showSummary;
+    window.showDocument = function(id_asesi, nama_asesi, nama_skema, progress_percentage, completed_steps, total_steps, konsultasi_pra_uji_completed = false) {
+        window.open('/asesor/konsul-prauji/pdf/' + id_asesi, "_blank");
+    };
 });
 
 // Table sorting function (global for onclick handler)
