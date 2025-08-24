@@ -22,7 +22,7 @@ class MAPA02Controller extends Controller
         $asesi->load(['skema', 'rincianAsesmen.event.tuk']);
 
         if (!$asesi) {
-            return redirect()->route('frmapa01-asesor')->with('error', 'Data asesi tidak ditemukan');
+            return redirect()->route('frmapa02-asesor')->with('error', 'Data asesi tidak ditemukan');
         }
 
         $detailRincian = RincianAsesmen::with([
