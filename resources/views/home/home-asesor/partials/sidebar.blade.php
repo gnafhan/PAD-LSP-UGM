@@ -223,6 +223,19 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('tugas-peserta') }}" class="flex items-center p-2 rounded-lg group
+                        {{ request()->routeIs('tugas-peserta') ? 'bg-gradient-to-r from-biru to-ungu text-white hover:text-transparent hover:bg-clip-text' : 'text-sidebar_font hover:bg-btn_hover'}}">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="w-5 h-5 {{ request()->routeIs('tugas-peserta') ? 'text-white group-hover:text-biru' : 'text-sidebar_font' }}"
+                            viewBox="0 0 15 15"
+                            fill="none">
+                            <path d="M2.5 3.5h10v8h-10v-8zm1 1v6h8v-6h-8zm2 1.5h4v.5h-4v-.5zm0 1.5h4v.5h-4v-.5zm0 1.5h2v.5h-2v-.5z"
+                                fill="currentColor"/>
+                        </svg>
+                        <span class="ms-3">Tugas Peserta</span>
+                    </a>
+                </li>
+                <li>
                     <a href="" class="flex items-center p-2 rounded-lg group
                         {{ request()->routeIs('fria07-asesor') ? 'bg-gradient-to-r from-biru to-ungu text-white hover:text-transparent hover:bg-clip-text' : 'text-sidebar_font hover:bg-btn_hover'}}">
                         <svg xmlns="http://www.w3.org/2000/svg"

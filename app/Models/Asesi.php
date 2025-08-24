@@ -79,6 +79,11 @@ class Asesi extends Model
         return $this->hasMany(Ak01::class, 'id_asesi', 'id_asesi');
     }
 
+    public function ia02Tugas()
+    {
+        return $this->hasMany(IA02Tugas::class, 'id_asesi', 'id_asesi');
+    }
+
     protected static function boot()
     {
         parent::boot();
