@@ -26,6 +26,7 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SwaggerController;
 use App\Http\Controllers\TempImageController;
+use App\Http\Controllers\TugasPesertaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -361,6 +362,12 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::post('/fria07/store', [\App\Http\Controllers\Fria07Controller::class, 'store'])->name('fria07.store');
     Route::post('/fria07/sign', [\App\Http\Controllers\Fria07Controller::class, 'signAsesor'])->name('fria07.sign');
     Route::get('/fria07/pdf/{id_asesi}', [\App\Http\Controllers\IA07Controller::class, 'generatePdf'])->name('fria07.pdf');
+
+    Route::get('/tugas-peserta', [TugasPesertaController::class, 'index'])->name('tugas-peserta');
+    Route::post('/tugas-peserta', [TugasPesertaController::class, 'store'])->name('tugas-peserta.store');
+    Route::get('/tugas-peserta/pdf/{id_asesi}', [TugasPesertaController::class, 'generatePdf'])->name('tugas-peserta.pdf');
+    Route::get('/tugas-peserta/download/{id}', [TugasPesertaController::class, 'downloadFile'])->name('tugas-peserta.download');
+    Route::put('/tugas-peserta/status/{id}', [TugasPesertaController::class, 'updateTaskStatus'])->name('tugas-peserta.status');
 
     Route::get('/hasilasesmen', [HasilAsesmenController::class, 'index'])->name('hasil-asesmen-asesor');
 

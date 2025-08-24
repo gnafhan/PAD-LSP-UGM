@@ -24,7 +24,7 @@ class UsersSeeder extends Seeder
         $predefinedUsers = [
             [
                 'email' => 'yeka@mail.ugm.ac.id',
-                'password' => '123123',
+                'password' => ' ',
                 'no_hp' => '081234567890',
                 'level' => 'asesi',
             ],
