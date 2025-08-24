@@ -319,6 +319,8 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/frmapa02');
     })->name('frmapa02-asesor');
 
+    Route::get('/frmapa02/pdf/{id_asesi}', [\App\Http\Controllers\MAPA02Controller::class, 'generatePdf'])->name('mapa02-print');
+
     Route::get('/ketidakberpihakan', function () {
         return view('home/home-asesor/ketidakberpihakan');
     })->name('ketidakberpihakan-asesor');
