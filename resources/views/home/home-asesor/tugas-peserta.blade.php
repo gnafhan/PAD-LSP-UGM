@@ -162,9 +162,35 @@
                         </td>
                         <td class="px-4 py-0">
                             <div class="flex px-4 py-3 justify-center items-center" id="status-{{ $rincian->asesi->id_asesi ?? 1 }}">
-                                <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
-                                </svg>
+                                @if($rincian->task_count == 0)
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 2L3 7v11c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V7l-7-5z"/>
+                                        </svg>
+                                        Belum Ada Tugas
+                                    </span>
+                                @elseif(!$rincian->all_reviewed)
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"/>
+                                        </svg>
+                                        Menunggu Review
+                                    </span>
+                                @elseif($rincian->has_rejected)
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
+                                        </svg>
+                                        Perlu Perbaikan
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-600">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                                        </svg>
+                                        Selesai Review
+                                    </span>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -354,7 +380,7 @@
             @endif
 
             {{-- Button Simpan --}}
-            <form id="formTugasPeserta" method="POST" action="{{ route('tugas-peserta.store') }}">
+            {{-- <form id="formTugasPeserta" method="POST" action="{{ route('tugas-peserta.store') }}">
                 @csrf
                 <input type="hidden" name="id_asesi" value="{{ request()->get('id_asesi') ?? '' }}">
                 <input type="hidden" name="id_asesor" value="1">
@@ -367,7 +393,7 @@
                         Simpan Tugas
                     </button>
                 </div>
-            </form>
+            </form> --}}
         </div>
     </div>
 

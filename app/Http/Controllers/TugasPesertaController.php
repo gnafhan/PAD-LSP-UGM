@@ -29,12 +29,35 @@ class TugasPesertaController extends Controller
             'event.tuk',
         ])->where('id_asesor', $currentAsesor->id_asesor)->get();
 
-        // Add task count for each asesi manually
+        // Add task count and status for each asesi manually
         $daftarAsesi = $daftarAsesi->map(function ($rincian) use ($currentAsesor) {
-            $taskCount = IA02Tugas::where('id_asesi', $rincian->id_asesi)
+            $tasks = IA02Tugas::where('id_asesi', $rincian->id_asesi)
                 ->where('id_asesor', $currentAsesor->id_asesor)
-                ->count();
-            $rincian->setAttribute('task_count', $taskCount);
+                ->get();
+                
+            $rincian->setAttribute('task_count', $tasks->count());
+            
+            // Calculate status
+            $allReviewed = true;
+            $hasRejected = false;
+            
+            if ($tasks->count() > 0) {
+                foreach ($tasks as $task) {
+                    if (in_array($task->status, ['submitted', 'draft'])) {
+                        $allReviewed = false;
+                        break;
+                    }
+                    if ($task->status === 'rejected') {
+                        $hasRejected = true;
+                    }
+                }
+            } else {
+                $allReviewed = false;
+            }
+            
+            $rincian->setAttribute('all_reviewed', $allReviewed);
+            $rincian->setAttribute('has_rejected', $hasRejected);
+            
             return $rincian;
         });
 
