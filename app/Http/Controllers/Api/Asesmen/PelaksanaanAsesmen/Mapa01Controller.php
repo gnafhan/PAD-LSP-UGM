@@ -31,7 +31,7 @@ class Mapa01Controller extends Controller
 
     /**
      * Get MAPA01 data for an Asesi
-     * 
+     *
      * @OA\Get(
      *     path="/asesmen/mapa01/{id_asesi}",
      *     summary="Mendapatkan data formulir MAPA01 untuk asesi",
@@ -114,16 +114,16 @@ class Mapa01Controller extends Controller
     {
         // Validate Asesi exists
         $asesiResult = $this->validationService->validateAsesiExists(
-            $id_asesi, 
+            $id_asesi,
             ['skema', 'rincianAsesmen.asesor', 'rincianAsesmen.event.tuk']
         );
-        
+
         if (isset($asesiResult['error'])) {
             return response()->json($asesiResult, $asesiResult['code']);
         }
-        
+
         $asesi = $asesiResult;
-        
+
         // Validate Asesi has RincianAsesmen
         $rincianResult = $this->validationService->validateRincianAsesmen($asesi);
         if ($rincianResult) {
@@ -133,7 +133,7 @@ class Mapa01Controller extends Controller
         $asesor = $asesi->rincianAsesmen->asesor;
         $id_asesor = $asesor->id_asesor;
         $id_skema = $asesi->id_skema;
-        
+
         // Get MAPA01 data if it exists
         $mapa01 = Mapa01::where('id_asesi', $id_asesi)
             ->where('id_asesor', $id_asesor)
@@ -155,7 +155,7 @@ class Mapa01Controller extends Controller
                     'rencana' => []
                 ];
             }
-            
+
             // Get metode label
             $metodeMap = [
                 'CL' => 'Daftar Periksa',
@@ -166,7 +166,7 @@ class Mapa01Controller extends Controller
                 'CUP' => 'Ceklis Ulasan Produk'
             ];
             $metodeLabel = $metodeMap[$rencana->metode_dan_perangkat_asesmen] ?? $rencana->metode_dan_perangkat_asesmen;
-            
+
             $groupedRencanaAsesmen[$rencana->id_uk]['rencana'][] = [
                 'elemen' => $rencana->elemen,
                 'bukti_bukti' => $rencana->bukti_bukti,
@@ -232,7 +232,7 @@ class Mapa01Controller extends Controller
 
     /**
      * Create or update MAPA01 data for Asesor
-     * 
+     *
      * @OA\Post(
      *     path="/asesmen/mapa01/save",
      *     summary="Menyimpan data formulir MAPA01 oleh Asesor",
@@ -313,10 +313,10 @@ class Mapa01Controller extends Controller
         if (isset($asesiResult['error'])) {
             return response()->json($asesiResult, $asesiResult['code']);
         }
-        
+
         // Validate Asesi-Asesor pair
         $pairResult = $this->validationService->validateAsesiAsesorPair(
-            $request->id_asesi, 
+            $request->id_asesi,
             $request->id_asesor
         );
         if ($pairResult) {
@@ -344,7 +344,7 @@ class Mapa01Controller extends Controller
             // check if asesor has a signature
             $tanda_tangan_asesor = TandaTanganAsesor::where('id_asesor', $request->id_asesor)->first();
             if ($tanda_tangan_asesor) {
-                $mapa01->waktu_tanda_tangan_asesor = now();                
+                $mapa01->waktu_tanda_tangan_asesor = now();
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -358,8 +358,8 @@ class Mapa01Controller extends Controller
         // Update the progres_asesmen table if the asesor has signed
         if ($mapa01->waktu_tanda_tangan_asesor) {
             $this->progressService->completeStep(
-                $request->id_asesi, 
-                'mapa01', 
+                $request->id_asesi,
+                'mapa01',
                 'Completed by Asesor ID: ' . $request->id_asesor
             );
         }
