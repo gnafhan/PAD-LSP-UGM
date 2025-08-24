@@ -165,7 +165,7 @@
             <div style="margin-top: 10px;">
                 <span style="font-weight: bold;">Jawaban:</span>
                 <div style="background-color: #fff; padding: 10px; border: 1px solid #e2e8f0; margin-top: 5px;">
-                    {{ $task->teks_jawaban }}
+                    {{ strip_tags($task->teks_jawaban) }}
                 </div>
             </div>
             @elseif($task->jenis_evidence == '2' && $task->link_eksternal)

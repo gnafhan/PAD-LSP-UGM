@@ -67,14 +67,14 @@
                         </a>
                     </div>
                 </li>
-                @if(request()->get('id_asesi'))
+                @if(request()->get('id_asesi') && $detailRincian)
                 <li aria-current="page">
                     <div class="flex items-center">
                         <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 9l4-4-4-4"/>
                         </svg>
                         <span class="ms-1 text-sm font-medium text-black">
-                            @if(request()->get('id_asesi') == 1) Muhammad Rifai @elseif(request()->get('id_asesi') == 2) Ahmad Fauzi @else - @endif
+                            {{ $detailRincian->asesi->nama_asesi ?? 'Nama Asesi Tidak Tersedia' }}
                         </span>
                     </div>
                 </li>
@@ -309,10 +309,10 @@
                             <div class="mt-3">
                                 @if($task->jenis_evidence == '1')
                                     <div class="bg-white p-3 rounded border">
-                                        <p class="text-sm text-gray-700">{{ Str::limit($task->teks_jawaban, 200) }}</p>
-                                        @if(strlen($task->teks_jawaban) > 200)
+                                        <p class="text-sm text-gray-700">{{ Str::limit(strip_tags($task->teks_jawaban), 200) }}</p>
+                                        @if(strlen(strip_tags($task->teks_jawaban)) > 200)
                                             <button class="text-blue-600 text-xs mt-1 hover:underline" 
-                                                onclick="toggleText(this, '{{ addslashes($task->teks_jawaban) }}')">
+                                                onclick="toggleText(this, '{{ addslashes(strip_tags($task->teks_jawaban)) }}')">
                                                 Lihat selengkapnya
                                             </button>
                                         @endif
