@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class IA02 extends Model
+class IA11 extends Model
 {
     use HasFactory;
 
-    protected $table = 'ia02';
+    protected $table = 'ia11';
 
     protected $fillable = [
         'id_asesi',
@@ -18,7 +18,8 @@ class IA02 extends Model
         'judul_sertifikasi',
         'nama_peserta',
         'nama_asesor',
-        'instruksi_kerja',
+        'kegiatan_data',
+        'komentar_all',
         'waktu_tanda_tangan_asesor',
         'waktu_tanda_tangan_asesi',
         'ttd_asesor',
@@ -30,6 +31,7 @@ class IA02 extends Model
     protected $casts = [
         'waktu_tanda_tangan_asesor' => 'datetime',
         'waktu_tanda_tangan_asesi' => 'datetime',
+        'kegiatan_data' => 'json',
     ];
 
     // Relationships
@@ -69,18 +71,6 @@ class IA02 extends Model
     public function getNomorSkemaAttribute()
     {
         return $this->skema ? $this->skema->nomor_skema : null;
-    }
-
-
-
-    public function kompetensis()
-    {
-        return $this->hasMany(IA02Kompetensi::class, 'ia02_id');
-    }
-
-    public function prosesAssessments()
-    {
-        return $this->hasMany(IA02ProsesAssessment::class, 'ia02_id')->orderBy('nomor_proses');
     }
 
     // Helper methods

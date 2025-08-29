@@ -77,10 +77,11 @@ class IA02Controller extends Controller
                         'id_asesor' => $ia02->id_asesor,
                         'id_skema' => $ia02->id_skema,
                         'judul_sertifikasi' => $ia02->judul_sertifikasi,
-                        'nomor_sertifikasi' => $ia02->nomor_sertifikasi,
+                        'nomor_skema' => $ia02->nomor_skema, // Using accessor
+                        'nama_skema' => $ia02->skema->nama_skema ?? 'N/A',
                         'nama_peserta' => $ia02->nama_peserta,
                         'nama_asesor' => $ia02->nama_asesor,
-                        'tuk' => $ia02->tuk,
+                        'tuk' => $ia02->tuk, // Using accessor
                         'instruksi_kerja' => $ia02->instruksi_kerja,
                         'waktu_tanda_tangan_asesor' => $ia02->waktu_tanda_tangan_asesor?->format('d-m-Y H:i:s') . ' WIB',
                         'waktu_tanda_tangan_asesi' => $ia02->waktu_tanda_tangan_asesi?->format('d-m-Y H:i:s') . ' WIB',
@@ -401,7 +402,7 @@ class IA02Controller extends Controller
                         'id_asesi' => $ia02->id_asesi,
                         'nama_asesi' => $ia02->asesi->nama_asesi ?? 'N/A',
                         'nama_skema' => $ia02->skema->nama_skema ?? 'N/A',
-                        'nomor_skema' => $ia02->skema->kode_skema ?? 'N/A',
+                        'nomor_skema' => $ia02->skema->nomor_skema ?? 'N/A',
                         'status' => $ia02->status,
                         'status_label' => $ia02->status_label,
                         'is_completed' => $ia02->isCompleted(),

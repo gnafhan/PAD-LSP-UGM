@@ -312,7 +312,7 @@ class DataAsesorController extends Controller
         // The tandaTanganAktif relation also needs its file_url if present.
         if ($asesor->tandaTanganAktif->isNotEmpty()) {
             $tandaTangan = $asesor->tandaTanganAktif->first();
-            $asesor->file_url_tanda_tangan = asset('storage/tanda_tangan/' . $tandaTangan->file_tanda_tangan);
+            $asesor->file_url_tanda_tangan = url('storage/tanda_tangan/' . $tandaTangan->file_tanda_tangan);
         }
 
         // File_sertifikat_asesor

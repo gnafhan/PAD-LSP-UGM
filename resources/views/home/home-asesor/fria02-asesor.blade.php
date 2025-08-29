@@ -112,7 +112,7 @@
                         <span class="py-1 pb-2 inline-flex items-center min-w-fit text-sidebar_font -mt-px -ms-px w-1/3">
                             Nomor Sertifikasi
                         </span>
-                        <p id="nomorSertifikasi" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
+                        <p id="nomorSkema" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
                         Pilih asesi untuk melihat data
                         </p>
                     </div>
@@ -131,7 +131,7 @@
                             Nama Asesor
                         </span>
                         <p id="namaAsesor" type="text" class="peer text-sidebar_font py-2 block w-full bg-transparent border-t-transparent border-b-1 border-x-transparent border-border_input focus:border-t-transparent focus:border-x-transparent focus:border-biru focus:ring-0 disabled:opacity-50 disabled:pointer-events-none" placeholder="Enter name">
-                            {{ Auth::user()->asesor->nama_asesor ?? 'Nama Asesor' }}
+                            {{ Auth::check() && Auth::user()->asesor ? Auth::user()->asesor->nama_asesor : 'Asesor Test' }}
                         </p>
                     </div>
                     <div class="flex">
@@ -710,7 +710,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const apiConfig = {
         url: @json(config('services.api.url')),
         key: @json(config('services.api.key')),
-        asesorId: @json(Auth::user()->asesor->id_asesor ?? null),
+        asesorId: @json(Auth::check() && Auth::user()->asesor ? Auth::user()->asesor->id_asesor : 'ASESOR202500001'),
         csrfToken: @json(csrf_token())
     };
     
@@ -1310,15 +1310,15 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateFormData(asesiId, namaAsesi, namaSkema) {
         // Update form fields with asesi data
         const judulSertifikasi = document.getElementById('judulSertifikasi');
-        const nomorSertifikasi = document.getElementById('nomorSertifikasi');
+        const nomorSkema = document.getElementById('nomorSkema');
         const namaPeserta = document.getElementById('namaPeserta');
         const namaAsesor = document.getElementById('namaAsesor');
         const tuk = document.getElementById('tuk');
 
         if (judulSertifikasi) judulSertifikasi.textContent = namaSkema;
-        if (nomorSertifikasi) nomorSertifikasi.textContent = '-'; // Will be filled from API
+        if (nomorSkema) nomorSkema.textContent = '-'; // Will be filled from API
         if (namaPeserta) namaPeserta.textContent = namaAsesi;
-        if (namaAsesor) namaAsesor.textContent = @json(Auth::user()->name) || '-';
+        if (namaAsesor) namaAsesor.textContent = @json(Auth::check() ? Auth::user()->name : 'Asesor Test') || '-';
         if (tuk) tuk.textContent = 'LSP Politeknik Negeri Malang'; // Default TUK
     }
 
@@ -1377,13 +1377,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update form with IA02 data
     function updateFormWithIA02Data(ia02Detail) {
         const judulSertifikasi = document.getElementById('judulSertifikasi');
-        const nomorSertifikasi = document.getElementById('nomorSertifikasi');
+        const nomorSkema = document.getElementById('nomorSkema');
         const namaPeserta = document.getElementById('namaPeserta');
         const namaAsesor = document.getElementById('namaAsesor');
         const tuk = document.getElementById('tuk');
 
         if (judulSertifikasi) judulSertifikasi.textContent = ia02Detail.judul_sertifikasi || 'Tidak tersedia';
-        if (nomorSertifikasi) nomorSertifikasi.textContent = ia02Detail.nomor_sertifikasi || 'Tidak tersedia';
+        if (nomorSkema) nomorSkema.textContent = ia02Detail.nomor_skema || 'Tidak tersedia';
         if (namaPeserta) namaPeserta.textContent = ia02Detail.nama_peserta || 'Tidak tersedia';
         if (namaAsesor) namaAsesor.textContent = ia02Detail.nama_asesor || 'Tidak tersedia';
         if (tuk) tuk.textContent = ia02Detail.tuk || 'Tidak tersedia';

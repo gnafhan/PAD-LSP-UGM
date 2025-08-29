@@ -187,6 +187,21 @@ Route::middleware('api_key')->group(function () {
     });
 });
 
+// Route for IA11
+Route::middleware('api_key')->group(function () {
+    Route::prefix('/v1/asesmen/ia11')->group(function () {
+        // Get data
+        Route::get('/asesor/{id_asesi}', [\App\Http\Controllers\Api\IA11Controller::class, 'getIA11ForAsesor']);
+        
+        // Save data
+        Route::post('/save', [\App\Http\Controllers\Api\IA11Controller::class, 'saveIA11']);
+        
+        // Sign by asesor - match IA02 routes
+        Route::post('/asesor/{id_asesi}/sign', [\App\Http\Controllers\Api\IA11Controller::class, 'signByAsesor']);
+        Route::post('/{id}/sign-asesor', [\App\Http\Controllers\Api\IA11Controller::class, 'signByAsesor']);
+    });
+});
+
 // Route for FRIA01
 Route::middleware('api_key')->group(function () {
     Route::prefix('/v1/asesmen/fria01')->group(function () {
