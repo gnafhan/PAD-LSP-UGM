@@ -32,6 +32,7 @@ class FRAPL02Controller extends Controller
 
 //        @dd($asesor);
 
+
         if (!$detailRincian) {
             return redirect()->route('frapl02-asesor')->with('error', 'Data asesi tidak ditemukan');
         }
