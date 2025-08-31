@@ -313,6 +313,8 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
         return view('home/home-asesor/frapl02-asesor');
     })->name('frapl02-asesor');
 
+    Route::get('/frapl02/pdf/{id_asesi}', [\App\Http\Controllers\FRAPL02Controller::class, 'generatePdf'])->name('frapl02-print');
+
     Route::get('/frak01', function () {
         return view('home/home-asesor/frak01-asesor');
     })->name('frak01-asesor');
