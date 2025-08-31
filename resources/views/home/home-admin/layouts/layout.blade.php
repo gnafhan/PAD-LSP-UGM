@@ -18,13 +18,20 @@
 <body>
     @if (Auth::user()->level == 'admin')
         @include('home.home-admin.partials.navbar')
+        <div class="flex">
+            @include('home.home-admin.partials.sidebar')
+            <main class="flex-1">
+                @yield('content')
+                @yield('scripts')
+            </main>
+        </div>
     @elseif (Auth::user()->level == 'asesi')
         @include('home.home-asesi.partials.navbar')
+        <main>
+            @yield('content')
+            @yield('scripts')
+        </main>
     @endif
-    <main>
-        @yield('content')
-        @yield('scripts')
-    </main>
     @include('home.home-admin.partials.footer')
 </body>
 </html>

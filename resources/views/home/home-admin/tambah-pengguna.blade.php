@@ -306,6 +306,13 @@
                                                 <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                                             </svg>
                                         </button>
+                                        <button type="button" id="tambahBidangBaruBtn" 
+                                            class="inline-flex items-center px-3 py-2 bg-green-600 text-white border border-transparent rounded-md font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                            </svg>
+                                            Baru
+                                        </button>
                                     </div>
                                     
                                     <input type="hidden" id="bidang_kompetensi_hidden" name="bidang_kompetensi" value="[]">
@@ -359,6 +366,41 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Bidang Kompetensi Baru -->
+<div id="modalTambahBidang" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Tambah Bidang Kompetensi Baru</h3>
+                <button type="button" id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="formTambahBidang">
+                <div class="mb-4">
+                    <label for="nama_bidang_baru" class="block text-sm font-medium text-gray-700 mb-2">Nama Bidang Kompetensi <span class="text-red-500">*</span></label>
+                    <input type="text" id="nama_bidang_baru" name="nama_bidang_baru" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                           placeholder="Masukkan nama bidang kompetensi" required>
+                    <div id="error_nama_bidang" class="hidden text-sm text-red-600 mt-1"></div>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelBtn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        Batal
+                    </button>
+                    <button type="submit" id="submitBidangBtn" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Simpan
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -454,6 +496,99 @@
                 </button>
             `;
             bidangList.appendChild(newItem);
+        });
+
+        // Event listener untuk tombol tambah bidang baru
+        document.getElementById('tambahBidangBaruBtn').addEventListener('click', function() {
+            document.getElementById('modalTambahBidang').classList.remove('hidden');
+            document.getElementById('nama_bidang_baru').focus();
+        });
+
+        // Event listener untuk tombol close modal
+        document.getElementById('closeModalBtn').addEventListener('click', function() {
+            document.getElementById('modalTambahBidang').classList.add('hidden');
+            document.getElementById('formTambahBidang').reset();
+            document.getElementById('error_nama_bidang').classList.add('hidden');
+        });
+
+        // Event listener untuk tombol cancel
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            document.getElementById('modalTambahBidang').classList.add('hidden');
+            document.getElementById('formTambahBidang').reset();
+            document.getElementById('error_nama_bidang').classList.add('hidden');
+        });
+
+        // Event listener untuk form tambah bidang
+        document.getElementById('formTambahBidang').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const namaBidang = document.getElementById('nama_bidang_baru').value.trim();
+            const submitBtn = document.getElementById('submitBidangBtn');
+            const errorDiv = document.getElementById('error_nama_bidang');
+            
+            if (!namaBidang) {
+                errorDiv.textContent = 'Nama bidang kompetensi tidak boleh kosong';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Menyimpan...';
+            
+            // Send AJAX request
+            fetch('{{ route("admin.pengguna.bidang-kompetensi.create") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    nama_bidang: namaBidang
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Add new bidang to dropdown
+                    const select = document.getElementById('id_bidang');
+                    const newOption = document.createElement('option');
+                    newOption.value = data.data.id;
+                    newOption.setAttribute('data-nama', data.data.nama);
+                    newOption.textContent = data.data.nama;
+                    select.appendChild(newOption);
+                    
+                    // Close modal
+                    document.getElementById('modalTambahBidang').classList.add('hidden');
+                    document.getElementById('formTambahBidang').reset();
+                    errorDiv.classList.add('hidden');
+                    
+                    // Show success message
+                    alert('Bidang kompetensi berhasil ditambahkan!');
+                    
+                    // Auto-select the new bidang
+                    select.value = data.data.id;
+                    
+                } else {
+                    // Show error
+                    if (data.errors && data.errors.nama_bidang) {
+                        errorDiv.textContent = data.errors.nama_bidang[0];
+                    } else {
+                        errorDiv.textContent = data.message || 'Terjadi kesalahan';
+                    }
+                    errorDiv.classList.remove('hidden');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorDiv.textContent = 'Terjadi kesalahan pada server';
+                errorDiv.classList.remove('hidden');
+            })
+            .finally(() => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Simpan';
+            });
         });
         
         // Event delegation untuk tombol hapus bidang

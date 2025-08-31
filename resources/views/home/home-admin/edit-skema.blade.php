@@ -107,6 +107,23 @@
                     @csrf
                     @method('PUT')
                     <div class="space-y-6">
+                        <!-- Bidang Kompetensi (optional) -->
+                        <div>
+                            <label for="id_bidang_kompetensi" class="block text-sm font-medium text-gray-700 mb-1">Bidang Kompetensi (Opsional)</label>
+                            <select name="id_bidang_kompetensi" id="id_bidang_kompetensi" class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">— Pilih Bidang Kompetensi —</option>
+                                @isset($bidangKompetensis)
+                                @foreach($bidangKompetensis as $bk)
+                                    <option value="{{ $bk->id_bidang_kompetensi }}" {{ old('id_bidang_kompetensi', $skema->id_bidang_kompetensi) == $bk->id_bidang_kompetensi ? 'selected' : '' }}>
+                                        {{ $bk->nama_bidang }}
+                                    </option>
+                                @endforeach
+                                @endisset
+                            </select>
+                            @error('id_bidang_kompetensi')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                         <!-- Nomor Skema Field -->
                         <div>
                             <label for="nomor_skema" class="block text-sm font-medium text-gray-700 mb-1">Nomor Skema <span class="text-red-500">*</span></label>

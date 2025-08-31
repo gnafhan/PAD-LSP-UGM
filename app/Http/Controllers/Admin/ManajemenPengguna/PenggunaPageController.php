@@ -91,7 +91,7 @@ class PenggunaPageController extends Controller
                 }
             }
             
-            $asesor->bidang_kompetensi = $bidangKompetensiList;
+            $asesor->setAttribute('bidang_kompetensi', $bidangKompetensiList);
         }
         
         // Hitung statistik
@@ -103,7 +103,7 @@ class PenggunaPageController extends Controller
         ];
         
         // Get all bidang kompetensi for the dropdown in modal
-        $bidangKompetensi = BidangKompetensi::all();
+        $bidangKompetensi = BidangKompetensi::getAllOrdered();
         
         return view('home.home-admin.pengguna', compact('admins', 'asesors', 'totalStats', 'bidangKompetensi'));
     }
@@ -113,7 +113,46 @@ class PenggunaPageController extends Controller
      */
     public function create()
     {
-        $bidangKompetensi = BidangKompetensi::all();
+        $bidangKompetensi = BidangKompetensi::getAllOrdered();
         return view('home.home-admin.tambah-pengguna', compact('bidangKompetensi'));
+    }
+
+    /**
+     * Create a new bidang kompetensi via AJAX
+     */
+    public function createBidangKompetensi(Request $request)
+    {
+        try {
+            $request->validate([
+                'nama_bidang' => 'required|string|max:255|unique:bidang_kompetensi,nama_bidang'
+            ], [
+                'nama_bidang.required' => 'Nama bidang kompetensi tidak boleh kosong',
+                'nama_bidang.unique' => 'Bidang kompetensi ini sudah ada'
+            ]);
+
+            $bidangKompetensi = BidangKompetensi::createBidangKompetensi($request->nama_bidang);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bidang kompetensi berhasil ditambahkan',
+                'data' => [
+                    'id' => $bidangKompetensi->id_bidang_kompetensi,
+                    'nama' => $bidangKompetensi->nama_bidang
+                ]
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

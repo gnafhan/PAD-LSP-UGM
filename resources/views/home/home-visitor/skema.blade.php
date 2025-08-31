@@ -94,7 +94,7 @@
                             </button>
                             <div id="unit{{ $index }}" class="hidden mt-3">
                                 <ul class="space-y-2">
-                                    @foreach ($skema->unitKompetensi as $ukIndex => $unit)
+                                    @foreach ($skema->getUnitKompetensi() as $ukIndex => $unit)
                                     <li class="flex items-start gap-2">
                                         <span class="flex-shrink-0 w-6 h-6 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-xs font-semibold">{{ $ukIndex + 1 }}</span>
                                         <span class="text-gray-900 font-inter text-base">{{ $unit->nama_uk }}</span>

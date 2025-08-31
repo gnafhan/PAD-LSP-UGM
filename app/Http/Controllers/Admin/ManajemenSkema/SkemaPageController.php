@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Skema;
 use App\Models\UK;
 use App\Models\UKBidang;
+use App\Models\BidangKompetensi;
 use App\Models\Asesi;
 use Illuminate\Support\Facades\Log;
 
@@ -14,7 +15,7 @@ class SkemaPageController extends Controller
 {
     public function indexDataSkema(Request $request)
     {
-        $query = Skema::with('unitKompetensi');
+        $query = Skema::query();
         
         // Add search functionality
         if ($request->has('search')) {
@@ -37,11 +38,13 @@ class SkemaPageController extends Controller
 
     public function editDataSkema($id)
     {
-        $skema = Skema::with('unitKompetensi')->findOrFail($id);
+        $skema = Skema::findOrFail($id);
         $ukList = UK::all();
         $daftarBidangUK = UKBidang::all();
-        // Kirim data unit kompetensi dalam format JSON
-        $unitKompetensiJson = json_encode($skema->unitKompetensi);
+        $bidangKompetensis = BidangKompetensi::all();
+        // Get unit kompetensi using the method instead of relationship
+        $unitKompetensi = $skema->getUnitKompetensi();
+        $unitKompetensiJson = json_encode($unitKompetensi);
         $daftarIdUkJson = $skema->daftar_id_uk; // Ambil data daftar_id_uk langsung dari skema
 
         return view('home.home-admin.edit-skema', [
@@ -50,6 +53,7 @@ class SkemaPageController extends Controller
             'daftarIdUkJson' => $daftarIdUkJson,
             'ukList' => $ukList,
             'daftarBidangUK' => $daftarBidangUK,
+            'bidangKompetensis' => $bidangKompetensis,
         ]);
     }
 
@@ -61,9 +65,11 @@ class SkemaPageController extends Controller
             $validatedData = $request->validate([
                 'nama_skema' => 'required|string|max:100',
                 'dokumen_skkni' => 'nullable|file|mimes:pdf',
+                'id_bidang_kompetensi' => 'nullable|integer|exists:bidang_kompetensi,id_bidang_kompetensi',
             ]);
 
             $skema->nama_skema = $validatedData['nama_skema'];
+            $skema->id_bidang_kompetensi = $request->input('id_bidang_kompetensi');
 
             if ($request->hasFile('dokumen_skkni')) {
                 $fileName = 'skkni_' . str_replace(' ', '_', $validatedData['nama_skema']) . '.' . $request->file('dokumen_skkni')->getClientOriginalExtension();
@@ -78,15 +84,15 @@ class SkemaPageController extends Controller
             return redirect()->route('admin.skema.index')->with('success', 'Skema berhasil diperbarui');
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Validation Error: ' . $e->getMessage());
+            Log::error('Validation Error: ' . $e->getMessage());
             return redirect()->back()->withErrors($e->validator)->withInput();
 
         } catch (\Illuminate\Http\Exceptions\PostTooLargeException $e) {
-            \Log::error('File Too Large Error: ' . $e->getMessage());
+            Log::error('File Too Large Error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Ukuran file terlalu besar. Maksimal 2MB.')->withInput();
 
         } catch (\Exception $e) {
-            \Log::error('Error updating skema: ' . $e->getMessage());
+            Log::error('Error updating skema: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui skema.')->withInput();
         }
     }
@@ -94,7 +100,8 @@ class SkemaPageController extends Controller
     {
         $daftarBidangUK = UKBidang::all();
         $ukList = UK::all();
-        return view('home.home-admin.tambah-skema', ['ukList' => $ukList, 'daftarBidangUK' => $daftarBidangUK]);
+        $bidangKompetensis = BidangKompetensi::all();
+        return view('home.home-admin.tambah-skema', ['ukList' => $ukList, 'daftarBidangUK' => $daftarBidangUK, 'bidangKompetensis' => $bidangKompetensis]);
     }
     
     public function storeDataSkema(Request $request)
@@ -126,6 +133,7 @@ class SkemaPageController extends Controller
             'nama_skema' => 'required|string|max:100',
             'dokumen_skkni' => 'required|file|mimes:pdf',
             'persyaratan_skema' => 'required|string',
+            'id_bidang_kompetensi' => 'nullable|integer|exists:bidang_kompetensi,id_bidang_kompetensi',
         ]);
 
         $validatedData['daftar_id_uk'] = json_encode($idUKs);

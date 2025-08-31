@@ -11,7 +11,7 @@ class HomeController extends Controller
     //Method untuk menampilkan data di home admin
     public function index(Request $request)
     {
-        $query = Skema::with('unitKompetensi');
+        $query = Skema::query();
         
         // Add search functionality
         if ($request->has('search') && !empty($request->search)) {

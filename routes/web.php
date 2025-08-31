@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BidangKompetensiPageController;
 use App\Http\Controllers\Admin\ManajemenAssignAsesiToAsesor\AsesiPengajuanPageController;
 use App\Http\Controllers\Admin\ManajemenEvent\EventController;
 use App\Http\Controllers\Admin\ManajemenPengguna\AdminUserController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SwaggerController;
 use App\Http\Controllers\TempImageController;
+use App\Http\Controllers\TugasPesertaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -108,6 +110,15 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::put('{id}/update', [UnitKompetensiPageController::class, 'updateDataUk'])->name('update');
     });
 
+    Route::prefix('bidang-kompetensi')->name('admin.bidang-kompetensi.')->group(function () {
+        Route::get('/', [BidangKompetensiPageController::class, 'indexDataBidangKompetensi'])->name('index');
+        Route::get('create', [BidangKompetensiPageController::class, 'createDataBidangKompetensi'])->name('create');
+        Route::post('create', [BidangKompetensiPageController::class, 'storeDataBidangKompetensi'])->name('store');
+        Route::get('{id}/edit', [BidangKompetensiPageController::class, 'editDataBidangKompetensi'])->name('edit');
+        Route::put('{id}/update', [BidangKompetensiPageController::class, 'updateDataBidangKompetensi'])->name('update');
+        Route::delete('delete/{id}', [BidangKompetensiPageController::class, 'destroyDataBidangKompetensi'])->name('delete');
+    });
+
     // Manajemen Rencana Asesmen
     Route::prefix('skema/{id_skema}/rencana-asesmen')->name('admin.skema.rencana-asesmen.')->group(function () {
         Route::get('/', [RencanaAsesmenController::class, 'index'])->name('index');
@@ -163,6 +174,9 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         // Dashboard Pengguna (Main view)
         Route::get('/', [PenggunaPageController::class, 'index'])->name('index');
         Route::get('tambah-pengguna', [PenggunaPageController::class, 'create'])->name('create');
+
+        // Bidang Kompetensi Management
+        Route::post('bidang-kompetensi/create', [PenggunaPageController::class, 'createBidangKompetensi'])->name('bidang-kompetensi.create');
 
         // Admin User Management
         Route::prefix('admin')->name('admin.')->group(function () {
@@ -350,6 +364,12 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::post('/fria07/store', [\App\Http\Controllers\Fria07Controller::class, 'store'])->name('fria07.store');
     Route::post('/fria07/sign', [\App\Http\Controllers\Fria07Controller::class, 'signAsesor'])->name('fria07.sign');
     Route::get('/fria07/pdf/{id_asesi}', [\App\Http\Controllers\IA07Controller::class, 'generatePdf'])->name('fria07.pdf');
+
+    Route::get('/tugas-peserta', [TugasPesertaController::class, 'index'])->name('tugas-peserta');
+    Route::post('/tugas-peserta', [TugasPesertaController::class, 'store'])->name('tugas-peserta.store');
+    Route::get('/tugas-peserta/pdf/{id_asesi}', [TugasPesertaController::class, 'generatePdf'])->name('tugas-peserta.pdf');
+    Route::get('/tugas-peserta/download/{id}', [TugasPesertaController::class, 'downloadFile'])->name('tugas-peserta.download');
+    Route::put('/tugas-peserta/status/{id}', [TugasPesertaController::class, 'updateTaskStatus'])->name('tugas-peserta.status');
 
     Route::get('/hasilasesmen', [HasilAsesmenController::class, 'index'])->name('hasil-asesmen-asesor');
 

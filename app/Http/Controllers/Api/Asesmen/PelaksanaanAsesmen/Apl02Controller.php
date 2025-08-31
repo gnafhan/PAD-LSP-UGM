@@ -95,7 +95,7 @@ class Apl02Controller extends Controller
         // Validate Asesi exists
         $asesiResult = $this->validationService->validateAsesiExists(
             $id_asesi, 
-            ['skema.unitKompetensi.elemen_uk', 'rincianAsesmen.asesor', 'rincianAsesmen.event.tuk']
+            ['skema', 'rincianAsesmen.asesor', 'rincianAsesmen.event.tuk']
         );
         
         if (isset($asesiResult['error'])) {
@@ -170,7 +170,8 @@ class Apl02Controller extends Controller
             $detailSkema = [];
             
             if ($skema) {
-                foreach ($skema->unitKompetensi as $uk) {
+                $unitKompetensiList = $skema->getUnitKompetensi();
+                foreach ($unitKompetensiList as $uk) {
                     $unitData = [
                         'id_uk' => $uk->id_uk,
                         'kode_uk' => $uk->kode_uk,
@@ -259,7 +260,7 @@ class Apl02Controller extends Controller
         // Validate Asesi exists
         $asesiResult = $this->validationService->validateAsesiExists(
             $id_asesi, 
-            ['skema.unitKompetensi.elemen_uk', 'rincianAsesmen.asesor', 'rincianAsesmen.event.tuk']
+            ['skema', 'rincianAsesmen.asesor', 'rincianAsesmen.event.tuk']
         );
         
         if (isset($asesiResult['error'])) {

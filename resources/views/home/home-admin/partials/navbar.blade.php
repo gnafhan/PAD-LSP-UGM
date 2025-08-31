@@ -11,16 +11,10 @@
                 </a>
             </div>
 
-            <!-- Navigation Links (Center) -->
+            <!-- Navigation Links (Center) - kept minimal, detailed links moved to sidebar -->
             <div class="hidden md:flex items-center justify-center flex-1 px-8">
                 <div class="flex items-center space-x-1">
-                    <a href="/admin/home-admin" class="admin-nav-link {{ request()->is('admin/home-admin') ? 'admin-nav-link-active' : '' }}">Home</a>
-                    <a href="{{ route('admin.event.index') }}" class="admin-nav-link {{ request()->routeIs('admin.event.index') ? 'admin-nav-link-active' : '' }}">Event</a>
-                    <a href="{{ route('admin.tuk.index') }}" class="admin-nav-link {{ request()->routeIs('admin.tuk.index') ? 'admin-nav-link-active' : '' }}">TUK</a>
-                    <a href="{{ route('admin.skema.index') }}" class="admin-nav-link {{ request()->routeIs('admin.skema.index') ? 'admin-nav-link-active' : '' }}">Skema</a>
-                    <a href="{{ route('admin.uk.index') }}" class="admin-nav-link {{ request()->routeIs('admin.uk.index') ? 'admin-nav-link-active' : '' }}">Unit Kompetensi</a>
-                    <a href="/admin/pengguna" class="admin-nav-link {{ request()->is('admin/pengguna') ? 'admin-nav-link-active' : '' }}">Pengguna</a>
-                    <a href="{{ route('admin.asesi.index') }}" class="admin-nav-link {{ request()->routeIs('admin.asesi.index') ? 'admin-nav-link-active' : '' }}">Assign Asesor</a>
+                    <a href="/admin/home-admin" class="admin-nav-link {{ request()->is('admin/home-admin') ? 'admin-nav-link-active' : '' }}">Dashboard</a>
                 </div>
             </div>
 
@@ -153,8 +147,9 @@
                 <a href="/admin/home-admin" class="admin-mobile-nav-link {{ request()->is('admin/home-admin') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">Home</a>
                 <a href="{{ route('admin.event.index') }}" class="admin-mobile-nav-link {{ request()->routeIs('admin.event.index') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">Event</a>
                 <a href="{{ route('admin.tuk.index') }}" class="admin-mobile-nav-link {{ request()->routeIs('admin.tuk.index') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">TUK</a>
-                <a href="{{ route('admin.skema.index') }}" class="admin-mobile-nav-link {{ request()->routeIs('admin.skema.index') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">Skema</a>
-                <a href="{{ route('admin.uk.index') }}" class="admin-mobile-nav-link {{ request()->routeIs('admin.uk.index') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">Unit Kompetensi</a>
+                <a href="{{ route('admin.skema.index') }}" class="admin-mobile-nav-link {{ request()->routeIs('admin.skema.*') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">Skema</a>
+                <a href="{{ route('admin.uk.index') }}" class="admin-mobile-nav-link {{ request()->routeIs('admin.uk.*') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">Unit Kompetensi</a>
+                <a href="{{ route('admin.bidang-kompetensi.index') }}" class="admin-mobile-nav-link {{ request()->routeIs('admin.bidang-kompetensi.*') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">Bidang Kompetensi</a>
                 <a href="/admin/pengguna" class="admin-mobile-nav-link {{ request()->is('admin/pengguna') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">Pengguna</a>
                 <a href="{{ route('admin.asesi.index') }}" class="admin-mobile-nav-link {{ request()->routeIs('admin.asesi.index') ? 'admin-mobile-nav-link-active' : '' }}" @click="mobileMenuOpen = false">Assign Asesor</a>
                 <!-- Mobile Logout -->

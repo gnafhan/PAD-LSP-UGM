@@ -22,6 +22,7 @@ class Skema extends Model
         'id_skema',
         'nomor_skema',
         'nama_skema',
+        'id_bidang_kompetensi',
         'dokumen_skkni',
         'daftar_id_uk', //json
         'persyaratan_skema',
@@ -45,17 +46,23 @@ class Skema extends Model
         return $this->belongsToMany(Event::class, 'event_skema', 'id_skema', 'id_event');
     }
 
+    public function bidangKompetensi()
+    {
+        return $this->belongsTo(BidangKompetensi::class, 'id_bidang_kompetensi', 'id_bidang_kompetensi');
+    }
+
 
     public function unitKompetensi()
     {
+        // Return a query builder for the UK models based on the JSON field
         $idArray = is_array($this->daftar_id_uk) ? $this->daftar_id_uk : json_decode($this->daftar_id_uk, true);
         return UK::with('elemen_uk')->whereIn('id_uk', $idArray ?? []);
     }
 
-    public function getUnitKompetensiAttribute()
+    // Method to get unit kompetensi without eager loading
+    public function getUnitKompetensi()
     {
         $idArray = is_array($this->daftar_id_uk) ? $this->daftar_id_uk : json_decode($this->daftar_id_uk, true);
-
         return UK::with('elemen_uk')->whereIn('id_uk', $idArray ?? [])->get();
     }
 
