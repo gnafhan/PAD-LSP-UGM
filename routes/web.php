@@ -29,6 +29,7 @@ use App\Http\Controllers\TempImageController;
 use App\Http\Controllers\TugasPesertaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SoalController;
 
 
 // API Documentation
@@ -90,6 +91,17 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
 
     // Dashboard Admin
     Route::get('/home-admin', [AdminController::class, 'index'])->name('home-admin');
+    
+    Route::prefix('soal')->name('admin.soal.')->group(function () {
+        Route::get('/', [SoalController::class, 'index'])->name('index');
+        Route::get('/by-skema/{skema}', [SoalController::class, 'getSoalBySkema'])->name('bySkema');
+        Route::get('create', [SoalController::class, 'create'])->name('create');
+        Route::post('create', [SoalController::class, 'store'])->name('store');
+        Route::get('{kode_soal}', [SoalController::class, 'show'])->name('show');
+        Route::get('{kode_soal}/edit', [SoalController::class, 'edit'])->name('edit');
+        Route::put('{kode_soal}', [SoalController::class, 'update'])->name('update');
+        Route::delete('{kode_soal}', [SoalController::class, 'destroy'])->name('destroy');
+    });
 
     // Manajemen Skema
     Route::prefix('skema')->name('admin.skema.')->group(function () {
