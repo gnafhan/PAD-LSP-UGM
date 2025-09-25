@@ -695,4 +695,40 @@ class KonsultasiPraUjiController extends Controller
             'data' => $konsultasi
         ]);
     }
+
+    public function generatePdf($id_asesi)
+{
+    // Pull in the same detail info as before
+    $detailRincian = RincianAsesmen::with([
+        'asesi.skema',
+        'asesi.progresAsesmen',
+        'asesor',
+        'event.tuk',
+    ])->where('id_asesi', $id_asesi)->first();
+    
+    if (!$detailRincian) {
+        return redirect()->route('konsultasi-pra-uji')
+            ->with('error', 'Data asesi tidak ditemukan');
+    }
+    
+    // Load Unit Kompetensi list
+    if ($detailRincian->asesi && $detailRincian->asesi->skema) {
+        $idArray = is_array($detailRincian->asesi->skema->daftar_id_uk) 
+            ? $detailRincian->asesi->skema->daftar_id_uk 
+            : json_decode($detailRincian->asesi->skema->daftar_id_uk, true);
+        
+        $detailRincian->asesi->skema->unitKompetensiLoaded = \App\Models\UK::with('elemen_uk')
+            ->whereIn('id_uk', $idArray ?? [])
+            ->get();
+    }
+
+    // Fetch KonsultasiPraUji record for this asesi + asesor
+    $formData = \App\Models\KonsultasiPraUji::where('id_asesi', $id_asesi)
+        ->where('id_asesor', $detailRincian->id_asesor)
+        ->first();
+
+    // Return Blade view which will auto-print
+    return view('home.home-asesor.konsul-prauji-pdf', compact('detailRincian', 'formData'));
+}
+
 }

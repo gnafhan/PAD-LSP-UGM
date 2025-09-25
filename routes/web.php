@@ -322,6 +322,7 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/konsulprauji', function () {
         return view('home/home-asesor/konsul-prauji');
     })->name('konsul-prauji-asesor');
+    Route::get('/konsul-prauji/pdf/{id_asesi}', [\App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KonsultasiPraUjiController::class, 'generatePdf'])->name('ketidakberpihakan.pdf');
 
     Route::get('/frmapa01', function () {
         return view('home/home-asesor/frmapa01');
@@ -336,6 +337,7 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/ketidakberpihakan', function () {
         return view('home/home-asesor/ketidakberpihakan');
     })->name('ketidakberpihakan-asesor');
+    Route::get('/ketidakberpihakan/pdf/{id_asesi}', [\App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen\KetidakberpihakkanController::class, 'generatePdf'])->name('ketidakberpihakan.pdf');
 
     Route::get('/frak07', function () {
         return view('home/home-asesor/frak07-asesor');
@@ -349,6 +351,7 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/fria02', function () {
         return view('home/home-asesor/fria02-asesor');
     })->name('fria02-asesor');
+    Route::get('/fria02/pdf/{id_asesi}', [\App\Http\Controllers\Api\IA02Controller::class, 'generatePdf'])->name('fria02.pdf');
 
     Route::get('/fria03', function () {
         return view('home/home-asesor/fria03-asesor');

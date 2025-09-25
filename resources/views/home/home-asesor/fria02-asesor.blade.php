@@ -1300,7 +1300,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Find asesi data first
         const asesiData = daftarAsesiData.find(a => a.id_asesi == asesiId);
         if (asesiData) {
-            showSummary(asesiId, asesiData.nama_asesi, asesiData.nama_skema, 0, 0, 0);
+            // showSummary(asesiId, asesiData.nama_asesi, asesiData.nama_skema, 0, 0, 0);
+            window.open('/asesor/fria02/pdf/' + asesiId, "_blank");
         } else {
             showNotificationModal('Error', 'Data asesi tidak ditemukan', 'error');
         }

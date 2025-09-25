@@ -749,7 +749,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Add window alias for backward compatibility
-    window.showDocument = window.showSummary;
+    window.showDocument = function(id_asesi, nama_asesi, nama_skema, progress_percentage, completed_steps, total_steps, ketidakberpihakan_completed = false) {
+        window.open('/asesor/ketidakberpihakan/pdf/' + id_asesi, "_blank");
+    };
+    ///ketidakberpihakan/pdf/{id_asesi}
 });
 </script>
 @endsection
