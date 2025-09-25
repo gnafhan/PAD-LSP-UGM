@@ -16,7 +16,7 @@ class IA02Service
 {
     public function createIA02ForAsesi($asesiId, $asesorId, $skemaId = null)
     {
-        $asesi = Asesi::with('skema')->find($asesiId);
+        $asesi = Asesi::with(['skema', 'rincianAsesmen.asesor', 'rincianAsesmen.event.tuk'])->find($asesiId);
         $asesor = Asesor::find($asesorId);
         
         if (!$asesi || !$asesor) {
@@ -29,6 +29,12 @@ class IA02Service
         
         if (!$skema) {
             throw new \Exception('Skema tidak ditemukan');
+        }
+
+        // Get TUK information from rincian asesmen - same logic as IA11
+        $tukName = 'LSP Politeknik Negeri Malang'; // Default
+        if ($asesi->rincianAsesmen && $asesi->rincianAsesmen->event && $asesi->rincianAsesmen->event->tuk) {
+            $tukName = $asesi->rincianAsesmen->event->tuk->nama_tuk;
         }
 
         // Check if IA02 already exists
@@ -47,10 +53,8 @@ class IA02Service
             'id_asesor' => $asesorId,
             'id_skema' => $targetSkemaId,
             'judul_sertifikasi' => $skema->nama_skema,
-            'nomor_sertifikasi' => $skema->kode_skema,
             'nama_peserta' => $asesi->nama_asesi,
             'nama_asesor' => $asesor->nama_asesor,
-            'tuk' => 'LSP Politeknik Negeri Malang', // Default TUK
             'instruksi_kerja' => $this->getDefaultInstruksiKerja(),
             'status' => 'draft'
         ]);
@@ -225,7 +229,7 @@ class IA02Service
     public function getIA02ForAsesi($asesiId, $asesorId = null)
     {
         $query = IA02::with([
-            'asesi', 
+            'asesi.rincianAsesmen.event.tuk', 
             'asesor', 
             'skema', 
             'kompetensis.uk', 

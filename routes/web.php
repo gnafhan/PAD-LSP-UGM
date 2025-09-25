@@ -286,6 +286,21 @@ Route::get('/test-fria02', function () {
     return view('home/home-asesor/fria02-asesor');
 })->name('test-fria02');
 
+// Temporary test route for FRIA11 without middleware (remove in production)  
+Route::get('/test-fria11', function () {
+    return view('home/home-asesor/fria11-asesor');
+})->name('test-fria11');
+
+// Debug route to check API config
+Route::get('/debug-api-config', function () {
+    return response()->json([
+        'api_url' => config('services.api.url'),
+        'api_key' => config('services.api.key'),
+        'auth_user' => Auth::user(),
+        'csrf_token' => csrf_token()
+    ]);
+})->name('debug-api-config');
+
 
 //Level: asesor
 Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
@@ -375,6 +390,10 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/tugas-peserta/pdf/{id_asesi}', [TugasPesertaController::class, 'generatePdf'])->name('tugas-peserta.pdf');
     Route::get('/tugas-peserta/download/{id}', [TugasPesertaController::class, 'downloadFile'])->name('tugas-peserta.download');
     Route::put('/tugas-peserta/status/{id}', [TugasPesertaController::class, 'updateTaskStatus'])->name('tugas-peserta.status');
+
+    Route::get('/fria11', [\App\Http\Controllers\IA11Controller::class, 'index'])->name('fria11-asesor');
+    Route::post('/fria11/store', [\App\Http\Controllers\IA11Controller::class, 'store'])->name('fria11.store');
+    Route::post('/fria11/sign', [\App\Http\Controllers\IA11Controller::class, 'sign'])->name('fria11.sign');
 
     Route::get('/hasilasesmen', [HasilAsesmenController::class, 'index'])->name('hasil-asesmen-asesor');
 
