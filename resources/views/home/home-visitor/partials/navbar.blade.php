@@ -28,7 +28,7 @@
             <!-- User Profile Section (Right) -->
             <div class="flex items-center space-x-4">
                 <!-- Desktop Logout Button -->
-                <form method="POST" action="{{ route('user.logout') }}" class="hidden sm:block">
+                <form method="POST" action="" class="hidden sm:block">
                     @csrf
                     <button type="submit" 
                             class="inline-flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-inter font-semibold text-sm tracking-wide rounded-lg transition-all duration-300 ease-out hover:shadow-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
@@ -89,7 +89,7 @@
                     Daftar Sertifikasi
                 </a>
                 <div class="pt-4 border-t border-gray-100">
-                    <form method="POST" action="{{ route('user.logout') }}">
+                    <form method="POST" >
                         @csrf
                         <button type="submit" 
                                 class="mobile-nav-link bg-red-500 text-white hover:bg-red-600 w-full text-left"

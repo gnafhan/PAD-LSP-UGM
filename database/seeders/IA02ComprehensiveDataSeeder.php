@@ -306,10 +306,8 @@ class IA02ComprehensiveDataSeeder extends Seeder
                 'id_asesor' => $data['id_asesor'],
                 'id_skema' => $data['id_skema'],
                 'judul_sertifikasi' => $data['judul_sertifikasi'],
-                'nomor_sertifikasi' => $data['nomor_sertifikasi'],
                 'nama_peserta' => $data['nama_peserta'],
                 'nama_asesor' => $data['nama_asesor'],
-                'tuk' => $data['tuk'],
                 'status' => $data['status'],
                 'instruksi_kerja' => $this->generateInstruksiKerjaContent($data['judul_sertifikasi'])
             ]);

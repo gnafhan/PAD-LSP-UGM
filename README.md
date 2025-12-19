@@ -1,66 +1,126 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PAD-LSP - Laravel Assessment Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Laravel-based assessment platform for competency certification and evaluation, built with Laravel 10, Jetstream, and Livewire.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **User Management**: Multi-role authentication with Jetstream
+- **Assessment System**: Comprehensive competency assessment tools
+- **API Integration**: RESTful API with Swagger documentation
+- **Real-time Updates**: Livewire components for dynamic interactions
+- **Social Authentication**: Google OAuth integration
+- **Document Management**: Assessment forms and certification tracking
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend**: Laravel 10 (PHP 8.1+)
+- **Frontend**: Livewire 3, Tailwind CSS
+- **Database**: MySQL 8.0
+- **Cache**: Redis
+- **Authentication**: Laravel Jetstream + Fortify
+- **API Documentation**: L5-Swagger
+- **Containerization**: Docker & Docker Compose
 
-## Learning Laravel
+## Quick Start with Docker
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Prerequisites
+- Docker and Docker Compose installed
+- Git
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Installation
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd pad-lsp
+   ```
 
-## Laravel Sponsors
+2. **Quick setup** (recommended)
+   ```bash
+   ./docker-manual-setup.sh
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+3. **Manual setup** (alternative)
+   ```bash
+   # Copy environment file
+   cp .env.docker .env
+   
+   # Start containers
+   docker-compose up -d --build
+   
+   # Install dependencies
+   docker-compose exec -u root app composer install
+   
+   # Setup Laravel
+   docker-compose exec app php artisan key:generate --force
+   docker-compose exec app php artisan migrate --force --seed
+   docker-compose exec app php artisan config:cache
+   ```
 
-### Premium Partners
+### Access the Application
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+- **Web Application**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/api/documentation
+- **Database**: localhost:3306 (user: laravel, password: password)
+- **Redis**: localhost:6379
+
+## Development
+
+### Available Scripts
+
+```bash
+# Fix permissions if needed
+./docker-fix-permissions.sh
+
+# View logs
+docker-compose logs -f
+
+# Access application container
+docker-compose exec app bash
+
+# Run artisan commands
+docker-compose exec app php artisan <command>
+
+# Run tests
+docker-compose exec app php artisan test
+```
+
+### Services
+
+- **app**: PHP 8.2-FPM application container
+- **webserver**: Nginx web server
+- **db**: MySQL 8.0 database
+- **redis**: Redis cache server
+- **node**: Node.js for asset compilation
+
+## API
+
+The application provides a comprehensive REST API documented with Swagger. Access the interactive documentation at `/api/documentation` after starting the application.
+
+### Authentication
+
+API endpoints are protected with API key authentication. Include the API key in your requests:
+
+```bash
+curl -H "X-API-Key: your-api-key" http://localhost:8000/api/v1/endpoint
+```
+
+## Database
+
+The application includes comprehensive seeders for:
+- User accounts and roles
+- Assessment templates
+- Competency frameworks
+- Sample data for testing
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests
+5. Submit a pull request
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License.
