@@ -467,7 +467,7 @@
                                     @if($assignment->asesi)
                                         <button 
                                             type="button" 
-                                            onclick="openEditAssignmentModal({{ $assignment->id_rincian_asesmen }}, '{{ addslashes($assignment->asesi->nama_asesi ?? 'Nama tidak tersedia') }}', {{ $assignment->id_asesor }}, {{ $assignment->id_event }})"
+                                            onclick="openEditAssignmentModal({{ $assignment->id_rincian_asesmen }}, '{{ addslashes($assignment->asesi->nama_asesi ?? 'Nama tidak tersedia') }}', '{{ $assignment->id_asesor }}', '{{ $assignment->id_event }}')"
                                             class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white text-sm transition-all"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
