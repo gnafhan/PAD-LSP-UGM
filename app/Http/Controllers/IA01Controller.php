@@ -17,7 +17,9 @@ class IA01Controller extends Controller
             'asesi.progresAsesmen',
             'asesor',
             'event.tuk',
-        ])->get();
+        ])
+        ->whereHas('asesi') // Only get records where asesi exists
+        ->get();
 
         $detailRincian = null;
         $notFound = false;

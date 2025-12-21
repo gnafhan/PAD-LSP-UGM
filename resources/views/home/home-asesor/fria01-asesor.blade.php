@@ -138,6 +138,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 text-black text-center">
                 @foreach($daftarAsesi as $i => $rincian)
+                    @if($rincian->asesi)
                     <tr>
                         <td class="px-4 py-3 text-sm text-gray-700">{{ $i+1 }}</td>
                         <td class="px-4 py-3 text-center">
@@ -175,6 +176,7 @@
                             </div>
                         </td>
                     </tr>
+                    @endif
                 @endforeach
                 </tbody>
             </table>
