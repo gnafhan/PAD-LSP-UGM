@@ -513,7 +513,9 @@ function populateProgressTables(progressData) {
     // Get enabled step keys
     const enabledKeys = enabledAssessments.map(type => assessmentToKeyMap[type]).filter(Boolean);
     // Always include these keys (not configurable)
-    const alwaysVisibleKeys = ['hasil_asesmen', 'umpan_balik'];
+    // const alwaysVisibleKeys = ['hasil_asesmen', 'umpan_balik'];
+    const alwaysVisibleKeys = [ 'umpan_balik'];
+
 
     // Define step categories mapping based on the API response structure
     const stepCategories = {
@@ -535,7 +537,7 @@ function populateProgressTables(progressData) {
             { key: 'ia11', name: 'IA 11 - Ceklis Observasi Aktivitas di Tempat Kerja' }
         ],
         keputusan: [
-            { key: 'hasil_asesmen', name: 'Hasil Asesmen' },
+            // { key: 'hasil_asesmen', name: 'Hasil Asesmen' },
             { key: 'ak02', name: 'AK 02 - Rekaman Asesmen Kompetensi' },
             { key: 'umpan_balik', name: 'Umpan Balik dan Catatan Asesmen' },
             { key: 'ak04', name: 'AK 04 - Keputusan Asesmen' }
@@ -624,7 +626,7 @@ function getDetailUrlByStepKey(stepKey) {
         'tugas_peserta': '{{ route('tugas-peserta') }}',
         'ia05': '{{ route('fria05-asesor') }}',
         'ia11': '{{ route('fria11-asesor') }}',
-        'hasil_asesmen': '{{ route('hasil-asesmen-asesor') }}',
+        // 'hasil_asesmen': '{{ route('hasil-asesmen-asesor') }}',
         'ak02': '{{ route('frak02-asesor') }}',
         'umpan_balik': '#',
         'ak04': '{{ route('frak04-asesor') }}'
