@@ -117,36 +117,8 @@
                             <ul class="list-disc ml-5 space-y-2 text-sm text-gray-700">
                                 <li>Mempelajari Kriteria Unjuk Kerja (KUK), Batasan Variabel, Panduan Penilaian, dan Aspek Kritis seluruh Unit Kompetensi yang diminta untuk di Ases.</li>
                                 <li>Melaksanakan Penilaian Mandiri secara obyektif atas sejumlah pertanyaan yang diajukan.</li>
-                                <li>Mengisi bukti-bukti kompetensi yang relevan atas sejumlah pertanyaan yang dinyatakan Kompeten (bila ada).</li>
                                 <li>Menandatangani form Asesmen Mandiri.</li>
                             </ul>
-                        </div>
-                    </div>
-
-                    <!-- Bukti Kompetensi -->
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Bukti Kompetensi</h3>
-                        <div class="bg-white border border-gray-200 rounded-lg p-4">
-                            <button id="tambahBukti" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors mb-4">
-                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Tambah Bukti
-                            </button>
-                            <div class="overflow-x-auto">
-                                <table id="tabelBukti" class="w-full border border-gray-200 text-sm">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="border border-gray-300 p-3 text-left font-semibold text-gray-700">Bukti Portfolio yang relevan</th>
-                                            <th class="border border-gray-300 p-3 text-left font-semibold text-gray-700">Keterangan</th>
-                                            <th class="border border-gray-300 p-3 text-center font-semibold text-gray-700 w-24">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Dynamic content -->
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
                     </div>
 
@@ -758,33 +730,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!this.disabled && !isFormLocked) {
             handleApproval();
         }
-    });
-
-    // Bukti portfolio functionality
-    document.getElementById('tambahBukti').addEventListener('click', function() {
-        const tbody = document.querySelector('#tabelBukti tbody');
-        const row = document.createElement('tr');
-
-        row.innerHTML = `
-            <td class="border border-gray-300 p-3">
-                <input type="file" name="bukti_portofolio[]" class="w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-            </td>
-            <td class="border border-gray-300 p-3">
-                <input type="text" name="keterangan[]" placeholder="Masukkan keterangan" class="w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-            </td>
-            <td class="border border-gray-300 p-3 text-center">
-                <button type="button" class="hapusBukti bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors">
-                    Hapus
-                </button>
-            </td>
-        `;
-
-        tbody.appendChild(row);
-
-        // Add event listener for delete button
-        row.querySelector('.hapusBukti').addEventListener('click', function() {
-            row.remove();
-        });
     });
 
     // Silent error handlers for production

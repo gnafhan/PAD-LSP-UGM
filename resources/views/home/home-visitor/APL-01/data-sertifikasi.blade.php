@@ -357,7 +357,7 @@
                     } else {
                         // Jika tidak ada dokumen, tampilkan placeholder
                         $('#dokumen-skkni-placeholder').removeClass('hidden')
-                            .find('p').text('Dokumen SKKNI tidak tersedia untuk skema ini');
+                            .find('p').text('Dokumen Skema tidak tersedia untuk skema ini');
                         $('#dokumen-skkni-viewer').addClass('hidden');
                     }
                 });
@@ -371,7 +371,7 @@
 
                 // Reset dokumen SKKNI
                 $('#dokumen-skkni-placeholder').removeClass('hidden')
-                    .find('p').text('Pilih skema terlebih dahulu untuk melihat dokumen SKKNI');
+                    .find('p').text('Pilih skema terlebih dahulu untuk melihat dokumen skema');
                 $('#dokumen-skkni-viewer').addClass('hidden');
 
                 // Reset unit kompetensi

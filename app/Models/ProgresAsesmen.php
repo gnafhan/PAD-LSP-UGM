@@ -287,16 +287,64 @@ class ProgresAsesmen extends Model
     }
 
     /**
-     * Fields that are excluded from progress calculation.
-     * - hasil_asesmen: follows AK02, not a separate step
+     * Fields that are excluded from asesi progress calculation.
+     * These are either asesor-only forms or conditional forms:
+     * - mapa01, mapa02: asesor forms
+     * - pernyataan_ketidak_berpihakan: asesor form
+     * - ia01, ia11: asesor forms
+     * - hasil_asesmen: display only, follows AK02
+     * - ak04: banding form, only shown when hasil_asesmen is "Tidak Kompeten"
      */
-    public static array $excludedFromProgress = ['hasil_asesmen'];
+    public static array $excludedFromProgress = [
+        'mapa01', 
+        'mapa02', 
+        'pernyataan_ketidak_berpihakan', 
+        'ia01', 
+        'ia11',
+        'hasil_asesmen', 
+        'ak04'
+    ];
     
     /**
-     * Optional fields that are only counted in progress when completed.
-     * These fields don't count towards total steps unless the asesi has submitted them.
+     * Optional fields - no longer used for ak04 since it's now fully excluded
      */
-    public static array $optionalProgressFields = ['ak04'];
+    public static array $optionalProgressFields = [];
+
+    /**
+     * Fields that are asesor-specific tasks.
+     * These are forms that asesor must complete:
+     * - mapa01, mapa02: asesor planning forms
+     * - pernyataan_ketidak_berpihakan: asesor declaration
+     * - ia01, ia02, ia05, ia11: asesor assessment instruments
+     * - ak02: asesor assessment record
+     * - tugas_peserta: asesor assigns tasks
+     * - umpan_balik: asesor feedback
+     * - ak07: banding asesmen
+     * Note: ak04 is excluded as it's conditional
+     */
+    public static array $asesorProgressFields = [
+        'mapa01',
+        'mapa02', 
+        'pernyataan_ketidak_berpihakan',
+        'ak07',
+        'ia01',
+        'ia02',
+        'ia05',
+        'ia11',
+        'tugas_peserta',
+        'ak02',
+        'umpan_balik'
+    ];
+
+    /**
+     * Fields excluded from asesor progress calculation.
+     * - hasil_asesmen: display only, not a task
+     * - ak04: banding form, conditional and not always required
+     */
+    public static array $excludedFromAsesorProgress = [
+        'hasil_asesmen',
+        'ak04'
+    ];
 
     /**
      * Calculate progress percentage based on enabled assessments only.
@@ -324,24 +372,10 @@ class ProgresAsesmen extends Model
             });
         }
         
-        // Exclude fields that should not be counted in progress
+        // Exclude fields that should not be counted in progress (hasil_asesmen, ak04)
         $enabledFields = array_filter($enabledFields, function ($field) {
             return !\in_array($field, self::$excludedFromProgress, true);
         });
-        
-        // Handle optional fields (ak04 - banding)
-        // Only count optional fields if they are completed
-        $optionalCompleted = 0;
-        foreach (self::$optionalProgressFields as $optionalField) {
-            if (\in_array($optionalField, $enabledFields, true)) {
-                // Remove from enabled fields for now
-                $enabledFields = array_filter($enabledFields, fn($f) => $f !== $optionalField);
-                // If completed, add to completed count
-                if ($this->isStepCompleted($optionalField)) {
-                    $optionalCompleted++;
-                }
-            }
-        }
         
         $completedSteps = 0;
         foreach ($enabledFields as $field) {
@@ -350,11 +384,7 @@ class ProgresAsesmen extends Model
             }
         }
         
-        // Add optional completed steps
-        $completedSteps += $optionalCompleted;
-        
-        // Total steps = enabled fields + optional completed fields
-        $totalSteps = \count($enabledFields) + $optionalCompleted;
+        $totalSteps = \count($enabledFields);
         $percentage = ($totalSteps > 0) ? round(($completedSteps / $totalSteps) * 100) : 0;
         
         return [
@@ -392,5 +422,45 @@ class ProgresAsesmen extends Model
         }
         
         return $result;
+    }
+
+    /**
+     * Calculate progress percentage for asesor tasks only.
+     * Only counts fields that are asesor-specific tasks.
+     * 
+     * @param bool $useSchemeConfig Whether to filter by scheme configuration (default: true)
+     * @return array Progress details including percentage for asesor tasks
+     */
+    public function calculateAsesorProgress(bool $useSchemeConfig = true): array
+    {
+        // Filter to only asesor-specific fields
+        $enabledFields = self::$asesorProgressFields;
+        
+        if ($useSchemeConfig) {
+            $enabledFields = array_filter($enabledFields, function ($field) {
+                return $this->isAssessmentEnabledForScheme($field);
+            });
+        }
+        
+        // Exclude fields that should not be counted (hasil_asesmen)
+        $enabledFields = array_filter($enabledFields, function ($field) {
+            return !\in_array($field, self::$excludedFromAsesorProgress, true);
+        });
+        
+        $completedSteps = 0;
+        foreach ($enabledFields as $field) {
+            if ($this->isStepCompleted($field)) {
+                $completedSteps++;
+            }
+        }
+        
+        $totalSteps = \count($enabledFields);
+        $percentage = ($totalSteps > 0) ? round(($completedSteps / $totalSteps) * 100) : 0;
+        
+        return [
+            'progress_percentage' => $percentage,
+            'completed_steps' => $completedSteps,
+            'total_steps' => $totalSteps
+        ];
     }
 }

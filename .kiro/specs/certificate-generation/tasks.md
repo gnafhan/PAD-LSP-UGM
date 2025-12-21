@@ -1,0 +1,90 @@
+# Implementation Plan
+
+- [x] 1. Install DomPDF package and configure fonts
+  - [x] 1.1 Install barryvdh/laravel-dompdf package via composer
+    - Run `composer require barryvdh/laravel-dompdf`
+    - Publish config file
+    - _Requirements: 3.1_
+  - [x] 1.2 Configure Poppins font for DomPDF
+    - Download Poppins font files
+    - Configure font in DomPDF config
+    - _Requirements: 3.1_
+
+- [x] 2. Create CertificateService
+  - [x] 2.1 Create CertificateService class with eligibility check
+    - Implement `isEligibleForCertificate(Asesi $asesi): bool`
+    - Use ProgressTrackingService to check 100% progress
+    - _Requirements: 4.1_
+  - [x] 2.2 Write property test for eligibility check
+    - **Property 5: Progress validation rejects non-100% progress**
+    - **Validates: Requirements 4.1**
+  - [x] 2.3 Implement getCertificateData method
+    - Prepare nama_asesi, tanggal (Indonesian format), nama_skema, nomor_skema
+    - Generate nomor_sertifikat
+    - _Requirements: 2.2, 2.3, 2.4_
+  - [x] 2.4 Write property tests for certificate data
+    - **Property 2: Certificate contains asesi name**
+    - **Property 3: Certificate contains skema name**
+    - **Validates: Requirements 2.2, 2.4**
+  - [x] 2.5 Implement generateCertificate method
+    - Use DomPDF to render Blade template
+    - Return PDF content as string
+    - _Requirements: 2.1_
+
+- [x] 3. Create Certificate Blade Template
+  - [x] 3.1 Create certificate template with Poppins font and landscape A4
+    - Set up page size and orientation
+    - Import Poppins font via Google Fonts or embedded
+    - _Requirements: 3.1, 3.4_
+  - [x] 3.2 Add LSP UGM header and logo placeholder
+    - Create header section with logo area
+    - Add institution name
+    - _Requirements: 3.3_
+  - [x] 3.3 Add certificate body content
+    - Display nama asesi, tanggal, nama skema
+    - Display "KOMPETEN" text prominently
+    - _Requirements: 2.2, 2.3, 2.4, 2.6_
+  - [x] 3.4 Write property test for KOMPETEN text
+    - **Property 4: Certificate contains KOMPETEN text**
+    - **Validates: Requirements 2.6**
+  - [x] 3.5 Add signature placeholder area
+    - Create signature line with label
+    - Add date and place for signature
+    - _Requirements: 2.5_
+
+- [x] 4. Create CertificateController
+  - [x] 4.1 Create CertificateController with download method
+    - Inject CertificateService
+    - Validate authenticated user owns the asesi record
+    - Check eligibility before generating
+    - Return PDF as download response
+    - _Requirements: 2.1, 4.1, 4.2_
+  - [x] 4.2 Write property test for authorization
+    - **Property 6: Authorization prevents cross-user access**
+    - **Validates: Requirements 4.2**
+  - [x] 4.3 Add error handling for edge cases
+    - Handle missing asesi data
+    - Handle missing skema data
+    - Handle PDF generation failures
+    - _Requirements: 4.3_
+
+- [x] 5. Add route and update home page
+  - [x] 5.1 Add certificate download route
+    - Create route `GET /asesi/certificate/download`
+    - Apply auth middleware
+    - _Requirements: 2.1_
+  - [x] 5.2 Update AsesiController to pass progress data
+    - Calculate progress percentage
+    - Pass to view
+    - _Requirements: 1.1_
+  - [x] 5.3 Update home-asesi.blade.php to show download button
+    - Add conditional button when progress = 100%
+    - Add visual indicator for completion
+    - Style button appropriately
+    - _Requirements: 1.1, 1.2, 1.3_
+  - [x] 5.4 Write property test for button visibility
+    - **Property 1: Certificate button visibility matches progress state**
+    - **Validates: Requirements 1.1, 1.2**
+
+- [x] 6. Checkpoint - Make sure all tests are passing
+  - Ensure all tests pass, ask the user if questions arise.

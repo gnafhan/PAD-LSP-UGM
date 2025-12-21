@@ -285,6 +285,101 @@ class AsesiPengajuanPageController extends Controller
         return view('home.home-admin.detail-pengajuan', compact('asesiPengajuan', 'buktiKelengkapan', 'adminSignature'));
     }
 
+    /**
+     * Show asesi detail (for approved asesi)
+     */
+    public function showAsesiDetail($id_asesi)
+    {
+        $asesi = Asesi::with(['skema', 'progresAsesmen', 'rincianAsesmen.asesor', 'rincianAsesmen.event'])
+            ->findOrFail($id_asesi);
+        
+        // Calculate progress
+        $progressData = null;
+        if ($asesi->progresAsesmen) {
+            $progressData = $asesi->progresAsesmen->calculateProgress(true);
+        }
+        
+        // Determine status
+        $statusKompetensi = 'Belum Mulai';
+        if ($progressData) {
+            if ($progressData['progress_percentage'] >= 100) {
+                $statusKompetensi = 'Kompeten';
+            } elseif ($progressData['progress_percentage'] > 0) {
+                $statusKompetensi = 'Masih Proses';
+            }
+        }
+        
+        // Get all skema for dropdown
+        $skemas = Skema::orderBy('nama_skema')->get();
+        
+        return view('home.home-admin.detail-asesi', compact('asesi', 'progressData', 'statusKompetensi', 'skemas'));
+    }
+
+    /**
+     * Show edit form for asesi
+     */
+    public function editAsesi($id_asesi)
+    {
+        $asesi = Asesi::with(['skema'])->findOrFail($id_asesi);
+        $skemas = Skema::orderBy('nama_skema')->get();
+        
+        return view('home.home-admin.edit-asesi', compact('asesi', 'skemas'));
+    }
+
+    /**
+     * Update asesi data
+     */
+    public function updateAsesi(Request $request, $id_asesi)
+    {
+        $request->validate([
+            'nama_asesi' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'nim' => 'nullable|string|max:50',
+            'tempat_tanggal_lahir' => 'nullable|string|max:255',
+            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
+            'kebangsaan' => 'nullable|string|max:100',
+            'alamat_rumah' => 'nullable|string',
+            'kota_domisili' => 'nullable|string|max:100',
+            'no_telp' => 'nullable|string|max:20',
+            'id_skema' => 'nullable|exists:skema,id_skema',
+            'status_pekerjaan' => 'nullable|string|max:100',
+            'nama_perusahaan' => 'nullable|string|max:255',
+            'jabatan' => 'nullable|string|max:100',
+            'alamat_perusahaan' => 'nullable|string',
+            'no_telp_perusahaan' => 'nullable|string|max:20',
+        ]);
+
+        try {
+            $asesi = Asesi::findOrFail($id_asesi);
+            
+            $asesi->update([
+                'nama_asesi' => $request->nama_asesi,
+                'email' => $request->email,
+                'nim' => $request->nim,
+                'tempat_tanggal_lahir' => $request->tempat_tanggal_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'kebangsaan' => $request->kebangsaan,
+                'alamat_rumah' => $request->alamat_rumah,
+                'kota_domisili' => $request->kota_domisili,
+                'no_telp' => $request->no_telp,
+                'id_skema' => $request->id_skema,
+                'status_pekerjaan' => $request->status_pekerjaan,
+                'nama_perusahaan' => $request->nama_perusahaan,
+                'jabatan' => $request->jabatan,
+                'alamat_perusahaan' => $request->alamat_perusahaan,
+                'no_telp_perusahaan' => $request->no_telp_perusahaan,
+            ]);
+
+            return redirect()->route('admin.asesi.show', $id_asesi)
+                ->with('success', 'Data asesi berhasil diperbarui');
+        } catch (\Exception $e) {
+            Log::error('Error updating asesi: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Gagal memperbarui data asesi: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
     public function assignAsesor(Request $request)
     {
         $request->validate([

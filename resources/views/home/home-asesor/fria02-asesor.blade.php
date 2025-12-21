@@ -146,23 +146,23 @@
             </div>
 
 
-            <!-- Tabel 1 AK01 -->
+            <!-- Tabel Unit Kompetensi -->
             <div class="p-4">
-                <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">Kelompok Pekerjaan Kegiatan Rekreasi</p>
+                <p id="judulTabelIA01" class="text-sidebar_font font-semibold pb-2">Unit Kompetensi</p>
 
                 <div class="overflow-x-auto shadow-md rounded-lg mb-4">
                     <table id="pelaksanaanAsesmen" class="min-w-full bg-white overflow-hidden">
                         <thead class="bg-bg_dashboard text-center">
                             <tr>
                                 <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">No</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Menangani Situasi Konfik</th>
-                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Kompetensi</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">Kode UK</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">Nama UK</th>
                             </tr>
                         </thead>
                         <tbody id="kompetensiTableBody" class="divide-y divide-gray-200 text-black text-center items-center">
                             <!-- Data akan dimuat dari database -->
                             <tr>
-                                <td colspan="3" class="px-4 py-3 text-center text-gray-500">Memuat data kompetensi...</td>
+                                <td colspan="3" class="px-4 py-3 text-center text-gray-500">Memuat data unit kompetensi...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -356,31 +356,25 @@
 
                 // Note: loadSavedContent function removed - we now use data directly from loadIA02Data response
 
-                // Load default template content
+                // Load default template content from database
                 function loadDefaultTemplate() {
-                    console.log('Loading default template...');
-                    const defaultContent = `
-                        <p><em>Tulis disini:</em></p>
-                        <p><strong>Skenario</strong></p>
-                        <p>Narasikan tugas yang harus dikerjakan oleh Asesi.</p>
-                        <p><strong>A. Studi Kasus</strong></p>
-                        <p>Anda sebagai seorang Pemandu Museum/Edukator mendapat tugas untuk melakukan pemanduan di museum dengan peserta 10 orang pengunjung, dengan latar belakang yang berbeda. Bagaimana strategi anda sebagai Pemandu Museum dalam mengelola kunjungan, terkait dengan pemanduan museum!</p>
-                        <p><strong>B. Instruksi Kerja dan demonstrasikan unjuk kerja di bawah ini :</strong></p>
-                        <ol>
-                            <li>Grooming / Penampilan kerja dari edukator.</li>
-                            <li>Salam pembuka (Greeting dalam Bahasa Inggris).</li>
-                            <li>Briefing / panduan awal pengunjung (Informasikan Prosedur Protokol kesehatan dan pembagian tugas antar edukator).</li>
-                        </ol>
-                        <p>a. Informasikan waktu kunjungan di museum dan peraturan selama kunjungan.</p>
-                        <p>b. Informasikan kepada pungunjung aksesibilitas dari setiap museum dlatas, baik dalam hal sarana prasarananya, etika di museum tersebut. (baik etika secara umum maupun etika secara lokal di museum tersebut).</p>
-                        <ol start="4">
-                            <li>Siapkan perangkat pemanduan/sarana dan prasarana.</li>
-                            <li>Memberi informasi yang atraktif dan edutainment.</li>
-                            <li>Closing pemanduan.</li>
-                        </ol>
-                    `;
-                    loadEditorContent(defaultContent);
-                    console.log('✅ Default template loaded');
+                    console.log('Loading default template from database...');
+                    
+                    // Get default template from currentIA02Data
+                    const ia02Data = currentIA02Data || window.currentIA02Data;
+                    
+                    if (ia02Data && ia02Data.detail_ia02 && ia02Data.detail_ia02.default_template) {
+                        const defaultContent = ia02Data.detail_ia02.default_template;
+                        loadEditorContent(defaultContent);
+                        console.log('✅ Default template loaded from database');
+                    } else if (ia02Data && ia02Data.detail_ia02 && !ia02Data.detail_ia02.has_scheme_template) {
+                        // No template configured for this scheme
+                        showMessage('Template default belum dikonfigurasi untuk skema ini. Silakan hubungi admin.', 'warning', 5000);
+                        console.log('⚠️ No default template configured for this scheme');
+                    } else {
+                        showMessage('Tidak dapat memuat template default. Pastikan asesi sudah dipilih.', 'error', 3000);
+                        console.log('❌ Cannot load default template - no data available');
+                    }
                 }
             </script>
 
@@ -540,14 +534,6 @@
                 }
             </script>
 
-
-                <!-- Tabel Proses Assessment -->
-                <div id="prosesAssessmentContainer" class="mt-8 space-y-6">
-                    <!-- Process tables will be loaded dynamically -->
-                    <div class="text-center text-gray-500 py-8">
-                        <p>Memuat data proses assessment...</p>
-                    </div>
-                </div>
 
                 <!-- Bagian Tandatangan -->
                 <div class="mt-8 p-6 border-border_input rounded-lg bg-white">
@@ -1347,8 +1333,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Update form with IA02 data
                     updateFormWithIA02Data(ia02Data.detail_ia02);
                     
-                    // Load kompetensis table
-                    loadKompetensiTable(ia02Data.kompetensis);
+                    // Load Unit Kompetensi table - prioritize unit_kompetensi from skema
+                    const unitKompetensiData = ia02Data.unit_kompetensi || ia02Data.kompetensis || [];
+                    loadKompetensiTable(unitKompetensiData);
                     
                     // Load instruksi kerja langsung dengan data dari database
                     const instruksiKerjaData = ia02Data.detail_ia02.instruksi_kerja;
@@ -1361,9 +1348,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             window.loadInstruksiKerjaFromData(instruksiKerjaData);
                         }, 1000);
                     }
-                    
-                    // Load proses assessment tables
-                    loadProsesAssessmentTables(ia02Data.proses_assessments);
                 
                 showMessage('Data IA02 berhasil dimuat', 'success', 3000);
             } else {
@@ -1458,21 +1442,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Load kompetensi table
-    function loadKompetensiTable(kompetensis) {
+    // Load kompetensi table (Unit Kompetensi from scheme)
+    function loadKompetensiTable(unitKompetensiList) {
         const tableBody = document.getElementById('kompetensiTableBody');
         
         if (!tableBody) return;
 
-        if (kompetensis && kompetensis.length > 0) {
+        if (unitKompetensiList && unitKompetensiList.length > 0) {
             let tableContent = '';
             
-            kompetensis.forEach((kompetensi, index) => {
+            unitKompetensiList.forEach((uk, index) => {
+                // Handle different data structures from API
+                const kodeUk = uk.kode_uk || uk.kode || '-';
+                const namaUk = uk.nama_uk || uk.nama || uk.judul_uk || uk.deskripsi_kompetensi || '-';
+                
                 tableContent += `
                     <tr>
                         <td class="px-4 py-3 text-sm text-gray-700">${index + 1}</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${kompetensi.kode_uk}</td>
-                        <td class="px-4 py-3 text-gray-700 text-left">${kompetensi.deskripsi_kompetensi}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">${kodeUk}</td>
+                        <td class="px-4 py-3 text-gray-700 text-left">${namaUk}</td>
                     </tr>
                 `;
             });
@@ -1481,7 +1469,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="3" class="px-4 py-3 text-center text-gray-500">Tidak ada data kompetensi</td>
+                    <td colspan="3" class="px-4 py-3 text-center text-gray-500">Tidak ada data unit kompetensi</td>
                 </tr>
             `;
         }
@@ -1547,74 +1535,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     };
-
-    // Load proses assessment tables
-    function loadProsesAssessmentTables(prosesAssessments) {
-        const container = document.getElementById('prosesAssessmentContainer');
-        
-        if (!container) return;
-
-        if (prosesAssessments && prosesAssessments.length > 0) {
-            let containerContent = '';
-            
-            prosesAssessments.forEach((proses) => {
-                let instruksiRows = '';
-                
-                if (proses.instruksi_kerjas && proses.instruksi_kerjas.length > 0) {
-                    proses.instruksi_kerjas.forEach((instruksi) => {
-                        instruksiRows += `
-                            <tr>
-                                <td class="px-4 py-3 text-sm text-gray-700 text-center">${instruksi.nomor_urut}</td>
-                                <td class="px-4 py-3 text-sm text-gray-700">${instruksi.instruksi_kerja}</td>
-                                <td class="px-4 py-3 text-sm text-gray-700">${instruksi.standar_alat_media}</td>
-                                <td class="px-4 py-3 text-sm text-gray-700">${instruksi.output_yang_diharapkan}</td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    instruksiRows = `
-                        <tr>
-                            <td colspan="4" class="px-4 py-3 text-center text-gray-500">Tidak ada instruksi kerja</td>
-                        </tr>
-                    `;
-                }
-
-                containerContent += `
-                    <div class="p-4 border-border_input rounded-lg bg-white">
-                        <h3 class="text-lg font-semibold text-sidebar_font mb-4">Proses ${proses.nomor_proses}</h3>
-                        <div class="mb-3">
-                            <span class="text-sm font-medium text-sidebar_font">Judul: </span>
-                            <span class="text-sm text-gray-700">${proses.judul_proses}</span>
-                        </div>
-                        
-                        <div class="overflow-x-auto shadow-md rounded-lg">
-                            <table class="min-w-full bg-white overflow-hidden">
-                                <thead class="bg-bg_dashboard text-center">
-                                    <tr>
-                                        <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">No</th>
-                                        <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Instruksi Kerja</th>
-                                        <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Standar / Alat / Media</th>
-                                        <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Output</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200 text-black">
-                                    ${instruksiRows}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = containerContent;
-        } else {
-            container.innerHTML = `
-                <div class="text-center text-gray-500 py-8">
-                    <p>Tidak ada data proses assessment</p>
-                </div>
-            `;
-        }
-    }
 
     // Back to list function
     window.kembaliKeList = function() {

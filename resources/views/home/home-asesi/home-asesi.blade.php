@@ -216,7 +216,7 @@
                                 <svg class="mr-1.5 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
-                                Dokumen SKKNI
+                                Dokumen Skema
                             </a>
                             @endif
                         </div>
@@ -256,13 +256,56 @@
                             <div class="progress-ring-container mb-4">
                                 <svg class="w-full h-full" viewBox="0 0 100 100">
                                     <circle class="text-gray-200" stroke-width="10" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
-                                    <circle class="progress-ring-circle text-green-500" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" style="stroke-dashoffset: 70.75" /> {{-- 283 * (1 - 0.75) --}}
+                                    <circle class="progress-ring-circle {{ $progressPercentage >= 100 ? 'text-green-500' : 'text-blue-500' }}" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" style="stroke-dashoffset: {{ 283 * (1 - $progressPercentage / 100) }}" />
                                 </svg>
-                                <div class="progress-text text-green-600">75%</div>
+                                <div class="progress-text {{ $progressPercentage >= 100 ? 'text-green-600' : 'text-blue-600' }}">{{ $progressPercentage }}%</div>
                             </div>
-                            <p class="text-center text-gray-600 font-medium text-lg">Proses Asesmen</p>
-                            <p class="text-center text-gray-500 text-sm mt-1">Tahap 4 dari 5</p>
+                            <p class="text-center text-gray-600 font-medium text-lg">
+                                {{ $progressPercentage >= 100 ? 'Asesmen Selesai' : 'Proses Asesmen' }}
+                            </p>
+                            @if($progressPercentage < 100)
+                            <p class="text-center text-gray-500 text-sm mt-1">Sedang berlangsung</p>
+                            @endif
                         </div>
+
+                        @if($certificateStatus == 'issued')
+                        {{-- Certificate Download Section - Sertifikat sudah diupload --}}
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                            <div class="flex items-center mb-3">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-semibold text-green-800">Selamat!</p>
+                                    <p class="text-xs text-green-600">Sertifikat Anda sudah tersedia</p>
+                                </div>
+                            </div>
+                            <a href="{{ route('asesi.certificate.download') }}" 
+                               class="w-full inline-flex items-center justify-center px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200 shadow-md hover:shadow-lg">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Download Sertifikat
+                            </a>
+                        </div>
+                        @elseif($certificateStatus == 'waiting')
+                        {{-- Certificate Waiting Section - Menunggu admin upload --}}
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                    <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-semibold text-yellow-800">Asesmen Selesai!</p>
+                                    <p class="text-xs text-yellow-600">Sertifikat belum siap. Silakan tunggu admin memproses sertifikat Anda.</p>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
 
                         <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Tahapan Proses</h4>
                         <div class="space-y-4">
@@ -305,8 +348,21 @@
                                 </div>
                             </div>
 
-                            {{-- Status Item: In Progress --}}
+                            {{-- Status Item: Proses Asesmen - Completed or In Progress based on progress --}}
                             <div class="flex items-center">
+                                @if($progressPercentage >= 100)
+                                {{-- Completed --}}
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                                    <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-semibold text-green-700">Proses Asesmen</p>
+                                    <p class="text-xs text-green-600">Selesai</p>
+                                </div>
+                                @else
+                                {{-- In Progress --}}
                                 <div class="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center pulse-animation">
                                     <svg class="h-5 w-5 text-yellow-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -317,19 +373,45 @@
                                     <p class="text-sm font-semibold text-yellow-700">Proses Asesmen</p>
                                     <p class="text-xs text-gray-500">Sedang berlangsung</p>
                                 </div>
+                                @endif
                             </div>
 
-                            {{-- Status Item: Pending --}}
-                            <div class="flex items-center opacity-60">
-                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
-                                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {{-- Status Item: Sertifikat - based on certificateStatus --}}
+                            <div class="flex items-center {{ $certificateStatus == 'not_eligible' ? 'opacity-60' : '' }}">
+                                @if($certificateStatus == 'issued')
+                                {{-- Sertifikat Diterbitkan --}}
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                                    <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-green-700">Sertifikat Diterbitkan</p>
+                                    <a href="{{ route('asesi.certificate.download') }}" class="text-xs text-green-600 hover:underline">Download Sertifikat</a>
+                                </div>
+                                @elseif($certificateStatus == 'waiting')
+                                {{-- Menunggu Sertifikat --}}
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
+                                    <svg class="h-5 w-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
                                 </div>
                                 <div class="ml-3">
-                                    <p class="text-sm font-medium text-gray-500">Sertifikat Diterbitkan</p>
+                                    <p class="text-sm font-medium text-yellow-700">Menunggu Sertifikat</p>
+                                    <p class="text-xs text-yellow-600">Sertifikat sedang diproses admin</p>
+                                </div>
+                                @else
+                                {{-- Not Eligible --}}
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-500">Sertifikat</p>
                                     <p class="text-xs text-gray-400">Menunggu hasil asesmen</p>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>

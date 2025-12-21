@@ -482,10 +482,10 @@ function showError(message) {
 function populateProgressTables(progressData) {
     // Get progress asesmen data from API response
     const progressAsesmen = progressData.progress_asesmen || {};
-    const progressSummary = progressData.progress_summary || {};
+    const progressSummary = progressData.asesor_progress_summary || progressData.progress_summary || {};
     const enabledAssessments = progressData.enabled_assessments || [];
 
-    // Update total progress information
+    // Update total progress information (using asesor progress)
     document.getElementById('totalSteps').textContent = `Total Langkah: ${progressSummary.total_steps || 0}`;
     document.getElementById('totalProgress').textContent = `${progressSummary.progress_percentage || 0}%`;
 

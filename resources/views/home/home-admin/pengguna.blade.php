@@ -215,7 +215,7 @@
                 Asesor dapat diatur status dan masa berlakunya, sementara admin memiliki hak akses penuh ke sistem.
             </p>
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mt-4">
                 <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
                     <div class="flex items-center">
                         <div class="p-3 rounded-full bg-blue-500 bg-opacity-10">
@@ -273,6 +273,22 @@
                             <h4 class="text-sm font-medium text-emerald-800">Asesor Aktif</h4>
                             <p class="mt-1 text-xl font-semibold text-emerald-900">
                                 {{ $totalStats['asesor_aktif'] }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 rounded-lg p-4 border border-orange-100">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-orange-500 bg-opacity-10">
+                            <svg class="h-6 w-6 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="text-sm font-medium text-orange-800">Total Asesi</h4>
+                            <p class="mt-1 text-xl font-semibold text-orange-900">
+                                {{ $totalStats['asesi'] }}
                             </p>
                         </div>
                     </div>
@@ -664,6 +680,284 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Tabel Asesi -->
+            <div class="bg-white rounded-lg shadow-md mt-8">
+                <!-- Tabel Header & Search -->
+                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4 md:mb-0">Daftar Asesi</h3>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                            <form method="GET" action="{{ route('admin.pengguna.index') }}" class="flex flex-col sm:flex-row gap-2 w-full">
+                                <div class="flex rounded-md shadow-sm flex-1">
+                                    <input type="text" name="search_asesi" value="{{ request('search_asesi') }}" placeholder="Cari nama, email, atau NIM..." class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-l-md sm:text-sm border-gray-300 px-4 py-2">
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+                                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                        Cari
+                                    </button>
+                                </div>
+                                
+                                <div class="flex rounded-md shadow-sm">
+                                    <select name="filter_skema_asesi" class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md sm:text-sm border-gray-300 px-4 py-2">
+                                        <option value="">Semua Skema</option>
+                                        @foreach($skemas as $skema)
+                                            <option value="{{ $skema->id_skema }}" {{ request('filter_skema_asesi') == $skema->id_skema ? 'selected' : '' }}>
+                                                {{ $skema->nama_skema }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="flex rounded-md shadow-sm">
+                                    <select name="filter_event_asesi" class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md sm:text-sm border-gray-300 px-4 py-2">
+                                        <option value="">Semua Event</option>
+                                        @foreach($events as $event)
+                                            <option value="{{ $event->id_event }}" {{ request('filter_event_asesi') == $event->id_event ? 'selected' : '' }}>
+                                                {{ $event->nama_event }} (P{{ $event->periode_pelaksanaan }} {{ $event->tahun_pelaksanaan }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="flex rounded-md shadow-sm">
+                                    <select name="filter_status_asesi" class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md sm:text-sm border-gray-300 px-4 py-2">
+                                        <option value="">Semua Status</option>
+                                        <option value="Kompeten" {{ request('filter_status_asesi') == 'Kompeten' ? 'selected' : '' }}>Kompeten</option>
+                                        <option value="Masih Proses" {{ request('filter_status_asesi') == 'Masih Proses' ? 'selected' : '' }}>Masih Proses</option>
+                                        <option value="Belum Mulai" {{ request('filter_status_asesi') == 'Belum Mulai' ? 'selected' : '' }}>Belum Mulai</option>
+                                    </select>
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabel Asesi -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIM</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Skema</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Daftar</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($asesis as $index => $asesi)
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $index + 1 }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-orange-100 text-orange-800 font-bold text-sm">
+                                                {{ !empty($asesi->nama_asesi) ? strtoupper(substr($asesi->nama_asesi, 0, 1)) : 'A' }}
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{ $asesi->nama_asesi ?? 'Nama tidak tersedia' }}
+                                                </div>
+                                                <div class="text-sm text-gray-500">
+                                                    {{ $asesi->email ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $asesi->nim ?? '-' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if($asesi->skema)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                {{ $asesi->skema->nama_skema }}
+                                            </span>
+                                        @else
+                                            <span class="text-gray-400 italic">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if($asesi->rincianAsesmen && $asesi->rincianAsesmen->event)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                {{ $asesi->rincianAsesmen->event->nama_event }}
+                                            </span>
+                                            <div class="text-xs text-gray-400 mt-1">
+                                                P{{ $asesi->rincianAsesmen->event->periode_pelaksanaan }} {{ $asesi->rincianAsesmen->event->tahun_pelaksanaan }}
+                                            </div>
+                                        @else
+                                            <span class="text-gray-400 italic">Belum di-assign</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2" style="width: 100px;">
+                                                <div class="h-2.5 rounded-full {{ $asesi->progress_percentage >= 100 ? 'bg-green-600' : ($asesi->progress_percentage > 0 ? 'bg-blue-600' : 'bg-gray-400') }}" style="width: {{ $asesi->progress_percentage }}%"></div>
+                                            </div>
+                                            <span class="text-sm text-gray-600">{{ $asesi->progress_percentage }}%</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($asesi->status_kompetensi == 'Kompeten')
+                                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                </svg>
+                                                Kompeten
+                                            </span>
+                                        @elseif($asesi->status_kompetensi == 'Masih Proses')
+                                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                                                </svg>
+                                                Masih Proses
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                                </svg>
+                                                Belum Mulai
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $asesi->created_at ? $asesi->created_at->format('d M Y') : '-' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="flex justify-end space-x-2">
+                                            <!-- Tombol Lihat Detail -->
+                                            <a href="{{ route('admin.asesi.show', $asesi->id_asesi) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 rounded-md text-white transition-all">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                                Detail
+                                            </a>
+
+                                            @if($asesi->status_kompetensi == 'Kompeten')
+                                                @if($asesi->file_sertifikat)
+                                                    <!-- Tombol Download Sertifikat (sudah diupload) -->
+                                                    <a href="{{ route('admin.asesi.certificate.download', $asesi->id_asesi) }}" class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 rounded-md text-white transition-all">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                        Download
+                                                    </a>
+                                                    <!-- Tombol Ganti Sertifikat -->
+                                                    <button type="button" onclick="openCertificateModal('{{ $asesi->id_asesi }}', '{{ $asesi->nama_asesi }}', true)" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 rounded-md text-white transition-all">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                        </svg>
+                                                        Ganti
+                                                    </button>
+                                                @else
+                                                    <!-- Tombol Upload Sertifikat (belum diupload) -->
+                                                    <button type="button" onclick="openCertificateModal('{{ $asesi->id_asesi }}', '{{ $asesi->nama_asesi }}', false)" class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 rounded-md text-white transition-all">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                        </svg>
+                                                        Upload Sertifikat
+                                                    </button>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="9" class="px-6 py-10 text-center text-gray-500 italic">
+                                        <div class="flex flex-col items-center justify-center space-y-3">
+                                            <svg class="h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                            </svg>
+                                            <span>Tidak ada data asesi</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination Asesi -->
+                @if(count($asesis) > 0)
+                <div class="px-6 py-4 bg-white border-t border-gray-200 rounded-b-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-700">
+                            Menampilkan {{ count($asesis) }} asesi
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Upload Sertifikat -->
+<div id="certificateUploadModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 id="certificate_modal_title" class="text-lg font-medium text-gray-900">Upload Sertifikat</h3>
+                    <button type="button" onclick="closeCertificateModal()" class="text-gray-400 hover:text-gray-500">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4">
+                <input type="hidden" id="certificate_asesi_id" value="">
+                
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600">Upload sertifikat untuk:</p>
+                    <p id="certificate_asesi_name" class="text-lg font-semibold text-gray-800"></p>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="certificate_file" class="block text-sm font-medium text-gray-700 mb-2">File Sertifikat (PDF)</label>
+                    <input type="file" id="certificate_file" accept=".pdf,application/pdf" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    <p class="mt-1 text-xs text-gray-500">Format: PDF, Maksimal 10MB</p>
+                </div>
+                
+                <!-- Error Message -->
+                <div id="certificate_error" class="hidden mb-4 p-3 bg-red-100 border border-red-200 text-red-700 rounded-md text-sm"></div>
+                
+                <!-- Success Message -->
+                <div id="certificate_success" class="hidden mb-4 p-3 bg-green-100 border border-green-200 text-green-700 rounded-md text-sm"></div>
+            </div>
+            
+            <div class="px-6 py-4 bg-gray-50 text-right rounded-b-lg">
+                <button type="button" onclick="closeCertificateModal()" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Batal
+                </button>
+                <button type="button" id="certificate_submit_btn" onclick="uploadCertificate()" class="ml-3 inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <span id="certificate_loading" class="hidden mr-2">
+                        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </span>
+                    <span id="certificate_btn_text">Upload Sertifikat</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -690,54 +984,59 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inisialisasi array bidang kompetensi global
     window.daftarBidangKompetensi = [];
     
-    // Event listener untuk tombol tambah bidang
-    document.getElementById('tambahBidangBtn').addEventListener('click', function() {
-        const select = document.getElementById('id_bidang');
-        if (!select.value) {
-            alert("Pilih bidang kompetensi terlebih dahulu.");
-            return;
-        }
-        
-        const id_bidang = select.value;
-        const namaBidang = select.options[select.selectedIndex].getAttribute('data-nama');
-        
-        if (window.daftarBidangKompetensi.some(b => b.id === id_bidang)) {
-            alert("Bidang kompetensi ini sudah ditambahkan.");
-            return;
-        }
-        
-        // Tambahkan ke daftar
-        window.daftarBidangKompetensi.push({
-            id: id_bidang,
-            nama: namaBidang
+    // Event listener untuk tombol tambah bidang (only if element exists)
+    const tambahBidangBtn = document.getElementById('tambahBidangBtn');
+    if (tambahBidangBtn) {
+        tambahBidangBtn.addEventListener('click', function() {
+            const select = document.getElementById('id_bidang');
+            if (!select.value) {
+                alert("Pilih bidang kompetensi terlebih dahulu.");
+                return;
+            }
+            
+            const id_bidang = select.value;
+            const namaBidang = select.options[select.selectedIndex].getAttribute('data-nama');
+            
+            if (window.daftarBidangKompetensi.some(b => b.id === id_bidang)) {
+                alert("Bidang kompetensi ini sudah ditambahkan.");
+                return;
+            }
+            
+            // Tambahkan ke daftar
+            window.daftarBidangKompetensi.push({
+                id: id_bidang,
+                nama: namaBidang
+            });
+            
+            // Update hidden input
+            document.getElementById('bidang_kompetensi_hidden').value = JSON.stringify(window.daftarBidangKompetensi.map(b => b.id));
+            
+            // Sembunyikan pesan kosong
+            const emptyRow = document.getElementById('empty-bidang-row');
+            if (emptyRow) {
+                emptyRow.classList.add('hidden');
+            }
+            
+            // Tambahkan ke UI
+            const bidangList = document.getElementById('bidangList');
+            const newItem = document.createElement('li');
+            newItem.className = 'px-3 py-3 flex justify-between items-center animate-fade-in';
+            newItem.innerHTML = `
+                <span class="text-sm text-gray-700">${namaBidang}</span>
+                <button type="button" class="hapusBidangBtn text-red-500 hover:text-red-700" data-id="${id_bidang}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            `;
+            bidangList.appendChild(newItem);
         });
-        
-        // Update hidden input
-        document.getElementById('bidang_kompetensi_hidden').value = JSON.stringify(window.daftarBidangKompetensi.map(b => b.id));
-        
-        // Sembunyikan pesan kosong
-        const emptyRow = document.getElementById('empty-bidang-row');
-        if (emptyRow) {
-            emptyRow.classList.add('hidden');
-        }
-        
-        // Tambahkan ke UI
-        const bidangList = document.getElementById('bidangList');
-        const newItem = document.createElement('li');
-        newItem.className = 'px-3 py-3 flex justify-between items-center animate-fade-in';
-        newItem.innerHTML = `
-            <span class="text-sm text-gray-700">${namaBidang}</span>
-            <button type="button" class="hapusBidangBtn text-red-500 hover:text-red-700" data-id="${id_bidang}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-            </button>
-        `;
-        bidangList.appendChild(newItem);
-    });
+    }
     
-    // Event delegation untuk tombol hapus bidang
-    document.getElementById('bidangList').addEventListener('click', function(e) {
+    // Event delegation untuk tombol hapus bidang (only if element exists)
+    const bidangList = document.getElementById('bidangList');
+    if (bidangList) {
+        bidangList.addEventListener('click', function(e) {
         if (e.target.closest('.hapusBidangBtn')) {
             const button = e.target.closest('.hapusBidangBtn');
             const id_bidang = button.getAttribute('data-id');
@@ -770,6 +1069,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    }
 });
 
 // Fungsi untuk modal edit admin
@@ -855,6 +1155,138 @@ function closeDeleteModal() {
     } else {
         console.error('Delete modal element not found');
     }
+}
+
+// Certificate Upload Modal Functions
+function openCertificateModal(asesiId, asesiName, isReplace) {
+    document.getElementById('certificate_asesi_id').value = asesiId;
+    document.getElementById('certificate_asesi_name').textContent = asesiName;
+    document.getElementById('certificate_modal_title').textContent = isReplace ? 'Ganti Sertifikat' : 'Upload Sertifikat';
+    document.getElementById('certificate_btn_text').textContent = isReplace ? 'Ganti Sertifikat' : 'Upload Sertifikat';
+    document.getElementById('certificate_file').value = '';
+    document.getElementById('certificate_error').classList.add('hidden');
+    document.getElementById('certificate_success').classList.add('hidden');
+    document.getElementById('certificate_loading').classList.add('hidden');
+    document.getElementById('certificate_submit_btn').disabled = false;
+    
+    const modal = document.getElementById('certificateUploadModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+}
+
+function closeCertificateModal() {
+    const modal = document.getElementById('certificateUploadModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+}
+
+function uploadCertificate() {
+    const asesiId = document.getElementById('certificate_asesi_id')?.value;
+    const fileInput = document.getElementById('certificate_file');
+    const file = fileInput?.files[0];
+    const errorDiv = document.getElementById('certificate_error');
+    const successDiv = document.getElementById('certificate_success');
+    const submitBtn = document.getElementById('certificate_submit_btn');
+    const loadingSpinner = document.getElementById('certificate_loading');
+    
+    console.log('Upload certificate called for asesi:', asesiId);
+    console.log('File selected:', file);
+    console.log('Elements found:', { errorDiv, successDiv, submitBtn, loadingSpinner });
+    
+    // Check if elements exist
+    if (!errorDiv || !successDiv || !submitBtn || !loadingSpinner) {
+        console.error('Required elements not found');
+        alert('Terjadi kesalahan: elemen form tidak ditemukan. Silakan refresh halaman.');
+        return;
+    }
+    
+    // Reset messages
+    errorDiv.classList.add('hidden');
+    successDiv.classList.add('hidden');
+    
+    // Validate file
+    if (!file) {
+        errorDiv.textContent = 'Pilih file sertifikat terlebih dahulu.';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    if (file.type !== 'application/pdf') {
+        errorDiv.textContent = 'File harus berformat PDF.';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    if (file.size > 10 * 1024 * 1024) {
+        errorDiv.textContent = 'Ukuran file maksimal 10MB.';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    // Show loading
+    submitBtn.disabled = true;
+    loadingSpinner.classList.remove('hidden');
+    
+    // Create form data
+    const formData = new FormData();
+    formData.append('certificate', file);
+    
+    // Get CSRF token from meta tag or use blade directive
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+    
+    const uploadUrl = "{{ url('/admin/asesi') }}/" + asesiId + "/certificate/upload";
+    console.log('Uploading to:', uploadUrl);
+    console.log('CSRF Token:', csrfToken);
+    
+    // Upload
+    fetch(uploadUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        }
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            return response.text().then(text => {
+                console.error('Error response:', text);
+                throw new Error('Server error: ' + response.status);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        submitBtn.disabled = false;
+        loadingSpinner.classList.add('hidden');
+        
+        if (data.success) {
+            successDiv.textContent = data.message;
+            successDiv.classList.remove('hidden');
+            
+            // Reload page after 1.5 seconds
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            errorDiv.textContent = data.message || 'Terjadi kesalahan saat upload.';
+            errorDiv.classList.remove('hidden');
+        }
+    })
+    .catch(error => {
+        console.error('Upload error:', error);
+        submitBtn.disabled = false;
+        loadingSpinner.classList.add('hidden');
+        errorDiv.textContent = 'Terjadi kesalahan: ' + error.message;
+        errorDiv.classList.remove('hidden');
+    });
 }
 
 </script>

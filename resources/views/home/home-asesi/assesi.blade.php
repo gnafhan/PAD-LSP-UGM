@@ -728,7 +728,7 @@
                 </div>
 
                 {{-- Pengajuan Banding (Opsional) --}}
-                <div id="banding-section">
+                <div id="banding-section" class="hidden">
                   <h3 class="text-lg font-semibold text-gray-800 mb-4 mt-7 flex items-center">
                     <div class="flex-shrink-0 bg-orange-100 text-orange-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">
                       <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1087,6 +1087,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.data.enabled_assessments && result.data.enabled_assessments.length > 0) {
                     applyDynamicAssessmentVisibility(result.data.enabled_assessments);
                 }
+                // Show banding section only if hasil_asesmen is 'tidak_kompeten'
+                updateBandingVisibility(result.data.hasil_asesmen_status);
                 hideLoading();
             } else {
                 throw new Error(result.message || 'Gagal memuat data progres');
@@ -1095,6 +1097,21 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             showError('Error memuat data progres: ' + error.message);
         });
+    }
+
+    // Show/hide banding section based on hasil asesmen status
+    function updateBandingVisibility(hasilAsesmenStatus) {
+        const bandingSection = document.getElementById('banding-section');
+        if (bandingSection) {
+            // Only show banding if hasil asesmen is 'tidak_kompeten'
+            if (hasilAsesmenStatus === 'tidak_kompeten') {
+                bandingSection.classList.remove('hidden');
+                console.log('Banding section shown - hasil asesmen: tidak_kompeten');
+            } else {
+                bandingSection.classList.add('hidden');
+                console.log('Banding section hidden - hasil asesmen:', hasilAsesmenStatus);
+            }
+        }
     }
 
     // Update progress display

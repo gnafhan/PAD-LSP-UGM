@@ -5,11 +5,22 @@ namespace App\Http\Controllers\Admin\ManajemenPengguna;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Asesor;
+use App\Models\Asesi;
+use App\Models\Skema;
+use App\Models\Event;
 use App\Models\BidangKompetensi;
+use App\Services\ProgressTrackingService;
 use Illuminate\Http\Request;
 
 class PenggunaPageController extends Controller
 {
+    protected ProgressTrackingService $progressTrackingService;
+
+    public function __construct(ProgressTrackingService $progressTrackingService)
+    {
+        $this->progressTrackingService = $progressTrackingService;
+    }
+
     /**
      * Display a listing of all users.
      */
@@ -20,6 +31,9 @@ class PenggunaPageController extends Controller
         
         // Ambil data asesor dari tabel asesor
         $asesorQuery = Asesor::query();
+        
+        // Ambil data asesi dari tabel asesi dengan relasi event melalui rincianAsesmen
+        $asesiQuery = Asesi::with(['skema', 'progresAsesmen', 'rincianAsesmen.event']);
         
         // Filter pencarian admin
         if ($request->has('search_admin')) {
@@ -40,6 +54,34 @@ class PenggunaPageController extends Controller
                 $q->where('nama_asesor', 'LIKE', "%{$search}%")
                   ->orWhere('email', 'LIKE', "%{$search}%")
                   ->orWhere('no_hp', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // Filter pencarian asesi
+        if ($request->has('search_asesi')) {
+            $search = $request->search_asesi;
+            
+            $asesiQuery->where(function($q) use ($search) {
+                $q->where('nama_asesi', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%")
+                  ->orWhere('nim', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // Filter status asesi
+        if ($request->has('filter_status_asesi') && $request->filter_status_asesi != '') {
+            // Status will be calculated after fetching, so we'll filter in PHP
+        }
+        
+        // Filter skema asesi
+        if ($request->has('filter_skema_asesi') && $request->filter_skema_asesi != '') {
+            $asesiQuery->where('id_skema', $request->filter_skema_asesi);
+        }
+        
+        // Filter event asesi (melalui rincian_asesmen)
+        if ($request->has('filter_event_asesi') && $request->filter_event_asesi != '') {
+            $asesiQuery->whereHas('rincianAsesmen', function($q) use ($request) {
+                $q->where('id_event', $request->filter_event_asesi);
             });
         }
         
@@ -70,6 +112,30 @@ class PenggunaPageController extends Controller
         // Mengambil data admin dan asesor
         $admins = $adminQuery->get();
         $asesors = $asesorQuery->get();
+        $asesis = $asesiQuery->orderBy('created_at', 'desc')->get();
+        
+        // Calculate progress and status for each asesi
+        foreach ($asesis as $asesi) {
+            $progressData = $this->progressTrackingService->calculateSchemeBasedProgress($asesi->id_asesi);
+            $asesi->setAttribute('progress_percentage', $progressData['progress_percentage']);
+            
+            // Determine status based on progress
+            if ($progressData['progress_percentage'] >= 100) {
+                $asesi->setAttribute('status_kompetensi', 'Kompeten');
+            } elseif ($progressData['progress_percentage'] > 0) {
+                $asesi->setAttribute('status_kompetensi', 'Masih Proses');
+            } else {
+                $asesi->setAttribute('status_kompetensi', 'Belum Mulai');
+            }
+        }
+        
+        // Filter by status if requested (after calculating status)
+        if ($request->has('filter_status_asesi') && $request->filter_status_asesi != '') {
+            $filterStatus = $request->filter_status_asesi;
+            $asesis = $asesis->filter(function($asesi) use ($filterStatus) {
+                return $asesi->status_kompetensi === $filterStatus;
+            })->values();
+        }
         
         // Get all bidang kompetensi for lookup
         $bidangKompetensiData = BidangKompetensi::all()->keyBy('id_bidang_kompetensi');
@@ -95,17 +161,27 @@ class PenggunaPageController extends Controller
         }
         
         // Hitung statistik
+        $totalAsesi = Asesi::count();
         $totalStats = [
-            'total' => User::count() + Asesor::count(), // Total user (admin + asesor)
+            'total' => User::count() + Asesor::count() + $totalAsesi,
             'admin' => User::where('level', 'admin')->count(),
             'asesor' => Asesor::count(),
             'asesor_aktif' => Asesor::where('status_asesor', 'aktif')->count(),
+            'asesi' => $totalAsesi,
         ];
         
         // Get all bidang kompetensi for the dropdown in modal
         $bidangKompetensi = BidangKompetensi::getAllOrdered();
         
-        return view('home.home-admin.pengguna', compact('admins', 'asesors', 'totalStats', 'bidangKompetensi'));
+        // Get all skema for the dropdown filter
+        $skemas = Skema::orderBy('nama_skema')->get();
+        
+        // Get all events for the dropdown filter
+        $events = Event::orderBy('tahun_pelaksanaan', 'desc')
+                       ->orderBy('periode_pelaksanaan', 'desc')
+                       ->get();
+        
+        return view('home.home-admin.pengguna', compact('admins', 'asesors', 'asesis', 'totalStats', 'bidangKompetensi', 'skemas', 'events'));
     }
 
     /**

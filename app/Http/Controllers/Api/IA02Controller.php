@@ -68,6 +68,26 @@ class IA02Controller extends Controller
                 $ia02 = $this->ia02Service->createIA02ForAsesi($asesiId, $asesorId);
             }
 
+            // Get Unit Kompetensi from the asesi's scheme (daftar_id_uk)
+            $unitKompetensi = [];
+            if ($ia02->skema && $ia02->skema->daftar_id_uk) {
+                $daftarIdUk = \is_array($ia02->skema->daftar_id_uk) 
+                    ? $ia02->skema->daftar_id_uk 
+                    : json_decode($ia02->skema->daftar_id_uk, true);
+                
+                if ($daftarIdUk && \is_array($daftarIdUk)) {
+                    $unitKompetensi = \App\Models\UK::whereIn('id_uk', $daftarIdUk)
+                        ->get()
+                        ->map(function ($uk) {
+                            return [
+                                'id' => $uk->id_uk,
+                                'kode_uk' => $uk->kode_uk,
+                                'nama_uk' => $uk->nama_uk,
+                            ];
+                        });
+                }
+            }
+
             return response()->json([
                 'status' => 'success',
                 'data' => [
@@ -85,6 +105,7 @@ class IA02Controller extends Controller
                         'tuk' => $ia02->tuk, // Using accessor
                         'instruksi_kerja' => $ia02->instruksi_kerja,
                         'has_scheme_template' => $this->ia02Service->hasTemplateForSkema($ia02->id_skema), // Requirements: 8.4
+                        'default_template' => $this->ia02Service->getDefaultTemplateForSkema($ia02->id_skema), // Template from database
                         'waktu_tanda_tangan_asesor' => $ia02->waktu_tanda_tangan_asesor?->format('d-m-Y H:i:s') . ' WIB',
                         'waktu_tanda_tangan_asesi' => $ia02->waktu_tanda_tangan_asesi?->format('d-m-Y H:i:s') . ' WIB',
                         'ttd_asesor' => $ia02->ttd_asesor,
@@ -96,6 +117,7 @@ class IA02Controller extends Controller
                         'is_completed' => $ia02->isCompleted(),
                         'catatan' => $ia02->catatan,
                     ],
+                    'unit_kompetensi' => $unitKompetensi, // UK from scheme's daftar_id_uk
                     'kompetensis' => $ia02->kompetensis->map(function ($kompetensi) {
                         return [
                             'id' => $kompetensi->id,

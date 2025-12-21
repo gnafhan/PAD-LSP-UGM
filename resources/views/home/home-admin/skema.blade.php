@@ -182,7 +182,7 @@
             <h3 class="text-lg font-semibold text-gray-800 mb-2">Informasi Skema Sertifikasi</h3>
             <p class="text-gray-600 mb-4">
                 Skema sertifikasi merupakan persyaratan sertifikasi spesifik yang berkaitan dengan kategori profesi tertentu.
-                Setiap skema sertifikasi memiliki unit kompetensi yang menjadi acuan pengujian dan dokumen SKKNI yang relevan.
+                Setiap skema sertifikasi memiliki unit kompetensi yang menjadi acuan pengujian dan dokumen skema yang relevan.
             </p>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">

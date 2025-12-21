@@ -68,7 +68,7 @@
             </div>
             
             <!-- Content Summary Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 p-6 bg-gray-50">
+            <div class="grid grid-cols-3 gap-4 p-6 bg-gray-50">
                 <div class="bg-white rounded-lg p-4 border border-gray-200 text-center">
                     <div class="text-2xl font-bold text-green-600">{{ $summary['ia05_count'] }}</div>
                     <div class="text-xs text-gray-500">IA05 Soal</div>
@@ -80,18 +80,6 @@
                 <div class="bg-white rounded-lg p-4 border border-gray-200 text-center">
                     <div class="text-2xl font-bold text-purple-600">{{ $summary['ia07_count'] }}</div>
                     <div class="text-xs text-gray-500">IA07 Pertanyaan</div>
-                </div>
-                <div class="bg-white rounded-lg p-4 border border-gray-200 text-center">
-                    <div class="text-2xl font-bold {{ $summary['mapa01_exists'] ? 'text-orange-600' : 'text-gray-400' }}">{{ $summary['mapa01_exists'] ? '✓' : '—' }}</div>
-                    <div class="text-xs text-gray-500">MAPA01 Config</div>
-                </div>
-                <div class="bg-white rounded-lg p-4 border border-gray-200 text-center">
-                    <div class="text-2xl font-bold {{ $summary['mapa02_exists'] ? 'text-yellow-600' : 'text-gray-400' }}">{{ $summary['mapa02_exists'] ? '✓' : '—' }}</div>
-                    <div class="text-xs text-gray-500">MAPA02 Config</div>
-                </div>
-                <div class="bg-white rounded-lg p-4 border border-gray-200 text-center">
-                    <div class="text-2xl font-bold text-red-600">{{ $summary['ia11_count'] }}</div>
-                    <div class="text-xs text-gray-500">IA11 Checklist</div>
                 </div>
             </div>
         </div>
@@ -112,18 +100,6 @@
                         IA07 - Pertanyaan Lisan
                         <span class="ml-2 bg-purple-100 text-purple-800 py-0.5 px-2 rounded-full text-xs">{{ $summary['ia07_count'] }}</span>
                     </button>
-                    <button type="button" class="tab-btn whitespace-nowrap py-4 px-6 font-medium text-sm text-gray-500" data-tab="mapa01">
-                        MAPA01 - Perencanaan
-                        <span class="ml-2 {{ $summary['mapa01_exists'] ? 'bg-orange-100 text-orange-800' : 'bg-gray-100 text-gray-600' }} py-0.5 px-2 rounded-full text-xs">{{ $summary['mapa01_exists'] ? '✓' : '—' }}</span>
-                    </button>
-                    <button type="button" class="tab-btn whitespace-nowrap py-4 px-6 font-medium text-sm text-gray-500" data-tab="mapa02">
-                        MAPA02 - Instrumen
-                        <span class="ml-2 {{ $summary['mapa02_exists'] ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-600' }} py-0.5 px-2 rounded-full text-xs">{{ $summary['mapa02_exists'] ? '✓' : '—' }}</span>
-                    </button>
-                    <button type="button" class="tab-btn whitespace-nowrap py-4 px-6 font-medium text-sm text-gray-500" data-tab="ia11">
-                        IA11 - Checklist Portofolio
-                        <span class="ml-2 bg-red-100 text-red-800 py-0.5 px-2 rounded-full text-xs">{{ $summary['ia11_count'] }}</span>
-                    </button>
                 </nav>
             </div>
         </div>
@@ -143,21 +119,6 @@
             <!-- IA07 Tab -->
             <div id="tab-ia07" class="tab-panel hidden">
                 @include('home.home-admin.partials.scheme-content.ia07-tab')
-            </div>
-            
-            <!-- MAPA01 Tab -->
-            <div id="tab-mapa01" class="tab-panel hidden">
-                @include('home.home-admin.partials.scheme-content.mapa01-tab')
-            </div>
-            
-            <!-- MAPA02 Tab -->
-            <div id="tab-mapa02" class="tab-panel hidden">
-                @include('home.home-admin.partials.scheme-content.mapa02-tab')
-            </div>
-            
-            <!-- IA11 Tab -->
-            <div id="tab-ia11" class="tab-panel hidden">
-                @include('home.home-admin.partials.scheme-content.ia11-tab')
             </div>
         </div>
     </div>

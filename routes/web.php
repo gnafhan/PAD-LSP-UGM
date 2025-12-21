@@ -248,7 +248,16 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::get('/', [AsesiPengajuanPageController::class, 'indexDataAsesi'])->name('index');
         Route::post('{id}/process', [AsesiPengajuanPageController::class, 'processAsesi'])->name('process');
         Route::get('{id}/detail', [AsesiPengajuanPageController::class, 'showPengajuanDetail'])->name('detail');
+        Route::get('{id}/show', [AsesiPengajuanPageController::class, 'showAsesiDetail'])->name('show');
+        Route::get('{id}/edit', [AsesiPengajuanPageController::class, 'editAsesi'])->name('edit');
+        Route::put('{id}/update', [AsesiPengajuanPageController::class, 'updateAsesi'])->name('update');
         Route::post('/pengajuan/{id_pengajuan}/revisi', [AsesiPengajuanPageController::class, 'requestRevision'])->name('request.revision');
+        
+        // Certificate management (manual upload by admin)
+        // Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 5.1, 5.2
+        Route::post('{id}/certificate/upload', [\App\Http\Controllers\Admin\CertificateUploadController::class, 'upload'])->name('certificate.upload');
+        Route::get('{id}/certificate/download', [\App\Http\Controllers\Admin\CertificateUploadController::class, 'download'])->name('certificate.download');
+        Route::delete('{id}/certificate/delete', [\App\Http\Controllers\Admin\CertificateUploadController::class, 'delete'])->name('certificate.delete');
     });
 
     // Manajemen Asesor untuk Asesi untuk fitur dependent dropdown list
@@ -367,6 +376,12 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
 
     // Konsul Prauji with access control middleware
     Route::view('/konsul-prauji', 'home/home-asesi/konsul-prauji')->name('asesi.konsul-prauji')->middleware('asesi.assessment:KONSUL_PRA_UJI');
+
+    // Certificate Download (uploaded by admin)
+    // Requirements: 4.1, 4.2, 4.3
+    Route::prefix('certificate')->name('asesi.certificate.')->group(function () {
+        Route::get('/download', [\App\Http\Controllers\AsesiController::class, 'downloadCertificate'])->name('download');
+    });
 
     // Logout asesi
     Route::post('/logout', function () {

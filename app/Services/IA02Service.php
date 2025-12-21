@@ -221,6 +221,24 @@ class IA02Service
         return $template && !empty($template->instruksi_kerja);
     }
 
+    /**
+     * Get the default template content for a specific scheme.
+     * Returns the template from IA02Template table if exists, otherwise returns null.
+     * 
+     * @param string $skemaId
+     * @return string|null
+     */
+    public function getDefaultTemplateForSkema(string $skemaId): ?string
+    {
+        $template = IA02Template::forSkema($skemaId)->first();
+        
+        if ($template && !empty($template->instruksi_kerja)) {
+            return $template->instruksi_kerja;
+        }
+        
+        return null;
+    }
+
     public function updateIA02($ia02Id, $data)
     {
         $ia02 = IA02::findOrFail($ia02Id);

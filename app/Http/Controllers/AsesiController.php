@@ -18,6 +18,7 @@ use App\Models\EventSkema;
 use App\Models\RincianAsesmen;
 use App\Models\TandaTanganAsesor;
 use App\Services\AsesiDashboardService;
+use App\Services\CertificateService;
 
 class AsesiController extends Controller
 {
@@ -29,16 +30,74 @@ class AsesiController extends Controller
      */
     private AsesiDashboardService $asesiDashboardService;
 
-    public function __construct(AsesiDashboardService $asesiDashboardService)
+    /**
+     * The CertificateService instance.
+     * Used for checking certificate eligibility and progress.
+     */
+    private CertificateService $certificateService;
+
+    public function __construct(AsesiDashboardService $asesiDashboardService, CertificateService $certificateService)
     {
         $this->asesiDashboardService = $asesiDashboardService;
+        $this->certificateService = $certificateService;
     }
 
     public function index()
     {
         $user = Auth::user();
-        $asesi = Asesi::with('skema')->where('id_user', $user->id_user)->first();
-        return view('home.home-asesi.home-asesi', compact('asesi'));
+        $asesi = Asesi::with(['skema', 'progresAsesmen'])->where('id_user', $user->id_user)->first();
+        
+        // Calculate progress percentage for certificate eligibility
+        $progressPercentage = 0;
+        $isEligibleForCertificate = false;
+        $hasCertificate = false;
+        $certificateStatus = 'not_eligible'; // not_eligible, waiting, issued
+        
+        if ($asesi) {
+            $progressPercentage = $this->certificateService->getProgressPercentage($asesi);
+            $isEligibleForCertificate = $this->certificateService->isEligibleForCertificate($asesi);
+            $hasCertificate = !empty($asesi->file_sertifikat);
+            
+            // Determine certificate status
+            // Requirements: 3.1, 3.2, 3.3
+            if ($progressPercentage >= 100) {
+                $certificateStatus = $hasCertificate ? 'issued' : 'waiting';
+            } else {
+                $certificateStatus = 'not_eligible';
+            }
+        }
+        
+        return view('home.home-asesi.home-asesi', compact(
+            'asesi',
+            'progressPercentage',
+            'isEligibleForCertificate',
+            'hasCertificate',
+            'certificateStatus'
+        ));
+    }
+
+    /**
+     * Download certificate for the logged-in asesi.
+     * 
+     * Requirements: 4.1, 4.2, 4.3
+     */
+    public function downloadCertificate()
+    {
+        $user = Auth::user();
+        $asesi = Asesi::where('id_user', $user->id_user)->first();
+        
+        if (!$asesi) {
+            return redirect()->back()->with('error', 'Data Asesi tidak ditemukan.');
+        }
+        
+        if (!$asesi->file_sertifikat || !\Illuminate\Support\Facades\Storage::disk('public')->exists($asesi->file_sertifikat)) {
+            return redirect()->back()->with('error', 'Sertifikat belum siap. Silakan hubungi admin.');
+        }
+        
+        $filePath = storage_path('app/public/' . $asesi->file_sertifikat);
+        $filename = 'Sertifikat_' . str_replace(' ', '_', $asesi->nama_asesi) . '.pdf';
+        
+        return response()->download($filePath, $filename);
     }
 
     /**
@@ -226,20 +285,34 @@ class AsesiController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
 
+        // If IA02 not found, show warning on the same page instead of redirect
         if (!$data) {
-            return redirect()->back()->with('error', 'IA02 Belum Dibuat.');
+            $defaultProcess = collect();
+            $ttdAsesor = null;
+            $ttdAsesi = null;
+            $ia02NotFound = true;
+            return view('home/home-asesi/FRIA-02/detail', compact('data', 'uks', 'defaultProcess', 'ttdAsesor', 'ttdAsesi', 'ia02NotFound'));
         }
 
         $defaultProcess = IA02ProsesAssessment::where('ia02_id', $data->id)->get();
 
         $ttdAsesor = null;
         $ttdAsesi = null;
+        
+        // Get asesor signature - file_tanda_tangan only contains filename, stored in tanda_tangan folder
         if ($data->waktu_tanda_tangan_asesor != null) {
-            $ttdAsesor = "tanda_tangan/" . TandaTanganAsesor::where('id_asesor', $rincianAsesmen->id_asesor)->first()->file_tanda_tangan;
+            $tandaTanganAsesor = TandaTanganAsesor::where('id_asesor', $rincianAsesmen->id_asesor)->first();
+            if ($tandaTanganAsesor && $tandaTanganAsesor->file_tanda_tangan) {
+                $ttdAsesor = "tanda_tangan/" . $tandaTanganAsesor->file_tanda_tangan;
+            }
         }
 
+        // Get asesi signature - ttd_pemohon already contains the relative path
         if ($data->waktu_tanda_tangan_asesi != null) {
-            $ttdAsesi =  Asesi::where('id_asesi', $rincianAsesmen->id_asesi)->first()->ttd_pemohon;
+            $asesiData = Asesi::where('id_asesi', $rincianAsesmen->id_asesi)->first();
+            if ($asesiData && $asesiData->ttd_pemohon) {
+                $ttdAsesi = $asesiData->ttd_pemohon;
+            }
         }
 
         // dd($ttdAse);
@@ -247,7 +320,8 @@ class AsesiController extends Controller
         // dd($ttdAsesor,$ttdAsesi);
 
 //        @dd($defaultProcess);
-        return view('home/home-asesi/FRIA-02/detail', compact('data','uks','defaultProcess','ttdAsesor','ttdAsesi'));
+        $ia02NotFound = false;
+        return view('home/home-asesi/FRIA-02/detail', compact('data','uks','defaultProcess','ttdAsesor','ttdAsesi','ia02NotFound'));
 
     }
 
@@ -289,8 +363,12 @@ class AsesiController extends Controller
             ->orderBy('created_at', 'desc')
             ->first();
 
+        // If IA02 not found, show warning on the same page instead of redirect
         if (!$data) {
-            return redirect()->back()->with('error', 'IA02 Belum Dibuat.');
+            $defaultProcess = collect();
+            $tugasSubmitted = collect();
+            $ia02NotFound = true;
+            return view('home/home-asesi/FRIA-02/soal-praktek-upload-jawaban', compact('data', 'uks', 'defaultProcess', 'tugasSubmitted', 'ia02NotFound'));
         }
 
         $defaultProcess = IA02ProsesAssessment::where('ia02_id', $data->id)->get();
@@ -300,7 +378,8 @@ class AsesiController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('home/home-asesi/FRIA-02/soal-praktek-upload-jawaban', compact('data','uks','defaultProcess','tugasSubmitted'));
+        $ia02NotFound = false;
+        return view('home/home-asesi/FRIA-02/soal-praktek-upload-jawaban', compact('data','uks','defaultProcess','tugasSubmitted','ia02NotFound'));
     }
 
 

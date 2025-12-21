@@ -87,8 +87,8 @@ class DataAsesiController extends Controller
                     $progres = ProgresAsesmen::where('id_asesi', $asesi->id_asesi)->first();
                     
                     if ($progres) {
-                        // Use the new calculation method
-                        $progressData = $progres->calculateProgress();
+                        // Use asesor-specific progress calculation for asesor dashboard
+                        $progressData = $progres->calculateAsesorProgress();
                         
                         // Add to asesi data
                         $asesis[$key]->progress_percentage = $progressData['progress_percentage'];
@@ -110,10 +110,10 @@ class DataAsesiController extends Controller
                         // Konversi ke format WIB menggunakan helper
                         $asesis[$key]->latest_activity = DateTimeHelper::toWIB($latestTime);
                     } else {
-                        // If no progress record exists
+                        // If no progress record exists - use asesor field count
                         $asesis[$key]->progress_percentage = 0;
                         $asesis[$key]->completed_steps = 0;
-                        $asesis[$key]->total_steps = 14; // Number of progress fields
+                        $asesis[$key]->total_steps = count(ProgresAsesmen::$asesorProgressFields) - count(ProgresAsesmen::$excludedFromAsesorProgress);
                         $asesis[$key]->latest_activity = null;
                     }
                 }
@@ -193,8 +193,11 @@ class DataAsesiController extends Controller
                 }
             }
             
-            // Calculate progress summary
+            // Calculate progress summary for asesi (excludes asesor-only forms)
             $progress_summary = $progress_asesmen->calculateProgress();
+            
+            // Calculate progress summary for asesor (only asesor tasks)
+            $asesor_progress_summary = $progress_asesmen->calculateAsesorProgress();
             
             // Get enabled assessments for the scheme
             $enabled_assessments = [];
@@ -208,14 +211,26 @@ class DataAsesiController extends Controller
                 $assessment_sections = $asesiDashboardService->getFilteredAssessmentSections($asesi);
             }
             
+            // Get hasil asesmen status for banding visibility
+            $hasil_asesmen_status = null;
+            $rincianAsesmen = \App\Models\RincianAsesmen::where('id_asesi', $id)->first();
+            if ($rincianAsesmen) {
+                $hasilAsesmen = \App\Models\HasilAsesmen::where('id_rincian_asesmen', $rincianAsesmen->id_rincian_asesmen)->first();
+                if ($hasilAsesmen) {
+                    $hasil_asesmen_status = $hasilAsesmen->status; // 'kompeten' or 'tidak_kompeten'
+                }
+            }
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Data Progress Asesmen ditemukan',
                 'data'    => [
                     'progress_asesmen' => $structured_progress,
                     'progress_summary' => $progress_summary,
+                    'asesor_progress_summary' => $asesor_progress_summary,
                     'enabled_assessments' => $enabled_assessments,
                     'assessment_sections' => $assessment_sections,
+                    'hasil_asesmen_status' => $hasil_asesmen_status,
                     'timezone' => 'WIB'
                 ]
             ], 200);

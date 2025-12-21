@@ -123,7 +123,7 @@
 
                         <!-- No Lisensi Field -->
                         <div>
-                            <label for="no_lisensi_skkn" class="block text-sm font-medium text-gray-700 mb-1">Nomor Lisensi SKKNI</label>
+                            <label for="no_lisensi_skkn" class="block text-sm font-medium text-gray-700 mb-1">Nomor Lisensi</label>
                             <input type="text" name="no_lisensi_skkn" id="no_lisensi_skkn" 
                                    class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('no_lisensi_skkn') border-red-500 @enderror" 
                                    placeholder="Contoh: LSP-UGM/LIS/2023/001" value="{{ old('no_lisensi_skkn') }}">

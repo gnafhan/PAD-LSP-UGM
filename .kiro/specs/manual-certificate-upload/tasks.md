@@ -1,0 +1,81 @@
+# Implementation Plan
+
+- [x] 1. Create CertificateUploadController for admin certificate management
+  - [x] 1.1 Create controller with upload method
+    - Accept PDF file upload via POST request
+    - Validate file type (PDF only) and size (max 10MB)
+    - Store file to `storage/app/public/certificates/{id_asesi}/certificate.pdf`
+    - Update asesi's `file_sertifikat` field with file path
+    - Delete old file if replacing existing certificate
+    - Return JSON response with success/error
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.2, 2.3_
+  - [x] 1.2 Add download method to controller
+    - Retrieve certificate file path from asesi record
+    - Return file download response or 404 if not found
+    - _Requirements: 2.1, 5.1_
+  - [ ]* 1.3 Write property test for upload/download round-trip
+    - **Property 1: Certificate Upload/Download Round-Trip**
+    - **Validates: Requirements 1.3, 2.2, 4.2, 5.1**
+  - [ ]* 1.4 Write property test for invalid file rejection
+    - **Property 2: Invalid File Type Rejection**
+    - **Validates: Requirements 1.4**
+  - [ ]* 1.5 Write property test for old file deletion
+    - **Property 3: Old File Deletion on Replacement**
+    - **Validates: Requirements 2.3**
+
+- [x] 2. Add routes for certificate management
+  - Register admin certificate routes (upload, download, delete)
+  - Register asesi certificate download route
+  - _Requirements: 1.1, 4.1, 5.1_
+
+- [x] 3. Update pengguna.blade.php with certificate upload UI
+  - [x] 3.1 Add upload certificate modal
+    - Create modal with file input accepting PDF
+    - Add form submission via AJAX
+    - Show loading state during upload
+    - _Requirements: 1.2_
+  - [x] 3.2 Update asesi table row with certificate buttons
+    - Show "Upload Sertifikat" button for Kompeten asesi without certificate
+    - Show "Ganti Sertifikat" and "Download" buttons for asesi with certificate
+    - Replace current auto-generate certificate button
+    - _Requirements: 1.1, 1.5, 2.1, 5.1, 5.2_
+  - [ ]* 3.3 Write property test for button visibility
+    - **Property 5: Download Button Visibility Based on Certificate**
+    - **Validates: Requirements 1.5, 2.1, 4.1, 5.2**
+  - [ ]* 3.4 Write property test for upload button visibility
+    - **Property 6: Upload Button Visibility for Kompeten Asesi**
+    - **Validates: Requirements 1.1, 4.4**
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 5. Update AsesiController for certificate status
+  - [x] 5.1 Add certificate status logic to index method
+    - Calculate certificate status based on progress and file_sertifikat
+    - Pass `hasCertificate` and `certificateStatus` to view
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [x] 5.2 Add downloadCertificate method for asesi
+    - Allow asesi to download their own certificate
+    - Return 404 with message if certificate not uploaded
+    - _Requirements: 4.1, 4.2, 4.3_
+
+- [x] 6. Update home-asesi.blade.php dashboard
+  - [x] 6.1 Update Proses Asesmen status display
+    - Show "Selesai" with checkmark when progress >= 100%
+    - Show "Sedang berlangsung" with spinner when progress < 100%
+    - _Requirements: 3.1_
+  - [x] 6.2 Update Sertifikat Diterbitkan status display
+    - Show "Menunggu Sertifikat" when kompeten but no certificate
+    - Show "Sertifikat Diterbitkan" with download link when certificate exists
+    - Show "Sertifikat belum siap" message when not kompeten
+    - _Requirements: 3.2, 3.3, 4.3_
+  - [x] 6.3 Update certificate download section
+    - Show download button only when certificate exists
+    - Update download route to use uploaded certificate
+    - _Requirements: 4.1, 4.2_
+  - [ ]* 6.4 Write property test for certificate status display
+    - **Property 4: Certificate Status Display Logic**
+    - **Validates: Requirements 3.1, 3.2, 3.3, 4.3**
+
+- [x] 7. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

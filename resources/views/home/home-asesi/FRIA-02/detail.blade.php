@@ -23,6 +23,27 @@
             <div class="pt-6 pb-4 mb-8 text-center">
                 <h1 class="text-2xl font-bold text-gray-800 mb-4">FR.IA.02. Tugas Praktik Demonstrasi</h1>
             </div>
+            
+            @if(isset($ia02NotFound) && $ia02NotFound)
+                <!-- Warning: IA02 Not Found -->
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-8 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-8 w-8 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-yellow-800">Soal Belum Dibuat</h3>
+                            <p class="mt-2 text-yellow-700">
+                                Formulir IA.02 untuk asesmen Anda belum dibuat oleh Asesor. 
+                                Silakan hubungi Asesor Anda atau tunggu hingga soal praktik demonstrasi tersedia.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            
             @if($data)
                 <!-- Certificate Info -->
                 <div class="p-8 mb-8 ">
@@ -134,54 +155,64 @@
                     @endif
                 </div>
                 <div class="mb-5"></div>
-                <!-- Proses Asesmen -->
+                <!-- Instruksi dan Skenario Tugas -->
                 <div class="container mx-auto px-4 py-8">
-                    <h2 class="text-2xl font-bold mb-6">Daftar Proses Asesmen</h2>
+                    <h2 class="text-2xl font-bold mb-6">Instruksi dan Skenario Tugas</h2>
 
-                    @if($defaultProcess->isNotEmpty())
-                        <div class="grid grid-cols-1 gap-6"> {{-- Menggunakan grid-cols-1 karena setiap proses kini lebih besar --}}
-                            @foreach($defaultProcess as $process)
-                                <div class="p-4"> {{-- Menambahkan shadow-md untuk visual --}}
-                                    <h3 class="text-lg font-semibold text-sidebar_font mb-4">Proses {{ $process->nomor_proses }}</h3>
-
-                                    <div class="mb-3">
-                                        <span class="text-sm font-medium text-sidebar_font">Judul: </span>
-                                        <span class="text-sm text-gray-700">{{ $process->judul_proses }}</span>
-                                    </div>
-
-                                    <div class="overflow-x-auto ">
-                                        <table class="min-w-full bg-white overflow-hidden">
-                                            <thead class="bg-bg_dashboard text-center">
-                                            <tr>
-                                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">No</th>
-                                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Instruksi Kerja</th>
-                                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Standar / Alat / Media</th>
-                                                <th class="px-4 py-3 text-sm font-semibold text-gray-600 tracking-wider">Output</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody class="divide-y divide-gray-200 text-black">
-                                                @foreach($process->instruksiKerjas as $instruksi)
-                                                    <tr>
-                                                        <td class="px-4 py-3 text-sm text-gray-700 text-center">{{ $instruksi->nomor_urut }}</td>
-                                                        <td class="px-4 py-3 text-sm text-gray-700">{{ $instruksi->instruksi_kerja }}</td>
-                                                        <td class="px-4 py-3 text-sm text-gray-700">{{ $instruksi->standar_alat_media }}</td>
-                                                        <td class="px-4 py-3 text-sm text-gray-700">{{ $instruksi->output_yang_diharapkan }}</td>
-                                                    </tr>
-                                                @endforeach
-
-                                            <tr>
-                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-center" colspan="4">
-                                                    Data instruksi kerja untuk proses ini belum tersedia.
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                    @if(isset($data) && $data->instruksi_kerja)
+                        <div class="space-y-4">
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+                                <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                    </svg>
+                                    Instruksi Kerja:
+                                </h4>
+                                <div class="prose prose-sm max-w-none text-gray-700 leading-relaxed">
+                                    {!! $data->instruksi_kerja !!}
                                 </div>
-                            @endforeach
+                            </div>
+                            
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-gray-800 mb-2 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                    Petunjuk Umum:
+                                </h4>
+                                <ol class="list-decimal list-inside space-y-1 text-gray-700">
+                                    <li>Baca dan pelajari setiap instruksi kerja di atas dengan cermat sebelum melaksanakan praktik</li>
+                                    <li>Klarifikasi kepada asesor apabila ada hal-hal yang belum jelas</li>
+                                    <li>Laksanakan pekerjaan sesuai dengan urutan proses yang sudah ditetapkan</li>
+                                    <li>Seluruh proses kerja mengacu kepada SOP yang dipersyaratkan</li>
+                                </ol>
+                            </div>
                         </div>
                     @else
-                        <p class="text-gray-500 text-center text-lg mt-8">Tidak ada data proses asesmen yang ditemukan.</p>
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                                <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <h4 class="font-semibold text-gray-600 mb-2">Instruksi Kerja Belum Tersedia</h4>
+                                <p class="text-gray-500">Instruksi kerja untuk tugas praktik ini belum dibuat oleh asesor. Silakan hubungi asesor Anda untuk informasi lebih lanjut.</p>
+                            </div>
+                            
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-gray-800 mb-2 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                    Petunjuk Umum:
+                                </h4>
+                                <ol class="list-decimal list-inside space-y-1 text-gray-700">
+                                    <li>Hubungi asesor untuk mendapatkan instruksi kerja yang detail</li>
+                                    <li>Klarifikasi kepada asesor apabila ada hal-hal yang belum jelas</li>
+                                    <li>Laksanakan pekerjaan sesuai dengan urutan proses yang sudah ditetapkan</li>
+                                    <li>Seluruh proses kerja mengacu kepada SOP yang dipersyaratkan</li>
+                                </ol>
+                            </div>
+                        </div>
                     @endif
                 </div>
                 <div class="mb-5"></div>
@@ -302,7 +333,8 @@
                                     const img = document.getElementById('tandaTanganAsesiIA02');
                                     const placeholder = document.getElementById('tandaTanganAsesiIA02Placeholder');
                                     if (img) {
-                                        img.src = result.data.ttd_asesi;
+                                        // Build full URL for signature image
+                                        img.src = '{{ asset("storage") }}/' + result.data.ttd_asesi;
                                         img.classList.remove('hidden');
                                     }
                                     if (placeholder) placeholder.classList.add('hidden');
