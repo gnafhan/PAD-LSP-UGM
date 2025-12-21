@@ -483,10 +483,37 @@ function populateProgressTables(progressData) {
     // Get progress asesmen data from API response
     const progressAsesmen = progressData.progress_asesmen || {};
     const progressSummary = progressData.progress_summary || {};
+    const enabledAssessments = progressData.enabled_assessments || [];
 
     // Update total progress information
     document.getElementById('totalSteps').textContent = `Total Langkah: ${progressSummary.total_steps || 0}`;
     document.getElementById('totalProgress').textContent = `${progressSummary.progress_percentage || 0}%`;
+
+    // Mapping from assessment type to step key
+    const assessmentToKeyMap = {
+        'APL01': 'apl01',
+        'APL02': 'apl02',
+        'AK01': 'ak01',
+        'AK02': 'ak02',
+        'AK04': 'ak04',
+        'AK07': 'ak07',
+        'IA01': 'ia01',
+        'IA02': 'ia02',
+        'IA05': 'ia05',
+        'IA07': 'ia07',
+        'IA11': 'ia11',
+        'MAPA01': 'mapa01',
+        'MAPA02': 'mapa02',
+        'KONSUL_PRA_UJI': 'konsultasi_pra_uji',
+        'KETIDAKBERPIHAKAN': 'pernyataan_ketidak_berpihakan',
+        'TUGAS_PESERTA': 'tugas_peserta',
+        'IA05': 'ia05'
+    };
+
+    // Get enabled step keys
+    const enabledKeys = enabledAssessments.map(type => assessmentToKeyMap[type]).filter(Boolean);
+    // Always include these keys (not configurable)
+    const alwaysVisibleKeys = ['hasil_asesmen', 'umpan_balik'];
 
     // Define step categories mapping based on the API response structure
     const stepCategories = {
@@ -502,7 +529,10 @@ function populateProgressTables(progressData) {
             { key: 'pernyataan_ketidak_berpihakan', name: 'Pernyataan Ketidakberpihakan' },
             { key: 'ak07', name: 'AK 07 - Banding Asesmen' },
             { key: 'ia01', name: 'IA 01 - Instrumen Asesmen Observasi Langsung' },
-            { key: 'ia02', name: 'IA 02 - Instrumen Asesmen Portofolio' }
+            { key: 'ia02', name: 'IA 02 - Instrumen Asesmen Portofolio' },
+            { key: 'tugas_peserta', name: 'Tugas Peserta' },
+            { key: 'ia05', name: 'IA 05 - Pertanyaan Tertulis Pilihan Ganda' },
+            { key: 'ia11', name: 'IA 11 - Ceklis Observasi Aktivitas di Tempat Kerja' }
         ],
         keputusan: [
             { key: 'hasil_asesmen', name: 'Hasil Asesmen' },
@@ -512,10 +542,25 @@ function populateProgressTables(progressData) {
         ]
     };
 
-    // Populate each table
-    populateTable('pelaksanaanAsesmen', stepCategories.pelaksanaan, progressAsesmen);
-    populateTable('perangkatAsesmen', stepCategories.perangkat, progressAsesmen);
-    populateTable('keputusanAsesmen', stepCategories.keputusan, progressAsesmen);
+    // Filter steps based on enabled assessments (if any are configured)
+    const filterSteps = (steps) => {
+        if (enabledAssessments.length === 0) {
+            // No config, show all (backward compatibility)
+            return steps;
+        }
+        return steps.filter(step => 
+            enabledKeys.includes(step.key) || 
+            alwaysVisibleKeys.includes(step.key) ||
+            step.key === 'apl01' || step.key === 'apl02' // APL always visible
+        );
+    };
+
+    // Populate each table with filtered steps
+    populateTable('pelaksanaanAsesmen', filterSteps(stepCategories.pelaksanaan), progressAsesmen);
+    populateTable('perangkatAsesmen', filterSteps(stepCategories.perangkat), progressAsesmen);
+    populateTable('keputusanAsesmen', filterSteps(stepCategories.keputusan), progressAsesmen);
+    
+    console.log('Dynamic assessment flow applied. Enabled assessments:', enabledAssessments);
 }
 
 // Function to populate a specific table with progress data
@@ -576,6 +621,9 @@ function getDetailUrlByStepKey(stepKey) {
         'ak07': '{{ route('frak07-asesor') }}',
         'ia01': '{{ route('fria01-asesor') }}',
         'ia02': '{{ route('fria02-asesor') }}',
+        'tugas_peserta': '{{ route('tugas-peserta') }}',
+        'ia05': '{{ route('fria05-asesor') }}',
+        'ia11': '{{ route('fria11-asesor') }}',
         'hasil_asesmen': '{{ route('hasil-asesmen-asesor') }}',
         'ak02': '{{ route('frak02-asesor') }}',
         'umpan_balik': '#',

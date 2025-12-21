@@ -6,6 +6,7 @@ use App\Models\IA02;
 use App\Models\IA02Kompetensi;
 use App\Models\IA02ProsesAssessment;
 use App\Models\IA02InstruksiKerja;
+use App\Models\IA02Template;
 use App\Models\Asesi;
 use App\Models\Asesor;
 use App\Models\Skema;
@@ -47,7 +48,8 @@ class IA02Service
             return $existingIA02;
         }
 
-        // Create new IA02
+        // Create new IA02 with scheme-specific template
+        // Requirements: 8.2 - Load template from IA02Template based on scheme
         $ia02 = IA02::create([
             'id_asesi' => $asesiId,
             'id_asesor' => $asesorId,
@@ -55,7 +57,7 @@ class IA02Service
             'judul_sertifikasi' => $skema->nama_skema,
             'nama_peserta' => $asesi->nama_asesi,
             'nama_asesor' => $asesor->nama_asesor,
-            'instruksi_kerja' => $this->getDefaultInstruksiKerja(),
+            'instruksi_kerja' => $this->getInstruksiKerjaForSkema($targetSkemaId),
             'status' => 'draft'
         ]);
 
@@ -183,6 +185,40 @@ class IA02Service
         <li>Informasikan waktu kunjungan di museum dan peraturan selama kunjungan.</li>
         <li>Informasikan kepada pengunjung aksesibilitas dari setiap museum di atas, baik dalam hal sarana prasarananya, etika di museum tersebut. (baik etika secara umum maupun etika secara lokal di museum tersebut).</li>
         </ol>';
+    }
+
+    /**
+     * Get instruksi kerja for a specific scheme.
+     * Requirements: 8.2 - Load template from IA02Template based on scheme
+     * Requirements: 8.4 - Fall back to default if no template
+     * 
+     * @param string $skemaId
+     * @return string|null
+     */
+    private function getInstruksiKerjaForSkema(string $skemaId): ?string
+    {
+        // Try to load scheme-specific template
+        $template = IA02Template::forSkema($skemaId)->first();
+        
+        if ($template && !empty($template->instruksi_kerja)) {
+            return $template->instruksi_kerja;
+        }
+        
+        // Fall back to default template
+        return $this->getDefaultInstruksiKerja();
+    }
+
+    /**
+     * Check if a scheme has a configured IA02 template.
+     * Requirements: 8.4 - Indicate if content needs to be configured
+     * 
+     * @param string $skemaId
+     * @return bool
+     */
+    public function hasTemplateForSkema(string $skemaId): bool
+    {
+        $template = IA02Template::forSkema($skemaId)->first();
+        return $template && !empty($template->instruksi_kerja);
     }
 
     public function updateIA02($ia02Id, $data)

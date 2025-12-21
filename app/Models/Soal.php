@@ -26,12 +26,34 @@ class Soal extends Model
         'jawaban_c',
         'jawaban_d',
         'jawaban_e',
-        'jawaban_benar'
+        'jawaban_benar',
+        'display_order',
+    ];
+
+    protected $casts = [
+        'display_order' => 'integer',
     ];
 
     public function skema()
     {
         return $this->belongsTo(Skema::class, 'id_skema', 'id_skema');
+    }
+
+    /**
+     * Scope to order by display_order.
+     * Requirements: 1.1
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('display_order', 'asc');
+    }
+
+    /**
+     * Scope to get questions for a specific scheme.
+     */
+    public function scopeForSkema($query, string $idSkema)
+    {
+        return $query->where('id_skema', $idSkema);
     }
 
     protected static function boot()

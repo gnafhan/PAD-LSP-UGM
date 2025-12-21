@@ -148,7 +148,7 @@
 
                         <!-- Dokumen SKKNI Field -->
                         <div>
-                            <label for="dokumen_skkni" class="block text-sm font-medium text-gray-700 mb-1">Dokumen SKKNI</label>
+                            <label for="dokumen_skkni" class="block text-sm font-medium text-gray-700 mb-1">Dokumen Skema</label>
                             <div class="mt-1 flex items-center">
                                 <label class="w-full flex items-center justify-center px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-100 focus:outline-none">
                                     <svg class="h-6 w-6 text-gray-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

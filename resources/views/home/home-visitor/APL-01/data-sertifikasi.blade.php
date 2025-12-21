@@ -121,7 +121,7 @@
 
                         <!-- Tambahkan ini setelah div nomor skema sertifikasi dan sebelum tujuan asesmen -->
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Dokumen SKKNI</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Dokumen Skema</label>
                             <div id="dokumen-skkni-container" class="mt-2">
                                 <div id="dokumen-skkni-placeholder" class="h-48 flex flex-col items-center justify-center bg-gray-50 rounded border border-dashed border-gray-300">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

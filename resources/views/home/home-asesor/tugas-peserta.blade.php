@@ -379,6 +379,77 @@
             </div>
             @endif
 
+            {{-- Button Selesaikan Penilaian --}}
+            @if(isset($tugasData['submitted_tasks']) && $tugasData['submitted_tasks']->count() > 0)
+                @php
+                    $allApproved = $tugasData['submitted_tasks']->every(fn($task) => $task->status === 'approved');
+                    $hasRejected = $tugasData['submitted_tasks']->contains(fn($task) => $task->status === 'rejected');
+                    $allReviewed = $tugasData['submitted_tasks']->every(fn($task) => in_array($task->status, ['approved', 'rejected', 'reviewed']));
+                    
+                    // Check if tugas_peserta progress is already completed
+                    $tugasPesertaCompleted = false;
+                    if ($detailRincian && $detailRincian->asesi && $detailRincian->asesi->progresAsesmen) {
+                        // Access tugas_peserta column directly (it's cast to array)
+                        $tugasPesertaData = $detailRincian->asesi->progresAsesmen->tugas_peserta ?? [];
+                        $tugasPesertaCompleted = isset($tugasPesertaData['completed']) && $tugasPesertaData['completed'] === true;
+                    }
+                @endphp
+                
+                <div class="mt-6 p-4 border-t">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            @if($tugasPesertaCompleted)
+                                <p class="text-green-600 font-medium">✅ Penilaian Tugas Peserta telah diselesaikan</p>
+                            @elseif($allApproved)
+                                <p class="text-green-600 font-medium">✓ Semua tugas telah disetujui</p>
+                            @elseif($hasRejected)
+                                <p class="text-yellow-600 font-medium">⚠ Ada tugas yang ditolak, menunggu revisi dari asesi</p>
+                            @elseif($allReviewed)
+                                <p class="text-blue-600 font-medium">📋 Semua tugas telah direview</p>
+                            @else
+                                <p class="text-gray-600">📝 Masih ada tugas yang perlu direview</p>
+                            @endif
+                        </div>
+                        
+                        @if($tugasPesertaCompleted)
+                            {{-- Already completed - show disabled button with checkmark --}}
+                            <button type="button" disabled
+                                    class="inline-flex items-center justify-center rounded-md bg-green-100 text-green-700 px-6 py-2 text-sm font-medium cursor-not-allowed border border-green-300">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                                </svg>
+                                Sudah Diselesaikan
+                            </button>
+                        @elseif($allApproved)
+                            <form method="POST" action="{{ route('tugas-peserta.complete') }}" 
+                                  onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan penilaian tugas untuk asesi ini? Progress akan ditandai selesai.')">
+                                @csrf
+                                <input type="hidden" name="id_asesi" value="{{ request()->get('id_asesi') }}">
+                                <button type="submit" 
+                                        class="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2 text-sm font-medium hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Selesaikan Penilaian
+                                </button>
+                            </form>
+                        @else
+                            <button type="button" disabled
+                                    class="inline-flex items-center justify-center rounded-md bg-gray-300 text-gray-500 px-6 py-2 text-sm font-medium cursor-not-allowed">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                                Selesaikan Penilaian
+                            </button>
+                        @endif
+                    </div>
+                    
+                    @if(!$allApproved && !$tugasPesertaCompleted)
+                        <p class="text-xs text-gray-500 mt-2">* Semua tugas harus berstatus "Approved" untuk dapat menyelesaikan penilaian</p>
+                    @endif
+                </div>
+            @endif
+
             {{-- Button Simpan --}}
             {{-- <form id="formTugasPeserta" method="POST" action="{{ route('tugas-peserta.store') }}">
                 @csrf

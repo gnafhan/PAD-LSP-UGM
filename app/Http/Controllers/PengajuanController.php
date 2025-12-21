@@ -320,8 +320,13 @@ class PengajuanController extends Controller
         $skema = Skema::where('id_skema', $idSkema)->first();
 
         if ($skema) {
-            // Gunakan accessor unit_kompetensi yang sudah didefinisikan di model Skema
-            $ukList = $skema->unit_kompetensi;
+            // Gunakan method getUnitKompetensi() yang sudah didefinisikan di model Skema
+            $ukList = $skema->getUnitKompetensi();
+
+            // Handle jika ukList null atau kosong
+            if (!$ukList || $ukList->isEmpty()) {
+                return response()->json(['ukList' => []]);
+            }
 
             // Transform data jika diperlukan untuk format response yang lebih baik
             $transformedList = $ukList->map(function($uk) {

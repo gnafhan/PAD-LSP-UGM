@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             HasilAsesmenSeeder::class,
             IA02DefaultDataSeeder::class,
             IA02ComprehensiveDataSeeder::class,
+            SchemeContentSeeder::class,
         ]);
     }
 }

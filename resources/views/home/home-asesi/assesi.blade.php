@@ -338,6 +338,42 @@
                             </a>
                           </td>
                         </tr>
+
+                        <!-- AK.07 - Pernyataan Komitmen Peserta (Dynamic based on scheme config) -->
+                        <tr class="hover:bg-gray-50 transition-colors" data-assessment="ak07">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-purple-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Formulir AK.07</div>
+                                <div class="text-xs text-gray-500">Pernyataan Komitmen Peserta</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-ak07" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              </svg>
+                              Memuat...
+                            </span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-ak07">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ route('asesi.fr.ak07') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -440,7 +476,7 @@
                           </td>
                         </tr>
 
-                        <!-- IA.01 -->
+                        <!-- Tugas Peserta -->
                         <tr class="hover:bg-gray-50 transition-colors">
                           <td class="px-5 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -456,7 +492,7 @@
                             </div>
                           </td>
                           <td class="px-5 py-4 whitespace-nowrap">
-                            <span id="status-ia01" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                            <span id="status-tugas_peserta" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                               <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                               </svg>
@@ -464,13 +500,49 @@
                             </span>
                           </td>
                           <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span id="date-ia01">-</span>
+                            <span id="date-tugas_peserta">-</span>
                           </td>
                           <td class="px-5 py-4 whitespace-nowrap text-sm">
                             @php
                               $currentAsesmen =  App\Models\RincianAsesmen::where('id_asesi', App\Models\Asesi::where('id_user', auth()->user()->id_user)->first()->id_asesi ?? null)->first();
                             @endphp
                             <a href="{{ route('asesi.fr.ia2.soal', $currentAsesmen->id_rincian_asesmen) }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                              <span>Detail</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          </td>
+                        </tr>
+
+                        <!-- IA.05 Pertanyaan Tertulis Pilihan Ganda -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Formulir IA.05</div>
+                                <div class="text-xs text-gray-500">Pertanyaan Tertulis Pilihan Ganda</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-ia05" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              </svg>
+                              Memuat...
+                            </span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-ia05">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ route('asesi.fr.ia05') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
                               <span>Detail</span>
                               <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -536,23 +608,23 @@
                           </td>
                         </tr>
 
-                        <!-- AK.04 -->
+                        <!-- AK.02 - Keputusan dan Umpan Balik Asesmen (Hasil Asesmen) -->
                         <tr class="hover:bg-gray-50 transition-colors">
                           <td class="px-5 py-4 whitespace-nowrap">
                             <div class="flex items-center">
-                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-purple-100 flex items-center justify-center">
-                                <svg class="h-5 w-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-green-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                               </div>
                               <div class="ml-3">
-                                <div class="text-sm font-medium text-gray-900">Formulir AK.04</div>
+                                <div class="text-sm font-medium text-gray-900">Formulir AK.02</div>
                                 <div class="text-xs text-gray-500">Keputusan dan Umpan Balik Asesmen</div>
                               </div>
                             </div>
                           </td>
                           <td class="px-5 py-4 whitespace-nowrap">
-                            <span id="status-ak04" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                            <span id="status-ak02" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                               <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                               </svg>
@@ -560,10 +632,10 @@
                             </span>
                           </td>
                           <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span id="date-ak04">-</span>
+                            <span id="date-ak02">-</span>
                           </td>
                           <td class="px-5 py-4 whitespace-nowrap text-sm">
-                            <a href="{{ route('asesi.frak04') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
+                            <a href="{{ route('asesi.fr.ak2') }}" class="text-indigo-600 hover:text-indigo-900 inline-flex items-center">
                               <span>Detail</span>
                               <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -575,6 +647,7 @@
                     </table>
                   </div>
                 </div>
+
                 {{-- Hasil Asesmen --}}
                 <div>
                   <h3 class="text-lg font-semibold text-gray-800 mb-4 mt-7 flex items-center">
@@ -584,7 +657,7 @@
                   <div class="overflow-x-auto w-full bg-white rounded-lg border border-gray-200 shadow-sm">
                     <table class="min-w-full w-full divide-y divide-gray-200">
                       <thead class="w-full">
-                        <tr class="w-full bg-red-400" >
+                        <tr class="w-full">
                           <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
                           <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                           <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Selesai</th>
@@ -592,7 +665,7 @@
                         </tr>
                       </thead>
                       <tbody class="bg-white divide-y divide-gray-200">
-                        <!-- Umpan Balik -->
+                        <!-- Hasil Asesmen -->
                         <tr class="hover:bg-gray-50 transition-colors">
                           <td class="px-5 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -613,7 +686,7 @@
                               $status = $hasilAsesmen->first()->status ?? null;
                               $isSelesai = $status === 'kompeten' || $status === 'tidak_kompeten';
                             @endphp
-                            <span id="status-umpan_balik" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $isSelesai ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                            <span id="status-hasil_asesmen_display" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $isSelesai ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                               @if($isSelesai)
                                 <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -626,8 +699,9 @@
                                 Belum Selesai
                               @endif
                             </span>
+                          </td>
                           <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <span id="date-umpan_balik">{{ $hasilAsesmen->first()->tanggal_selesai ?? '-' }} WIB</span>
+                            <span id="date-hasil_asesmen_display">{{ $hasilAsesmen->first()->tanggal_selesai ?? '-' }} WIB</span>
                           </td>
                           <td class="px-5 py-4 whitespace-nowrap text-sm  text-right">
                           @php
@@ -651,6 +725,71 @@
                       </tbody>
                     </table>
                   </div>
+                </div>
+
+                {{-- Pengajuan Banding (Opsional) --}}
+                <div id="banding-section">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-4 mt-7 flex items-center">
+                    <div class="flex-shrink-0 bg-orange-100 text-orange-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    Pengajuan Banding
+                    <span class="ml-2 px-2 py-0.5 text-xs font-medium bg-orange-100 text-orange-700 rounded-full">Opsional</span>
+                  </h3>
+                  <div class="overflow-x-auto w-full bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <table class="min-w-full w-full divide-y divide-gray-200">
+                      <thead class="w-full">
+                        <tr class="w-full">
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dokumen</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Selesai</th>
+                          <th class="px-5 py-3.5 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- AK.04 - Formulir Banding -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="flex-shrink-0 h-9 w-9 rounded-full bg-orange-100 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                              </div>
+                              <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">Formulir AK.04</div>
+                                <div class="text-xs text-gray-500">Formulir Pengajuan Banding</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap">
+                            <span id="status-ak04" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                              <svg class="h-3 w-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              </svg>
+                              Memuat...
+                            </span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span id="date-ak04">-</span>
+                          </td>
+                          <td class="px-5 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ route('asesi.frak04') }}" class="text-orange-600 hover:text-orange-900 inline-flex items-center">
+                              <span>Ajukan Banding</span>
+                              <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p class="mt-2 text-xs text-gray-500 italic">
+                    * Formulir banding hanya perlu diisi jika Anda ingin mengajukan banding atas hasil asesmen.
+                  </p>
                 </div>
               </div>
             </div>
@@ -780,6 +919,8 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Progress mapping for steps
+    // Note: ak04 (banding) is optional and not included in progress calculation
+    // hasil_asesmen is also excluded from progress as it follows AK02
     const progressSteps = [
         {
             id: 1,
@@ -794,7 +935,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {
             id: 3,
             name: 'Pasca Uji',
-            fields: ['umpan_balik', 'ak04']
+            fields: ['umpan_balik', 'ak02']
         }
     ];
 
@@ -942,6 +1083,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.success && result.data) {
               console.log(result.data);
                 updateProgressDisplay(result.data);
+                // Apply dynamic assessment visibility based on scheme config
+                if (result.data.enabled_assessments && result.data.enabled_assessments.length > 0) {
+                    applyDynamicAssessmentVisibility(result.data.enabled_assessments);
+                }
                 hideLoading();
             } else {
                 throw new Error(result.message || 'Gagal memuat data progres');
@@ -1016,6 +1161,70 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+    }
+
+    // Apply dynamic assessment visibility based on scheme configuration
+    function applyDynamicAssessmentVisibility(enabledAssessments) {
+        // Mapping from assessment type to progress field/row data attribute
+        const assessmentToFieldMap = {
+            'APL01': 'apl01',
+            'APL02': 'apl02',
+            'AK01': 'ak01',
+            'AK02': 'ak02',
+            'AK04': 'ak04',
+            'AK07': 'ak07',
+            'IA01': 'ia01',
+            'IA02': 'ia02',
+            'IA05': 'ia05',
+            'IA07': 'ia07',
+            'IA11': 'ia11',
+            'MAPA01': 'mapa01',
+            'MAPA02': 'mapa02',
+            'KONSUL_PRA_UJI': 'konsultasi_pra_uji',
+            'KETIDAKBERPIHAKAN': 'pernyataan_ketidak_berpihakan',
+            'TUGAS_PESERTA': 'tugas_peserta',
+            'IA05': 'ia05'
+        };
+
+        // Get all enabled field names
+        const enabledFields = enabledAssessments.map(type => assessmentToFieldMap[type]).filter(Boolean);
+        
+        // Always show these fields (not configurable)
+        // Note: hasil_asesmen_display is the actual ID used in HTML for Hasil Asesmen row
+        const alwaysVisibleFields = ['umpan_balik', 'hasil_asesmen', 'hasil_asesmen_display'];
+        
+        // Find all status elements and show/hide their parent rows
+        document.querySelectorAll('[id^="status-"]').forEach(statusEl => {
+            const fieldName = statusEl.id.replace('status-', '');
+            const row = statusEl.closest('tr');
+            
+            if (row) {
+                // Check if this field should be visible
+                const shouldShow = enabledFields.includes(fieldName) || 
+                                   alwaysVisibleFields.includes(fieldName) ||
+                                   fieldName === 'apl01' || fieldName === 'apl02'; // APL always visible
+                
+                if (!shouldShow) {
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = '';
+                }
+            }
+        });
+        
+        // Also handle rows with data-assessment attribute (for dynamic assessments like AK07)
+        document.querySelectorAll('[data-assessment]').forEach(row => {
+            const assessmentType = row.getAttribute('data-assessment');
+            const shouldShow = enabledFields.includes(assessmentType);
+            
+            if (!shouldShow) {
+                row.style.display = 'none';
+            } else {
+                row.style.display = '';
+            }
+        });
+        
+        console.log('Dynamic assessment visibility applied. Enabled:', enabledAssessments);
     }
 
     // Update progress steps navigator

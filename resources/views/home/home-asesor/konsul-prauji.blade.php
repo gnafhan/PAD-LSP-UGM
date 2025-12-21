@@ -696,6 +696,7 @@ document.addEventListener('DOMContentLoaded', function () {
         isFormCompleted: false,
         isFormLocked: false,
         isAsesorSigned: false,
+        isAsesiSigned: false, // Track if asesi has signed
         formInitialized: false,
         recordExists: false
     };
@@ -837,6 +838,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 }, duration);
             }
         }
+    }
+
+    // Utility function to hide all messages
+    function hideMessage() {
+        document.getElementById('loadingMessage').classList.add('hidden');
+        document.getElementById('errorMessage').classList.add('hidden');
+        document.getElementById('successMessage').classList.add('hidden');
     }
 
     // Format date to Indonesian format
@@ -1387,7 +1395,7 @@ document.addEventListener('DOMContentLoaded', function () {
         elements.unitKompetensiTable.innerHTML = tableContent;
     }
 
-    // Render checklist with visual state indicators
+    // Render checklist with visual state indicators - VIEW ONLY for Asesor
     function renderChecklistTable() {
         const checklistItems = [
             {
@@ -1428,22 +1436,32 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         ];
 
+        // Check if asesi has signed (jawaban_asesi point_1 = 'Ya')
+        const asesiHasSigned = state.checklist['point_1']?.jawaban_asesi === 'Ya';
+        state.isAsesiSigned = asesiHasSigned;
+
         let tableContent = '';
         checklistItems.forEach((item, index) => {
-            const jawaban = state.checklist[item.id]?.jawaban_asesor || null;
+            // Get jawaban from asesi (VIEW ONLY for asesor)
+            const jawabanAsesi = state.checklist[item.id]?.jawaban_asesi || null;
+            const jawabanAsesor = state.checklist[item.id]?.jawaban_asesor || null;
 
-            // Determine disabled status and visual styling
-            const isDisabled = state.isFormLocked || state.isAsesorSigned;
-            const rowClass = isDisabled ? 'checklist-disabled' : '';
-            const disabledAttr = isDisabled ? 'disabled' : '';
+            // Asesor view is always read-only for asesi's answers
+            const rowClass = 'checklist-readonly';
 
-            // Add visual indicator for completed items
-            const completionIndicator = jawaban && isDisabled
-                ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-2">
-                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    ${jawaban}
+            // Show asesi's answer with visual indicator
+            const asesiAnswerDisplay = jawabanAsesi 
+                ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${jawabanAsesi === 'Ya' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                    ${jawabanAsesi === 'Ya' ? '✓' : '✗'} ${jawabanAsesi}
+                   </span>`
+                : `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
+                    Belum diisi asesi
+                   </span>`;
+
+            // Show asesor's answer if exists
+            const asesorAnswerDisplay = jawabanAsesor 
+                ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${jawabanAsesor === 'Ya' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'} ml-2">
+                    Asesor: ${jawabanAsesor}
                    </span>`
                 : '';
 
@@ -1452,22 +1470,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td class="px-4 py-3 text-sm text-black text-center font-medium">${index + 1}</td>
                     <td class="px-4 py-3 text-black text-left">
                         ${item.text}
-                        ${completionIndicator}
                     </td>
                     <td class="px-4 py-3">
-                        <div class="flex justify-center">
-                            <div class="w-full">
-                                <div class="radio-option">
-                                    <input type="radio" id="${item.id}_ya" name="${item.id}" value="Ya" ${jawaban === 'Ya' ? 'checked' : ''} ${disabledAttr} class="transition-all duration-200">
-                                    <label for="${item.id}_ya" class="text-sm text-sidebar_font transition-all duration-200">Ya</label>
-                                    ${jawaban === 'Ya' && isDisabled ? '<span class="ml-2 text-green-600">✓</span>' : ''}
-                                </div>
-                                <div class="radio-option">
-                                    <input type="radio" id="${item.id}_tidak" name="${item.id}" value="Tidak" ${jawaban === 'Tidak' ? 'checked' : ''} ${disabledAttr} class="transition-all duration-200">
-                                    <label for="${item.id}_tidak" class="text-sm text-sidebar_font transition-all duration-200">Tidak</label>
-                                    ${jawaban === 'Tidak' && isDisabled ? '<span class="ml-2 text-red-600">✗</span>' : ''}
-                                </div>
-                            </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="text-xs text-gray-500 mb-1">Jawaban Asesi:</div>
+                            ${asesiAnswerDisplay}
+                            ${asesorAnswerDisplay}
                         </div>
                     </td>
                 </tr>
@@ -1475,6 +1483,42 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         elements.checklistTableBody.innerHTML = tableContent;
+
+        // Update UI based on asesi signature status
+        updateSigningUI(asesiHasSigned);
+    }
+
+    // Update UI based on whether asesi has signed
+    function updateSigningUI(asesiHasSigned) {
+        const signingCheckbox = elements.signingCheckbox;
+        const submitButton = elements.submitButton;
+        
+        if (!asesiHasSigned && !state.isAsesorSigned) {
+            // Asesi hasn't signed yet - disable asesor signing
+            if (signingCheckbox) {
+                signingCheckbox.disabled = true;
+                signingCheckbox.checked = false;
+            }
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                submitButton.querySelector('#buttonText').textContent = 'Menunggu TTD Asesi';
+            }
+            
+            // Show warning message
+            showMessage('error', 'Asesi belum menandatangani formulir. Asesor hanya dapat menandatangani setelah asesi.', 0);
+        } else if (asesiHasSigned && !state.isAsesorSigned) {
+            // Asesi has signed, asesor can now sign
+            if (signingCheckbox) {
+                signingCheckbox.disabled = false;
+            }
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                submitButton.querySelector('#buttonText').textContent = 'Saya Menyetujui';
+            }
+            hideMessage();
+        }
     }
 
     // Handle checkbox with strict validation
@@ -1688,7 +1732,13 @@ document.addEventListener('DOMContentLoaded', function () {
             throw new Error('Anda belum memiliki tanda tangan di biodata. Silakan upload tanda tangan di halaman biodata terlebih dahulu.');
         }
 
-        // Collect form data
+        // Check if asesi has signed first
+        if (!state.isAsesiSigned) {
+            throw new Error('Asesi belum menandatangani formulir. Asesor hanya dapat menandatangani setelah asesi.');
+        }
+
+        // Collect form data - Asesor copies asesi's answers (view-only mode)
+        // Since asesor is viewing asesi's data and agreeing to it, we copy the asesi's answers
         const formData = {
             id_asesi: state.currentAsesiId,
             id_asesor: apiConfig.asesorId,
@@ -1696,18 +1746,13 @@ document.addEventListener('DOMContentLoaded', function () {
             is_asesor_signing: elements.signingCheckbox.checked
         };
 
-        // Get all the checklist answers
+        // Copy asesi's answers as asesor's answers (asesor agrees with asesi's checklist)
         for (let i = 1; i <= 9; i++) {
             const pointId = `point_${i}`;
-            const selectedRadio = document.querySelector(`input[name="${pointId}"]:checked`);
-
-            if (selectedRadio) {
-                formData.jawaban_checklist[pointId] = {
-                    jawaban_asesor: selectedRadio.value
-                };
-            } else {
-                throw new Error(`Silakan pilih jawaban untuk poin ${i}`);
-            }
+            const asesiAnswer = state.checklist[pointId]?.jawaban_asesi || 'Ya';
+            formData.jawaban_checklist[pointId] = {
+                jawaban_asesor: asesiAnswer // Asesor agrees with asesi's answer
+            };
         }
 
         showMessage('loading', 'Menyimpan data konsultasi pra uji...', 0);

@@ -231,6 +231,21 @@
 
             {{-- Tabel Kode Unit --}}
             <div class="p-4">
+                {{-- Requirements: 8.4 - Show message if no questions configured for the scheme --}}
+                @if($detailRincian && isset($hasSchemeQuestions) && !$hasSchemeQuestions)
+                    <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            <div>
+                                <p class="text-sm font-medium text-yellow-800">Pertanyaan lisan belum dikonfigurasi untuk skema ini</p>
+                                <p class="text-xs text-yellow-600 mt-1">Silakan hubungi admin untuk mengkonfigurasi pertanyaan lisan. Anda masih dapat menambahkan pertanyaan secara manual.</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                
                 @if($detailRincian && $detailRincian->asesi && $detailRincian->asesi->skema && $detailRincian->asesi->skema->unitKompetensiLoaded)
                     @foreach($detailRincian->asesi->skema->unitKompetensiLoaded as $index => $uk)
                         <p id="judulTabelIA07" class="text-sidebar_font font-semibold pb-2">No {{ $index + 1 }}.  Kode Unit : {{ $uk->kode_uk }}</p>
@@ -498,6 +513,10 @@ const fria07Data = @json($formData && $formData->data_tambahan ? $formData->data
 let currentUkId = null;
 let currentElemenId = null;
 
+// Requirements: 8.3 - Scheme-specific oral questions from IA07Question
+const schemeQuestions = @json($schemeQuestions ?? []);
+const hasSchemeQuestions = @json($hasSchemeQuestions ?? false);
+
 // Initialize fria07Data structure if empty
 if (!fria07Data.unit_kompetensi) {
     fria07Data.unit_kompetensi = [];
@@ -507,6 +526,8 @@ if (!fria07Data.hasil) {
 }
 
 console.log('Initial fria07Data:', fria07Data);
+console.log('Scheme questions:', schemeQuestions);
+console.log('Has scheme questions:', hasSchemeQuestions);
 
 function showSummary() {
     // Sembunyikan elemen pencarian utama
@@ -640,8 +661,39 @@ function loadModalContent(ukData, elemenData) {
 function loadEmptyModalContent() {
     const modalContent = document.getElementById('modal-content');
     
+    // Requirements: 8.3 - Load scheme-specific questions if available
+    let defaultQuestions = [];
+    
+    if (hasSchemeQuestions && schemeQuestions[currentUkId]) {
+        // Get questions for this UK from scheme-specific questions
+        const ukQuestions = schemeQuestions[currentUkId];
+        if (ukQuestions && ukQuestions.length > 0) {
+            // Filter questions for the current elemen
+            const elemenQuestions = ukQuestions.filter(q => 
+                q.id_elemen_uk == currentElemenId || 
+                q.id_elemen_uk?.toString() === currentElemenId?.toString()
+            );
+            
+            if (elemenQuestions.length > 0) {
+                defaultQuestions = elemenQuestions.map(q => ({
+                    pertanyaan: q.pertanyaan || '',
+                    jawaban: ''
+                }));
+            }
+        }
+    }
+    
+    // If no scheme questions, create one empty set
+    if (defaultQuestions.length === 0) {
+        defaultQuestions = [{ pertanyaan: '', jawaban: '' }];
+    }
+    
     let contentHTML = '<div id="pertanyaan-jawaban-container">';
-    contentHTML += createPertanyaanJawabanHTML(1, '', '');
+    
+    defaultQuestions.forEach((item, index) => {
+        contentHTML += createPertanyaanJawabanHTML(index + 1, item.pertanyaan, item.jawaban);
+    });
+    
     contentHTML += `
         </div>
         <div class="mb-5 flex justify-center">

@@ -31,11 +31,11 @@
                         <span class="font-inter text-white font-bold text-lg">1</span>
                     </div>
                     <div class="ml-16 bg-white rounded-2xl shadow-medium p-6 border border-gray-100 hover:shadow-large transition-shadow duration-300">
-                        <div class="flex justify-between items-start mb-3">
+                        <div class="flex justify-between items-start mb-3 gap-2 flex-nowrap">
                             <h3 class="font-bricolage text-xl font-semibold text-gray-900 tracking-tight">
                                 Registrasi Akun
                             </h3>
-                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full">
+                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0">
                                 Langkah 1
                             </span>
                         </div>
@@ -50,11 +50,11 @@
                         <span class="font-inter text-white font-bold text-lg">2</span>
                     </div>
                     <div class="ml-16 bg-white rounded-2xl shadow-medium p-6 border border-gray-100 hover:shadow-large transition-shadow duration-300">
-                        <div class="flex justify-between items-start mb-3">
+                        <div class="flex justify-between items-start mb-3 gap-2 flex-nowrap">
                             <h3 class="font-bricolage text-xl font-semibold text-gray-900 tracking-tight">
                                 Pengisian FR.APL-01
                             </h3>
-                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full">
+                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0">
                                 Langkah 2
                             </span>
                         </div>
@@ -69,11 +69,11 @@
                         <span class="font-inter text-white font-bold text-lg">3</span>
                     </div>
                     <div class="ml-16 bg-white rounded-2xl shadow-medium p-6 border border-gray-100 hover:shadow-large transition-shadow duration-300">
-                        <div class="flex justify-between items-start mb-3">
+                        <div class="flex justify-between items-start mb-3 gap-2 flex-nowrap">
                             <h3 class="font-bricolage text-xl font-semibold text-gray-900 tracking-tight">
-                                Briefing Asesmen
+                                Pra-Asesmen
                             </h3>
-                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full">
+                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0">
                                 Langkah 3
                             </span>
                         </div>
@@ -88,11 +88,11 @@
                         <span class="font-inter text-white font-bold text-lg">4</span>
                     </div>
                     <div class="ml-16 bg-white rounded-2xl shadow-medium p-6 border border-gray-100 hover:shadow-large transition-shadow duration-300">
-                        <div class="flex justify-between items-start mb-3">
+                        <div class="flex justify-between items-start mb-3 gap-2 flex-nowrap">
                             <h3 class="font-bricolage text-xl font-semibold text-gray-900 tracking-tight">
-                                Pelaksanaan UK
+                                Asesmen
                             </h3>
-                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full">
+                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0">
                                 Langkah 4
                             </span>
                         </div>
@@ -107,11 +107,11 @@
                         <span class="font-inter text-white font-bold text-lg">5</span>
                     </div>
                     <div class="ml-16 bg-white rounded-2xl shadow-medium p-6 border border-gray-100 hover:shadow-large transition-shadow duration-300">
-                        <div class="flex justify-between items-start mb-3">
+                        <div class="flex justify-between items-start mb-3 gap-2 flex-nowrap">
                             <h3 class="font-bricolage text-xl font-semibold text-gray-900 tracking-tight">
                                 Penilaian Oleh Asesor
                             </h3>
-                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full">
+                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0">
                                 Langkah 5
                             </span>
                         </div>
@@ -126,11 +126,11 @@
                         <span class="font-inter text-white font-bold text-lg">6</span>
                     </div>
                     <div class="ml-16 bg-white rounded-2xl shadow-medium p-6 border border-gray-100 hover:shadow-large transition-shadow duration-300">
-                        <div class="flex justify-between items-start mb-3">
+                        <div class="flex justify-between items-start mb-3 gap-2 flex-nowrap">
                             <h3 class="font-bricolage text-xl font-semibold text-gray-900 tracking-tight">
                                 Penentuan Kelulusan
                             </h3>
-                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full">
+                            <span class="font-inter text-sm font-medium text-sky-500 bg-sky-50 px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0">
                                 Langkah 6
                             </span>
                         </div>

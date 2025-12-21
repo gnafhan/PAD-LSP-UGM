@@ -12,11 +12,15 @@ use App\Http\Controllers\Admin\ManajemenSkema\SkemaPageController;
 use App\Http\Controllers\Admin\ManajemenTUK\PenanggungJawabController;
 use App\Http\Controllers\Admin\ManajemenTUK\TukController;
 use App\Http\Controllers\Admin\ManajemenUnitKompetensi\UnitKompetensiPageController;
+use App\Http\Controllers\Admin\AsesorSkemaAssignmentController;
+use App\Http\Controllers\Admin\DynamicContentController;
+use App\Http\Controllers\Admin\SkemaAssessmentConfigController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AK04Controller;
 use App\Http\Controllers\AsesiController;
 use App\Http\Controllers\Asesor\FRAK04Controller;
 use App\Http\Controllers\Asesor\HasilAsesmenController;
+use App\Http\Controllers\Asesor\SchemeContextController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IA02ContentController;
 use App\Http\Controllers\IA02TugasController;
@@ -140,6 +144,78 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::delete('/{id_rencana_asesmen}', [RencanaAsesmenController::class, 'destroy'])->name('destroy');
     });
 
+    // Skema Assessment Configuration (Dynamic Assessment Flow)
+    // Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2
+    Route::prefix('skema/{id}/assessment-config')->name('admin.skema.assessment-config.')->group(function () {
+        Route::get('/', [SkemaAssessmentConfigController::class, 'index'])->name('index');
+        Route::get('/view', [SkemaAssessmentConfigController::class, 'show'])->name('view');
+        Route::put('/', [SkemaAssessmentConfigController::class, 'update'])->name('update');
+    });
+
+    // Asesor Skema Assignment Management (Dynamic Assessment Flow)
+    // Requirements: 3.1, 3.2, 3.3
+    Route::get('/asesor-assignments', [AsesorSkemaAssignmentController::class, 'showAssignmentsPage'])->name('admin.asesor-assignments.index');
+    Route::prefix('asesor/{id}')->name('admin.asesor.')->group(function () {
+        Route::get('/assignments', [AsesorSkemaAssignmentController::class, 'index'])->name('assignments.index');
+        Route::post('/assign-skema', [AsesorSkemaAssignmentController::class, 'store'])->name('assignments.store');
+        Route::delete('/revoke-skema/{skemaId}', [AsesorSkemaAssignmentController::class, 'destroy'])->name('assignments.destroy');
+    });
+
+    // Dynamic Assessment Content Management (Dynamic Assessment Flow)
+    // Requirements: 4.1, 4.2, 4.3, 4.4, 4.5
+    Route::prefix('assessment-content')->name('admin.assessment-content.')->group(function () {
+        Route::get('/manage/{skemaId}', [DynamicContentController::class, 'showContentPage'])->name('manage');
+        Route::get('/{skemaId}/{type}', [DynamicContentController::class, 'index'])->name('index');
+        Route::post('/', [DynamicContentController::class, 'store'])->name('store');
+        Route::put('/{id}', [DynamicContentController::class, 'update'])->name('update');
+        Route::delete('/{id}', [DynamicContentController::class, 'destroy'])->name('destroy');
+    });
+
+    // Scheme Content Management per Template IA (Assessment Content per Template)
+    // Requirements: 1.1-1.5, 2.1-2.4, 3.1-3.4, 4.1-4.3, 5.1-5.3, 6.1-6.4, 7.1, 9.1-9.3
+    Route::prefix('skema/{id}/content')->name('admin.skema.content.')->group(function () {
+        // Dashboard
+        Route::get('/', [\App\Http\Controllers\Admin\SchemeContentController::class, 'index'])->name('index');
+        Route::get('/summary', [\App\Http\Controllers\Admin\SchemeContentController::class, 'summary'])->name('summary');
+        
+        // IA05 - Multiple Choice Questions
+        Route::get('/ia05', [\App\Http\Controllers\Admin\IA05ContentController::class, 'index'])->name('ia05.index');
+        Route::post('/ia05', [\App\Http\Controllers\Admin\IA05ContentController::class, 'store'])->name('ia05.store');
+        Route::put('/ia05/{kode}', [\App\Http\Controllers\Admin\IA05ContentController::class, 'update'])->name('ia05.update');
+        Route::delete('/ia05/{kode}', [\App\Http\Controllers\Admin\IA05ContentController::class, 'destroy'])->name('ia05.destroy');
+        Route::post('/ia05/reorder', [\App\Http\Controllers\Admin\IA05ContentController::class, 'reorder'])->name('ia05.reorder');
+        
+        // IA02 - Work Instructions Template
+        Route::get('/ia02', [\App\Http\Controllers\Admin\IA02ContentController::class, 'show'])->name('ia02.show');
+        Route::post('/ia02', [\App\Http\Controllers\Admin\IA02ContentController::class, 'store'])->name('ia02.store');
+        
+        // IA07 - Oral Questions
+        Route::get('/ia07', [\App\Http\Controllers\Admin\IA07ContentController::class, 'index'])->name('ia07.index');
+        Route::post('/ia07', [\App\Http\Controllers\Admin\IA07ContentController::class, 'store'])->name('ia07.store');
+        Route::put('/ia07/{questionId}', [\App\Http\Controllers\Admin\IA07ContentController::class, 'update'])->name('ia07.update');
+        Route::delete('/ia07/{questionId}', [\App\Http\Controllers\Admin\IA07ContentController::class, 'destroy'])->name('ia07.destroy');
+        
+        // MAPA01 - Assessment Planning Config
+        Route::get('/mapa01', [\App\Http\Controllers\Admin\MAPAConfigController::class, 'showMAPA01'])->name('mapa01.show');
+        Route::post('/mapa01', [\App\Http\Controllers\Admin\MAPAConfigController::class, 'storeMAPA01'])->name('mapa01.store');
+        
+        // MAPA02 - Assessment Instrument Config
+        Route::get('/mapa02', [\App\Http\Controllers\Admin\MAPAConfigController::class, 'showMAPA02'])->name('mapa02.show');
+        Route::post('/mapa02', [\App\Http\Controllers\Admin\MAPAConfigController::class, 'storeMAPA02'])->name('mapa02.store');
+        
+        // IA11 - Portfolio Checklist
+        Route::get('/ia11', [\App\Http\Controllers\Admin\IA11ContentController::class, 'index'])->name('ia11.index');
+        Route::post('/ia11', [\App\Http\Controllers\Admin\IA11ContentController::class, 'store'])->name('ia11.store');
+        Route::put('/ia11/{itemId}', [\App\Http\Controllers\Admin\IA11ContentController::class, 'update'])->name('ia11.update');
+        Route::delete('/ia11/{itemId}', [\App\Http\Controllers\Admin\IA11ContentController::class, 'destroy'])->name('ia11.destroy');
+    });
+
+    // Content Copy between Schemes
+    Route::prefix('content/copy')->name('admin.content.copy.')->group(function () {
+        Route::get('/sources', [\App\Http\Controllers\Admin\ContentCopyController::class, 'sources'])->name('sources');
+        Route::post('/', [\App\Http\Controllers\Admin\ContentCopyController::class, 'copy'])->name('copy');
+    });
+
 
     // Manajemen TUK
     Route::prefix('tuk')->name('admin.tuk.')->group(function () {
@@ -241,31 +317,39 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     Route::get('/home', [AsesiController::class, 'index'])->name('home-asesi');
     Route::get('/', [AsesiController::class, 'indexAssesi'])->name('asesi.index');
 
-    // APL-02 Asesmen Mandiri
+    // APL-02 Asesmen Mandiri (APL is mandatory, no middleware needed)
     Route::get('/apl2', [AsesiController::class, 'asesmenMandiri'])->name('asesi.asesmen.mandiri');
 
-    // ALUR FR.APL-01
+    // ALUR FR.APL-01 (APL is mandatory, no middleware needed)
     Route::get('/apl1/{id}', [AsesiController::class, 'detailApl1'])->name('asesi.apl1-detail');
 
     // Pilih Aksi Home Asesi
     Route::view('/aksi', 'home/home-asesi/pilih-aksi')->name('asesi.pilih-aksi');
     Route::view('/persetujuan', 'home/home-asesi/persetujuan')->name('asesi.persetujuan');
 
-    // FRAK-01, FRAK-03, FRIA-02
+    // FRAK-01, FRAK-03, FRIA-02 with access control middleware
+    // Requirements: 5.3 - Redirect with message if accessing disabled assessment
     Route::prefix('fr')->name('asesi.fr.')->group(function () {
-        Route::view('/ak1', 'home/home-asesi/FRAK-01/frak01')->name('ak1');
+        Route::view('/ak1', 'home/home-asesi/FRAK-01/frak01')->name('ak1')->middleware('asesi.assessment:AK01');
+        Route::view('/ak2', 'home/home-asesi/FRAK-02/frak02')->name('ak2'); // Hasil Asesmen - no middleware, always available
         Route::view('/ak3', 'home/home-asesi/FRAK-03/frak3')->name('ak3');
-        // Route::view('/ia2/hasil', 'home/home-asesi/FRIA-02/hasilv')->name('ia2.hasil');
-        // Route::view('/ia2', 'home/home-asesi/FRIA-02/soal-praktek-upload-jawaban')->name('ia2');
+        Route::view('/ak07', 'home/home-asesi/FRAK-07/frak07')->name('ak07')->middleware('asesi.assessment:AK07');
     });
 
-    // FRIA-02
-    Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
-    Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
-    Route::get('/ia2/soal/{id}', [AsesiController::class, 'soal_praktek_fria02'])->name('asesi.fr.ia2.soal');
+    // FRIA-02 with access control middleware
+    Route::middleware(['asesi.assessment:IA02'])->group(function () {
+        Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
+        Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
+        Route::get('/ia2/soal/{id}', [AsesiController::class, 'soal_praktek_fria02'])->name('asesi.fr.ia2.soal');
+    });
 
-    // IA02 Tugas Management
-    Route::prefix('tugas')->name('asesi.tugas.')->group(function () {
+    // FRIA-05 Pertanyaan Tertulis Pilihan Ganda with access control middleware
+    Route::get("/ia05", function () {
+        return view("home/home-asesi/FRIA-05/fria05");
+    })->name("asesi.fr.ia05")->middleware("asesi.assessment:IA05");
+
+    // IA02 Tugas Management with access control middleware
+    Route::prefix('tugas')->name('asesi.tugas.')->middleware(['asesi.assessment:IA02'])->group(function () {
         Route::get('/soal-praktek', [IA02TugasController::class, 'soalPraktek'])->name('soal-praktek');
         Route::post('/store', [IA02TugasController::class, 'store'])->name('store');
         Route::get('/{id}', [IA02TugasController::class, 'show'])->name('show');
@@ -274,17 +358,15 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
         Route::get('/data/json', [IA02TugasController::class, 'getTasks'])->name('data');
     });
 
-    // FRAK-04
-    Route::get('/frak04', [AK04Controller::class, 'index'])->name('asesi.frak04');
-    Route::post('/frak04', [AK04Controller::class, 'storeBanding'])->name('store.banding.asesi');
-
-
+    // FRAK-04 with access control middleware
+    Route::get('/frak04', [AK04Controller::class, 'index'])->name('asesi.frak04')->middleware('asesi.assessment:AK04');
+    Route::post('/frak04', [AK04Controller::class, 'storeBanding'])->name('store.banding.asesi')->middleware('asesi.assessment:AK04');
 
     // Jadwal Uji Kompetensi
     Route::view('/jadwal-uji-kompetensi', 'home/home-asesi/APL-02/jadwal-uji-kompetensi')->name('asesi.jadwal-uji-kompetensi');
 
-    // Konsul Prauji
-    Route::view('/konsul-prauji', 'home/home-asesi/konsul-prauji')->name('asesi.konsul-prauji');
+    // Konsul Prauji with access control middleware
+    Route::view('/konsul-prauji', 'home/home-asesi/konsul-prauji')->name('asesi.konsul-prauji')->middleware('asesi.assessment:KONSUL_PRA_UJI');
 
     // Logout asesi
     Route::post('/logout', function () {
@@ -402,6 +484,7 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/tugas-peserta/pdf/{id_asesi}', [TugasPesertaController::class, 'generatePdf'])->name('tugas-peserta.pdf');
     Route::get('/tugas-peserta/download/{id}', [TugasPesertaController::class, 'downloadFile'])->name('tugas-peserta.download');
     Route::put('/tugas-peserta/status/{id}', [TugasPesertaController::class, 'updateTaskStatus'])->name('tugas-peserta.status');
+    Route::post('/tugas-peserta/complete', [TugasPesertaController::class, 'completeAssessment'])->name('tugas-peserta.complete');
 
     Route::get('/fria11', [\App\Http\Controllers\IA11Controller::class, 'index'])->name('fria11-asesor');
     Route::post('/fria11/store', [\App\Http\Controllers\IA11Controller::class, 'store'])->name('fria11.store');
@@ -419,6 +502,31 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
 
     Route::get('/frak04', [FRAK04Controller::class, 'index'])->name('frak04-asesor');
     Route::get('/frak04/{id_asesi}', [FRAK04Controller::class, 'show'])->name('frak04-asesor.show');
+
+    // Skema Assessment Configuration for Asesor (Dynamic Assessment Flow)
+    // Requirements: 2.1, 2.2, 2.3, 2.4
+    Route::prefix('skema/{id}/assessment-config')->name('asesor.skema.assessment-config.')->group(function () {
+        Route::get('/', [SkemaAssessmentConfigController::class, 'index'])->name('index');
+        Route::put('/', [SkemaAssessmentConfigController::class, 'update'])->name('update');
+    });
+
+    // Dynamic Assessment Content Management for Asesor (Dynamic Assessment Flow)
+    // Requirements: 4.1, 4.2, 4.3, 4.4, 4.5
+    Route::prefix('assessment-content')->name('asesor.assessment-content.')->group(function () {
+        Route::get('/{skemaId}/{type}', [DynamicContentController::class, 'index'])->name('index');
+        Route::post('/', [DynamicContentController::class, 'store'])->name('store');
+        Route::put('/{id}', [DynamicContentController::class, 'update'])->name('update');
+        Route::delete('/{id}', [DynamicContentController::class, 'destroy'])->name('destroy');
+    });
+
+    // Scheme Context Selection for Dynamic Sidebar (Dynamic Assessment Flow)
+    // Requirements: 6.1, 6.4
+    Route::prefix('scheme-context')->name('asesor.scheme-context.')->group(function () {
+        Route::get('/assigned', [SchemeContextController::class, 'getAssignedSchemes'])->name('assigned');
+        Route::post('/set', [SchemeContextController::class, 'setSchemeContext'])->name('set');
+        Route::post('/clear', [SchemeContextController::class, 'clearSchemeContext'])->name('clear');
+        Route::get('/current', [SchemeContextController::class, 'getCurrentContext'])->name('current');
+    });
 
     // Aksi Asesor
     Route::get('/aksi/aktif', function () {

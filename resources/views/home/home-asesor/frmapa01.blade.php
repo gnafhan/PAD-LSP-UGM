@@ -721,6 +721,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (isSigned) {
                 disableAllFormFields();
             }
+        } else if (!recordExists && data.default_config) {
+            // Requirements: 4.3 - Pre-populate with scheme-specific defaults
+            populateRadioButtons(data.default_config);
+            console.log('Populated form with scheme-specific defaults:', data.default_config);
         }
 
         // Set button state based on record existence and signature status

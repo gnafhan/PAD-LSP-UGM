@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Asesmen\PelaksanaanAsesmen;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Mapa01;
+use App\Models\MAPA01Config;
 use App\Models\RencanaAsesmen;
 use App\Services\AsesmenValidationService;
 use App\Models\TandaTanganAsesor;
@@ -218,12 +219,19 @@ class Mapa01Controller extends Controller
                 ]
             ]);
         } else {
-            // Record doesn't exist - provide only general information and rencana asesmen
+            // Record doesn't exist - provide general information, rencana asesmen, and scheme-specific defaults
+            // Requirements: 4.3 - Pre-populate with scheme-specific defaults
+            $schemeConfig = MAPA01Config::forSkema($id_skema)->first();
+            $defaultConfig = $schemeConfig ? $schemeConfig->config_data : null;
+            $hasSchemeConfig = $schemeConfig !== null && !empty($schemeConfig->config_data);
+            
             return response()->json([
                 'status' => 'success',
                 'data' => [
                     'general_info' => $generalInfo,
                     'rencana_asesmen' => $rencanaAsesmenArray,
+                    'default_config' => $defaultConfig, // Scheme-specific defaults
+                    'has_scheme_config' => $hasSchemeConfig, // Requirements: 8.4 - Indicate if content is configured
                     'record_exists' => false
                 ]
             ]);

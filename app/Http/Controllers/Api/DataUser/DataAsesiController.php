@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api\DataUser;
 
 use App\Http\Controllers\Controller;
+use App\Models\Asesi;
 use App\Models\Asesor;
 use App\Models\ProgresAsesmen;
+use App\Services\AsesiDashboardService;
+use App\Services\SkemaConfigService;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\DateTimeHelper;
 
@@ -177,6 +180,7 @@ class DataAsesiController extends Controller
      */
     public function get_progress_asesmen(string $id){
         $progress_asesmen = ProgresAsesmen::where('id_asesi', $id)->first();
+        $asesi = Asesi::with('skema')->where('id_asesi', $id)->first();
 
         if ($progress_asesmen){
             // Get structured progress data using the new method
@@ -192,12 +196,26 @@ class DataAsesiController extends Controller
             // Calculate progress summary
             $progress_summary = $progress_asesmen->calculateProgress();
             
+            // Get enabled assessments for the scheme
+            $enabled_assessments = [];
+            $assessment_sections = [];
+            
+            if ($asesi && $asesi->id_skema) {
+                $skemaConfigService = app(SkemaConfigService::class);
+                $asesiDashboardService = app(AsesiDashboardService::class);
+                
+                $enabled_assessments = $skemaConfigService->getEnabledAssessments($asesi->id_skema)->toArray();
+                $assessment_sections = $asesiDashboardService->getFilteredAssessmentSections($asesi);
+            }
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Data Progress Asesmen ditemukan',
                 'data'    => [
                     'progress_asesmen' => $structured_progress,
                     'progress_summary' => $progress_summary,
+                    'enabled_assessments' => $enabled_assessments,
+                    'assessment_sections' => $assessment_sections,
                     'timezone' => 'WIB'
                 ]
             ], 200);

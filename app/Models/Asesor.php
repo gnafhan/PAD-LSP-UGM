@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 
@@ -222,5 +224,47 @@ class Asesor extends Model
     public function rincianAsesmen()
     {
         return $this->hasMany(RincianAsesmen::class, 'id_asesor', 'id_asesor');
+    }
+
+    /**
+     * Relationship to AsesorSkemaAssignment
+     * Returns all scheme assignments for this asesor.
+     * 
+     * Requirements: 3.1
+     *
+     * @return HasMany
+     */
+    public function skemaAssignments(): HasMany
+    {
+        return $this->hasMany(AsesorSkemaAssignment::class, 'id_asesor', 'id_asesor');
+    }
+
+    /**
+     * Get collection of schemes assigned to this asesor.
+     * 
+     * Requirements: 2.1
+     *
+     * @return Collection Collection of Skema models
+     */
+    public function getAssignedSkemas(): Collection
+    {
+        return Skema::whereIn('id_skema', 
+            $this->skemaAssignments()->pluck('id_skema')
+        )->get();
+    }
+
+    /**
+     * Check if this asesor has access to a specific scheme.
+     * 
+     * Requirements: 2.2
+     *
+     * @param string $idSkema The scheme ID to check access for
+     * @return bool True if asesor has access, false otherwise
+     */
+    public function canAccessSkema(string $idSkema): bool
+    {
+        return $this->skemaAssignments()
+            ->where('id_skema', $idSkema)
+            ->exists();
     }
 }

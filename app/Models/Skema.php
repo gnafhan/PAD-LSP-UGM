@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\AssessmentType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class Skema extends Model
@@ -80,6 +82,62 @@ class Skema extends Model
     public function asesi()
     {
         return $this->hasMany(Asesi::class, 'id_skema', 'id_skema');
+    }
+
+    /**
+     * Relationship to SkemaAssessmentConfig
+     * Returns all assessment configurations for this scheme.
+     * 
+     * Requirements: 1.1
+     *
+     * @return HasMany
+     */
+    public function assessmentConfig(): HasMany
+    {
+        return $this->hasMany(SkemaAssessmentConfig::class, 'id_skema', 'id_skema');
+    }
+
+    /**
+     * Relationship to AsesorSkemaAssignment
+     * Returns all asesor assignments for this scheme.
+     * 
+     * Requirements: 3.1
+     *
+     * @return HasMany
+     */
+    public function asesorAssignments(): HasMany
+    {
+        return $this->hasMany(AsesorSkemaAssignment::class, 'id_skema', 'id_skema');
+    }
+
+    /**
+     * Get array of enabled assessment types for this scheme.
+     * Always includes mandatory APL types regardless of configuration.
+     * If no configuration exists, returns all assessment types (backward compatibility).
+     * 
+     * Requirements: 5.1
+     *
+     * @return array Array of enabled assessment type strings
+     */
+    public function getEnabledAssessments(): array
+    {
+        // Get enabled assessments from the relationship
+        $enabledFromDb = $this->assessmentConfig()
+            ->where('is_enabled', true)
+            ->orderBy('display_order', 'asc')
+            ->pluck('assessment_type')
+            ->toArray();
+
+        // If no configuration exists, return all types (backward compatibility)
+        if (empty($enabledFromDb) && !$this->assessmentConfig()->exists()) {
+            return AssessmentType::getAllTypes();
+        }
+
+        // Always include mandatory APL types
+        $mandatoryTypes = AssessmentType::getMandatoryTypes();
+        
+        // Merge mandatory types with enabled types, ensuring no duplicates
+        return array_values(array_unique(array_merge($mandatoryTypes, $enabledFromDb)));
     }
 
     protected static function boot()

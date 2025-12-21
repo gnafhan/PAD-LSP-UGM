@@ -69,7 +69,7 @@
                         <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900">Nomor / Judul Skema</th>
                         <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900">Unit Kompetensi</th>
                         <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900">Persyaratan</th>
-                        <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900 rounded-tr-2xl">Dokumen</th>
+                        <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900 rounded-tr-2xl">Dokumen Skema</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -135,18 +135,16 @@
                                 $link = $isUrl ? $dokumen : ($isFile ? asset('storage/' . ltrim($dokumen, '/')) : null);
                             @endphp
                             @if($link)
-                                <a href="{{ $link }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-sky-600 text-white text-sm font-semibold rounded-xl hover:bg-sky-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <a href="{{ $link }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-10 h-10 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2" title="Unduh Dokumen Skema">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
-                                    SKKNI
                                 </a>
                             @else
-                                <span class="inline-flex items-center gap-2 px-4 py-2 bg-gray-300 text-gray-500 text-sm font-semibold rounded-xl cursor-not-allowed" title="Dokumen tidak tersedia">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <span class="inline-flex items-center justify-center w-10 h-10 bg-gray-300 text-gray-500 rounded-xl cursor-not-allowed" title="Dokumen tidak tersedia">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
-                                    Tidak tersedia
                                 </span>
                             @endif
                         </td>

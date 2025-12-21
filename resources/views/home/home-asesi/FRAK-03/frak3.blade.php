@@ -256,7 +256,9 @@ async function loadAk03Data(idAsesi) {
         const ak03Data = ak03Response.ok ? await ak03Response.json() : { data: null };
 
         if (generalData.status === 'success') {
-            displayData(generalData.data.general_info, ak03Data.data ? ak03Data.data.ak03 : null, ak03Data.data ? ak03Data.data.ak03.general_feedback : null);
+            const ak03 = ak03Data.data ? ak03Data.data.ak03 : null;
+            const generalFeedback = ak03 ? ak03.general_feedback : null;
+            displayData(generalData.data.general_info, ak03, generalFeedback);
             showMainContent();
         } else {
             throw new Error(generalData.message || 'Format data umum tidak sesuai');

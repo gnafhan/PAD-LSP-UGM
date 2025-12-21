@@ -70,6 +70,8 @@ class Kernel extends HttpKernel
         'api_key' => \App\Http\Middleware\ApiKeyMiddleware::class,
         'role' => \App\Http\Middleware\RoleMiddleware::class,
         \App\Http\Middleware\DebugAuthMiddleware::class,
-
+        
+        // Dynamic Assessment Flow - Asesi access control
+        'asesi.assessment' => \App\Http\Middleware\CheckAsesiAssessmentAccess::class,
     ];
 }

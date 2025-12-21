@@ -152,8 +152,9 @@ class Fria05Controller extends Controller
         //     }
         // }
         
-        // get soal
-        $soals = Soal::where('id_skema', $skema->id_skema)->get();
+        // Get soal ordered by display_order (scheme-specific content)
+        // Requirements: 8.1 - Load questions specific to the asesi's scheme
+        $soals = Soal::forSkema($skema->id_skema)->ordered()->get();
 
         // Check if the FRIA05 record exists
         if ($fria05) {
@@ -170,6 +171,7 @@ class Fria05Controller extends Controller
                     'general_info' => $generalInfo,
                     // 'detail_skema' => $detailSkema,
                     'list_soal' => $soals,
+                    'has_questions' => $soals->count() > 0, // Requirements: 8.4 - Indicate if content is configured
                     'fria05' => [
                         'list_jawaban' => $fria05->jawabans,
                         'waktu_tanda_tangan_asesi' => DateTimeHelper::toWIB($fria05->waktu_tanda_tangan_asesi),
@@ -188,6 +190,7 @@ class Fria05Controller extends Controller
                 'data' => [
                     'general_info' => $generalInfo,
                     'list_soal' => $soals,
+                    'has_questions' => $soals->count() > 0, // Requirements: 8.4 - Indicate if content is configured
                     'record_exists' => false
                 ]
             ]);
@@ -249,61 +252,80 @@ class Fria05Controller extends Controller
      */
     public function saveFria05Asesi(Request $request)
     {
-        // // Validate the request
-        // $request->validate([
-        //     'id_asesi' => 'required|string|exists:asesi,id_asesi',
-        //     'id_asesor' => 'required|string|exists:asesor,id_asesor',
-        //     'is_signing' => 'required|boolean'
-        // ]);
+        // Validate the request
+        $request->validate([
+            'id_asesi' => 'required|string|exists:asesi,id_asesi',
+            'list_jawaban' => 'required|array|min:1',
+            'list_jawaban.*.kode_soal' => 'required|string',
+            'list_jawaban.*.jawaban' => 'required|string',
+            'is_signing' => 'sometimes|boolean'
+        ]);
 
-        // // Validate Asesi exists
-        // $asesiResult = $this->validationService->validateAsesiExists($request->id_asesi);
-        // if (isset($asesiResult['error'])) {
-        //     return response()->json($asesiResult, $asesiResult['code']);
-        // }
+        // Validate Asesi exists and get rincian asesmen
+        $asesiResult = $this->validationService->validateAsesiExists(
+            $request->id_asesi,
+            ['rincianAsesmen.asesor']
+        );
+        if (isset($asesiResult['error'])) {
+            return response()->json($asesiResult, $asesiResult['code']);
+        }
 
-        // // Validate Asesi-Asesor pair
-        // $pairResult = $this->validationService->validateAsesiAsesorPair(
-        //     $request->id_asesi,
-        //     $request->id_asesor
-        // );
-        // if ($pairResult) {
-        //     return response()->json($pairResult, $pairResult['code']);
-        // }
+        $asesi = $asesiResult;
 
-        // // Find or create FRIA05 record
-        // $fria05 = Fria05::firstOrNew([
-        //     'id_asesi' => $request->id_asesi,
-        //     'id_asesor' => $request->id_asesor,
-        // ]);
+        // Get asesor from rincian asesmen
+        if (!$asesi->rincianAsesmen || !$asesi->rincianAsesmen->asesor) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Asesi belum memiliki asesor yang ditugaskan',
+                'code' => 404
+            ], 404);
+        }
 
-        // // Set the signing timestamp if the asesi is signing
-        // if ($request->boolean('is_signing')) {
-        //     $fria05->waktu_tanda_tangan_asesi = now();
-        // }
+        $id_asesor = $asesi->rincianAsesmen->asesor->id_asesor;
 
-        // $fria05->save();
+        // Find or create FRIA05 record
+        $fria05 = Fria05::firstOrNew([
+            'id_asesi' => $request->id_asesi,
+            'id_asesor' => $id_asesor,
+        ]);
 
-        // // Check if both asesi and asesor have signed, and if so, update progress
-        // if ($fria05->waktu_tanda_tangan_asesi && $fria05->waktu_tanda_tangan_asesor) {
-        //     // Update the progres_asesmen table
-        //     log::info('FRIA05 completed by Asesi', [
-        //         'id_asesi' => $request->id_asesi,
-        //         'id_asesor' => $request->id_asesor,
-        //         'timestamp' => Carbon::now()->format('d-m-Y H:i:s')
-        //     ]);
-        //     $this->progressService->completeStep(
-        //         $request->id_asesi,
-        //         'fria05',
-        //         'Completed by Asesi ID: ' . $request->id_asesi . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
-        //     );
-        // }
+        // Set the signing timestamp if the asesi is signing
+        if ($request->boolean('is_signing')) {
+            $fria05->waktu_tanda_tangan_asesi = now();
+        }
 
-        // return response()->json([
-        //     'status' => 'success',
-        //     'message' => 'Data FRIA05 berhasil ditandatangani oleh Asesi',
-        //     'data' => $fria05
-        // ]);
+        $fria05->save();
+
+        // Remove old answers and save new ones
+        $fria05->jawabans()->delete();
+
+        foreach ($request->list_jawaban as $jawaban) {
+            $fria05->jawabans()->create([
+                'kode_soal' => $jawaban['kode_soal'],
+                'jawaban' => $jawaban['jawaban'],
+            ]);
+        }
+
+        // Check if both asesi and asesor have signed, and if so, update progress
+        // For IA05 exam, we mark progress complete when asesi submits (signs)
+        if ($fria05->waktu_tanda_tangan_asesi) {
+            Log::info('FRIA05 submitted by Asesi', [
+                'id_asesi' => $request->id_asesi,
+                'id_asesor' => $id_asesor,
+                'timestamp' => Carbon::now()->format('d-m-Y H:i:s')
+            ]);
+            $this->progressService->completeStep(
+                $request->id_asesi,
+                'ia05',
+                'Submitted by Asesi ID: ' . $request->id_asesi . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
+            );
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data FRIA05 berhasil disimpan oleh Asesi',
+            'data' => $fria05->load('jawabans')
+        ]);
     }
 
     /**

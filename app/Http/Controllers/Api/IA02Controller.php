@@ -84,6 +84,7 @@ class IA02Controller extends Controller
                         'nama_asesor' => $ia02->nama_asesor,
                         'tuk' => $ia02->tuk, // Using accessor
                         'instruksi_kerja' => $ia02->instruksi_kerja,
+                        'has_scheme_template' => $this->ia02Service->hasTemplateForSkema($ia02->id_skema), // Requirements: 8.4
                         'waktu_tanda_tangan_asesor' => $ia02->waktu_tanda_tangan_asesor?->format('d-m-Y H:i:s') . ' WIB',
                         'waktu_tanda_tangan_asesi' => $ia02->waktu_tanda_tangan_asesi?->format('d-m-Y H:i:s') . ' WIB',
                         'ttd_asesor' => $ia02->ttd_asesor,

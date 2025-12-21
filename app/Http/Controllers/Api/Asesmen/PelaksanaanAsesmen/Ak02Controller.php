@@ -132,7 +132,7 @@ class Ak02Controller extends Controller
         $detailSkema = [];
         
         if ($skema) {
-            foreach ($skema->unitKompetensi as $uk) {
+            foreach ($skema->getUnitKompetensi() as $uk) {
                 $unitData = [
                     'id_uk' => $uk->id_uk,
                     'kode_uk' => $uk->kode_uk,

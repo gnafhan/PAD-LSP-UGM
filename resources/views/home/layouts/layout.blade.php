@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lembaga Sertifikasi Profesi UGM - Sertifikasi berkualitas tinggi yang diakui BNSP untuk mahasiswa aktif">
     <meta name="theme-color" content="#0ea5e9">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <title>@yield('title')</title>
     
     <!-- Preload critical fonts -->

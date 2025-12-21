@@ -7,13 +7,22 @@ use App\Models\RincianAsesmen;
 use App\Models\Asesi;
 use App\Models\Asesor;
 use App\Models\Skema;
+use App\Services\ProgressTrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class IA11Controller extends Controller
 {
+    protected $progressService;
+
+    public function __construct(ProgressTrackingService $progressService)
+    {
+        $this->progressService = $progressService;
+    }
+
     public function index()
     {
         $user = Auth::user();
@@ -130,6 +139,19 @@ class IA11Controller extends Controller
             $ia11Data
         );
 
+        // Update progress when asesor signs
+        if ($isAsesorSigning) {
+            $this->progressService->completeStep(
+                $request->id_asesi,
+                'ia11',
+                'IA11 signed by Asesor ID: ' . $request->id_asesor
+            );
+            Log::info('IA11 progress completed', [
+                'id_asesi' => $request->id_asesi,
+                'id_asesor' => $request->id_asesor
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Data IA11 berhasil disimpan');
     }
 
@@ -167,6 +189,17 @@ class IA11Controller extends Controller
             'waktu_tanda_tangan_asesor' => $request->waktu_tanda_tangan,
             'ttd_asesor' => $signatureFile,
             'status' => 'completed'
+        ]);
+
+        // Update progress when asesor signs
+        $this->progressService->completeStep(
+            $request->id_asesi,
+            'ia11',
+            'IA11 signed by Asesor ID: ' . $request->id_asesor
+        );
+        Log::info('IA11 progress completed via sign endpoint', [
+            'id_asesi' => $request->id_asesi,
+            'id_asesor' => $request->id_asesor
         ]);
 
         return response()->json([

@@ -282,4 +282,58 @@ class TugasPesertaController extends Controller
             ]
         ];
     }
+
+    /**
+     * Complete assessment and mark progress for IA02
+     */
+    public function completeAssessment(Request $request)
+    {
+        try {
+            $currentAsesor = Auth::user()->asesor;
+            
+            if (!$currentAsesor) {
+                return redirect()->back()->with('error', 'Data asesor tidak ditemukan');
+            }
+
+            $request->validate([
+                'id_asesi' => 'required|string'
+            ]);
+
+            // Verify all tasks are approved
+            $tasks = IA02Tugas::where('id_asesi', $request->id_asesi)
+                ->where('id_asesor', $currentAsesor->id_asesor)
+                ->get();
+
+            if ($tasks->isEmpty()) {
+                return redirect()->back()->with('error', 'Tidak ada tugas yang ditemukan untuk asesi ini.');
+            }
+
+            $allApproved = $tasks->every(fn($task) => $task->status === 'approved');
+            
+            if (!$allApproved) {
+                return redirect()->back()->with('error', 'Semua tugas harus berstatus "Approved" sebelum dapat menyelesaikan penilaian.');
+            }
+
+            // Mark tugas_peserta progress as complete using ProgressTrackingService
+            $progressService = app(\App\Services\ProgressTrackingService::class);
+            $progressService->completeStep(
+                $request->id_asesi,
+                'tugas_peserta',
+                'Completed by Asesor: ' . $currentAsesor->id_asesor . ' - All tasks approved'
+            );
+
+            Log::info('Tugas Peserta assessment completed', [
+                'id_asesi' => $request->id_asesi,
+                'id_asesor' => $currentAsesor->id_asesor,
+                'tasks_count' => $tasks->count()
+            ]);
+
+            return redirect()->route('tugas-peserta', ['id_asesi' => $request->id_asesi])
+                ->with('success', 'Penilaian tugas berhasil diselesaikan! Progress Tugas Peserta telah ditandai selesai.');
+
+        } catch (\Exception $e) {
+            Log::error('Error completing assessment: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menyelesaikan penilaian: ' . $e->getMessage());
+        }
+    }
 }

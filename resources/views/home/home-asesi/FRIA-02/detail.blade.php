@@ -185,31 +185,6 @@
                     @endif
                 </div>
                 <div class="mb-5"></div>
-                <!-- Assessment Results -->
-                <div class=" p-8 mb-8 ">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Hasil Penilaian Sertifikasi</h2>
-
-                    <div class="mb-6">
-                        <label class="block text-gray-700 font-semibold mb-2">Kemampuan Programming Kandidat:</label>
-                        <div class="flex space-x-4">
-                            <label class="flex items-center">
-                                <input type="radio" name="kinerja" value="kompeten" class="mr-2">
-                                <span>Kompeten</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" name="kinerja" value="belum-kompeten" class="mr-2">
-                                <span>Belum Kompeten</span>
-                            </label>
-                        </div>
-                        <div class="mt-4">
-                            <label for="feedback" class="block text-gray-700 font-semibold mb-2">Catatan Asesor:</label>
-                            <textarea id="feedback" name="feedback" rows="3"
-                                      class="text-gray-500 w-full p-2 border border-gray-300 rounded-md"
-                                      placeholder="{{ $data->catatan ?? 'Kosong...' }}"
-                                      disabled>{{ $data->catatan ?? '' }}</textarea>
-                        </div>
-                    </div>
-                </div>
                 <!-- Bagian Tandatangan -->
                 <div class="mt-8 p-6 ">
                     <h3 class="text-lg font-semibold text-sidebar_font mb-6 text-center">Tandatangan</h3>

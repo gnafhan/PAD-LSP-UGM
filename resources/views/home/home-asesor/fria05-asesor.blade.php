@@ -869,30 +869,34 @@ document.addEventListener('DOMContentLoaded', function () {
     //     // container.innerHTML = checkboxContent;
     // }
     let totalsoal = 0;
-    function populateSoaldanJawaban(selectedResults = [], defaultOptions = [
-            {
-                kode_soal: "R.93KPW00.011.2",
-                pertanyaan: "Mengidentifikasi situasi konflik ?",
-                jawaban_a: "Mengidentifikasi situasi konflik ?",
-                jawaban_b: "Mengidentifikasi situasi konflik ?",
-                jawaban_c: "Mengidentifikasi situasi konflik ?",
-                jawaban_d: "Mengidentifikasi situasi konflik ?",
-                jawaban_e: "Mengidentifikasi situasi konflik ?"
-            },
-            {
-                kode_soal: "R.93KPW00.011.3",
-                pertanyaan: "Mengikuti Prosedur Kesehatan, Keselamatan dan Keamanan di Tempat Kerja",
-                jawaban_a: "Mengidentifikasi situasi konflik ?",
-                jawaban_b: "Mengidentifikasi situasi konflik ?",
-                jawaban_c: "Mengidentifikasi situasi konflik ?",
-                jawaban_d: "Mengidentifikasi situasi konflik ?",
-                jawaban_e: "Mengidentifikasi situasi konflik ?"
-            }
-        ]) {
+    function populateSoaldanJawaban(selectedResults = [], defaultOptions = []) {
         const container = document.getElementById('soalDanJawaban');
-
-        // data skema di sini
-        // const ;
+        
+        // Requirements: 8.4 - Show message if no questions configured for the scheme
+        if (!defaultOptions || defaultOptions.length === 0) {
+            container.innerHTML = `
+                <tr>
+                    <td colspan="3" class="px-4 py-8 text-center">
+                        <div class="flex flex-col items-center text-gray-500">
+                            <svg class="w-12 h-12 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <p class="text-lg font-medium text-gray-600">Belum ada soal yang dikonfigurasi</p>
+                            <p class="text-sm text-gray-400 mt-1">Silakan hubungi admin untuk mengkonfigurasi soal pilihan ganda untuk skema ini.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            // Disable submit button when no questions
+            const submitButton = document.getElementById('simpanFRIA05');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.classList.remove('bg-gradient-to-r', 'from-biru', 'to-ungu', 'hover:bg-biru');
+                submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                submitButton.textContent = 'Tidak Ada Soal';
+            }
+            return;
+        }
 
         let checkboxContent = '';
         defaultOptions.forEach((option, index) => {

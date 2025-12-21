@@ -5,29 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\IA02;
 use App\Models\IA02ProsesAssessment;
 use App\Models\JadwalMUK;
-use App\Models\TUK;
-use App\Models\UjianMUK;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Models\Asesi;
 use App\Models\Event;
 use App\Models\AsesiPengajuan;
 use App\Models\Skema;
 use App\Models\Asesor;
 use App\Models\UK;
-use App\Models\AsesiUK;
-use App\Models\AsesiApl02;
 use App\Models\HasilAsesmen;
 use App\Models\EventSkema;
 use App\Models\RincianAsesmen;
 use App\Models\TandaTanganAsesor;
-
-;
+use App\Services\AsesiDashboardService;
 
 class AsesiController extends Controller
 {
+    /**
+     * The AsesiDashboardService instance.
+     * Used for filtering assessments based on scheme configuration.
+     * 
+     * Requirements: 5.1
+     */
+    private AsesiDashboardService $asesiDashboardService;
+
+    public function __construct(AsesiDashboardService $asesiDashboardService)
+    {
+        $this->asesiDashboardService = $asesiDashboardService;
+    }
+
     public function index()
     {
         $user = Auth::user();
@@ -35,10 +41,16 @@ class AsesiController extends Controller
         return view('home.home-asesi.home-asesi', compact('asesi'));
     }
 
+    /**
+     * Display the Asesi assessment dashboard with filtered assessments.
+     * Only shows assessments that are enabled for the asesi's scheme.
+     * 
+     * Requirements: 5.1
+     */
     public function indexAssesi()
     {
         $user = Auth::user();
-        $asesi = Asesi::where('id_user', $user->id_user)->first();
+        $asesi = Asesi::with('skema')->where('id_user', $user->id_user)->first();
 
         if (!$asesi) {
             return redirect()->back()->with('error', 'Data Asesi tidak ditemukan.');
@@ -70,9 +82,18 @@ class AsesiController extends Controller
         ->where('asesi.id_user', $user->id_user)
         ->select('hasil_asesmen.id', 'hasil_asesmen.status', 'hasil_asesmen.tanggal_selesai')
         ->get();
-        // dd($hasilAsesmen);
 
-        return view('home.home-asesi.assesi', compact('eventData', 'hasilAsesmen'));
+        // Get filtered assessment sections based on scheme configuration
+        // Requirements: 5.1 - Show only enabled assessments for the asesi's scheme
+        $assessmentSections = $this->asesiDashboardService->getFilteredAssessmentSections($asesi);
+        $enabledAssessmentTypes = $this->asesiDashboardService->getEnabledAssessmentTypes($asesi);
+
+        return view('home.home-asesi.assesi', compact(
+            'eventData', 
+            'hasilAsesmen', 
+            'assessmentSections',
+            'enabledAssessmentTypes'
+        ));
     }
 
     public function detailApl1($id)
@@ -166,7 +187,13 @@ class AsesiController extends Controller
     public function detail_fria02(Request $request)
     {
         $rincianAsesmen = RincianAsesmen::where('id_rincian_asesmen', $request->id)->first();
-        $skema = EventSkema::where('id_event', $rincianAsesmen->id_event)->first()->skema;
+        
+        if (!$rincianAsesmen) {
+            return redirect()->back()->with('error', 'Rincian Asesmen tidak ditemukan.');
+        }
+        
+        $eventSkema = EventSkema::where('id_event', $rincianAsesmen->id_event)->first();
+        $skema = $eventSkema ? $eventSkema->skema : null;
         // dd($skema);
 
         $user = Auth::user();
@@ -180,11 +207,16 @@ class AsesiController extends Controller
         $jadwal = JadwalMUK::where('id_asesi', $asesi->id_asesi)->first();
         $asesor = Asesor::find($jadwal->id_asesor ?? null);
 
-        // Mengambil UK
-        $daftar_id_uk = json_decode($asesi->skema->daftar_id_uk, true);
-        $uks = UK::with('elemen_uk')
-            ->whereIn('id_uk', $daftar_id_uk)
-            ->get();
+        // Mengambil UK - use asesi's skema if available
+        $uks = collect();
+        if ($asesi->skema && $asesi->skema->daftar_id_uk) {
+            $daftar_id_uk = is_array($asesi->skema->daftar_id_uk) 
+                ? $asesi->skema->daftar_id_uk 
+                : json_decode($asesi->skema->daftar_id_uk, true);
+            $uks = UK::with('elemen_uk')
+                ->whereIn('id_uk', $daftar_id_uk ?? [])
+                ->get();
+        }
 
         // dd($rincianAsesmen->id_asesor,$asesi->id_asesi,$skema->id_skema);
 
@@ -222,7 +254,13 @@ class AsesiController extends Controller
     public function soal_praktek_fria02(Request $request)
     {
         $rincianAsesmen = RincianAsesmen::where('id_rincian_asesmen', $request->id)->first();
-        $skema = EventSkema::where('id_event', $rincianAsesmen->id_event)->first()->skema;
+        
+        if (!$rincianAsesmen) {
+            return redirect()->back()->with('error', 'Rincian Asesmen tidak ditemukan.');
+        }
+        
+        $eventSkema = EventSkema::where('id_event', $rincianAsesmen->id_event)->first();
+        $skema = $eventSkema ? $eventSkema->skema : null;
         
         $user = Auth::user();
         $asesi = Asesi::where('id_user', $user->id_user)->first();
@@ -235,11 +273,16 @@ class AsesiController extends Controller
         $jadwal = JadwalMUK::where('id_asesi', $asesi->id_asesi)->first();
         $asesor = Asesor::find($jadwal->id_asesor ?? null);
 
-        // Mengambil UK
-        $daftar_id_uk = json_decode($asesi->skema->daftar_id_uk, true);
-        $uks = UK::with('elemen_uk')
-            ->whereIn('id_uk', $daftar_id_uk)
-            ->get();
+        // Mengambil UK - use asesi's skema if available
+        $uks = collect();
+        if ($asesi->skema && $asesi->skema->daftar_id_uk) {
+            $daftar_id_uk = is_array($asesi->skema->daftar_id_uk) 
+                ? $asesi->skema->daftar_id_uk 
+                : json_decode($asesi->skema->daftar_id_uk, true);
+            $uks = UK::with('elemen_uk')
+                ->whereIn('id_uk', $daftar_id_uk ?? [])
+                ->get();
+        }
 
         $data = IA02::where('id_asesi', $rincianAsesmen->id_asesi)
             ->where('id_asesor', $rincianAsesmen->id_asesor)

@@ -274,41 +274,17 @@
                                   placeholder="Masukkan komentar keseluruhan tentang instrumen asesmen...">{{ $formData->komentar_all ?? '' }}</textarea>
                     </div>
                     
-            {{-- Bagian Tandatangan seperti FRIA02 --}}
+            {{-- Bagian Tandatangan - Hanya Asesor --}}
             <div class="mt-8 p-6 border-border_input rounded-lg bg-white">
-                <h3 class="text-lg font-semibold text-sidebar_font mb-6 text-center">Tandatangan</h3>
+                <h3 class="text-lg font-semibold text-sidebar_font mb-6 text-center">Tandatangan Asesor</h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Kolom Asesi -->
-                    <div class="text-center">
-                        <div class="mb-4">
-                            <p class="text-sm text-gray-600 mb-2">Tanggal:</p>
-                            <p id="tanggalTandaTanganAsesi" class="text-sm font-medium">{{ now()->format('d/m/Y') }}</p>
-                        </div>
-                        
-                        <!-- Area Tanda Tangan Asesi -->
-                        <div class="h-24 border border-dashed border-gray-300 rounded-lg mb-4 flex items-center justify-center bg-gray-50">
-                            @if(optional($detailRincian)->asesi && optional($detailRincian)->asesi->ttd_asesi)
-                                <img src="{{ asset('storage/' . $detailRincian->asesi->ttd_asesi) }}" 
-                                     alt="Tanda Tangan Asesi" 
-                                     class="max-h-20 max-w-full object-contain">
-                            @else
-                                <p class="text-gray-400 text-sm">Area Tanda Tangan</p>
-                            @endif
-                        </div>
-                        
-                        <div class="border-t border-gray-300 pt-2">
-                            <p class="text-sm font-medium">Asesi</p>
-                            <p id="namaAsesiTandaTangan" class="text-sm text-gray-600">{{ optional($detailRincian)->asesi->nama_asesi ?? 'Pilih asesi untuk melihat nama' }}</p>
-                        </div>
-                    </div>
-
+                <div class="max-w-md mx-auto">
                     <!-- Kolom Asesor -->
                     <div class="text-center">
                         <div class="mb-4">
                             <p class="text-sm text-gray-600 mb-2">Tanggal:</p>
                             <p id="tanggalTandaTanganAsesorDate" class="text-sm font-medium">
-                                @if($formData && $formData->is_asesor_signed)
+                                @if($formData && $isAsesorSigned)
                                     {{ $formData->updated_at->format('d/m/Y H:i') }} WIB
                                 @else
                                     {{ now()->format('d/m/Y') }}
@@ -320,7 +296,7 @@
                             Tanda Tangan Asesor
                             <span class="text-red-500">*</span>
                         </label>
-                        <div id="asesor-signature-upload-area" class="w-full flex flex-col items-center justify-center rounded-lg border border-dashed border-border_input px-6 py-10 hover:bg-blue-50 cursor-pointer min-h-[200px]">
+                        <div id="asesor-signature-upload-area" class="w-full flex flex-col items-center justify-center rounded-lg border border-dashed px-6 py-10 min-h-[200px] @if($formData && $isAsesorSigned) border-green-500 bg-green-50 cursor-default @else border-border_input hover:bg-blue-50 cursor-pointer @endif">
                             <div class="text-center" id="asesor-signature-content">
                                 <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                     <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
@@ -333,7 +309,14 @@
                             <!-- Preview Image Asesor -->
                             <div id="asesor-signature-preview" class="hidden">
                                 <img id="asesor-signature-image" src="" alt="Tanda Tangan Asesor" class="max-h-48 w-auto mx-auto rounded-lg p-2 border border-gray-200 bg-white shadow-sm">
+                                @if($formData && $isAsesorSigned)
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 mt-2">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                    Sudah Ditandatangani
+                                </span>
+                                @else
                                 <p class="text-xs text-center mt-2 text-gray-500">Tanda tangan asesor dari biodata</p>
+                                @endif
                                 <p id="tanggalTandaTanganAsesor" class="text-xs text-center text-gray-500">Tanggal: -</p>
                             </div>
                         </div>
@@ -344,7 +327,7 @@
                             <input type="hidden" name="is_asesor_signing" value="0">
                             <input id="is_asesor_signing" name="is_asesor_signing" type="checkbox" value="1"
                                    class="w-4 h-4 text-biru bg-gray-100 border-gray-300 rounded focus:ring-biru focus:ring-2"
-                                   @if($formData && $formData->is_asesor_signed) checked disabled @endif>
+                                   @if($formData && $isAsesorSigned) checked disabled @endif>
                             <label for="is_asesor_signing" class="ms-2 text-sm font-medium text-sidebar_font">
                                 Data yang saya masukkan sudah benar dan saya menyetujui formulir IA.11 ini
                             </label>
@@ -355,19 +338,19 @@
 
             <!-- Button Simpan -->
             <div class="flex justify-end pe-4">
-                <button id="simpanIA11" type="submit" 
-                        class="inline-flex justify-center rounded-md bg-gradient-to-r from-biru to-ungu text-white px-6 py-2 text-sm/6 font-medium hover:bg-biru focus:outline-none mt-6"
-                        @if($formData && $formData->is_asesor_signed) disabled @endif>
-                    {{ $formData && $formData->is_asesor_signed ? 'Sudah Disetujui' : 'Saya Menyetujui' }}
+                <button id="btnSimpanIA11" type="submit" 
+                        class="inline-flex justify-center rounded-md px-6 py-2 text-sm/6 font-medium focus:outline-none mt-6 @if($formData && $isAsesorSigned) bg-gray-400 text-gray-200 cursor-not-allowed @else bg-gradient-to-r from-biru to-ungu text-white hover:bg-biru @endif"
+                        @if($formData && $isAsesorSigned) disabled @endif>
+                    {{ $formData && $isAsesorSigned ? 'Sudah Ditandatangani' : 'Simpan & Tandatangan' }}
                 </button>
             </div>
         </form>
     </div>
 
     {{-- Background Gradient seperti FRIA02 --}}
-    <div id="bgGradient"
+    {{-- <div id="bgGradient"
         class="absolute top-0 right-0 z-0 h-[500px] w-[500px] -translate-x-[180%] translate-y-[50%] rounded-full bg-biru opacity-10 blur-[80px]">
-    </div>
+    </div> --}}
 </div>
 
 <script>
@@ -614,7 +597,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Biodata API URL:', biodataApiUrl);
 
         // Check if asesor already signed
-        const isAsesorSigned = {{ $formData && $formData->is_asesor_signed ? 'true' : 'false' }};
+        const isAsesorSigned = {{ $formData && $isAsesorSigned ? 'true' : 'false' }};
         console.log('Asesor already signed:', isAsesorSigned);
         
         if (isAsesorSigned) {
@@ -718,10 +701,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const checkbox = document.getElementById('is_asesor_signing');
             console.log('Checkbox element:', checkbox);
             console.log('Checkbox checked:', checkbox ? checkbox.checked : 'null');
-            console.log('Is asesor already signed:', {{ $formData && $formData->is_asesor_signed ? 'true' : 'false' }});
+            console.log('Is asesor already signed:', {{ $formData && $isAsesorSigned ? 'true' : 'false' }});
             
             // Only validate if not already signed
-            if (!{{ $formData && $formData->is_asesor_signed ? 'true' : 'false' }}) {
+            if (!{{ $formData && $isAsesorSigned ? 'true' : 'false' }}) {
                 // Check if signature is available
                 if (!window.asesorSignatureUrl) {
                     console.log('No signature URL available');
@@ -757,7 +740,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Form validation passed, allowing submission');
 
             // Update timestamp when signing
-            if (checkbox && checkbox.checked && !{{ $formData && $formData->is_asesor_signed ? 'true' : 'false' }}) {
+            if (checkbox && checkbox.checked && !{{ $formData && $isAsesorSigned ? 'true' : 'false' }}) {
                 const now = new Date();
                 const timestamp = now.toLocaleString('id-ID', {
                     day: '2-digit',

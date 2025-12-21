@@ -137,31 +137,31 @@
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(0)">
                             <div class="flex items-center">
                                 No
-                                <span class="sort-icon ml-1">↕</span>
+                                {{-- <span class="sort-icon ml-1">↕</span> --}}
                             </div>
                         </th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(1)">
                             <div class="flex items-center">
                                 Nama Skema
-                                <span class="sort-icon ml-1">↕</span>
+                                {{-- <span class="sort-icon ml-1">↕</span> --}}
                             </div>
                         </th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(2)">
                             <div class="flex items-center">
                                 Periode
-                                <span class="sort-icon ml-1">↕</span>
+                                {{-- <span class="sort-icon ml-1">↕</span> --}}
                             </div>
                         </th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(3)">
                             <div class="flex items-center">
                                 Tahun
-                                <span class="sort-icon ml-1">↕</span>
+                                {{-- <span class="sort-icon ml-1">↕</span> --}}
                             </div>
                         </th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider cursor-pointer select-none" onclick="sortTable(4)">
                             <div class="flex items-center">
                                 Jumlah Asesi
-                                <span class="sort-icon ml-1">↕</span>
+                                {{-- <span class="sort-icon ml-1">↕</span> --}}
                             </div>
                         </th>
                     </tr>

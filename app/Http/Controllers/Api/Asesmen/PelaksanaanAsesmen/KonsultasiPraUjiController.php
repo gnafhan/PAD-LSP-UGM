@@ -219,15 +219,18 @@ class KonsultasiPraUjiController extends Controller
                 'nama_skema' => $asesi->skema->nama_skema,
             ];
             
-            // Get Unit Kompetensi list
+            // Get Unit Kompetensi list using the getUnitKompetensi() method
             if (!empty($asesi->skema->daftar_id_uk)) {
-                $unitKompetensiList = $asesi->skema->unit_kompetensi->map(function ($uk) {
-                    return [
-                        'id_uk' => $uk->id_uk,
-                        'kode_uk' => $uk->kode_uk,
-                        'nama_uk' => $uk->nama_uk,
-                    ];
-                });
+                $unitKompetensiCollection = $asesi->skema->getUnitKompetensi();
+                if ($unitKompetensiCollection && $unitKompetensiCollection->count() > 0) {
+                    $unitKompetensiList = $unitKompetensiCollection->map(function ($uk) {
+                        return [
+                            'id_uk' => $uk->id_uk,
+                            'kode_uk' => $uk->kode_uk,
+                            'nama_uk' => $uk->nama_uk,
+                        ];
+                    })->toArray();
+                }
             }
         }
 
@@ -636,6 +639,29 @@ class KonsultasiPraUjiController extends Controller
             'id_asesi' => $request->id_asesi,
             'id_asesor' => $request->id_asesor,
         ]);
+
+        // Validate that Asesi has already signed before Asesor can sign
+        if ($request->is_asesor_signing) {
+            // Check if konsultasi record exists and asesi has signed
+            if (!$konsultasi->exists) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Asesi belum mengisi formulir konsultasi pra uji',
+                ], 422);
+            }
+            
+            // Check if asesi has answered the checklist (point_1 jawaban_asesi = 'Ya' means asesi has signed)
+            $jawabanChecklist = $konsultasi->jawaban_checklist ?? [];
+            $asesiHasSigned = isset($jawabanChecklist['point_1']['jawaban_asesi']) 
+                && $jawabanChecklist['point_1']['jawaban_asesi'] === 'Ya';
+            
+            if (!$asesiHasSigned) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Asesi belum menandatangani formulir konsultasi pra uji. Asesor hanya dapat menandatangani setelah asesi.',
+                ], 422);
+            }
+        }
 
         // Update the fields
         $asesi = Asesi::find($request->id_asesi);

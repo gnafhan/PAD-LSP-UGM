@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Fria07;
+use App\Models\IA07Question;
 use App\Models\RincianAsesmen;
 use App\Models\UK;
 use Illuminate\Http\Request;
@@ -40,6 +41,8 @@ class IA07Controller extends Controller
         $formData = null;
         $isAsesorSigned = false;
         $isAsesiSigned = false;
+        $schemeQuestions = collect(); // Requirements: 8.3 - Scheme-specific questions
+        $hasSchemeQuestions = false; // Requirements: 8.4 - Indicate if content is configured
         
         if (request()->has('id_asesi')) {
             $detailRincian = $daftarAsesi->where('id_asesi', request('id_asesi'))->first();
@@ -56,6 +59,17 @@ class IA07Controller extends Controller
                         $unitKompetensi = UK::with('elemen_uk')->whereIn('id_uk', $idArray)->get();
                         $detailRincian->asesi->skema->unitKompetensiLoaded = $unitKompetensi;
                     }
+                    
+                    // Requirements: 8.3 - Load scheme-specific oral questions from IA07Question
+                    $schemeQuestions = IA07Question::forSkema($detailRincian->asesi->skema->id_skema)
+                        ->active()
+                        ->ordered()
+                        ->with(['unitKompetensi', 'elemenUK'])
+                        ->get()
+                        ->groupBy('id_uk');
+                    
+                    // Requirements: 8.4 - Check if scheme has configured questions
+                    $hasSchemeQuestions = $schemeQuestions->isNotEmpty();
                 }
 
                 // Load FRIA07 data
@@ -80,7 +94,16 @@ class IA07Controller extends Controller
             }
         }
 
-        return view('home.home-asesor.fria07-asesor', compact('daftarAsesi', 'detailRincian', 'notFound', 'formData', 'isAsesorSigned', 'isAsesiSigned'));
+        return view('home.home-asesor.fria07-asesor', compact(
+            'daftarAsesi', 
+            'detailRincian', 
+            'notFound', 
+            'formData', 
+            'isAsesorSigned', 
+            'isAsesiSigned',
+            'schemeQuestions',
+            'hasSchemeQuestions'
+        ));
     }
     
     public function generatePdf($id_asesi)
