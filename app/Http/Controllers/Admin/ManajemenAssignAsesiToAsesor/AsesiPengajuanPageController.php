@@ -425,4 +425,29 @@ class AsesiPengajuanPageController extends Controller
         }
     }
 
+    /**
+     * Update asesor assignment for an asesi
+     */
+    public function updateAssignment(Request $request, $id)
+    {
+        $request->validate([
+            'id_asesor' => 'required|exists:asesor,id_asesor',
+            'id_event' => 'required|exists:event,id_event',
+        ]);
+
+        try {
+            $rincianAsesmen = RincianAsesmen::findOrFail($id);
+            
+            $rincianAsesmen->update([
+                'id_asesor' => $request->input('id_asesor'),
+                'id_event' => $request->input('id_event'),
+            ]);
+
+            return redirect()->back()->with('success', 'Assignment asesor berhasil diperbarui.');
+        } catch (\Exception $e) {
+            \Log::error('Error in updateAssignment: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui assignment: ' . $e->getMessage());
+        }
+    }
+
 }

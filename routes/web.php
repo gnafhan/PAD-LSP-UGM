@@ -262,6 +262,7 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
 
     // Manajemen Asesor untuk Asesi untuk fitur dependent dropdown list
     Route::post('assign-asesor', [AsesiPengajuanPageController::class, 'assignAsesor'])->name('assign.asesor');
+    Route::put('asesi/assignment/{id}', [AsesiPengajuanPageController::class, 'updateAssignment'])->name('asesi.assignment.update');
     Route::get('get-asesor-by-bidang/{id_bidang}', [AsesiPengajuanPageController::class, 'getAsesorByBidang'])->name('get.asesor.by.bidang');
     Route::get('get-all-asesor', [AsesiPengajuanPageController::class, 'getAllAsesor'])->name('get.all.asesor');
 

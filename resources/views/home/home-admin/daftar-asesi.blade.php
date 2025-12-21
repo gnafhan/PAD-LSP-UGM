@@ -443,12 +443,13 @@
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Asesor</th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Event</th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 tracking-wider">Tanggal Assignment</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-600 tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @if($assignments->isEmpty())
                         <tr>
-                            <td colspan="6" class="px-4 py-3 text-center text-gray-500">Tidak ada data assignment yang tersedia</td>
+                            <td colspan="7" class="px-4 py-3 text-center text-gray-500">Tidak ada data assignment yang tersedia</td>
                         </tr>
                     @else
                         @foreach($assignments as $index => $assignment)
@@ -462,6 +463,18 @@
                                     <span class="text-xs text-gray-500">(P{{ $assignment->event->periode_pelaksanaan ?? '-' }}/{{ $assignment->event->tahun_pelaksanaan ?? '-' }})</span>
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-700">{{ \Carbon\Carbon::parse($assignment->created_at)->format('d M Y, H:i') }}</td>
+                                <td class="px-4 py-3 text-center">
+                                    <button 
+                                        type="button" 
+                                        onclick="openEditAssignmentModal({{ $assignment->id_rincian_asesmen }}, '{{ $assignment->asesi->nama_asesi }}', {{ $assignment->id_asesor }}, {{ $assignment->id_event }})"
+                                        class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white text-sm transition-all"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                </td>
                             </tr>
                         @endforeach
                     @endif
@@ -724,6 +737,99 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<!-- Modal Edit Assignment -->
+<div id="editAssignmentModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium text-gray-900">Edit Assignment Asesor</h3>
+                    <button type="button" onclick="closeEditAssignmentModal()" class="text-gray-400 hover:text-gray-500">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <form id="editAssignmentForm" method="POST" action="">
+                @csrf
+                @method('PUT')
+                <div class="px-6 py-4">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nama Asesi</label>
+                            <input type="text" id="edit_asesi_name" class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-md" readonly>
+                        </div>
+                        
+                        <div>
+                            <label for="edit_asesor" class="block text-sm font-medium text-gray-700 mb-2">Asesor <span class="text-red-500">*</span></label>
+                            <select name="id_asesor" id="edit_asesor" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="">Pilih Asesor</option>
+                                @foreach($asesors as $asesor)
+                                    <option value="{{ $asesor->id_asesor }}">{{ $asesor->nama_asesor }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="edit_event" class="block text-sm font-medium text-gray-700 mb-2">Event <span class="text-red-500">*</span></label>
+                            <select name="id_event" id="edit_event" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="">Pilih Event</option>
+                                @foreach($allEvents as $event)
+                                    <option value="{{ $event->id_event }}">{{ $event->nama_event }} (P{{ $event->periode_pelaksanaan }}/{{ $event->tahun_pelaksanaan }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="px-6 py-4 bg-gray-50 text-right rounded-b-lg">
+                    <button type="button" onclick="closeEditAssignmentModal()" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Batal
+                    </button>
+                    <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function to open edit assignment modal
+function openEditAssignmentModal(idRincianAsesmen, namaAsesi, idAsesor, idEvent) {
+    // Set form action URL
+    document.getElementById('editAssignmentForm').action = `/admin/asesi/assignment/${idRincianAsesmen}`;
+    
+    // Set asesi name (readonly)
+    document.getElementById('edit_asesi_name').value = namaAsesi;
+    
+    // Set selected asesor
+    document.getElementById('edit_asesor').value = idAsesor;
+    
+    // Set selected event
+    document.getElementById('edit_event').value = idEvent;
+    
+    // Show modal
+    document.getElementById('editAssignmentModal').classList.remove('hidden');
+}
+
+// Function to close edit assignment modal
+function closeEditAssignmentModal() {
+    document.getElementById('editAssignmentModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('editAssignmentModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeEditAssignmentModal();
+    }
+});
+</script>
+
 <!-- Load SweetAlert library -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
