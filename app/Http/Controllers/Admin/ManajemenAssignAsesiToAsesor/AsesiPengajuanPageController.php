@@ -336,7 +336,7 @@ class AsesiPengajuanPageController extends Controller
             'email' => 'required|email|max:255',
             'nim' => 'nullable|string|max:50',
             'tempat_tanggal_lahir' => 'nullable|string|max:255',
-            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'kebangsaan' => 'nullable|string|max:100',
             'alamat_rumah' => 'nullable|string',
             'kota_domisili' => 'nullable|string|max:100',
@@ -347,6 +347,9 @@ class AsesiPengajuanPageController extends Controller
             'jabatan' => 'nullable|string|max:100',
             'alamat_perusahaan' => 'nullable|string',
             'no_telp_perusahaan' => 'nullable|string|max:20',
+        ], [
+            'jenis_kelamin.required' => 'Jenis kelamin harus dipilih',
+            'jenis_kelamin.in' => 'Jenis kelamin tidak valid',
         ]);
 
         try {
