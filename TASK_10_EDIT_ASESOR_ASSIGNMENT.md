@@ -117,6 +117,26 @@ Route::put('asesi/assignment/{id}', [AsesiPengajuanPageController::class, 'updat
   - `id_event` must exist in `event` table
 - **Error Handling**: Try-catch block with logging
 - **Authorization**: Protected by admin middleware (existing)
+- **Null Safety**: Edit button only shows when asesi data exists (prevents errors from orphaned records)
+
+## Bug Fixes
+
+### Issue: Null Reference Error
+**Problem**: Error "Attempt to read property 'nama_asesi' on null" when assignment has no related asesi
+
+**Solution**: Added null check before rendering Edit button
+```blade
+@if($assignment->asesi)
+    <button onclick="openEditAssignmentModal(...)">Edit</button>
+@else
+    <span class="text-gray-400 text-xs italic">Data tidak lengkap</span>
+@endif
+```
+
+This handles cases where:
+- Asesi record was deleted but assignment still exists
+- Database integrity issues
+- Orphaned rincian_asesmen records
 
 ## Testing Checklist
 

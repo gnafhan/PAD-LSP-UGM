@@ -464,16 +464,20 @@
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-700">{{ \Carbon\Carbon::parse($assignment->created_at)->format('d M Y, H:i') }}</td>
                                 <td class="px-4 py-3 text-center">
-                                    <button 
-                                        type="button" 
-                                        onclick="openEditAssignmentModal({{ $assignment->id_rincian_asesmen }}, '{{ $assignment->asesi->nama_asesi }}', {{ $assignment->id_asesor }}, {{ $assignment->id_event }})"
-                                        class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white text-sm transition-all"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
-                                        Edit
-                                    </button>
+                                    @if($assignment->asesi)
+                                        <button 
+                                            type="button" 
+                                            onclick="openEditAssignmentModal({{ $assignment->id_rincian_asesmen }}, '{{ addslashes($assignment->asesi->nama_asesi ?? 'Nama tidak tersedia') }}', {{ $assignment->id_asesor }}, {{ $assignment->id_event }})"
+                                            class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white text-sm transition-all"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                            Edit
+                                        </button>
+                                    @else
+                                        <span class="text-gray-400 text-xs italic">Data tidak lengkap</span>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
