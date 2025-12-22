@@ -260,6 +260,15 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::delete('{id}/certificate/delete', [\App\Http\Controllers\Admin\CertificateUploadController::class, 'delete'])->name('certificate.delete');
     });
 
+    // Manajemen Hasil Asesmen (Admin)
+    Route::prefix('hasil-asesmen')->name('admin.hasil-asesmen.')->group(function () {
+        Route::get('/{id}/edit', [\App\Http\Controllers\Asesor\HasilAsesmenController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\Asesor\HasilAsesmenController::class, 'update'])->name('update');
+        Route::get('/create/{id_rincian_asesmen}', [\App\Http\Controllers\Asesor\HasilAsesmenController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Asesor\HasilAsesmenController::class, 'store'])->name('store');
+
+    });
+
     // Manajemen Asesor untuk Asesi untuk fitur dependent dropdown list
     Route::post('assign-asesor', [AsesiPengajuanPageController::class, 'assignAsesor'])->name('assign.asesor');
     Route::put('asesi/assignment/{id}', [AsesiPengajuanPageController::class, 'updateAssignment'])->name('asesi.assignment.update');
@@ -383,6 +392,9 @@ Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
     Route::prefix('certificate')->name('asesi.certificate.')->group(function () {
         Route::get('/download', [\App\Http\Controllers\AsesiController::class, 'downloadCertificate'])->name('download');
     });
+
+    // Hasil Asesmen
+    Route::get('/hasil-asesmen', [AsesiController::class, 'hasilAsesmen'])->name('asesi.hasil-asesmen');
 
     // Logout asesi
     Route::post('/logout', function () {
@@ -518,7 +530,11 @@ Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::post('/fria11/store', [\App\Http\Controllers\IA11Controller::class, 'store'])->name('fria11.store');
     Route::post('/fria11/sign', [\App\Http\Controllers\IA11Controller::class, 'sign'])->name('fria11.sign');
 
-    Route::get('/hasilasesmen', [HasilAsesmenController::class, 'index'])->name('hasil-asesmen-asesor');
+    Route::get('/hasilasesmen', [HasilAsesmenController::class, 'index'])->name('asesor.hasil-asesmen.index');
+    Route::get('/hasilasesmen/{id}/edit', [HasilAsesmenController::class, 'edit'])->name('asesor.hasil-asesmen.edit');
+    Route::get('/hasilasesmen/create/{id_rincian_asesmen}', [HasilAsesmenController::class, 'create'])->name('asesor.hasil-asesmen.create');
+    Route::post('/hasilasesmen', [HasilAsesmenController::class, 'store'])->name('asesor.hasil-asesmen.store');
+    Route::put('/hasilasesmen/{id}', [HasilAsesmenController::class, 'update'])->name('asesor.hasil-asesmen.update');
 
     Route::get('/frak02', function () {
         return view('home/home-asesor/frak02-asesor');

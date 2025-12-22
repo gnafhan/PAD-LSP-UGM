@@ -84,7 +84,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('hasil-asesmen-asesor') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
+                                    <a href="{{ route('asesor.hasil-asesmen.index') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
                                         Hasil Asesmen
                                     </a>
                                 </li>

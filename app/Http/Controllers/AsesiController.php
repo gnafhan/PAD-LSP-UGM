@@ -45,9 +45,9 @@ class AsesiController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $asesi = Asesi::with(['skema', 'progresAsesmen'])->where('id_user', $user->id_user)->first();
+        $asesi = Asesi::with(['skema', 'progresAsesmen', 'rincianAsesmen.hasilAsesmen'])->where('id_user', $user->id_user)->first();
         
-        // Calculate progress percentage for certificate eligibility
+        // Calculate progress percentage
         $progressPercentage = 0;
         $isEligibleForCertificate = false;
         $hasCertificate = false;
@@ -58,9 +58,10 @@ class AsesiController extends Controller
             $isEligibleForCertificate = $this->certificateService->isEligibleForCertificate($asesi);
             $hasCertificate = !empty($asesi->file_sertifikat);
             
-            // Determine certificate status
+            // Determine certificate status based on manual assessment result
             // Requirements: 3.1, 3.2, 3.3
-            if ($progressPercentage >= 100) {
+            if ($isEligibleForCertificate) {
+                // Asesi has hasil asesmen with status 'kompeten'
                 $certificateStatus = $hasCertificate ? 'issued' : 'waiting';
             } else {
                 $certificateStatus = 'not_eligible';
@@ -153,6 +154,29 @@ class AsesiController extends Controller
             'assessmentSections',
             'enabledAssessmentTypes'
         ));
+    }
+
+    /**
+     * Menampilkan halaman hasil asesmen untuk asesi
+     */
+    public function hasilAsesmen()
+    {
+        $user = Auth::user();
+        $asesi = Asesi::with(['skema', 'rincianAsesmen.hasilAsesmen'])
+            ->where('id_user', $user->id_user)
+            ->first();
+
+        if (!$asesi) {
+            return redirect()->back()->with('error', 'Data Asesi tidak ditemukan.');
+        }
+
+        // Get hasil asesmen through rincian asesmen (ambil yang pertama/terbaru)
+        $hasilAsesmen = null;
+        if ($asesi->rincianAsesmen && $asesi->rincianAsesmen->hasilAsesmen->isNotEmpty()) {
+            $hasilAsesmen = $asesi->rincianAsesmen->hasilAsesmen->first();
+        }
+
+        return view('home.home-asesi.hasil-asesmen', compact('asesi', 'hasilAsesmen'));
     }
 
     public function detailApl1($id)

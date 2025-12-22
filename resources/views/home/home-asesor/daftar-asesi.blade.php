@@ -626,7 +626,7 @@ function getDetailUrlByStepKey(stepKey) {
         'tugas_peserta': '{{ route('tugas-peserta') }}',
         'ia05': '{{ route('fria05-asesor') }}',
         'ia11': '{{ route('fria11-asesor') }}',
-        // 'hasil_asesmen': '{{ route('hasil-asesmen-asesor') }}',
+        'hasil_asesmen': '{{ route('asesor.hasil-asesmen.index') }}',
         'ak02': '{{ route('frak02-asesor') }}',
         'umpan_balik': '#',
         'ak04': '{{ route('frak04-asesor') }}'

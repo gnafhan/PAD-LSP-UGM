@@ -307,6 +307,76 @@
                         </div>
                         @endif
 
+                        {{-- Hasil Asesmen Section --}}
+                        @if($asesi->rincianAsesmen && $asesi->rincianAsesmen->hasilAsesmen->isNotEmpty())
+                        @php
+                            $hasilAsesmen = $asesi->rincianAsesmen->hasilAsesmen->first();
+                        @endphp
+                        <div class="mb-6 p-4 rounded-lg border-2
+                            @if($hasilAsesmen->status === 'kompeten')
+                                bg-green-50 border-green-300
+                            @elseif($hasilAsesmen->status === 'tidak_kompeten')
+                                bg-red-50 border-red-300
+                            @else
+                                bg-gray-50 border-gray-300
+                            @endif
+                        ">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full 
+                                    @if($hasilAsesmen->status === 'kompeten')
+                                        bg-green-100
+                                    @elseif($hasilAsesmen->status === 'tidak_kompeten')
+                                        bg-red-100
+                                    @else
+                                        bg-gray-100
+                                    @endif
+                                    flex items-center justify-center">
+                                    @if($hasilAsesmen->status === 'kompeten')
+                                        <svg class="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    @elseif($hasilAsesmen->status === 'tidak_kompeten')
+                                        <svg class="h-6 w-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    @else
+                                        <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    @endif
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-semibold 
+                                        @if($hasilAsesmen->status === 'kompeten')
+                                            text-green-800
+                                        @elseif($hasilAsesmen->status === 'tidak_kompeten')
+                                            text-red-800
+                                        @else
+                                            text-gray-800
+                                        @endif
+                                    ">Hasil Asesmen</p>
+                                    <p class="text-xs 
+                                        @if($hasilAsesmen->status === 'kompeten')
+                                            text-green-600
+                                        @elseif($hasilAsesmen->status === 'tidak_kompeten')
+                                            text-red-600
+                                        @else
+                                            text-gray-600
+                                        @endif
+                                    ">
+                                        @if($hasilAsesmen->status === 'kompeten')
+                                            Kompeten
+                                        @elseif($hasilAsesmen->status === 'tidak_kompeten')
+                                            Tidak Kompeten
+                                        @else
+                                            Belum Ada Hasil
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
                         <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Tahapan Proses</h4>
                         <div class="space-y-4">
                             {{-- Status Item: Completed --}}

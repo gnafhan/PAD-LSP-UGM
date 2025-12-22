@@ -17,16 +17,25 @@ class CertificateService
     }
 
     /**
-     * Check if asesi is eligible for certificate (progress = 100%)
+     * Check if asesi is eligible for certificate (hasil asesmen = kompeten)
      *
      * @param Asesi $asesi
      * @return bool
      */
     public function isEligibleForCertificate(Asesi $asesi): bool
     {
-        $progressData = $this->progressTrackingService->calculateSchemeBasedProgress($asesi->id_asesi);
+        // Load rincianAsesmen with hasilAsesmen if not already loaded
+        if (!$asesi->relationLoaded('rincianAsesmen')) {
+            $asesi->load('rincianAsesmen.hasilAsesmen');
+        }
         
-        return (int) $progressData['progress_percentage'] === 100;
+        // Check if asesi has hasil asesmen with status 'kompeten'
+        if ($asesi->rincianAsesmen && $asesi->rincianAsesmen->hasilAsesmen->isNotEmpty()) {
+            $hasilAsesmen = $asesi->rincianAsesmen->hasilAsesmen->first();
+            return $hasilAsesmen->status === 'kompeten';
+        }
+        
+        return false;
     }
 
     /**

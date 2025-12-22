@@ -110,7 +110,7 @@ class SidebarService
             'title' => 'Keputusan Asesmen',
             'items' => [
                 'HASIL_ASESMEN' => [
-                    'route' => 'hasil-asesmen-asesor',
+                    'route' => 'asesor.hasil-asesmen.index',
                     'label' => 'Hasil Asesmen',
                     'icon' => 'result',
                 ],

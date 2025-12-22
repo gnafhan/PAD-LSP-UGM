@@ -33,7 +33,7 @@ class PenggunaPageController extends Controller
         $asesorQuery = Asesor::query();
         
         // Ambil data asesi dari tabel asesi dengan relasi event melalui rincianAsesmen
-        $asesiQuery = Asesi::with(['skema', 'progresAsesmen', 'rincianAsesmen.event']);
+        $asesiQuery = Asesi::with(['skema', 'progresAsesmen', 'rincianAsesmen.event', 'rincianAsesmen.hasilAsesmen']);
         
         // Filter pencarian admin
         if ($request->has('search_admin')) {
@@ -66,11 +66,6 @@ class PenggunaPageController extends Controller
                   ->orWhere('email', 'LIKE', "%{$search}%")
                   ->orWhere('nim', 'LIKE', "%{$search}%");
             });
-        }
-        
-        // Filter status asesi
-        if ($request->has('filter_status_asesi') && $request->filter_status_asesi != '') {
-            // Status will be calculated after fetching, so we'll filter in PHP
         }
         
         // Filter skema asesi
@@ -119,22 +114,12 @@ class PenggunaPageController extends Controller
             $progressData = $this->progressTrackingService->calculateSchemeBasedProgress($asesi->id_asesi);
             $asesi->setAttribute('progress_percentage', $progressData['progress_percentage']);
             
-            // Determine status based on progress
-            if ($progressData['progress_percentage'] >= 100) {
-                $asesi->setAttribute('status_kompetensi', 'Kompeten');
-            } elseif ($progressData['progress_percentage'] > 0) {
-                $asesi->setAttribute('status_kompetensi', 'Masih Proses');
-            } else {
-                $asesi->setAttribute('status_kompetensi', 'Belum Mulai');
+            // Get hasil asesmen from rincian asesmen
+            $hasilAsesmen = null;
+            if ($asesi->rincianAsesmen && $asesi->rincianAsesmen->hasilAsesmen->isNotEmpty()) {
+                $hasilAsesmen = $asesi->rincianAsesmen->hasilAsesmen->first();
             }
-        }
-        
-        // Filter by status if requested (after calculating status)
-        if ($request->has('filter_status_asesi') && $request->filter_status_asesi != '') {
-            $filterStatus = $request->filter_status_asesi;
-            $asesis = $asesis->filter(function($asesi) use ($filterStatus) {
-                return $asesi->status_kompetensi === $filterStatus;
-            })->values();
+            $asesi->setAttribute('hasil_asesmen', $hasilAsesmen);
         }
         
         // Get all bidang kompetensi for lookup
