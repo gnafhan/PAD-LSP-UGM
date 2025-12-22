@@ -20,6 +20,10 @@ class HasilAsesmen extends Model
         'tanggal_selesai',
     ];
 
+    protected $attributes = [
+        'status' => 'belum_ada_hasil',
+    ];
+
     protected $casts = [
         'tanggal_selesai' => 'date',
     ];
@@ -30,13 +34,15 @@ class HasilAsesmen extends Model
     }
 
 
-    // set status kompeten atau tidak kompeten
+    // set status kompeten atau tidak kompeten atau belum ada hasil
     public function setStatus($status)
     {
         if($status == 'kompeten' || $status == true){
             $this->status = 'kompeten';
         } else if($status == 'tidak_kompeten' || $status == false){
             $this->status = 'tidak_kompeten';
+        } else if($status == 'belum_ada_hasil'){
+            $this->status = 'belum_ada_hasil';
         } else {
             throw new \Exception('Status tidak valid');
         }

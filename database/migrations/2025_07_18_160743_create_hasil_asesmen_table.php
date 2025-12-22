@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_rincian_asesmen');
             $table->foreign('id_rincian_asesmen')->references('id_rincian_asesmen')->on('rincian_asesmen')->onDelete('cascade');
-            $table->enum('status', ['kompeten', 'tidak_kompeten'])->nullable();
+            $table->enum('status', ['kompeten', 'tidak_kompeten', 'belum_ada_hasil'])->default('belum_ada_hasil');
             $table->date('tanggal_selesai')->nullable();
             $table->timestamps();
         });
