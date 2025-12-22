@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Website Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Link Font Awesome -->
-    {{-- <link rel="stylesheet" href="path/to/your/custom-styles.css"> <!-- Link file CSS custom, jika ada --> --}}
+    <link rel="stylesheet" href="path/to/your/custom-styles.css"> <!-- Link file CSS custom, jika ada -->
 </head>
 <body>
     <!-- Konten lainnya dari website kamu -->
-
+    
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-100 shadow-medium">
         <!-- Main Footer Content -->
@@ -67,53 +67,53 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <!-- Quick Links -->
                         <div>
-                            <h4 class="font-bricolage text-lg font-semibold text-gray-900 mb-4 tracking-tight">Menu Asesi</h4>
+                            <h4 class="font-bricolage text-lg font-semibold text-gray-900 mb-4 tracking-tight">Quick Links</h4>
                             <ul class="space-y-3">
                                 <li>
-                                    <a href="{{ route('home-asesi') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
+                                    <a href="{{ route('home-visitor') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
                                         Beranda
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('asesi.index') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
-                                        Alur Sertifikasi
+                                    <a href="{{ route('panduan') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
+                                        Panduan
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('asesi.asesmen.mandiri') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
-                                        Asesmen Mandiri
+                                    <a href="{{ route('skema') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
+                                        Skema Sertifikasi
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('asesi.jadwal-uji-kompetensi') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
-                                        Jadwal Uji Kompetensi
+                                    <a href="{{ route('login') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
+                                        Daftar Sertifikasi
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         
-                        <!-- Dokumen & Formulir -->
+                        <!-- Services -->
                         <div>
-                            <h4 class="font-bricolage text-lg font-semibold text-gray-900 mb-4 tracking-tight">Dokumen & Formulir</h4>
+                            <h4 class="font-bricolage text-lg font-semibold text-gray-900 mb-4 tracking-tight">Layanan</h4>
                             <ul class="space-y-3">
                                 <li>
-                                    <a href="{{ route('asesi.fr.ak1') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
-                                        FR-AK-01
+                                    <a href="#" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
+                                        Sertifikasi Kompetensi
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('asesi.fr.ak3') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
-                                        FR-AK-03
+                                    <a href="#" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
+                                        Pelatihan Asesor
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('asesi.fr.ia2') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
-                                        FR-IA-02
+                                    <a href="#" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
+                                        Konsultasi Sertifikasi
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('asesi.konsul-prauji') }}" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
-                                        Konsultasi Pra Uji
+                                    <a href="#" class="text-gray-600 font-inter text-sm hover:text-sky-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded">
+                                        Pengembangan Skema
                                     </a>
                                 </li>
                             </ul>
@@ -231,6 +231,5 @@
             </div>
         </div>
     </footer>
-
 </body>
 </html>

@@ -41,6 +41,12 @@ class RoleMiddleware
         Log::info('User in middleware', ['user' => $user, 'level' => $user->level]);
         
         if (!in_array($user->level, $roles)) {
+            // Special case: if user is trying to access /user/* routes but their level is now 'asesi'
+            // redirect them to asesi home instead of showing 403
+            if (in_array('user', $roles) && $user->level === 'asesi') {
+                return redirect()->route('home-asesi')->with('info', 'Pengajuan Anda telah disetujui. Selamat datang di dashboard asesi!');
+            }
+            
             return abort(403, 'Unauthorized');
         }
     

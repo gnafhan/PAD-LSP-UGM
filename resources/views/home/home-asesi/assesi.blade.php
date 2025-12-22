@@ -1253,6 +1253,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         let stepsHtml = '';
+        
+        // Determine current step: find the first incomplete step, or last step if all complete
+        let currentStepIndex = progressSteps.length - 1; // Default to last step
+        for (let i = 0; i < progressSteps.length; i++) {
+            const stepCompleted = progressSteps[i].fields.every(field => {
+                const fieldData = progressAsesmen[field];
+                return fieldData && fieldData.completed === true;
+            });
+            
+            if (!stepCompleted) {
+                currentStepIndex = i;
+                break;
+            }
+        }
 
         progressSteps.forEach((step, index) => {
             // Check if step is completed
@@ -1261,23 +1275,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 return fieldData && fieldData.completed === true;
             });
 
-            // Determine if step is active (current step or completed)
-            let stepActive = false;
-            for (let i = 0; i <= index; i++) {
-                const prevStepCompleted = progressSteps[i].fields.every(field => {
-                    const fieldData = progressAsesmen[field];
-                    return fieldData && fieldData.completed === true;
-                });
-                if (!prevStepCompleted) {
-                    stepActive = (i === index);
-                    break;
-                } else if (i === index) {
-                    stepActive = true;
-                }
-            }
+            // Step is active if it's the current step (first incomplete) or if all steps before it are complete
+            const stepActive = index <= currentStepIndex;
 
-            const stepClass = stepCompleted || stepActive ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700';
-            const textClass = stepCompleted || stepActive ? 'text-indigo-600' : 'text-gray-700';
+            const stepClass = stepCompleted ? 'bg-indigo-600 text-white' : (stepActive ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700');
+            const textClass = stepCompleted ? 'text-indigo-600' : (stepActive ? 'text-indigo-600' : 'text-gray-700');
 
             stepsHtml += `
                 <div class="flex items-center space-x-2">
@@ -1288,7 +1290,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Add connector line
             if (index < progressSteps.length - 1) {
-                const lineProgress = stepCompleted ? '100%' : (stepActive ? '50%' : '0%');
+                const lineProgress = stepCompleted ? '100%' : (stepActive && index < currentStepIndex ? '50%' : '0%');
                 stepsHtml += `
                     <div class="h-0.5 w-24 bg-gray-200 relative">
                         <div class="absolute inset-0 bg-indigo-600 transition-all duration-300" style="width: ${lineProgress}"></div>

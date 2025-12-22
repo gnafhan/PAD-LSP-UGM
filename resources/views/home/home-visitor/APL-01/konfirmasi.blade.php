@@ -167,8 +167,10 @@
                             <p class="text-sm text-gray-700">Nama: <span class="font-medium">{{ $asesiPengajuan->nama_user }}</span></p>
 
                             <div class="flex items-center mt-3">
-                                <label for="approve-pemohon" class="flex items-center cursor-pointer">
-                                    <input type="checkbox" id="approve-pemohon" class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 transition duration-150 ease-in-out">
+                                <label for="approve-pemohon" class="flex items-center {{ in_array($asesiPengajuan->status, ['submitted', 'revised_by_asesi', 'approved', 'rejected']) ? 'cursor-not-allowed' : 'cursor-pointer' }}">
+                                    <input type="checkbox" id="approve-pemohon" 
+                                        class="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 transition duration-150 ease-in-out"
+                                        {{ in_array($asesiPengajuan->status, ['submitted', 'revised_by_asesi', 'approved', 'rejected']) ? 'checked disabled' : '' }}>
                                     <span class="ml-2 text-sm text-gray-700">Dengan ini saya menyetujui permohonan</span>
                                 </label>
                             </div>
