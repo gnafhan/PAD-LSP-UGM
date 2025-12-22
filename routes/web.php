@@ -415,6 +415,18 @@ Route::get('/debug-api-config', function () {
 //Level: asesor
 Route::middleware(['role:asesor'])->prefix('asesor')->group(function () {
     Route::get('/home', function () {
+        $user = Auth::user();
+        $asesor = $user->asesor;
+        
+        \Log::info('Asesor Home Access', [
+            'user_id' => $user->id_user,
+            'user_email' => $user->email,
+            'user_name' => $user->name,
+            'asesor_exists' => $asesor ? 'yes' : 'no',
+            'asesor_id' => $asesor->id_asesor ?? 'null',
+            'asesor_id_user' => $asesor->id_user ?? 'null',
+        ]);
+        
         return view('home/home-asesor/home-asesor');
     })->name('home-asesor');
 
