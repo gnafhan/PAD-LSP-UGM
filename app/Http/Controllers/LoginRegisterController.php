@@ -54,10 +54,28 @@ class LoginRegisterController extends Controller
             'password' => 'required',
         ]);
 
+        // Log untuk debug session collision
+        \Log::info('Login Attempt', [
+            'email' => $credentials['email'],
+            'session_id_before' => $request->session()->getId(),
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            
             // Cek level user setelah login
             $user = Auth::user();
+            
+            // Log user yang berhasil login
+            \Log::info('Login Success', [
+                'email_input' => $credentials['email'],
+                'user_logged_in' => $user->email,
+                'user_id' => $user->id,
+                'session_id_after' => $request->session()->getId(),
+            ]);
+            
             switch ($user->level) {
                 case 'admin':
                     return redirect()->route('home-admin')->with('success', 'Welcome, Admin!');
@@ -69,6 +87,10 @@ class LoginRegisterController extends Controller
                     return redirect()->route('home')->with('success', 'Welcome, User!');
             }
         }
+
+        \Log::info('Login Failed', [
+            'email' => $credentials['email'],
+        ]);
 
         return back()->withErrors([
             'email' => 'Your provided credentials do not match our records.',
