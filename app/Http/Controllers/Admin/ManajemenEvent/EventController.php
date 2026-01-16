@@ -12,6 +12,7 @@ use App\Models\RincianAsesmen;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -195,5 +196,56 @@ class EventController extends Controller
             'asesiCount', 
             'asesorCount'
         ));
+    }
+
+    /**
+     * Upload Surat Penetapan file for an event
+     * 
+     * @param Request $request
+     * @param string $eventId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function uploadSuratPenetapan(Request $request, $eventId)
+    {
+        $validated = $request->validate([
+            'surat_penetapan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB max
+        ]);
+
+        $event = Event::findOrFail($eventId);
+
+        // Delete old file if exists
+        if ($event->surat_penetapan_path && Storage::disk('public')->exists($event->surat_penetapan_path)) {
+            Storage::disk('public')->delete($event->surat_penetapan_path);
+        }
+
+        // Store new file
+        $path = $request->file('surat_penetapan')->store('surat-penetapan', 'public');
+
+        $event->update(['surat_penetapan_path' => $path]);
+
+        return redirect()->back()->with('success', 'Surat Penetapan uploaded successfully');
+    }
+
+    /**
+     * Download Surat Penetapan file
+     * 
+     * @param string $eventId
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function downloadSuratPenetapan($eventId)
+    {
+        $event = Event::findOrFail($eventId);
+
+        if (!$event->surat_penetapan_path) {
+            abort(404, 'File not found');
+        }
+
+        $fullPath = 'public/' . $event->surat_penetapan_path;
+        
+        if (!Storage::exists($fullPath)) {
+            abort(404, 'File not found');
+        }
+
+        return Storage::download($fullPath);
     }
 }

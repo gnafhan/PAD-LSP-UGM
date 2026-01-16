@@ -858,15 +858,14 @@
                                             @endif
 
                                             @if($asesi->hasil_asesmen && $asesi->hasil_asesmen->status === 'kompeten')
+                                                <!-- Sertifikat -->
                                                 @if($asesi->file_sertifikat)
-                                                    <!-- Tombol Download Sertifikat (sudah diupload) -->
                                                     <a href="{{ route('admin.asesi.certificate.download', $asesi->id_asesi) }}" class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 rounded-md text-white transition-all">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                         </svg>
-                                                        Download
+                                                        Sertifikat
                                                     </a>
-                                                    <!-- Tombol Ganti Sertifikat -->
                                                     <button type="button" onclick="openCertificateModal('{{ $asesi->id_asesi }}', '{{ $asesi->nama_asesi }}', true)" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 rounded-md text-white transition-all">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -874,7 +873,6 @@
                                                         Ganti
                                                     </button>
                                                 @else
-                                                    <!-- Tombol Upload Sertifikat (belum diupload) -->
                                                     <button type="button" onclick="openCertificateModal('{{ $asesi->id_asesi }}', '{{ $asesi->nama_asesi }}', false)" class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 rounded-md text-white transition-all">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -882,6 +880,16 @@
                                                         Upload Sertifikat
                                                     </button>
                                                 @endif
+                                                
+                                                <!-- Acceptance Letter (Auto-generated) -->
+                                                <a href="{{ route('asesi.acceptance-letter.download', $asesi->id_asesi) }}" 
+                                                   class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-md text-white transition-all"
+                                                   target="_blank">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                    Acceptance Letter
+                                                </a>
                                             @endif
                                         </div>
                                     </td>

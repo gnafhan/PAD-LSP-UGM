@@ -160,6 +160,26 @@
                         Soal dan Jawaban Asesi Pilihan Ganda
                     </h1>
 
+            <!-- Statistics Card -->
+            <div class="grid grid-cols-4 gap-4 mb-4">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                    <p class="text-2xl font-bold text-blue-600" id="totalSoal">0</p>
+                    <p class="text-sm text-gray-600">Total Soal</p>
+                </div>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                    <p class="text-2xl font-bold text-green-600" id="jawabanBenar">0</p>
+                    <p class="text-sm text-gray-600">Jawaban Benar</p>
+                </div>
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                    <p class="text-2xl font-bold text-red-600" id="jawabanSalah">0</p>
+                    <p class="text-sm text-gray-600">Jawaban Salah</p>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center">
+                    <p class="text-2xl font-bold text-purple-600" id="persentaseBenar">0%</p>
+                    <p class="text-sm text-gray-600">Persentase Benar</p>
+                </div>
+            </div>
+
             <div class="overflow-x-auto shadow-md rounded-lg mb-4">
   <table class="min-w-full bg-white overflow-hidden border border-gray-300">
     <thead class="bg-bg_dashboard text-center">
@@ -169,51 +189,45 @@
       </tr>
     </thead>
     <tbody id="soalDanJawaban" class="divide-y divide-gray-200 text-black text-center">
-      <!-- Question 1 -->
+      <!-- Questions will be populated here -->
       <tr>
-        <td class="px-4 py-3 border border-gray-300" rowspan="6">1</td>
-        <td class="px-4 py-3 border border-gray-300 text-left font-medium" colspan="2">Memuat soal</td>
-        <!-- <td class="px-4 py-3 border border-gray-300"></td> -->
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">Memuat jawaban A</td>
-        <td class="px-4 py-3 border border-gray-300"><input type="radio"></td>
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">Memuat jawaban B</td>
-        <td class="px-4 py-3 border border-gray-300"><input type="radio"></td>
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">Memuat jawaban C</td>
-        <td class="px-4 py-3 border border-gray-300"><input type="radio"></td>
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">Memuat jawaban D</td>
-        <td class="px-4 py-3 border border-gray-300"><input type="radio"></td>
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">Memuat jawaban E</td>
-        <td class="px-4 py-3 border border-gray-300"><input type="radio"></td>
-      </tr>
-
-      <!-- Question 2 -->
-      <tr>
-        <td class="px-4 py-3 border border-gray-300" rowspan="3">2</td>
-        <td class="px-4 py-3 border border-gray-300 text-left font-medium" colspan="2">Memuat soal 2</td>
-        <!-- <td class="px-4 py-3 border border-gray-300"></td> -->
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">Memuat jawaban A</td>
-        <td class="px-4 py-3 border border-gray-300"><input type="radio"></td>
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">Memuat jawaban B</td>
-        <td class="px-4 py-3 border border-gray-300"><input type="radio"></td>
+        <td colspan="4" class="px-4 py-3 text-center text-gray-500">Memuat soal...</td>
       </tr>
     </tbody>
   </table>
-
 </div>
+
+            <!-- Final Decision Section -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-4">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Penilaian Final Asesor
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="finalDecision" class="block text-sm font-medium text-gray-700 mb-2">
+                            Keputusan Final <span class="text-red-500">*</span>
+                        </label>
+                        <select id="finalDecision" name="final_decision" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-biru focus:border-biru">
+                            <option value="">Pilih Keputusan</option>
+                            <option value="Kompeten">Kompeten</option>
+                            <option value="Tidak Kompeten">Tidak Kompeten</option>
+                        </select>
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label for="catatanAsesor" class="block text-sm font-medium text-gray-700 mb-2">
+                            Catatan Asesor (Opsional)
+                        </label>
+                        <textarea id="catatanAsesor" name="catatan_asesor" rows="4" 
+                                  class="w-full p-3 border border-gray-300 rounded-lg focus:ring-biru focus:border-biru"
+                                  placeholder="Tambahkan catatan atau komentar untuk asesi..."></textarea>
+                    </div>
+                </div>
+            </div>
 
             </div>
 
@@ -747,6 +761,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Populate hasil yang akan dikumpulkan
                 // populateHasilCheckboxes(data.fria05?.hasil_yang_akan_dikumpulkan || []);
                 populateSoaldanJawaban((data.fria05?.list_jawaban || []),(data.list_soal || []));
+                
+                // Populate final decision if exists
+                if (data.fria05?.final_decision) {
+                    document.getElementById('finalDecision').value = data.fria05.final_decision;
+                }
+                if (data.fria05?.catatan_asesor) {
+                    document.getElementById('catatanAsesor').value = data.fria05.catatan_asesor;
+                }
+                
                 // populateKelompokPekerjaan(data.detail_skema || []);
                 // populateKetentuanKompetensi((data.fria05?.ketentuan_kompetensi || []),(data.detail_skema || []));
                 // document.getElementById('inputRekomendasiHasil').value = data.fria05?.rekomendasi_hasil || 0;
@@ -784,16 +807,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             signingCheckbox.disabled = true;
                         }
 
-                        // Disable all checkboxes
-                        const checkboxes = document.querySelectorAll('input.inputJawaban');
-                        checkboxes.forEach(checkbox => {
-                            checkbox.disabled = true;
-                        });
-
-                        // document.getElementById('inputRekomendasiHasil').disabled = true;
-                        // document.getElementById('inputTindakLanjut').disabled = true;
-                        // document.getElementById('inputInstruksiKerja').disabled = true;
-                        // document.getElementById('inputKomentarObservasi').disabled = true;
+                        // Disable all form inputs
+                        document.getElementById('finalDecision').disabled = true;
+                        document.getElementById('catatanAsesor').disabled = true;
 
                         // Update submit button
                         if (submitButton) {
@@ -867,7 +883,6 @@ document.addEventListener('DOMContentLoaded', function () {
     //     });
 
     //     // container.innerHTML = checkboxContent;
-    // }
     let totalsoal = 0;
     function populateSoaldanJawaban(selectedResults = [], defaultOptions = []) {
         const container = document.getElementById('soalDanJawaban');
@@ -876,7 +891,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!defaultOptions || defaultOptions.length === 0) {
             container.innerHTML = `
                 <tr>
-                    <td colspan="3" class="px-4 py-8 text-center">
+                    <td colspan="4" class="px-4 py-8 text-center">
                         <div class="flex flex-col items-center text-gray-500">
                             <svg class="w-12 h-12 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -899,43 +914,103 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         let checkboxContent = '';
+        let correctCount = 0;
+        let wrongCount = 0;
+
         defaultOptions.forEach((option, index) => {
-            const isChecked = (val) => {
-                return Array.isArray(selectedResults) && selectedResults.some(obj => obj.kode_soal === option.kode_soal && obj.jawaban === val)
-                    ? 'checked'
-                    : '';
-            };
+            const asesiAnswer = Array.isArray(selectedResults) && selectedResults.find(obj => obj.kode_soal === option.kode_soal);
+            const asesiAnswerValue = asesiAnswer ? asesiAnswer.jawaban.toLowerCase() : null;
+            const correctAnswer = option.jawaban_benar.toLowerCase();
+            
+            // Check if asesi answered correctly
+            const isCorrect = asesiAnswerValue === correctAnswer;
+            if (asesiAnswerValue) {
+                if (isCorrect) {
+                    correctCount++;
+                } else {
+                    wrongCount++;
+                }
+            }
+
             totalsoal++;
+            
+            // Build options with indicators
+            const buildOption = (letter, text) => {
+                if (!text) return ''; // Skip if option doesn't exist
+                
+                const letterLower = letter.toLowerCase();
+                const isAsesiAnswer = asesiAnswerValue === letterLower;
+                const isCorrectAnswer = correctAnswer === letterLower;
+                
+                let bgClass = '';
+                let indicator = '';
+                
+                if (isAsesiAnswer && isCorrectAnswer) {
+                    // Asesi answered correctly
+                    bgClass = 'bg-green-50';
+                    indicator = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Benar
+                    </span>`;
+                } else if (isAsesiAnswer && !isCorrectAnswer) {
+                    // Asesi answered incorrectly
+                    bgClass = 'bg-red-50';
+                    indicator = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293z" clip-rule="evenodd"></path>
+                        </svg>
+                        Salah
+                    </span>`;
+                } else if (isCorrectAnswer) {
+                    // Show correct answer
+                    indicator = `<span class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                        Kunci Jawaban
+                    </span>`;
+                }
+                
+                return `
+                <tr class="${bgClass}">
+                    <td class="px-4 py-3 border border-gray-300 text-left">
+                        <div class="flex items-center justify-between">
+                            <span>${letter}. ${text}</span>
+                            ${indicator}
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 border border-gray-300 text-center">
+                        <input class="inputJawaban" type="radio" name="${option.kode_soal}" value="${letterLower}" ${isAsesiAnswer ? 'checked' : ''} disabled>
+                    </td>
+                </tr>
+                `;
+            };
+
             checkboxContent += `
-      <tr>
-        <td class="px-4 py-3 border border-gray-300" rowspan="6">${index+1}</td>
-        <td class="px-4 py-3 border border-gray-300 text-left font-medium" colspan="2">${option.pertanyaan}</td>
-        <!-- <td class="px-4 py-3 border border-gray-300"></td> -->
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">A. ${option.jawaban_a}</td>
-        <td class="px-4 py-3 border border-gray-300"><input class="inputJawaban" type="radio" name="${option.kode_soal}" value="a" ${isChecked("a")}></td>
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">B. ${option.jawaban_b}</td>
-        <td class="px-4 py-3 border border-gray-300"><input class="inputJawaban" type="radio" name="${option.kode_soal}" value="b" ${isChecked("b")}></td>
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">C. ${option.jawaban_c}</td>
-        <td class="px-4 py-3 border border-gray-300"><input class="inputJawaban" type="radio" name="${option.kode_soal}" value="c" ${isChecked("c")}></td>
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">D. ${option.jawaban_d}</td>
-        <td class="px-4 py-3 border border-gray-300"><input class="inputJawaban" type="radio" name="${option.kode_soal}" value="d" ${isChecked("d")}></td>
-      </tr>
-      <tr>
-        <td class="px-4 py-3 border border-gray-300 text-left">E. ${option.jawaban_e}</td>
-        <td class="px-4 py-3 border border-gray-300"><input class="inputJawaban" type="radio" name="${option.kode_soal}" value="e" ${isChecked("e")}></td>
-      </tr>
+                <tr>
+                    <td class="px-4 py-3 border border-gray-300 font-medium" rowspan="${6}">${index+1}</td>
+                    <td class="px-4 py-3 border border-gray-300 text-left font-medium" colspan="2">
+                        ${option.pertanyaan}
+                    </td>
+                </tr>
+                ${buildOption('A', option.jawaban_a)}
+                ${buildOption('B', option.jawaban_b)}
+                ${buildOption('C', option.jawaban_c)}
+                ${buildOption('D', option.jawaban_d)}
+                ${buildOption('E', option.jawaban_e)}
             `;
         });
 
         container.innerHTML = checkboxContent;
+
+        // Update statistics
+        document.getElementById('totalSoal').textContent = totalsoal;
+        document.getElementById('jawabanBenar').textContent = correctCount;
+        document.getElementById('jawabanSalah').textContent = wrongCount;
+        const percentage = totalsoal > 0 ? Math.round((correctCount / totalsoal) * 100) : 0;
+        document.getElementById('persentaseBenar').textContent = percentage + '%';
     }
 
     // function populateKelompokPekerjaan(defaultOptions = [
@@ -1060,30 +1135,15 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Collect selected hasil
-        const selectedHasil = [];
-        const checkboxes = document.querySelectorAll('input.inputJawaban:checked');
-        checkboxes.forEach(checkbox => {
-            selectedHasil.push({
-                kode_soal: checkbox.name,
-                jawaban: checkbox.value
-            });
-        });
-
-        if (selectedHasil.length < totalsoal) {
-            showMessage('Semua soal perlu dijawab', 'error');
+        // Get final decision
+        const finalDecision = document.getElementById('finalDecision').value;
+        if (!finalDecision) {
+            showMessage('Pilih keputusan final (Kompeten/Tidak Kompeten)', 'error');
             return;
         }
 
-        // if (selectedHasil.length === 0) {
-        //     showMessage('Pilih minimal satu hasil yang akan dikumpulkan', 'error');
-        //     return;
-        // }
-
-        // const selectedInstruksiKerja = document.getElementById("inputInstruksiKerja").value;
-        // const selectedRekomendasiHasil = document.getElementById("inputRekomendasiHasil").value;
-        // const selectedTindakLanjut = document.getElementById("inputTindakLanjut").value;
-        // const selectedKomentarObservasi = document.getElementById("inputKomentarObservasi").value;
+        // Get catatan asesor (optional)
+        const catatanAsesor = document.getElementById('catatanAsesor').value;
 
         showMessage('Menyimpan data FRIA05...', 'loading', 0);
 
@@ -1091,7 +1151,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const requestData = {
             id_asesi: currentAsesiId,
             id_asesor: apiConfig.asesorId,
-            list_jawaban: selectedHasil,
+            final_decision: finalDecision,
+            catatan_asesor: catatanAsesor,
             is_signing: true
         };
         console.log(JSON.stringify(requestData));
@@ -1137,13 +1198,17 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('simpanFRIA05')?.addEventListener('click', function(e) {
         e.preventDefault();
 
+        // Get final decision for confirmation message
+        const finalDecision = document.getElementById('finalDecision').value;
+        const decisionText = finalDecision ? `<strong>${finalDecision}</strong>` : '<strong class="text-red-600">belum dipilih</strong>';
+
         showConfirmationModal(
-            'Konfirmasi Persetujuan',
-            `Apakah Anda yakin ingin menyetujui dan menandatangani formulir FR.AK-02 ini?
+            'Konfirmasi Penilaian Final',
+            `Apakah Anda yakin ingin menyimpan penilaian final ${decisionText} dan menandatangani formulir FR.IA.05 ini?
             <br><br>
-            <strong class="text-red-600">Perhatian:</strong> Data yang sudah disetujui dan ditandatangani tidak dapat diubah lagi.
+            <strong class="text-red-600">Perhatian:</strong> Keputusan yang sudah disetujui dan ditandatangani tidak dapat diubah lagi.
             <br><br>
-            Pastikan semua informasi sudah benar sebelum melanjutkan.`,
+            Pastikan penilaian sudah benar sebelum melanjutkan.`,
             function() {
                 // User confirmed, proceed with saving
                 saveFRIA05Data();

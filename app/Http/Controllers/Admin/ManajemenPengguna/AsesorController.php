@@ -53,6 +53,7 @@ class AsesorController extends Controller
             'masa_berlaku' => 'required|date',
             'bidang_kompetensi' => 'required|string',
             'no_met' => 'nullable|string|max:100',
+            'fakultas' => 'nullable|string|max:255',
         ], [
             'nama_asesor.required' => 'Nama asesor tidak boleh kosong',
             'email.required' => 'Email tidak boleh kosong',
@@ -110,7 +111,8 @@ class AsesorController extends Controller
                 'status_asesor' => $request->status_asesor,
                 'masa_berlaku' => $request->masa_berlaku,
                 'alamat' => $request->alamat ?? '-', // Use provided alamat or default
-                'daftar_bidang_kompetensi' => json_encode($bidangKompetensiIds)
+                'daftar_bidang_kompetensi' => json_encode($bidangKompetensiIds),
+                'fakultas' => $request->fakultas,
             ]);
             
             DB::commit();
@@ -181,6 +183,7 @@ class AsesorController extends Controller
             'kode_registrasi' => 'nullable|string|max:100',
             'no_sertifikat' => 'nullable|string|max:100',
             'file_sertifikat_asesor' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
+            'fakultas' => 'nullable|string|max:255',
         ], [
             'status_asesor.required' => 'Status asesor harus dipilih.',
             'masa_berlaku.required' => 'Tanggal masa berlaku wajib diisi.',
@@ -235,7 +238,8 @@ class AsesorController extends Controller
                 'daftar_bidang_kompetensi' => json_encode($bidangKompetensiIds),
                 'kode_registrasi' => $request->kode_registrasi,
                 'no_sertifikat' => $request->no_sertifikat,
-                'file_sertifikat_asesor' => $fileSertifikatPath
+                'file_sertifikat_asesor' => $fileSertifikatPath,
+                'fakultas' => $request->fakultas,
             ]);
             
             DB::commit();

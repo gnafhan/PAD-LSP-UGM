@@ -95,23 +95,28 @@
                 <div class="bg-gray-50 p-6 rounded-lg mb-8 border border-gray-100 shadow-sm">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
-                            <label for="skema_sertifikasi" class="block text-sm font-medium text-gray-700 mb-1">Skema Sertifikasi</label>
-                            <select id="skema_sertifikasi" name="skema_sertifikasi" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                                <option value="">Pilih Jenis Skema</option>
-                                <option value="kkni" {{ ($pengajuan->skema_sertifikasi ?? old('skema_sertifikasi')) == 'kkni' ? 'selected' : '' }}>KKNI</option>
-                                <option value="okupasi" {{ ($pengajuan->skema_sertifikasi ?? old('skema_sertifikasi')) == 'okupasi' ? 'selected' : '' }}>Okupasi</option>
-                                <option value="klaster" {{ ($pengajuan->skema_sertifikasi ?? old('skema_sertifikasi')) == 'klaster' ? 'selected' : '' }}>Klaster</option>
-                            </select>
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <label for="skemaDropdown" class="block text-sm font-medium text-gray-700 mb-1">Judul Skema Sertifikasi</label>
-                            <select id="skemaDropdown" name="skemaDropdown" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                            <label for="skemaDropdown" class="block text-sm font-medium text-gray-700 mb-1">
+                                Judul Skema Sertifikasi
+                                @if(isset($eventParticipant) && $eventParticipant)
+                                    <span class="ml-2 text-xs text-blue-600 font-normal">(Sudah ditentukan dari undangan event)</span>
+                                @endif
+                            </label>
+                            <select id="skemaDropdown" name="skemaDropdown" 
+                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition-colors {{ isset($eventParticipant) && $eventParticipant ? 'bg-gray-100 cursor-not-allowed' : '' }}"
+                                {{ isset($eventParticipant) && $eventParticipant ? 'disabled' : '' }}>
                                 <option value="">Pilih Skema</option>
                                 @foreach($skemaList as $skema)
-                                    <option value="{{ $skema->id_skema }}" {{ ($pengajuan->nama_skema ?? old('skemaDropdown')) == $skema->nama_skema ? 'selected' : '' }}>{{ $skema->nama_skema }}</option>
+                                    <option value="{{ $skema->id_skema }}" 
+                                        {{ (isset($eventParticipant) && $eventParticipant && $eventParticipant->id_skema == $skema->id_skema) ? 'selected' : '' }}
+                                        {{ (!isset($eventParticipant) || !$eventParticipant) && ($pengajuan->nama_skema ?? old('skemaDropdown')) == $skema->nama_skema ? 'selected' : '' }}>
+                                        {{ $skema->nama_skema }}
+                                    </option>
                                 @endforeach
                             </select>
+                            @if(isset($eventParticipant) && $eventParticipant)
+                                <!-- Hidden input to submit the value since disabled fields don't submit -->
+                                <input type="hidden" name="skemaDropdown" value="{{ $eventParticipant->id_skema }}">
+                            @endif
                         </div>
 
                         <div>
@@ -250,10 +255,49 @@
             }
         });
 
-        // Load initial data if skema is already selected
+        // Load initial data if skema is already selected (from event participant or draft)
         const initialSkema = $('#skemaDropdown').val();
         if (initialSkema) {
+            @if(isset($eventParticipant) && $eventParticipant && $eventParticipant->skema)
+            // For event participants, pre-populate nomor skema directly from server data
+            $('#nomorSkemaInput').val('{{ $eventParticipant->skema->nomor_skema ?? "" }}');
+            $('#tujuan_asesmen').val('sertifikasi');
+            
+            // Handle dokumen SKKNI if available
+            @if($eventParticipant->skema->dokumen_skkni ?? false)
+            const dokumenUrl = "{{ asset('storage/' . ($eventParticipant->skema->dokumen_skkni ?? '')) }}";
+            const googleViewerUrl = "https://docs.google.com/viewer?url=" + encodeURIComponent(dokumenUrl) + "&embedded=true";
+            
+            $('#dokumen-skkni-object').attr('data', dokumenUrl);
+            $('#dokumen-skkni-iframe').attr('src', googleViewerUrl);
+            $('#dokumen-skkni-link').attr('href', dokumenUrl);
+            $('#dokumen-skkni-fullscreen').attr('href', dokumenUrl);
+            
+            $('#dokumen-skkni-placeholder').addClass('hidden');
+            $('#dokumen-skkni-viewer').removeClass('hidden');
+            @else
+            // No dokumen available
+            $('#dokumen-skkni-placeholder').removeClass('hidden')
+                .find('p').text('Dokumen Skema tidak tersedia untuk skema ini');
+            $('#dokumen-skkni-viewer').addClass('hidden');
+            @endif
+            
+            // Load unit kompetensi
             loadUnitKompetensi(initialSkema);
+            
+            // Show info message
+            Swal.fire({
+                icon: 'info',
+                title: 'Skema Sudah Ditentukan',
+                text: 'Skema sertifikasi Anda sudah ditentukan berdasarkan undangan event. Anda hanya perlu melengkapi data lainnya.',
+                confirmButtonColor: '#3B82F6',
+                timer: 5000,
+                timerProgressBar: true
+            });
+            @else
+            // For draft/non-event participants, trigger change to load data via AJAX
+            $('#skemaDropdown').trigger('change');
+            @endif
         }
 
         // Function to load unit kompetensi
@@ -404,7 +448,6 @@
             $('#btn-selanjutnya').prop('disabled', true);
 
             // Get form values
-            const skemaSertifikasi = $('#skema_sertifikasi').val();
             const skemaDropdown = $('#skemaDropdown').val();
             const nomorSkemaInput = $('#nomorSkemaInput').val();
             const tujuanAsesmen = $('#tujuan_asesmen').val();
@@ -412,9 +455,7 @@
             // Validate form
             let errorMessage = '';
 
-            if (!skemaSertifikasi) {
-                errorMessage = 'Pilih jenis skema sertifikasi';
-            } else if (!skemaDropdown) {
+            if (!skemaDropdown) {
                 errorMessage = 'Pilih judul skema sertifikasi';
             } else if (!tujuanAsesmen) {
                 errorMessage = 'Pilih tujuan asesmen';
@@ -442,7 +483,6 @@
                 type: 'POST',
                 url: "{{ route('user.apl1.save.data.sertifikasi') }}",
                 data: {
-                    skema_sertifikasi: skemaSertifikasi,
                     skemaDropdown: skemaDropdown,
                     nomorSkemaInput: nomorSkemaInput,
                     tujuan_asesmen: tujuanAsesmen,

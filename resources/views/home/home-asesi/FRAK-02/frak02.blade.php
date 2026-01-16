@@ -28,7 +28,7 @@
                 </ol>
             </nav>
             <h1 class="text-2xl font-bold text-gray-900">FR.AK-02 - Keputusan dan Umpan Balik Asesmen</h1>
-            <p class="mt-2 text-gray-600">Formulir keputusan hasil asesmen dan umpan balik dari asesor.</p>
+            <p class="mt-2 text-gray-600">Formulir keputusan rekomendasi asesmen dan umpan balik dari asesor.</p>
         </div>
 
         <!-- Loading Indicator -->
@@ -114,7 +114,7 @@
             <!-- Rekomendasi Hasil Section -->
             <div id="rekomendasiSection" class="bg-white rounded-xl shadow-sm overflow-hidden mb-6 hidden">
                 <div class="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
-                    <h3 class="text-white font-semibold">Rekomendasi Hasil Asesmen</h3>
+                    <h3 class="text-white font-semibold">Rekomendasi Rekomendasi Asesmen</h3>
                 </div>
                 <div class="p-6">
                     <div id="rekomendasiContent" class="text-center">
@@ -237,7 +237,7 @@
                             <div id="signButtonContainer" class="mt-4 hidden">
                                 <div class="flex items-center justify-center mb-3">
                                     <input id="agreeCheckbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                                    <label for="agreeCheckbox" class="ml-2 text-sm text-gray-700">Saya menyetujui hasil asesmen ini</label>
+                                    <label for="agreeCheckbox" class="ml-2 text-sm text-gray-700">Saya menyetujui rekomendasi asesmen ini</label>
                                 </div>
                                 <button id="signButton" type="button" disabled class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

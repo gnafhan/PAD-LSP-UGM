@@ -129,18 +129,19 @@
                 <form action="{{ route('admin.event.store') }}" method="POST">
                     @csrf
                     <div class="space-y-6">
-                        <!-- Nama Event Field -->
-                        <div>
-                            <label for="nama_event" class="block text-sm font-medium text-gray-700 mb-1">Nama Event <span class="text-red-500">*</span></label>
-                            <input type="text" name="nama_event" id="nama_event" 
-                                   class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('nama_event') border-red-500 @enderror" 
-                                   placeholder="Masukkan nama event" required value="{{ old('nama_event') }}">
-                            @error('nama_event')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
+                        <!-- Row 1: Nama Event & Tipe Event -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Nama Event Field -->
+                            <div>
+                                <label for="nama_event" class="block text-sm font-medium text-gray-700 mb-1">Nama Event <span class="text-red-500">*</span></label>
+                                <input type="text" name="nama_event" id="nama_event" 
+                                       class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('nama_event') border-red-500 @enderror" 
+                                       placeholder="Masukkan nama event" required value="{{ old('nama_event') }}">
+                                @error('nama_event')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Tipe Event Field -->
                             <div>
                                 <label for="tipe_event" class="block text-sm font-medium text-gray-700 mb-1">Tipe Event <span class="text-red-500">*</span></label>
@@ -148,11 +149,26 @@
                                        class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('tipe_event') border-red-500 @enderror" required>
                                     <option value="" disabled selected>--- Pilih Tipe Event ---</option>
                                     <option value="Regular" {{ old('tipe_event') == 'Regular' ? 'selected' : '' }}>Regular</option>
-                                    <option value="Special" {{ old('tipe_event') == 'Special' ? 'selected' : '' }}>Special</option>
-                                    <option value="Workshop" {{ old('tipe_event') == 'Workshop' ? 'selected' : '' }}>Workshop</option>
-                                    <option value="Online" {{ old('tipe_event') == 'Online' ? 'selected' : '' }}>Online</option>
+                                    <option value="Non Reguler" {{ old('tipe_event') == 'Non Reguler' ? 'selected' : '' }}>Non Reguler</option>
                                 </select>
                                 @error('tipe_event')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Metode Pelaksanaan & TUK -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Metode Pelaksanaan Field -->
+                            <div>
+                                <label for="metode_pelaksanaan" class="block text-sm font-medium text-gray-700 mb-1">Metode Pelaksanaan <span class="text-red-500">*</span></label>
+                                <select name="metode_pelaksanaan" id="metode_pelaksanaan" 
+                                       class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('metode_pelaksanaan') border-red-500 @enderror" required>
+                                    <option value="" disabled selected>--- Pilih Metode ---</option>
+                                    <option value="Online" {{ old('metode_pelaksanaan') == 'Online' ? 'selected' : '' }}>Online</option>
+                                    <option value="Offline" {{ old('metode_pelaksanaan') == 'Offline' ? 'selected' : '' }}>Offline</option>
+                                </select>
+                                @error('metode_pelaksanaan')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -173,6 +189,7 @@
                             </div>
                         </div>
 
+                        <!-- Row 3: Tanggal Mulai & Tanggal Berakhir -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Tanggal Mulai Field -->
                             <div>
@@ -197,6 +214,7 @@
                             </div>
                         </div>
 
+                        <!-- Row 4: Periode Pelaksanaan & Tahun Pelaksanaan -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Periode Pelaksanaan Field -->
                             <div>

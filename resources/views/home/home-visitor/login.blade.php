@@ -14,7 +14,7 @@
     </div>
 
     <h1 class="text-2xl font-bold text-gray-800 text-center mb-4">Selamat Datang</h1>
-    <p class="text-center text-gray-600 mb-8">Silakan login menggunakan akun Google UGM Anda</p>
+    <p class="text-center text-gray-600 mb-8">Silakan login menggunakan akun Google Anda</p>
 
     <!-- Google Login Button - More Prominent -->
     <div class="flex justify-center mb-8">
@@ -24,17 +24,19 @@
         </a>
     </div>
 
-    <!-- UGM Email Info - Enhanced -->
+    <!-- Important Information -->
     <div class="mb-8">
         <div class="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg shadow-sm">
             <h4 class="font-bold text-lg text-blue-900 mb-2">Penting:</h4>
             <ul class="list-disc pl-5 space-y-2">
                 <li class="text-base">
-                    Login hanya menggunakan akun email UGM resmi
-                    <span class="font-semibold block mt-1">(format: namaanda@mail.ugm.ac.id)</span>
+                    Hanya peserta yang telah diundang oleh administrator yang dapat mengakses sistem
                 </li>
                 <li class="text-base">
-                    Belum memiliki akun? Tidak perlu mendaftar. Sistem akan otomatis membuat akun baru saat Anda pertama kali login menggunakan akun Google UGM.
+                    Gunakan email yang sama dengan yang menerima undangan sertifikasi
+                </li>
+                <li class="text-base">
+                    Sistem akan otomatis membuat akun saat Anda pertama kali login dengan email yang diundang
                 </li>
             </ul>
         </div>

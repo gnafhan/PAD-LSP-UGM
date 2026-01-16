@@ -178,6 +178,8 @@ class Fria05Controller extends Controller
                         'tanda_tangan_asesi' => $fria05->waktu_tanda_tangan_asesi ? $asesi->ttd_pemohon = asset('storage/' . $asesi->ttd_pemohon) : null,
                         'waktu_tanda_tangan_asesor' => DateTimeHelper::toWIB($fria05->waktu_tanda_tangan_asesor),
                         'tanda_tangan_asesor' => $tandaTanganAsesor ? $tandaTanganAsesor->file_url : null,
+                        'final_decision' => $fria05->final_decision,
+                        'catatan_asesor' => $fria05->catatan_asesor,
                     ],
                     'record_exists' => true
                 ]
@@ -363,9 +365,8 @@ class Fria05Controller extends Controller
         $request->validate([
             'id_asesi' => 'required|string|exists:asesi,id_asesi',
             'id_asesor' => 'required|string|exists:asesor,id_asesor',
-            'list_jawaban' => 'required|array|min:1',
-            'list_jawaban.*.kode_soal' => 'required|string',
-            'list_jawaban.*.jawaban' => 'required|string',
+            'final_decision' => 'required|in:Kompeten,Tidak Kompeten',
+            'catatan_asesor' => 'nullable|string',
             'is_signing' => 'sometimes|boolean',
         ]);
 
@@ -390,6 +391,10 @@ class Fria05Controller extends Controller
             'id_asesor' => $request->id_asesor,
         ]);
 
+        // Update final decision and catatan
+        $fria05->final_decision = $request->final_decision;
+        $fria05->catatan_asesor = $request->catatan_asesor;
+
         // Update asesor's signature timestamp if signing
         if ($request->boolean('is_signing')) {
             $tanda_tangan_asesor = TandaTanganAsesor::where('id_asesor', $request->id_asesor)->first();
@@ -405,27 +410,17 @@ class Fria05Controller extends Controller
 
         $fria05->save();
 
-        // Remove old answers
-        $fria05->jawabans()->delete();
-
-        // Save all answers from list_jawaban
-        foreach ($request->list_jawaban as $jawaban) {
-            $fria05->jawabans()->create([
-                'kode_soal' => $jawaban['kode_soal'],
-                'jawaban' => $jawaban['jawaban'],
-            ]);
-        }
-
         // Mark step complete if both signed
         if ($fria05->waktu_tanda_tangan_asesi && $fria05->waktu_tanda_tangan_asesor) {
             $this->progressService->completeStep(
                 $request->id_asesi,
-                'fria05',
+                'ia05',
                 'Completed by Asesor ID: ' . $request->id_asesor . ' at ' . Carbon::now()->format('d-m-Y H:i:s')
             );
             Log::info('FRIA05 completed by Asesor', [
                 'id_asesi' => $request->id_asesi,
                 'id_asesor' => $request->id_asesor,
+                'final_decision' => $request->final_decision,
                 'timestamp' => Carbon::now()->format('d-m-Y H:i:s')
             ]);
         }

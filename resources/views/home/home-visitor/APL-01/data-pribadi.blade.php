@@ -142,6 +142,25 @@
                                 <label for="pendidikan_terakhir" class="block text-sm font-medium text-gray-700 mb-1">Pendidikan Terakhir</label>
                                 <input type="text" id="pendidikan_terakhir" name="pendidikan_terakhir" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $pengajuan->pendidikan_terakhir ?? old('pendidikan_terakhir') }}" placeholder="Contoh: S1 Teknik Informatika">
                             </div>
+
+                            <div>
+                                <label for="id_fakultas" class="block text-sm font-medium text-gray-700 mb-1">Fakultas</label>
+                                <select id="id_fakultas" name="id_fakultas" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">Pilih Fakultas</option>
+                                    @foreach($fakultasList as $fakultas)
+                                        <option value="{{ $fakultas->id_fakultas }}" {{ ($pengajuan->id_fakultas ?? old('id_fakultas')) == $fakultas->id_fakultas ? 'selected' : '' }}>
+                                            {{ $fakultas->nama_fakultas }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="id_program_studi" class="block text-sm font-medium text-gray-700 mb-1">Program Studi</label>
+                                <select id="id_program_studi" name="id_program_studi" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">Pilih Program Studi</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -297,6 +316,8 @@
                 alamat_rumah: $('#alamat_rumah').val(),
                 no_telp: $('#no_telp').val(),
                 pendidikan_terakhir: $('#pendidikan_terakhir').val(),
+                id_fakultas: $('#id_fakultas').val(),
+                id_program_studi: $('#id_program_studi').val(),
                 status_pekerjaan: $('#status_pekerjaan').val(),
                 nama_perusahaan: $('#nama_perusahaan').val(),
                 jabatan: $('#jabatan').val(),
@@ -369,6 +390,39 @@
         $('input, select').on('input change', function() {
             $(this).removeClass('border-red-500 bg-red-50');
         });
+
+        // Load program studi when fakultas is selected
+        $('#id_fakultas').change(function() {
+            const idFakultas = $(this).val();
+            const programStudiDropdown = $('#id_program_studi');
+
+            // Reset program studi dropdown
+            programStudiDropdown.html('<option value="">Pilih Program Studi</option>');
+
+            if (idFakultas) {
+                // Show loading state
+                programStudiDropdown.html('<option value="">Memuat...</option>');
+
+                // Fetch program studi
+                $.get('/user/apl1/get-program-studi', { id_fakultas: idFakultas }, function(response) {
+                    programStudiDropdown.html('<option value="">Pilih Program Studi</option>');
+
+                    if (response.programStudiList && response.programStudiList.length > 0) {
+                        response.programStudiList.forEach(function(prodi) {
+                            const selected = '{{ $pengajuan->id_program_studi ?? "" }}' === prodi.id_program_studi ? 'selected' : '';
+                            programStudiDropdown.append(`<option value="${prodi.id_program_studi}" ${selected}>${prodi.nama_program_studi}</option>`);
+                        });
+                    }
+                }).fail(function() {
+                    programStudiDropdown.html('<option value="">Gagal memuat data</option>');
+                });
+            }
+        });
+
+        // Load program studi on page load if fakultas is already selected
+        @if(isset($pengajuan->id_fakultas) && $pengajuan->id_fakultas)
+            $('#id_fakultas').trigger('change');
+        @endif
     });
 </script>
 @endsection

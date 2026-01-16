@@ -78,7 +78,15 @@ class AsesiPengajuanPageController extends Controller
         $totalAsesi = Asesi::count();
         
         $skema = Skema::all();
-        $bidangKompetensi = BidangKompetensi::all();
+        
+        // Get unique fakultas list from asesor
+        $fakultasList = Asesor::where('status_asesor', 'Aktif')
+                              ->whereNotNull('fakultas')
+                              ->distinct()
+                              ->pluck('fakultas')
+                              ->filter()
+                              ->sort()
+                              ->values();
         
         return view('home.home-admin.daftar-asesi', compact(
             'pengajuanBaru',
@@ -90,7 +98,7 @@ class AsesiPengajuanPageController extends Controller
             'assignments',
             'totalAsesi',
             'skema', 
-            'bidangKompetensi'
+            'fakultasList'
         ));
     }
 

@@ -56,15 +56,6 @@
                 <!-- Certification Details -->
                 <div class="border border-gray-300 rounded-lg p-4 mb-6">
                     <div class="mb-4">
-                        <label for="skema_sertifikasi" class="block text-sm font-medium text-gray-700">Skema Sertifikasi</label>
-                        <select id="skema_sertifikasi" name="skema_sertifikasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            <option value="kkni">KKNI</option>
-                            <option value="okupasi">Okupasi</option>
-                            <option value="klaster">Klaster</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
                         <label for="skemaDropdown" class="block text-sm font-medium text-gray-700">Judul Skema Sertifikasi</label>
                         <select id="skemaDropdown" name="skemaDropdown" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             <option value="">Pilih Skema</option>
@@ -166,7 +157,6 @@
                 type: 'POST',
                 url: "{{ route('save.data.sertifikasi') }}",
                 data: JSON.stringify({
-                    skema_sertifikasi: $('#skema_sertifikasi').val(),
                     skemaDropdown: $('#skemaDropdown').val(),
                     nomorSkemaInput: $('#nomorSkemaInput').val(),
                     tujuan_asesmen: $('#tujuan_asesmen').val(),

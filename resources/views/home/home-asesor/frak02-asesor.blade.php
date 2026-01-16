@@ -233,7 +233,7 @@
 <div class="p-4">
 
                 <label for="inputRekomendasiHasil" class="block mb-2 font-medium text-sidebar_font">
-Rekomendasi Hasil Asesmen
+Rekomendasi Asesmen
                 </label>
 <div class="mt-2">
                     <select id="inputRekomendasiHasil" name="metodeUji" autocomplete="metodeUji" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 text-base text-black border border-border_input outline-1 placeholder-placeholder_input focus:outline-2 focus:-outline-offset-2 focus:outline-biru sm:text-sm/6 placeholder:placeholder_input" required>

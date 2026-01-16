@@ -175,7 +175,16 @@ class PenggunaPageController extends Controller
     public function create()
     {
         $bidangKompetensi = BidangKompetensi::getAllOrdered();
-        return view('home.home-admin.tambah-pengguna', compact('bidangKompetensi'));
+        
+        // Get unique fakultas list from existing asesor
+        $fakultasList = Asesor::whereNotNull('fakultas')
+                              ->where('fakultas', '!=', '')
+                              ->distinct()
+                              ->pluck('fakultas')
+                              ->sort()
+                              ->values();
+        
+        return view('home.home-admin.tambah-pengguna', compact('bidangKompetensi', 'fakultasList'));
     }
 
     /**

@@ -43,6 +43,7 @@ class Asesor extends Model
         'tanggal_lahir',
         'provinsi',
         'kabupaten_kota',
+        'fakultas',
 
         // Foreign key
         'id_user',

@@ -16,6 +16,24 @@ services:
       - redis
     user: "1000:1000"
 
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    container_name: laravel_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - laravel
+    depends_on:
+      - db
+      - redis
+    user: "1000:1000"
+    command: php artisan queue:work --queue=emails,default --sleep=3 --tries=3 --max-time=3600 --verbose
+
   webserver:
     image: nginx:alpine
     container_name: laravel_webserver

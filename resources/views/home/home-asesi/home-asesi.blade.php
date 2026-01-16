@@ -354,7 +354,7 @@
                                         @else
                                             text-gray-800
                                         @endif
-                                    ">Hasil Asesmen</p>
+                                    ">Rekomendasi Asesmen</p>
                                     <p class="text-xs 
                                         @if($hasilAsesmen->status === 'kompeten')
                                             text-green-600
@@ -479,7 +479,7 @@
                                 </div>
                                 <div class="ml-3">
                                     <p class="text-sm font-medium text-gray-500">Sertifikat</p>
-                                    <p class="text-xs text-gray-400">Menunggu hasil asesmen</p>
+                                    <p class="text-xs text-gray-400">Menunggu rekomendasi asesmen</p>
                                 </div>
                                 @endif
                             </div>

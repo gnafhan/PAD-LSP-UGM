@@ -369,13 +369,13 @@
 
             <!-- Selection Controls -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <!-- Bidang Kompetensi Selection -->
+                <!-- Fakultas Selection -->
                 <div>
-                    <label for="bidang_kompetensi" class="block text-sm font-medium text-gray-700 mb-2">Filter Bidang Kompetensi:</label>
-                    <select id="bidang_kompetensi" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Semua Bidang Kompetensi</option>
-                        @foreach($bidangKompetensi as $bidang)
-                            <option value="{{ $bidang->id_bidang_kompetensi }}">{{ $bidang->nama_bidang }}</option>
+                    <label for="fakultas" class="block text-sm font-medium text-gray-700 mb-2">Filter Fakultas:</label>
+                    <select id="fakultas" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Semua Fakultas</option>
+                        @foreach($fakultasList as $fakultas)
+                            <option value="{{ $fakultas }}">{{ $fakultas }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -386,7 +386,7 @@
                     <select id="asesor" name="id_asesor" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
                         <option value="">Pilih Asesor</option>
                         @foreach($asesors as $asesor)
-                            <option value="{{ $asesor->id_asesor }}">{{ $asesor->nama_asesor }}</option>
+                            <option value="{{ $asesor->id_asesor }}" data-fakultas="{{ $asesor->fakultas }}">{{ $asesor->nama_asesor }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -496,62 +496,39 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Dependent dropdown untuk bidang kompetensi dan asesor
-    const bidangKompetensiSelect = document.getElementById('bidang_kompetensi');
+    // Dependent dropdown untuk fakultas dan asesor
+    const fakultasSelect = document.getElementById('fakultas');
     const asesorSelect = document.getElementById('asesor');
     
-    bidangKompetensiSelect.addEventListener('change', function() {
-      const selectedBidangId = this.value;
+    fakultasSelect.addEventListener('change', function() {
+      const selectedFakultas = this.value;
       
-      // Reset dropdown asesor
-      asesorSelect.innerHTML = '<option value="">Pilih Asesor</option>';
+      // Filter asesor options based on fakultas
+      const asesorOptions = asesorSelect.querySelectorAll('option');
       
-      if (selectedBidangId) {
-        // Tampilkan indikator loading
-        asesorSelect.innerHTML = '<option value="">Loading...</option>';
+      asesorOptions.forEach(option => {
+        if (option.value === '') {
+          // Keep the placeholder option
+          option.style.display = '';
+          return;
+        }
         
-        // Fetch asesor yang memiliki bidang kompetensi yang dipilih
-        fetch(`/admin/get-asesor-by-bidang/${selectedBidangId}`)
-          .then(response => response.json())
-          .then(data => {
-            // Reset opsi
-            asesorSelect.innerHTML = '<option value="">Pilih Asesor</option>';
-            
-            // Tambahkan opsi baru
-            if (data.length > 0) {
-              data.forEach(asesor => {
-                const option = document.createElement('option');
-                option.value = asesor.id_asesor;
-                option.textContent = asesor.nama_asesor;
-                asesorSelect.appendChild(option);
-              });
-            } else {
-              asesorSelect.innerHTML = '<option value="">Tidak ada asesor dengan bidang ini</option>';
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching asesor data:', error);
-            asesorSelect.innerHTML = '<option value="">Error loading data</option>';
-          });
-      } else {
-        asesorSelect.innerHTML = '<option value="">Loading...</option>';
-
-        // Jika tidak ada bidang yang dipilih, tampilkan semua asesor
-        fetch('/admin/get-all-asesor')
-          .then(response => response.json())
-          .then(data => {
-            asesorSelect.innerHTML = '<option value="">Pilih Asesor</option>';
-            
-            data.forEach(asesor => {
-              const option = document.createElement('option');
-              option.value = asesor.id_asesor;
-              option.textContent = asesor.nama_asesor;
-              asesorSelect.appendChild(option);
-            });
-          })
-          .catch(error => {
-            console.error('Error fetching all asesors:', error);
-          });
+        const asesorFakultas = option.getAttribute('data-fakultas');
+        
+        if (!selectedFakultas || asesorFakultas === selectedFakultas) {
+          option.style.display = '';
+        } else {
+          option.style.display = 'none';
+        }
+      });
+      
+      // Reset asesor selection if current selection is now hidden
+      const currentSelection = asesorSelect.value;
+      if (currentSelection) {
+        const currentOption = asesorSelect.querySelector(`option[value="${currentSelection}"]`);
+        if (currentOption && currentOption.style.display === 'none') {
+          asesorSelect.value = '';
+        }
       }
     });
     

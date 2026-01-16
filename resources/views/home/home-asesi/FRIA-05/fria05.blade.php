@@ -182,22 +182,25 @@
                     <p class="text-green-100">Jawaban Anda telah berhasil dikumpulkan</p>
                 </div>
                 <div class="p-8">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                        <div class="text-center p-4 bg-blue-50 rounded-xl">
-                            <p class="text-3xl font-bold text-blue-600" id="resultTotal">0</p>
-                            <p class="text-sm text-gray-600 mt-1">Total Soal</p>
+                    <div class="text-center mb-8">
+                        <div class="inline-block p-6 bg-blue-50 rounded-xl">
+                            <p class="text-sm text-gray-600 mb-2">Status Penilaian</p>
+                            <p class="text-2xl font-bold text-blue-600">Menunggu Penilaian Asesor</p>
                         </div>
-                        <div class="text-center p-4 bg-green-50 rounded-xl">
-                            <p class="text-3xl font-bold text-green-600" id="resultCorrect">0</p>
-                            <p class="text-sm text-gray-600 mt-1">Jawaban Benar</p>
-                        </div>
-                        <div class="text-center p-4 bg-red-50 rounded-xl">
-                            <p class="text-3xl font-bold text-red-600" id="resultWrong">0</p>
-                            <p class="text-sm text-gray-600 mt-1">Jawaban Salah</p>
-                        </div>
-                        <div class="text-center p-4 bg-purple-50 rounded-xl">
-                            <p class="text-3xl font-bold text-purple-600" id="resultScore">0</p>
-                            <p class="text-sm text-gray-600 mt-1">Nilai</p>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-yellow-700">
+                                    <span class="font-medium">Informasi:</span> Hasil ujian Anda akan dinilai oleh asesor. Status final (Kompeten/Tidak Kompeten) akan ditentukan oleh asesor berdasarkan penilaian menyeluruh.
+                                </p>
+                            </div>
                         </div>
                     </div>
                     
@@ -224,23 +227,16 @@
                     <p class="text-blue-100">Anda sudah menyelesaikan ujian pilihan ganda ini</p>
                 </div>
                 <div class="p-8">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                        <div class="text-center p-4 bg-blue-50 rounded-xl">
-                            <p class="text-3xl font-bold text-blue-600" id="completedTotal">0</p>
-                            <p class="text-sm text-gray-600 mt-1">Total Soal</p>
+                    <div class="text-center mb-8">
+                        <div id="finalDecisionContainer" class="inline-block p-6 rounded-xl">
+                            <p class="text-sm text-gray-600 mb-2">Status Penilaian</p>
+                            <p id="finalDecisionText" class="text-2xl font-bold">Menunggu Penilaian Asesor</p>
                         </div>
-                        <div class="text-center p-4 bg-green-50 rounded-xl">
-                            <p class="text-3xl font-bold text-green-600" id="completedCorrect">0</p>
-                            <p class="text-sm text-gray-600 mt-1">Jawaban Benar</p>
-                        </div>
-                        <div class="text-center p-4 bg-red-50 rounded-xl">
-                            <p class="text-3xl font-bold text-red-600" id="completedWrong">0</p>
-                            <p class="text-sm text-gray-600 mt-1">Jawaban Salah</p>
-                        </div>
-                        <div class="text-center p-4 bg-purple-50 rounded-xl">
-                            <p class="text-3xl font-bold text-purple-600" id="completedScore">0</p>
-                            <p class="text-sm text-gray-600 mt-1">Nilai</p>
-                        </div>
+                    </div>
+
+                    <div id="catatanAsesorContainer" class="hidden bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                        <p class="text-sm font-medium text-gray-700 mb-2">Catatan Asesor:</p>
+                        <p id="catatanAsesorText" class="text-sm text-gray-600"></p>
                     </div>
                     
                     <div class="text-center">
@@ -617,65 +613,44 @@ async function submitExam() {
 }
 
 function calculateAndShowResult() {
-    let correct = 0;
-    let wrong = 0;
-
-    questions.forEach(q => {
-        const userAnswer = answers[q.kode_soal];
-        if (userAnswer) {
-            if (userAnswer.toUpperCase() === q.jawaban_benar.toUpperCase()) {
-                correct++;
-            } else {
-                wrong++;
-            }
-        } else {
-            wrong++;
-        }
-    });
-
-    const total = questions.length;
-    const score = Math.round((correct / total) * 100);
-
     // Hide main content, show result
     mainContent.classList.add('hidden');
     resultSection.classList.remove('hidden');
-
-    // Update result stats
-    document.getElementById('resultTotal').textContent = total;
-    document.getElementById('resultCorrect').textContent = correct;
-    document.getElementById('resultWrong').textContent = wrong;
-    document.getElementById('resultScore').textContent = score;
 }
 
 function showCompletedSection(data) {
-    // Calculate score from existing answers
-    let correct = 0;
-    let wrong = 0;
-
-    questions.forEach(q => {
-        const userAnswer = answers[q.kode_soal];
-        if (userAnswer) {
-            if (userAnswer.toUpperCase() === q.jawaban_benar.toUpperCase()) {
-                correct++;
-            } else {
-                wrong++;
-            }
-        } else {
-            wrong++;
-        }
-    });
-
-    const total = questions.length;
-    const score = Math.round((correct / total) * 100);
-
     // Show completed section
     completedSection.classList.remove('hidden');
 
-    // Update stats
-    document.getElementById('completedTotal').textContent = total;
-    document.getElementById('completedCorrect').textContent = correct;
-    document.getElementById('completedWrong').textContent = wrong;
-    document.getElementById('completedScore').textContent = score;
+    // Check if asesor has made final decision
+    if (data.fria05 && data.fria05.final_decision) {
+        const finalDecisionContainer = document.getElementById('finalDecisionContainer');
+        const finalDecisionText = document.getElementById('finalDecisionText');
+        
+        if (data.fria05.final_decision === 'Kompeten') {
+            finalDecisionContainer.className = 'inline-block p-6 bg-green-50 rounded-xl';
+            finalDecisionText.className = 'text-2xl font-bold text-green-600';
+            finalDecisionText.textContent = 'KOMPETEN';
+        } else {
+            finalDecisionContainer.className = 'inline-block p-6 bg-red-50 rounded-xl';
+            finalDecisionText.className = 'text-2xl font-bold text-red-600';
+            finalDecisionText.textContent = 'TIDAK KOMPETEN';
+        }
+
+        // Show catatan asesor if exists
+        if (data.fria05.catatan_asesor) {
+            document.getElementById('catatanAsesorContainer').classList.remove('hidden');
+            document.getElementById('catatanAsesorText').textContent = data.fria05.catatan_asesor;
+        }
+    } else {
+        // Asesor belum menilai
+        const finalDecisionContainer = document.getElementById('finalDecisionContainer');
+        const finalDecisionText = document.getElementById('finalDecisionText');
+        
+        finalDecisionContainer.className = 'inline-block p-6 bg-yellow-50 rounded-xl';
+        finalDecisionText.className = 'text-2xl font-bold text-yellow-600';
+        finalDecisionText.textContent = 'Menunggu Penilaian Asesor';
+    }
 }
 
 function showError(message) {

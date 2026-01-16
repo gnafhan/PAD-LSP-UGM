@@ -128,6 +128,9 @@ class PengajuanController extends Controller
     {
         // Get draft first for revision check
         $draft = $this->getDraft();
+        
+        // Get fakultas list
+        $fakultasList = \App\Models\Fakultas::orderBy('nama_fakultas')->get();
 
         // If user is in revision mode, allow access regardless of previous steps
         if ($draft && $draft->status == AsesiPengajuan::STATUS_NEEDS_REVISION) {
@@ -140,6 +143,7 @@ class PengajuanController extends Controller
 
             return view('home.home-visitor.APL-01.data-pribadi', [
                 'pengajuan' => $draft,
+                'fakultasList' => $fakultasList,
                 'revisionMessage' => $revisionMessage,
                 'isRevision' => $isRevision
             ]);
@@ -155,6 +159,7 @@ class PengajuanController extends Controller
         if ($draft) {
             return view('home.home-visitor.APL-01.data-pribadi', [
                 'pengajuan' => $draft,
+                'fakultasList' => $fakultasList,
                 'revisionMessage' => null,
                 'isRevision' => false
             ]);
@@ -165,6 +170,7 @@ class PengajuanController extends Controller
 
         return view('home.home-visitor.APL-01.data-pribadi', [
             'pengajuan' => (object)$dataPribadi,
+            'fakultasList' => $fakultasList,
             'revisionMessage' => null,
             'isRevision' => false
         ]);
@@ -187,6 +193,8 @@ class PengajuanController extends Controller
             'kota_domisili' => 'required',
             'no_telp' => 'required',
             'pendidikan_terakhir' => 'required',
+            'id_fakultas' => 'nullable|exists:fakultas,id_fakultas',
+            'id_program_studi' => 'nullable|exists:program_studi,id_program_studi',
             'status_pekerjaan' => 'required',
         ]);
 
@@ -198,7 +206,7 @@ class PengajuanController extends Controller
         $dataPribadi = $request->only([
             'nama_user', 'nik', 'nim', 'tempat_tanggal_lahir', 'jenis_kelamin',
             'kebangsaan', 'alamat_rumah', 'kota_domisili', 'no_telp',
-            'pendidikan_terakhir', 'status_pekerjaan'
+            'pendidikan_terakhir', 'id_fakultas', 'id_program_studi', 'status_pekerjaan'
         ]);
 
         // Tambahkan data pekerjaan jika bekerja
@@ -235,6 +243,13 @@ class PengajuanController extends Controller
     {
         // Cek jika user sudah memiliki pengajuan (untuk revisi)
         $draft = $this->getDraft();
+        
+        // Get user's event participant data if exists
+        $user = auth()->user();
+        $eventParticipant = \App\Models\EventParticipant::where('email', $user->email)
+            ->where('invitation_status', '!=', 'removed')
+            ->with('skema') // Eager load skema relationship
+            ->first();
 
         // Jika dalam mode revisi, tampilkan langsung form tanpa pengecekan lain
         if ($draft && $draft->status == AsesiPengajuan::STATUS_NEEDS_REVISION) {
@@ -250,7 +265,8 @@ class PengajuanController extends Controller
                 'pengajuan' => $draft, // Menggunakan 'pengajuan' untuk konsistensi
                 'skemaList' => $skemaList,
                 'revisionMessage' => $revisionMessage,
-                'isRevision' => $isRevision
+                'isRevision' => $isRevision,
+                'eventParticipant' => $eventParticipant
             ]);
         }
 
@@ -265,7 +281,8 @@ class PengajuanController extends Controller
             $skemaList = Skema::all();
             return view('home.home-visitor.APL-01.data-sertifikasi', [
                 'pengajuan' => $draft, // Menggunakan 'pengajuan' untuk konsistensi
-                'skemaList' => $skemaList
+                'skemaList' => $skemaList,
+                'eventParticipant' => $eventParticipant
             ]);
         }
 
@@ -284,7 +301,8 @@ class PengajuanController extends Controller
         return view('home.home-visitor.APL-01.data-sertifikasi', [
             'pengajuan' => (object)$dataSertifikasi,
             'skemaList' => $skemaList,
-            'revisionMessage' => null
+            'revisionMessage' => null,
+            'eventParticipant' => $eventParticipant
         ]);
     }
 
@@ -350,7 +368,6 @@ class PengajuanController extends Controller
     public function saveDataSertifikasi(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'skema_sertifikasi' => 'required',
             'skemaDropdown' => 'required',
             'nomorSkemaInput' => 'required',
             'tujuan_asesmen' => 'required',
@@ -368,7 +385,6 @@ class PengajuanController extends Controller
 
         // Data sertifikasi yang akan disimpan
         $dataSertifikasi = [
-            'skema_sertifikasi' => $request->skema_sertifikasi,
             'nama_skema' => $skema->nama_skema,
             'nomor_skema' => $request->nomorSkemaInput,
             'tujuan_asesmen' => $request->tujuan_asesmen,
@@ -612,6 +628,24 @@ class PengajuanController extends Controller
                         AsesiPengajuan::STATUS_NEEDS_REVISION
                     ])
                     ->first();
+    }
+
+    /**
+     * Get program studi by fakultas
+     */
+    public function getProgramStudi(Request $request)
+    {
+        $idFakultas = $request->get('id_fakultas');
+        
+        if (!$idFakultas) {
+            return response()->json(['programStudiList' => []]);
+        }
+
+        $programStudiList = \App\Models\ProgramStudi::where('id_fakultas', $idFakultas)
+                                ->orderBy('nama_program_studi')
+                                ->get();
+
+        return response()->json(['programStudiList' => $programStudiList]);
     }
 
     /**

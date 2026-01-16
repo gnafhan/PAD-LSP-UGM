@@ -17,7 +17,9 @@ class Fria05 extends Model
         'id_asesi',
         'id_asesor',
         'waktu_tanda_tangan_asesor',
-        'waktu_tanda_tangan_asesi'
+        'waktu_tanda_tangan_asesi',
+        'final_decision',
+        'catatan_asesor'
     ];
 
     protected $casts = [

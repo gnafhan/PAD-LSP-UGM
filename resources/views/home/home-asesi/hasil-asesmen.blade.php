@@ -13,11 +13,11 @@
                         <i class="fas fa-arrow-left"></i>
                     </button>
                     <div class="bg-green-500 text-white px-2 py-1 rounded text-sm md:text-base flex-shrink-0">
-                        HASIL ASESMEN
+                        Rekomendasi Asesmen
                     </div>
                 </div>
 
-                <h2 class="text-lg font-semibold mb-4">Status Hasil Asesmen Anda</h2>
+                <h2 class="text-lg font-semibold mb-4">Rekomendasi Asesmen Anda</h2>
 
                 @if(session('success'))
                     <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
@@ -58,7 +58,7 @@
 
                 <!-- Status Hasil Asesmen -->
                 <div class="border border-gray-300 rounded-lg p-4 mb-6">
-                    <h3 class="text-md font-semibold mb-4">Status Hasil Asesmen</h3>
+                    <h3 class="text-md font-semibold mb-4">Rekomendasi Asesmen</h3>
                     
                     @if($hasilAsesmen)
                         <div class="p-6 rounded-lg border-2 text-center
@@ -95,7 +95,7 @@
                                     <p class="text-gray-700">Mohon maaf, Anda belum memenuhi standar kompetensi yang ditetapkan.</p>
                                 @else
                                     <p class="text-3xl font-bold text-gray-600 mb-2">BELUM ADA HASIL</p>
-                                    <p class="text-gray-700">Hasil asesmen Anda masih dalam proses penilaian oleh asesor.</p>
+                                    <p class="text-gray-700">Rekomendasi asesmen Anda masih dalam proses penilaian oleh asesor.</p>
                                 @endif
                             </div>
 
@@ -113,9 +113,44 @@
                                     <svg class="w-6 h-6 text-blue-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
-                                    <div>
-                                        <p class="font-medium text-blue-900">Informasi Sertifikat</p>
-                                        <p class="text-sm text-blue-800 mt-1">Sertifikat Anda sedang dalam proses. Silakan hubungi admin untuk informasi lebih lanjut mengenai pengambilan sertifikat.</p>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-blue-900">Dokumen Sertifikasi</p>
+                                        <p class="text-sm text-blue-800 mt-1">Anda dapat mengunduh dokumen sertifikasi Anda di bawah ini:</p>
+                                        
+                                        <div class="mt-3 space-y-2">
+                                            @if($asesi->file_sertifikat)
+                                                <a href="{{ route('admin.asesi.certificate.download', $asesi->id_asesi) }}" 
+                                                   class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                    </svg>
+                                                    Download Sertifikat
+                                                </a>
+                                            @else
+                                                <p class="text-sm text-gray-600">
+                                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    Sertifikat sedang dalam proses
+                                                </p>
+                                            @endif
+                                            
+                                            <div class="mt-2">
+                                                <a href="{{ route('asesi.acceptance-letter.download', $asesi->id_asesi) }}" 
+                                                   class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                    </svg>
+                                                    Download Acceptance Letter
+                                                </a>
+                                            </div>
+                                        </div>
+                                        
+                                        @if(!$asesi->file_sertifikat)
+                                            <p class="text-xs text-blue-700 mt-3">
+                                                Silakan hubungi admin untuk informasi lebih lanjut mengenai sertifikat yang belum tersedia.
+                                            </p>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -138,8 +173,8 @@
                             <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
-                            <p class="text-lg font-medium text-gray-700 mb-2">Belum Ada Data Hasil Asesmen</p>
-                            <p class="text-gray-600">Data hasil asesmen Anda belum tersedia. Silakan hubungi asesor atau admin untuk informasi lebih lanjut.</p>
+                            <p class="text-lg font-medium text-gray-700 mb-2">Belum Ada Data Rekomendasi Asesmen</p>
+                            <p class="text-gray-600">Data rekomendasi asesmen Anda belum tersedia. Silakan hubungi asesor atau admin untuk informasi lebih lanjut.</p>
                         </div>
                     @endif
                 </div>

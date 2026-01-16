@@ -128,7 +128,7 @@
                     <td class="border border-gray-300 p-2 h-24"></td>
                 </tr>
                 <tr>
-                    <td class="border border-gray-300 p-2 font-semibold">Pencatatan Penolakan Hasil Asesmen</td>
+                    <td class="border border-gray-300 p-2 font-semibold">Pencatatan Penolakan Rekomendasi Asesmen</td>
                 </tr>
                 <tr>
                     <td class="border border-gray-300 p-2 h-24"></td>

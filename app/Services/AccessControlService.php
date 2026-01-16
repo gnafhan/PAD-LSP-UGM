@@ -206,4 +206,64 @@ class AccessControlService
 
         return Asesor::whereIn('id_asesor', $assignedAsesorIds)->get();
     }
+
+    /**
+     * Check if user email is invited to any event.
+     * 
+     * Requirements: 5.4, 6.1
+     *
+     * @param string $email The email address to check
+     * @return bool Whether the email is invited
+     */
+    public function isEmailInvited(string $email): bool
+    {
+        return \App\Models\EventParticipant::where('email', strtolower($email))->exists();
+    }
+
+    /**
+     * Get participant record for email.
+     * 
+     * Requirements: 5.4, 7.1, 7.2
+     *
+     * @param string $email The email address to look up
+     * @return \App\Models\EventParticipant|null The participant record or null if not found
+     */
+    public function getParticipantByEmail(string $email): ?\App\Models\EventParticipant
+    {
+        return \App\Models\EventParticipant::with(['event', 'skema'])
+            ->where('email', strtolower($email))
+            ->first();
+    }
+
+    /**
+     * Mark participant as registered.
+     * 
+     * Requirements: 7.7
+     *
+     * @param string $email The email address of the participant
+     * @return void
+     */
+    public function markAsRegistered(string $email): void
+    {
+        \App\Models\EventParticipant::where('email', strtolower($email))
+            ->update([
+                'invitation_status' => 'registered',
+                'registered_at' => now(),
+            ]);
+    }
+
+    /**
+     * Check if user has access to assessment.
+     * 
+     * Requirements: 6.3, 6.4
+     *
+     * @param User $user The user to check
+     * @return bool Whether the user can access assessment
+     */
+    public function canAccessAssessment(User $user): bool
+    {
+        return \App\Models\EventParticipant::where('email', strtolower($user->email))
+            ->where('invitation_status', 'registered')
+            ->exists();
+    }
 }

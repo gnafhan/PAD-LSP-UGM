@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UKSeeder::class,
             ElemenUKSeeder::class,
             SkemaSeeder::class,
+            FakultasSeeder::class,
             UsersSeeder::class,
             AsesorSeeder::class,
             TandaTanganAsesorSeeder::class,

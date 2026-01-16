@@ -31,6 +31,7 @@ class Asesi extends Model
         'nim',
         'id_user',
         'file_sertifikat',
+        'file_acceptance_letter',
         'id_skema',
         'file_kelengkapan_pemohon',
         'ttd_pemohon',

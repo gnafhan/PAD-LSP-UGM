@@ -111,7 +111,7 @@ class SidebarService
             'items' => [
                 'HASIL_ASESMEN' => [
                     'route' => 'asesor.hasil-asesmen.index',
-                    'label' => 'Hasil Asesmen',
+                    'label' => 'Rekomendasi Asesmen',
                     'icon' => 'result',
                 ],
                 'AK02' => [

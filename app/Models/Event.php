@@ -25,8 +25,10 @@ class Event extends Model
         'tanggal_mulai_event',
         'tanggal_berakhir_event',
         'tipe_event',
+        'metode_pelaksanaan',
         'periode_pelaksanaan',
         'tahun_pelaksanaan',
+        'surat_penetapan_path',
     ];
 
     protected $dates = ['tanggal_mulai_event', 'tanggal_berakhir_event'];
@@ -60,6 +62,38 @@ class Event extends Model
     public function rincianAsesmen(): HasMany
     {
         return $this->hasMany(RincianAsesmen::class, 'id_event', 'id_event');
+    }
+
+    /**
+     * Get all participants for this event.
+     */
+    public function participants(): HasMany
+    {
+        return $this->hasMany(EventParticipant::class, 'id_event', 'id_event');
+    }
+
+    /**
+     * Get participants grouped by skema.
+     */
+    public function participantsBySkema()
+    {
+        return $this->participants()->with('skema')->get()->groupBy('id_skema');
+    }
+
+    /**
+     * Get total participant count for this event.
+     */
+    public function getParticipantCount(): int
+    {
+        return $this->participants()->count();
+    }
+
+    /**
+     * Get registered participant count for this event.
+     */
+    public function getRegisteredCount(): int
+    {
+        return $this->participants()->registered()->count();
     }
 
     protected static function boot()

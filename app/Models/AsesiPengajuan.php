@@ -32,6 +32,8 @@ class AsesiPengajuan extends Model
         'alamat_rumah',
         'no_telp',
         'pendidikan_terakhir',
+        'id_fakultas',
+        'id_program_studi',
         'skema_sertifikasi',
         'nama_skema',
         'nomor_skema',
@@ -168,5 +170,17 @@ class AsesiPengajuan extends Model
     public function admin()
     {
         return $this->belongsTo(User::class, 'id_admin', 'id_user');
+    }
+
+    // Fakultas relationship
+    public function fakultas()
+    {
+        return $this->belongsTo(Fakultas::class, 'id_fakultas', 'id_fakultas');
+    }
+
+    // Program Studi relationship
+    public function programStudi()
+    {
+        return $this->belongsTo(ProgramStudi::class, 'id_program_studi', 'id_program_studi');
     }
 }

@@ -652,7 +652,7 @@
                 <div>
                   <h3 class="text-lg font-semibold text-gray-800 mb-4 mt-7 flex items-center">
                     <div class="flex-shrink-0 bg-indigo-100 text-indigo-800 font-bold text-sm rounded-full h-6 w-6 flex items-center justify-center mr-2">4</div>
-                    Hasil Asesmen
+                    Rekomendasi Asesmen
                   </h3>
                   <div class="overflow-x-auto w-full bg-white rounded-lg border border-gray-200 shadow-sm">
                     <table class="min-w-full w-full divide-y divide-gray-200">
@@ -675,8 +675,8 @@
                                 </svg>
                               </div>
                               <div class="ml-3">
-                                <div class="text-sm font-medium text-gray-900">Hasil Asesmen</div>
-                                <div class="text-xs text-gray-500">Hasil dari asesmen</div>
+                                <div class="text-sm font-medium text-gray-900">Rekomendasi Asesmen</div>
+                                <div class="text-xs text-gray-500">Rekomendasi dari asesmen</div>
                               </div>
                             </div>
                           </td>

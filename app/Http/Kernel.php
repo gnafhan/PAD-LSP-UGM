@@ -73,5 +73,8 @@ class Kernel extends HttpKernel
         
         // Dynamic Assessment Flow - Asesi access control
         'asesi.assessment' => \App\Http\Middleware\CheckAsesiAssessmentAccess::class,
+        
+        // Event-Based Invitation System - Asesi invitation check
+        'asesi.invitation' => \App\Http\Middleware\CheckAsesiInvitation::class,
     ];
 }

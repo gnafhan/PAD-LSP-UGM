@@ -45,6 +45,57 @@ Route::get('/test-custom-resize', function () {
     return view('test-custom-resize');
 })->name('test.custom.resize');
 
+// Debug route for acceptance letter - REMOVE IN PRODUCTION
+Route::get('/debug/acceptance-letter/{id_asesi}', function($id_asesi) {
+    $asesi = \App\Models\Asesi::with(['skema', 'rincianAsesmen.hasilAsesmen'])->find($id_asesi);
+    $user = Auth::user();
+    
+    if (!$asesi) {
+        return response()->json(['error' => 'Asesi not found']);
+    }
+    
+    $userAsesi = null;
+    if ($user && $user->role === 'asesi') {
+        $userAsesi = \App\Models\Asesi::where('id_user', $user->id_user)->first();
+    }
+    
+    return response()->json([
+        'asesi' => [
+            'id_asesi' => $asesi->id_asesi,
+            'nama' => $asesi->nama_asesi,
+            'id_user' => $asesi->id_user,
+        ],
+        'user' => $user ? [
+            'id_user' => $user->id_user,
+            'role' => $user->role,
+            'email' => $user->email,
+        ] : null,
+        'user_asesi' => $userAsesi ? [
+            'id_asesi' => $userAsesi->id_asesi,
+            'nama' => $userAsesi->nama_asesi,
+        ] : null,
+        'rincian_asesmen' => $asesi->rincianAsesmen ? [
+            'id' => $asesi->rincianAsesmen->id_rincian_asesmen,
+            'id_asesor' => $asesi->rincianAsesmen->id_asesor,
+        ] : null,
+        'hasil_asesmen' => $asesi->rincianAsesmen && $asesi->rincianAsesmen->hasilAsesmen->isNotEmpty() ? [
+            'id' => $asesi->rincianAsesmen->hasilAsesmen->first()->id,
+            'status' => $asesi->rincianAsesmen->hasilAsesmen->first()->status,
+            'tanggal_selesai' => $asesi->rincianAsesmen->hasilAsesmen->first()->tanggal_selesai,
+        ] : null,
+        'authorization' => [
+            'is_admin' => $user && $user->role === 'admin',
+            'is_own_asesi' => $userAsesi && $userAsesi->id_asesi === $id_asesi,
+            'can_download' => ($user && $user->role === 'admin') || ($userAsesi && $userAsesi->id_asesi === $id_asesi),
+        ],
+        'eligibility' => [
+            'has_rincian' => $asesi->rincianAsesmen !== null,
+            'has_hasil' => $asesi->rincianAsesmen && $asesi->rincianAsesmen->hasilAsesmen->isNotEmpty(),
+            'is_kompeten' => $asesi->rincianAsesmen && $asesi->rincianAsesmen->hasilAsesmen->isNotEmpty() && $asesi->rincianAsesmen->hasilAsesmen->first()->status === 'kompeten',
+        ],
+    ]);
+});
+
 // Level: user
 Route::middleware(['role:user'])->prefix('user')->group(function () {
 
@@ -64,6 +115,7 @@ Route::middleware(['role:user'])->prefix('user')->group(function () {
         // Data Pribadi
         Route::get('/b1', [PengajuanController::class, 'showDataPribadi'])->name('pribadi');
         Route::post('/save-data-pribadi', [PengajuanController::class, 'saveDataPribadi']);
+        Route::get('/get-program-studi', [PengajuanController::class, 'getProgramStudi']);
 
         // Data Sertifikasi
         Route::get('/b2', [PengajuanController::class, 'showDataSertifikasi'])->name('sertifikasi');
@@ -240,6 +292,19 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::put('update/{id}', [EventController::class, 'updateDataEvent'])->name('update');
         Route::delete('delete/{id}', [EventController::class, 'destroyDataEvent'])->name('delete');
         Route::get('detail/{id}', [EventController::class, 'detailEvent'])->name('detail');
+        Route::post('{id}/surat-penetapan', [EventController::class, 'uploadSuratPenetapan'])->name('surat-penetapan.upload');
+        Route::get('{id}/surat-penetapan/download', [EventController::class, 'downloadSuratPenetapan'])->name('surat-penetapan.download');
+    });
+
+    // Event Participant Management (Event-Based Invitation System)
+    // Requirements: 1.1, 1.2, 9.1, 9.2
+    Route::prefix('events/{event}/participants')->name('admin.events.participants.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\EventParticipantController::class, 'index'])->name('index');
+        Route::post('/', [\App\Http\Controllers\Admin\EventParticipantController::class, 'store'])->name('store');
+        Route::post('/bulk', [\App\Http\Controllers\Admin\EventParticipantController::class, 'storeBulk'])->name('bulk');
+        Route::post('/check-status', [\App\Http\Controllers\Admin\EventParticipantController::class, 'checkStatus'])->name('check-status');
+        Route::put('/{participant}', [\App\Http\Controllers\Admin\EventParticipantController::class, 'update'])->name('update');
+        Route::delete('/{participant}', [\App\Http\Controllers\Admin\EventParticipantController::class, 'destroy'])->name('destroy');
     });
 
 
@@ -332,69 +397,88 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
 //Level: asesi
 Route::middleware(['role:asesi'])->prefix('asesi')->group(function () {
 
-    // Dashboard Asesi
-    Route::get('/home', [AsesiController::class, 'index'])->name('home-asesi');
-    Route::get('/', [AsesiController::class, 'indexAssesi'])->name('asesi.index');
-
-    // APL-02 Asesmen Mandiri (APL is mandatory, no middleware needed)
-    Route::get('/apl2', [AsesiController::class, 'asesmenMandiri'])->name('asesi.asesmen.mandiri');
-
-    // ALUR FR.APL-01 (APL is mandatory, no middleware needed)
-    Route::get('/apl1/{id}', [AsesiController::class, 'detailApl1'])->name('asesi.apl1-detail');
-
-    // Pilih Aksi Home Asesi
-    Route::view('/aksi', 'home/home-asesi/pilih-aksi')->name('asesi.pilih-aksi');
-    Route::view('/persetujuan', 'home/home-asesi/persetujuan')->name('asesi.persetujuan');
-
-    // FRAK-01, FRAK-03, FRIA-02 with access control middleware
-    // Requirements: 5.3 - Redirect with message if accessing disabled assessment
-    Route::prefix('fr')->name('asesi.fr.')->group(function () {
-        Route::view('/ak1', 'home/home-asesi/FRAK-01/frak01')->name('ak1')->middleware('asesi.assessment:AK01');
-        Route::view('/ak2', 'home/home-asesi/FRAK-02/frak02')->name('ak2'); // Hasil Asesmen - no middleware, always available
-        Route::view('/ak3', 'home/home-asesi/FRAK-03/frak3')->name('ak3');
-        Route::view('/ak07', 'home/home-asesi/FRAK-07/frak07')->name('ak07')->middleware('asesi.assessment:AK07');
+    // Registration Flow (Event-Based Invitation System)
+    // Requirements: 6.1, 7.1, 7.4
+    // Auth middleware only - allows invited users to complete registration
+    Route::prefix('registration')->middleware(['auth'])->name('asesi.registration.')->group(function () {
+        Route::get('/start', [\App\Http\Controllers\Asesi\RegistrationController::class, 'start'])->name('start');
+        Route::post('/complete', [\App\Http\Controllers\Asesi\RegistrationController::class, 'complete'])->name('complete');
     });
 
-    // FRIA-02 with access control middleware
-    Route::middleware(['asesi.assessment:IA02'])->group(function () {
-        Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
-        Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
-        Route::get('/ia2/soal/{id}', [AsesiController::class, 'soal_praktek_fria02'])->name('asesi.fr.ia2.soal');
-    });
+    // All other asesi routes require invitation check
+    // Requirements: 6.1, 6.3, 6.4
+    Route::middleware(['asesi.invitation'])->group(function () {
+        // Dashboard Asesi
+        Route::get('/home', [AsesiController::class, 'index'])->name('home-asesi');
+        Route::get('/', [AsesiController::class, 'indexAssesi'])->name('asesi.index');
 
-    // FRIA-05 Pertanyaan Tertulis Pilihan Ganda with access control middleware
-    Route::get("/ia05", function () {
-        return view("home/home-asesi/FRIA-05/fria05");
-    })->name("asesi.fr.ia05")->middleware("asesi.assessment:IA05");
+        // APL-02 Asesmen Mandiri (APL is mandatory, no middleware needed)
+        Route::get('/apl2', [AsesiController::class, 'asesmenMandiri'])->name('asesi.asesmen.mandiri');
 
-    // IA02 Tugas Management with access control middleware
-    Route::prefix('tugas')->name('asesi.tugas.')->middleware(['asesi.assessment:IA02'])->group(function () {
-        Route::get('/soal-praktek', [IA02TugasController::class, 'soalPraktek'])->name('soal-praktek');
-        Route::post('/store', [IA02TugasController::class, 'store'])->name('store');
-        Route::get('/{id}', [IA02TugasController::class, 'show'])->name('show');
-        Route::delete('/{id}', [IA02TugasController::class, 'destroy'])->name('destroy');
-        Route::get('/{id}/download', [IA02TugasController::class, 'downloadFile'])->name('download');
-        Route::get('/data/json', [IA02TugasController::class, 'getTasks'])->name('data');
-    });
+        // ALUR FR.APL-01 (APL is mandatory, no middleware needed)
+        Route::get('/apl1/{id}', [AsesiController::class, 'detailApl1'])->name('asesi.apl1-detail');
 
-    // FRAK-04 with access control middleware
-    Route::get('/frak04', [AK04Controller::class, 'index'])->name('asesi.frak04')->middleware('asesi.assessment:AK04');
-    Route::post('/frak04', [AK04Controller::class, 'storeBanding'])->name('store.banding.asesi')->middleware('asesi.assessment:AK04');
+        // Pilih Aksi Home Asesi
+        Route::view('/aksi', 'home/home-asesi/pilih-aksi')->name('asesi.pilih-aksi');
+        Route::view('/persetujuan', 'home/home-asesi/persetujuan')->name('asesi.persetujuan');
 
-    // Jadwal Uji Kompetensi
-    Route::view('/jadwal-uji-kompetensi', 'home/home-asesi/APL-02/jadwal-uji-kompetensi')->name('asesi.jadwal-uji-kompetensi');
+        // FRAK-01, FRAK-03, FRIA-02 with access control middleware
+        // Requirements: 5.3 - Redirect with message if accessing disabled assessment
+        Route::prefix('fr')->name('asesi.fr.')->group(function () {
+            Route::view('/ak1', 'home/home-asesi/FRAK-01/frak01')->name('ak1')->middleware('asesi.assessment:AK01');
+            Route::view('/ak2', 'home/home-asesi/FRAK-02/frak02')->name('ak2'); // Hasil Asesmen - no middleware, always available
+            Route::view('/ak3', 'home/home-asesi/FRAK-03/frak3')->name('ak3');
+            Route::view('/ak07', 'home/home-asesi/FRAK-07/frak07')->name('ak07')->middleware('asesi.assessment:AK07');
+        });
 
-    // Konsul Prauji with access control middleware
-    Route::view('/konsul-prauji', 'home/home-asesi/konsul-prauji')->name('asesi.konsul-prauji')->middleware('asesi.assessment:KONSUL_PRA_UJI');
+        // FRIA-02 with access control middleware
+        Route::middleware(['asesi.assessment:IA02'])->group(function () {
+            Route::get('/ia2', [AsesiController::class, 'fria2'])->name('asesi.fr.ia2');
+            Route::get('/ia2/{id}', [AsesiController::class, 'detail_fria02'])->name('asesi.fr.ia2.detail');
+            Route::get('/ia2/soal/{id}', [AsesiController::class, 'soal_praktek_fria02'])->name('asesi.fr.ia2.soal');
+        });
 
-    // Certificate Download (uploaded by admin)
-    // Requirements: 4.1, 4.2, 4.3
-    Route::prefix('certificate')->name('asesi.certificate.')->group(function () {
-        Route::get('/download', [\App\Http\Controllers\AsesiController::class, 'downloadCertificate'])->name('download');
-    });
+        // FRIA-05 Pertanyaan Tertulis Pilihan Ganda with access control middleware
+        Route::get("/ia05", function () {
+            return view("home/home-asesi/FRIA-05/fria05");
+        })->name("asesi.fr.ia05")->middleware("asesi.assessment:IA05");
 
-    // Hasil Asesmen
-    Route::get('/hasil-asesmen', [AsesiController::class, 'hasilAsesmen'])->name('asesi.hasil-asesmen');
+        // IA02 Tugas Management with access control middleware
+        Route::prefix('tugas')->name('asesi.tugas.')->middleware(['asesi.assessment:IA02'])->group(function () {
+            Route::get('/soal-praktek', [IA02TugasController::class, 'soalPraktek'])->name('soal-praktek');
+            Route::post('/store', [IA02TugasController::class, 'store'])->name('store');
+            Route::get('/{id}', [IA02TugasController::class, 'show'])->name('show');
+            Route::delete('/{id}', [IA02TugasController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}/download', [IA02TugasController::class, 'downloadFile'])->name('download');
+            Route::get('/data/json', [IA02TugasController::class, 'getTasks'])->name('data');
+        });
+
+        // FRAK-04 with access control middleware
+        Route::get('/frak04', [AK04Controller::class, 'index'])->name('asesi.frak04')->middleware('asesi.assessment:AK04');
+        Route::post('/frak04', [AK04Controller::class, 'storeBanding'])->name('store.banding.asesi')->middleware('asesi.assessment:AK04');
+
+        // Jadwal Uji Kompetensi
+        Route::view('/jadwal-uji-kompetensi', 'home/home-asesi/APL-02/jadwal-uji-kompetensi')->name('asesi.jadwal-uji-kompetensi');
+
+        // Konsul Prauji with access control middleware
+        Route::view('/konsul-prauji', 'home/home-asesi/konsul-prauji')->name('asesi.konsul-prauji')->middleware('asesi.assessment:KONSUL_PRA_UJI');
+
+        // Certificate Download (uploaded by admin)
+        // Requirements: 4.1, 4.2, 4.3
+        Route::prefix('certificate')->name('asesi.certificate.')->group(function () {
+            Route::get('/download', [\App\Http\Controllers\AsesiController::class, 'downloadCertificate'])->name('download');
+        });
+        
+        // Acceptance Letter (auto-generated)
+        Route::prefix('acceptance-letter')->name('asesi.acceptance-letter.')->group(function () {
+            Route::get('/{id_asesi}/download', [\App\Http\Controllers\AcceptanceLetterController::class, 'download'])->name('download');
+            Route::get('/{id_asesi}/preview', [\App\Http\Controllers\AcceptanceLetterController::class, 'preview'])->name('preview');
+        });
+
+        // Hasil Asesmen
+        Route::get('/hasil-asesmen', [AsesiController::class, 'hasilAsesmen'])->name('asesi.hasil-asesmen');
+
+    }); // End of asesi.invitation middleware group
 
     // Logout asesi
     Route::post('/logout', function () {
@@ -611,6 +695,12 @@ Route::get('/', function () {
     return view('home/home');
 })->name('home-visitor');
 
+// Uninvited user message (Event-Based Invitation System)
+// Requirements: 5.5, 6.2
+Route::get('/uninvited', function () {
+    return view('home/home-visitor/uninvited');
+})->name('uninvited');
+
 // Page autentikasi
 Route::get('/login', function () {
     return view('home/home-visitor/login');
@@ -622,15 +712,27 @@ Route::get('/dev/login', function () {
 })->name('dev-login');
 Route::post('/dev/login', [LoginRegisterController::class, 'authenticate'])->name('login.post');
 
+
+// Old registration routes - Redirected to login (Event-Based Invitation System)
+// Requirements: 11.1, 11.2, 11.3
 Route::get('/dev/register', function () {
-    return view('home/home-visitor/dev-register');
+    return redirect()->route('login')->with('info', 'Registration is now by invitation only. Please contact the administrator.');
 })->name('dev-register');
-Route::post('/dev/register', [LoginRegisterController::class, 'store'])->name('register.store');
+
+Route::post('/dev/register', function () {
+    return redirect()->route('login')->with('info', 'Registration is now by invitation only. Please contact the administrator.');
+})->name('register.store');
 
 
-// Login with Google
+
+// Login with Google (Legacy - for existing users)
 Route::get('oauth/google', [\App\Http\Controllers\OauthController::class, 'redirectToProvider'])->name('oauth.google');
 Route::get('oauth/google/callback', [\App\Http\Controllers\OauthController::class, 'handleProviderCallback'])->name('oauth.google.callback');
+
+// Google OAuth for Event-Based Invitation System
+// Requirements: 5.1, 5.2, 5.3
+Route::get('auth/google', [\App\Http\Controllers\Auth\GoogleOAuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [\App\Http\Controllers\Auth\GoogleOAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 // Page reset password
 Route::get('/reset-password', function () {
