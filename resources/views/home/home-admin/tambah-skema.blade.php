@@ -173,10 +173,10 @@
                             
                             <!-- Bidang Field -->
                             <div class="mb-4">
-                                <label for="id_bidang" class="block text-sm font-medium text-gray-700 mb-1">Bidang Unit Kompetensi <span class="text-red-500">*</span></label>
+                                <label for="id_bidang" class="block text-sm font-medium text-gray-700 mb-1">Bidang Kompetensi <span class="text-red-500">*</span></label>
                                 <select name="id_bidang" id="id_bidang"
                                        class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('id_bidang') border-red-500 @enderror">
-                                    <option value="" disabled selected>--- Pilih Bidang Unit Kompetensi ---</option>
+                                    <option value="" disabled selected>--- Pilih Bidang Kompetensi ---</option>
                                     @foreach($daftarBidangUK as $bidangUK)
                                         <option value="{{ $bidangUK->id_bidang }}" {{ old('id_bidang') == $bidangUK->id_bidang ? 'selected' : '' }}>
                                             {{ $bidangUK->nama_bidang }}
@@ -194,7 +194,7 @@
                                 <div class="flex space-x-2">
                                     <select id="id_uk"
                                            class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                        <option value="" disabled selected>Pilih Bidang Unit Kompetensi Terlebih Dahulu</option>
+                                        <option value="" disabled selected>Pilih Bidang Kompetensi Terlebih Dahulu</option>
                                     </select>
                                     <button type="button" id="tambahBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" viewBox="0 0 20 20" fill="currentColor">
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         } else {
-            ukSelect.html('<option value="" disabled selected>Pilih Bidang Unit Kompetensi Terlebih Dahulu</option>');
+            ukSelect.html('<option value="" disabled selected>Pilih Bidang Kompetensi Terlebih Dahulu</option>');
         }
     });
 
