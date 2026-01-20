@@ -178,6 +178,16 @@ Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::put('{id}/update', [UnitKompetensiPageController::class, 'updateDataUk'])->name('update');
     });
 
+    // Manajemen Bidang Unit Kompetensi
+    Route::prefix('bidang-uk')->name('admin.bidang-uk.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ManajemenBidangUK\BidangUKController::class, 'index'])->name('index');
+        Route::get('create', [\App\Http\Controllers\Admin\ManajemenBidangUK\BidangUKController::class, 'create'])->name('create');
+        Route::post('create', [\App\Http\Controllers\Admin\ManajemenBidangUK\BidangUKController::class, 'store'])->name('store');
+        Route::get('{id}/edit', [\App\Http\Controllers\Admin\ManajemenBidangUK\BidangUKController::class, 'edit'])->name('edit');
+        Route::put('{id}/update', [\App\Http\Controllers\Admin\ManajemenBidangUK\BidangUKController::class, 'update'])->name('update');
+        Route::delete('{id}', [\App\Http\Controllers\Admin\ManajemenBidangUK\BidangUKController::class, 'destroy'])->name('destroy');
+    });
+
     Route::prefix('bidang-kompetensi')->name('admin.bidang-kompetensi.')->group(function () {
         Route::get('/', [BidangKompetensiPageController::class, 'indexDataBidangKompetensi'])->name('index');
         Route::get('create', [BidangKompetensiPageController::class, 'createDataBidangKompetensi'])->name('create');
