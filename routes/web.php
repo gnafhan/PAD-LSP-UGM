@@ -700,8 +700,25 @@ Route::post('/logout', function () {
     return redirect('/login');
 })->name('logout');
 
-//Guest (tanpa login)
+//Guest (tanpa login) - with auto redirect if logged in
 Route::get('/', function () {
+    // If user is logged in, redirect to appropriate dashboard
+    if (Auth::check()) {
+        $user = Auth::user();
+        $role = $user->role ?? $user->level ?? 'user'; // Support both 'role' and 'level' column
+        
+        if ($role === 'admin') {
+            return redirect()->route('home-admin');
+        } elseif ($role === 'asesi') {
+            return redirect()->route('home-asesi');
+        } elseif ($role === 'asesor') {
+            return redirect()->route('home-asesor');
+        } elseif ($role === 'user') {
+            return redirect()->route('home');
+        }
+    }
+    
+    // If not logged in, show landing page
     return view('home/home');
 })->name('home-visitor');
 

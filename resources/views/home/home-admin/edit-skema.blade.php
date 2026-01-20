@@ -177,6 +177,28 @@
                             @enderror
                         </div>
 
+                        <!-- Harga Field (Optional) -->
+                        <div>
+                            <label for="harga" class="block text-sm font-medium text-gray-700 mb-1">
+                                Harga Sertifikasi 
+                                <span class="text-gray-500 text-xs">(Opsional)</span>
+                            </label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                </div>
+                                <input type="text" name="harga" id="harga" 
+                                       class="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('harga') border-red-500 @enderror"
+                                       placeholder="0"
+                                       value="{{ old('harga', $skema->harga ? number_format($skema->harga, 0, ',', '.') : '') }}">
+                            </div>
+                            @error('harga')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @else
+                                <p class="mt-1 text-sm text-gray-500">Kosongkan jika harga belum ditentukan</p>
+                            @enderror
+                        </div>
+
                         <hr class="border-gray-200">
 
                         <!-- Unit Kompetensi Section -->
@@ -286,6 +308,27 @@ document.addEventListener('DOMContentLoaded', function() {
             fileLabel.textContent = 'Pilih file PDF';
         }
     });
+
+    // Format harga input dengan pemisah ribuan
+    const hargaInput = document.getElementById('harga');
+    if (hargaInput) {
+        hargaInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Hapus semua karakter non-digit
+            if (value) {
+                e.target.value = parseInt(value).toLocaleString('id-ID');
+            } else {
+                e.target.value = '';
+            }
+        });
+
+        // Sebelum submit, hapus pemisah ribuan
+        const form = hargaInput.closest('form');
+        form.addEventListener('submit', function() {
+            if (hargaInput.value) {
+                hargaInput.value = hargaInput.value.replace(/\./g, '');
+            }
+        });
+    }
 
     // Tambahkan CSRF token untuk semua request AJAX
     $.ajaxSetup({

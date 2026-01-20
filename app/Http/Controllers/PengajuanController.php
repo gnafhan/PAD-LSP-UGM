@@ -47,8 +47,21 @@ class PengajuanController extends Controller
         $user = Auth::user();
         $data = $user->name ?? $user->email ?? 'User';
 
+        // Check if user already has a signature saved
+        $existingSignature = null;
+        $filePattern = 'signatures/ttd_' . $idUser . '.*';
+        $existingFiles = Storage::disk('public')->files('signatures');
+        
+        foreach ($existingFiles as $file) {
+            if (preg_match('/signatures\/ttd_' . $idUser . '\.[a-z]+$/i', $file)) {
+                $existingSignature = Storage::url($file);
+                break;
+            }
+        }
+
         return view('home.home-visitor.persetujuan', [
             'data' => $data,
+            'existingSignature' => $existingSignature,
         ]);
     }
 
@@ -253,7 +266,6 @@ class PengajuanController extends Controller
 
         // Jika dalam mode revisi, tampilkan langsung form tanpa pengecekan lain
         if ($draft && $draft->status == AsesiPengajuan::STATUS_NEEDS_REVISION) {
-            $skemaList = Skema::all();
             $revisionMessage = null;
             $isRevision = true;
 
@@ -262,8 +274,7 @@ class PengajuanController extends Controller
             }
 
             return view('home.home-visitor.APL-01.data-sertifikasi', [
-                'pengajuan' => $draft, // Menggunakan 'pengajuan' untuk konsistensi
-                'skemaList' => $skemaList,
+                'pengajuan' => $draft,
                 'revisionMessage' => $revisionMessage,
                 'isRevision' => $isRevision,
                 'eventParticipant' => $eventParticipant
@@ -278,10 +289,8 @@ class PengajuanController extends Controller
 
         // Untuk draft normal yang sudah ada
         if ($draft) {
-            $skemaList = Skema::all();
             return view('home.home-visitor.APL-01.data-sertifikasi', [
-                'pengajuan' => $draft, // Menggunakan 'pengajuan' untuk konsistensi
-                'skemaList' => $skemaList,
+                'pengajuan' => $draft,
                 'eventParticipant' => $eventParticipant
             ]);
         }
@@ -295,12 +304,8 @@ class PengajuanController extends Controller
         // Jika tidak ada draft tapi ada data pribadi di session, lanjutkan
         $dataSertifikasi = session('dataSertifikasi', []);
 
-        // Get data Skema yang mempunyai informasi lengkap
-        $skemaList = Skema::where('has_complete_info', 1)->get();
-
         return view('home.home-visitor.APL-01.data-sertifikasi', [
             'pengajuan' => (object)$dataSertifikasi,
-            'skemaList' => $skemaList,
             'revisionMessage' => null,
             'eventParticipant' => $eventParticipant
         ]);
@@ -317,15 +322,13 @@ class PengajuanController extends Controller
         if ($skema) {
             return response()->json([
                 'nomor_skema' => $skema->nomor_skema,
-                'dokumen_skkni' => $skema->dokumen_skkni,
-                'tujuan_asesmen' => 'sertifikasi' // Default value
+                'dokumen_skkni' => $skema->dokumen_skkni
             ]);
         }
 
         return response()->json([
             'nomor_skema' => '',
-            'dokumen_skkni' => null,
-            'tujuan_asesmen' => ''
+            'dokumen_skkni' => null
         ]);
     }
 
@@ -370,7 +373,6 @@ class PengajuanController extends Controller
         $validator = Validator::make($request->all(), [
             'skemaDropdown' => 'required',
             'nomorSkemaInput' => 'required',
-            'tujuan_asesmen' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -387,7 +389,6 @@ class PengajuanController extends Controller
         $dataSertifikasi = [
             'nama_skema' => $skema->nama_skema,
             'nomor_skema' => $request->nomorSkemaInput,
-            'tujuan_asesmen' => $request->tujuan_asesmen,
             'id_skema' => $skema->id_skema
         ];
 

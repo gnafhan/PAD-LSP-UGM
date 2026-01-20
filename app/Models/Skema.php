@@ -29,6 +29,7 @@ class Skema extends Model
         'daftar_id_uk', //json
         'persyaratan_skema',
         'has_complete_info',
+        'harga',
     ];
 
     protected $casts = [

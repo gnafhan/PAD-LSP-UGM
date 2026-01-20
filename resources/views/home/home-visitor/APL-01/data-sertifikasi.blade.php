@@ -85,7 +85,7 @@
                     <h3 class="text-lg font-semibold text-gray-800">Data Sertifikasi</h3>
                 </div>
 
-                <p class="text-sm text-gray-600 mb-6 pl-11">Tuliskan Judul dan Nomor Skema Sertifikasi, Tujuan Asesmen serta Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi yang Anda ajukan.</p>
+                <p class="text-sm text-gray-600 mb-6 pl-11">Tuliskan Judul dan Nomor Skema Sertifikasi serta Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi yang Anda ajukan.</p>
             </div>
 
             <form id="sertifikasiForm" method="POST" action="{{ route('user.apl1.save.data.sertifikasi') }}">
@@ -95,33 +95,47 @@
                 <div class="bg-gray-50 p-6 rounded-lg mb-8 border border-gray-100 shadow-sm">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
-                            <label for="skemaDropdown" class="block text-sm font-medium text-gray-700 mb-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
                                 Judul Skema Sertifikasi
                                 @if(isset($eventParticipant) && $eventParticipant)
                                     <span class="ml-2 text-xs text-blue-600 font-normal">(Sudah ditentukan dari undangan event)</span>
                                 @endif
                             </label>
-                            <select id="skemaDropdown" name="skemaDropdown" 
-                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition-colors {{ isset($eventParticipant) && $eventParticipant ? 'bg-gray-100 cursor-not-allowed' : '' }}"
-                                {{ isset($eventParticipant) && $eventParticipant ? 'disabled' : '' }}>
-                                <option value="">Pilih Skema</option>
-                                @foreach($skemaList as $skema)
-                                    <option value="{{ $skema->id_skema }}" 
-                                        {{ (isset($eventParticipant) && $eventParticipant && $eventParticipant->id_skema == $skema->id_skema) ? 'selected' : '' }}
-                                        {{ (!isset($eventParticipant) || !$eventParticipant) && ($pengajuan->nama_skema ?? old('skemaDropdown')) == $skema->nama_skema ? 'selected' : '' }}>
-                                        {{ $skema->nama_skema }}
-                                    </option>
-                                @endforeach
-                            </select>
                             @if(isset($eventParticipant) && $eventParticipant)
-                                <!-- Hidden input to submit the value since disabled fields don't submit -->
-                                <input type="hidden" name="skemaDropdown" value="{{ $eventParticipant->id_skema }}">
+                                <!-- Display as text for event participants -->
+                                <div class="w-full p-3 bg-blue-50 border border-blue-200 rounded-md text-gray-800">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span class="font-medium">{{ $eventParticipant->skema->nama_skema ?? 'Skema tidak ditemukan' }}</span>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="skemaDropdown" name="skemaDropdown" value="{{ $eventParticipant->id_skema }}">
+                            @elseif(!isset($eventParticipant) || !$eventParticipant)
+                                <!-- Display message for non-registered users -->
+                                <div class="w-full p-4 bg-red-50 border border-red-200 rounded-md">
+                                    <div class="flex items-start">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                        <div>
+                                            <p class="text-sm font-medium text-red-800">Belum Terdaftar di Skema Apapun</p>
+                                            <p class="text-sm text-red-700 mt-1">Silakan hubungi admin untuk mendaftarkan email Anda ke skema sertifikasi.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="skemaDropdown" name="skemaDropdown" value="">
                             @endif
                         </div>
 
                         <div>
                             <label for="nomorSkemaInput" class="block text-sm font-medium text-gray-700 mb-1">Nomor Skema Sertifikasi</label>
+                            @if(isset($eventParticipant) && $eventParticipant)
                             <input type="text" id="nomorSkemaInput" name="nomorSkemaInput" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-gray-100" value="{{ $pengajuan->nomor_skema ?? old('nomorSkemaInput') }}" readonly>
+                            @else
+                            <input type="text" id="nomorSkemaInput" name="nomorSkemaInput" class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" value="-" readonly>
+                            @endif
                         </div>
 
                         <!-- Tambahkan ini setelah div nomor skema sertifikasi dan sebelum tujuan asesmen -->
@@ -132,7 +146,13 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
-                                    <p class="mt-2 text-sm text-gray-500">Pilih skema terlebih dahulu untuk melihat dokumen SKKNI</p>
+                                    <p class="mt-2 text-sm text-gray-500">
+                                        @if(isset($eventParticipant) && $eventParticipant)
+                                            Memuat dokumen skema...
+                                        @else
+                                            Dokumen skema tidak tersedia
+                                        @endif
+                                    </p>
                                 </div>
                                 <div id="dokumen-skkni-viewer" class="hidden">
                                     <div class="pdf-container border rounded-lg overflow-hidden h-64">
@@ -152,17 +172,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div>
-                            <label for="tujuan_asesmen" class="block text-sm font-medium text-gray-700 mb-1">Tujuan Asesmen</label>
-                            <select id="tujuan_asesmen" name="tujuan_asesmen" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                                <option value="">Pilih Tujuan Asesmen</option>
-                                <option value="Sertifikasi" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'Sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
-                                <option value="Pengakuan Kompetensi Terkini (PKT)" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'Pengakuan Kompetensi Terkini (PKT)' ? 'selected' : '' }}>Pengakuan Kompetensi Terkini (PKT)</option>
-                                <option value="Rekognisi Pembelajaran Lampau (RPL)" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'rpl' ? 'selected' : '' }}>Rekognisi Pembelajaran Lampau (RPL)</option>
-                                <option value="lainnya" {{ ($pengajuan->tujuan_asesmen ?? old('tujuan_asesmen')) == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
-                            </select>
                         </div>
 
                     </div>
@@ -193,16 +202,30 @@
                                     </tr>
                                 </thead>
                                 <tbody id="ukTableBody" class="bg-white divide-y divide-gray-200">
+                                    @if(isset($eventParticipant) && $eventParticipant)
                                     <tr>
                                         <td colspan="4" class="px-4 py-4 text-sm text-gray-500 text-center">
                                             <div class="flex flex-col items-center justify-center py-4">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                                 </svg>
-                                                Pilih skema sertifikasi untuk menampilkan unit kompetensi
+                                                Memuat unit kompetensi...
                                             </div>
                                         </td>
                                     </tr>
+                                    @else
+                                    <tr>
+                                        <td colspan="4" class="px-4 py-4 text-sm text-gray-500 text-center">
+                                            <div class="flex flex-col items-center justify-center py-4">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                <p class="text-red-600 font-medium">Belum terdaftar di skema apapun</p>
+                                                <p class="text-gray-500 mt-1">Hubungi admin untuk mendaftar</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -227,6 +250,7 @@
                 Kembali
             </a>
 
+            @if(isset($eventParticipant) && $eventParticipant)
             <button type="button" id="btn-selanjutnya" class="px-4 py-2 rounded-md border border-transparent text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors flex items-center">
                 <span id="button-text">Simpan & Lanjutkan</span>
                 <span id="button-loading" class="hidden ml-1">
@@ -239,6 +263,14 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
             </button>
+            @else
+            <button type="button" disabled class="px-4 py-2 rounded-md border border-transparent text-white bg-gray-400 cursor-not-allowed flex items-center">
+                <span>Simpan & Lanjutkan</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </button>
+            @endif
         </div>
     </div>
 </div>
@@ -248,6 +280,19 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is not registered in any scheme and show modal
+        @if(!isset($eventParticipant) || !$eventParticipant)
+        Swal.fire({
+            icon: 'warning',
+            title: 'Belum Terdaftar di Skema',
+            html: '<p class="text-gray-700">Email Anda belum terdaftar di skema sertifikasi apapun.</p><p class="text-gray-700 mt-2">Silakan hubungi admin untuk mendaftarkan email Anda ke skema sertifikasi yang sesuai.</p>',
+            confirmButtonText: 'Mengerti',
+            confirmButtonColor: '#3B82F6',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        @endif
+
         // Setup CSRF token for AJAX requests
         $.ajaxSetup({
             headers: {
@@ -261,7 +306,6 @@
             @if(isset($eventParticipant) && $eventParticipant && $eventParticipant->skema)
             // For event participants, pre-populate nomor skema directly from server data
             $('#nomorSkemaInput').val('{{ $eventParticipant->skema->nomor_skema ?? "" }}');
-            $('#tujuan_asesmen').val('sertifikasi');
             
             // Handle dokumen SKKNI if available
             @if($eventParticipant->skema->dokumen_skkni ?? false)
@@ -284,19 +328,6 @@
             
             // Load unit kompetensi
             loadUnitKompetensi(initialSkema);
-            
-            // Show info message
-            Swal.fire({
-                icon: 'info',
-                title: 'Skema Sudah Ditentukan',
-                text: 'Skema sertifikasi Anda sudah ditentukan berdasarkan undangan event. Anda hanya perlu melengkapi data lainnya.',
-                confirmButtonColor: '#3B82F6',
-                timer: 5000,
-                timerProgressBar: true
-            });
-            @else
-            // For draft/non-event participants, trigger change to load data via AJAX
-            $('#skemaDropdown').trigger('change');
             @endif
         }
 
@@ -376,7 +407,8 @@
             });
         });
 
-        // Skema dropdown change handler
+        // Skema dropdown change handler (only for non-event participants with dropdown)
+        // Since we removed dropdown for event participants, this won't be triggered for them
         $('#skemaDropdown').change(function() {
             const idSkema = $(this).val();
 
@@ -384,7 +416,6 @@
                 // Get nomor skema
                 $.get('/user/apl1/get-nomor-skema', { id_skema: idSkema }, function(response) {
                     $('#nomorSkemaInput').val(response.nomor_skema || '');
-                    $('#tujuan_asesmen').val(response.tujuan_asesmen || 'sertifikasi');
 
                     // Tambahkan kode untuk menampilkan dokumen SKKNI
                     if (response.dokumen_skkni) {
@@ -411,7 +442,6 @@
             } else {
                 // Reset fields when no scheme is selected
                 $('#nomorSkemaInput').val('');
-                $('#tujuan_asesmen').val('');
 
                 // Reset dokumen SKKNI
                 $('#dokumen-skkni-placeholder').removeClass('hidden')
@@ -439,6 +469,19 @@
         $('#btn-selanjutnya').click(function(event) {
             event.preventDefault();
 
+            // Check if user is registered in a scheme
+            const skemaDropdown = $('#skemaDropdown').val();
+            
+            if (!skemaDropdown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Belum Terdaftar',
+                    text: 'Anda belum terdaftar di skema apapun. Silakan hubungi admin untuk mendaftarkan email Anda.',
+                    confirmButtonColor: '#EF4444'
+                });
+                return;
+            }
+
             // Show loading state
             const buttonText = document.getElementById('button-text');
             const buttonLoading = document.getElementById('button-loading');
@@ -448,17 +491,13 @@
             $('#btn-selanjutnya').prop('disabled', true);
 
             // Get form values
-            const skemaDropdown = $('#skemaDropdown').val();
             const nomorSkemaInput = $('#nomorSkemaInput').val();
-            const tujuanAsesmen = $('#tujuan_asesmen').val();
 
             // Validate form
             let errorMessage = '';
 
-            if (!skemaDropdown) {
-                errorMessage = 'Pilih judul skema sertifikasi';
-            } else if (!tujuanAsesmen) {
-                errorMessage = 'Pilih tujuan asesmen';
+            if (!nomorSkemaInput) {
+                errorMessage = 'Nomor skema tidak ditemukan';
             }
 
             if (errorMessage) {
@@ -485,7 +524,6 @@
                 data: {
                     skemaDropdown: skemaDropdown,
                     nomorSkemaInput: nomorSkemaInput,
-                    tujuan_asesmen: tujuanAsesmen,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {

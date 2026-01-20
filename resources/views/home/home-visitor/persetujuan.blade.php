@@ -59,16 +59,19 @@
                 </label>
 
                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
-                    <div class="space-y-1 text-center">
-                        <div id="signature-preview" class="hidden mb-3">
-                            <img id="preview-image" src="#" alt="Preview" class="mx-auto h-32 object-contain">
+                    <div class="space-y-1 text-center w-full">
+                        <div id="signature-preview" class="{{ isset($existingSignature) ? '' : 'hidden' }} mb-3">
+                            <img id="preview-image" src="{{ $existingSignature ?? '#' }}" alt="Preview" class="mx-auto h-32 object-contain">
+                            @if(isset($existingSignature))
+                            <p class="text-sm text-green-600 font-medium mt-2">✓ Tanda tangan sudah tersimpan</p>
+                            @endif
                         </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400 {{ isset($existingSignature) ? 'hidden' : '' }}" id="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                         </svg>
-                        <div class="flex text-sm text-gray-600">
+                        <div class="flex text-sm text-gray-600 justify-center">
                             <label for="signature" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
-                                <span>Upload tanda tangan</span>
+                                <span>{{ isset($existingSignature) ? 'Ganti tanda tangan' : 'Upload tanda tangan' }}</span>
                                 <input id="signature" name="signature" type="file" class="sr-only" accept="image/*">
                             </label>
                             <p class="pl-1">atau drag and drop</p>
@@ -126,6 +129,10 @@
         const signatureInput = document.getElementById('signature');
         const previewContainer = document.getElementById('signature-preview');
         const previewImage = document.getElementById('preview-image');
+        const uploadIcon = document.getElementById('upload-icon');
+        
+        // Check if signature already exists
+        const hasExistingSignature = {{ isset($existingSignature) ? 'true' : 'false' }};
 
         signatureInput.addEventListener('change', function() {
             const file = this.files[0];
@@ -136,11 +143,20 @@
                 reader.onload = function(e) {
                     previewImage.src = e.target.result;
                     previewContainer.classList.remove('hidden');
+                    if (uploadIcon) {
+                        uploadIcon.classList.add('hidden');
+                    }
                 }
 
                 reader.readAsDataURL(file);
             } else {
-                previewContainer.classList.add('hidden');
+                // If no file selected and no existing signature, hide preview
+                if (!hasExistingSignature) {
+                    previewContainer.classList.add('hidden');
+                    if (uploadIcon) {
+                        uploadIcon.classList.remove('hidden');
+                    }
+                }
             }
         });
 
@@ -152,15 +168,39 @@
             const fileInput = document.getElementById('signature');
             if (fileInput.files.length > 0) {
                 formData.append('signature', fileInput.files[0]);
+            } else if (!hasExistingSignature) {
+                // No file selected and no existing signature
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tanda Tangan Diperlukan',
+                    text: 'Silakan unggah tanda tangan digital Anda sebelum melanjutkan.',
+                    confirmButtonColor: '#F59E0B'
+                });
+                return;
             }
 
             // Show loading state
             const buttonText = document.getElementById('button-text');
             const buttonLoading = document.getElementById('button-loading');
+            const submitButton = document.getElementById('btn-selanjutnya');
 
             buttonText.textContent = 'Mengirim...';
             buttonLoading.classList.remove('hidden');
-            document.getElementById('btn-selanjutnya').disabled = true;
+            submitButton.disabled = true;
+
+            // If no new file but has existing signature, just proceed
+            if (fileInput.files.length === 0 && hasExistingSignature) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Menggunakan tanda tangan yang sudah tersimpan.',
+                    confirmButtonColor: '#10B981',
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = "{{ route('user.apl1.pribadi') }}";
+                });
+                return;
+            }
 
             $.ajax({
                 url: '/user/persetujuan/save',
@@ -182,7 +222,7 @@
                     // Reset button state
                     buttonText.textContent = 'Setuju dan Lanjutkan';
                     buttonLoading.classList.add('hidden');
-                    document.getElementById('btn-selanjutnya').disabled = false;
+                    submitButton.disabled = false;
 
                     // Handle validation errors
                     if (xhr.status === 422) {
@@ -217,8 +257,8 @@
         document.getElementById('btn-selanjutnya').addEventListener('click', function(event) {
             event.preventDefault();
 
-            // Check if file is selected
-            if (!document.getElementById('signature').files.length) {
+            // Check if file is selected or existing signature exists
+            if (!document.getElementById('signature').files.length && !hasExistingSignature) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Tanda Tangan Diperlukan',

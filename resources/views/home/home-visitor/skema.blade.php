@@ -67,8 +67,7 @@
                     <tr>
                         <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900 rounded-tl-2xl">No.</th>
                         <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900">Nomor / Judul Skema</th>
-                        <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900">Unit Kompetensi</th>
-                        <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900">Persyaratan</th>
+                        <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900">Harga Sertifikasi</th>
                         <th class="px-6 py-4 font-bricolage text-lg font-semibold text-gray-900 rounded-tr-2xl">Dokumen Skema</th>
                     </tr>
                 </thead>
@@ -81,51 +80,21 @@
                             <div class="text-sm text-gray-500 mb-2">{{ $skema->nomor_skema }}</div>
                         </td>
                         <td class="px-6 py-4 align-top">
-                            <button 
-                                onclick="toggleTableSection('unit{{ $index }}')"
-                                class="inline-flex items-center gap-2 px-3 py-2 bg-sky-100 text-sky-700 font-inter font-semibold text-sm rounded-xl shadow-sm hover:bg-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
-                                aria-expanded="false"
-                                aria-controls="unit{{ $index }}"
-                            >
-                                <span class="toggle-text">Tampilkan</span>
-                                <svg class="h-4 w-4 toggle-icon transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            <div id="unit{{ $index }}" class="hidden mt-3">
-                                <ul class="space-y-2">
-                                    @foreach ($skema->getUnitKompetensi() as $ukIndex => $unit)
-                                    <li class="flex items-start gap-2">
-                                        <span class="flex-shrink-0 w-6 h-6 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-xs font-semibold">{{ $ukIndex + 1 }}</span>
-                                        <span class="text-gray-900 font-inter text-base">{{ $unit->nama_uk }}</span>
-                                        <span class="ml-2 text-xs text-gray-500">{{ $unit->kode_uk }}</span>
-                                    </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 align-top">
-                            <button 
-                                onclick="toggleTableSection('requirement{{ $index }}')"
-                                class="inline-flex items-center gap-2 px-3 py-2 bg-orange-100 text-orange-700 font-inter font-semibold text-sm rounded-xl shadow-sm hover:bg-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-                                aria-expanded="false"
-                                aria-controls="requirement{{ $index }}"
-                            >
-                                <span class="toggle-text">Tampilkan</span>
-                                <svg class="h-4 w-4 toggle-icon transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            <div id="requirement{{ $index }}" class="hidden mt-3">
-                                <ul class="space-y-2">
-                                    @foreach ($skema->parsed_persyaratan as $reqIndex => $persyaratan)
-                                    <li class="flex items-start gap-2">
-                                        <span class="flex-shrink-0 w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-semibold">{{ $reqIndex + 1 }}</span>
-                                        <span class="text-gray-900 font-inter text-base">{{ $persyaratan }}</span>
-                                    </li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                            @if($skema->harga)
+                                <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl">
+                                    <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="font-bricolage text-lg font-semibold text-green-700">Rp {{ number_format($skema->harga, 0, ',', '.') }}</span>
+                                </div>
+                            @else
+                                <span class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-sm font-inter">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Hubungi Admin
+                                </span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 align-top">
                             @php
@@ -151,7 +120,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="py-12 text-center text-gray-500 font-inter text-lg">
+                        <td colspan="4" class="py-12 text-center text-gray-500 font-inter text-lg">
                             @if($searchQuery)
                                 Tidak ada skema yang ditemukan. Coba ubah kata kunci pencarian Anda.
                             @else
@@ -176,28 +145,7 @@
 </div>
 
 <script>
-function toggleTableSection(id) {
-    const content = document.getElementById(id);
-    const button = content.previousElementSibling;
-    const toggleText = button.querySelector('.toggle-text');
-    const toggleIcon = button.querySelector('.toggle-icon');
-    const isExpanded = button.getAttribute('aria-expanded') === 'true';
-    
-    if (isExpanded) {
-        content.classList.add('hidden');
-        toggleText.textContent = 'Tampilkan';
-        toggleIcon.classList.remove('rotate-180');
-        button.setAttribute('aria-expanded', 'false');
-    } else {
-        content.classList.remove('hidden');
-        toggleText.textContent = 'Sembunyikan';
-        toggleIcon.classList.add('rotate-180');
-        button.setAttribute('aria-expanded', 'true');
-    }
-}
-
 // Add focus styles for accessibility
-// Add smooth scroll behavior for better UX
 document.addEventListener('DOMContentLoaded', function() {
     const focusableElements = document.querySelectorAll('button, a, input, select, textarea');
     focusableElements.forEach(element => {

@@ -66,10 +66,12 @@ class SkemaPageController extends Controller
                 'nama_skema' => 'required|string|max:100',
                 'dokumen_skkni' => 'nullable|file|mimes:pdf',
                 'id_bidang_kompetensi' => 'nullable|integer|exists:bidang_kompetensi,id_bidang_kompetensi',
+                'harga' => 'nullable|numeric|min:0',
             ]);
 
             $skema->nama_skema = $validatedData['nama_skema'];
             $skema->id_bidang_kompetensi = $request->input('id_bidang_kompetensi');
+            $skema->harga = $request->input('harga');
 
             if ($request->hasFile('dokumen_skkni')) {
                 $fileName = 'skkni_' . str_replace(' ', '_', $validatedData['nama_skema']) . '.' . $request->file('dokumen_skkni')->getClientOriginalExtension();
@@ -134,6 +136,7 @@ class SkemaPageController extends Controller
             'dokumen_skkni' => 'required|file|mimes:pdf',
             'persyaratan_skema' => 'required|string',
             'id_bidang_kompetensi' => 'nullable|integer|exists:bidang_kompetensi,id_bidang_kompetensi',
+            'harga' => 'nullable|numeric|min:0',
         ]);
 
         $validatedData['daftar_id_uk'] = json_encode($idUKs);
