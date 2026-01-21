@@ -4,6 +4,7 @@
 
 @section('styles')
 <style>
+    /* Updated: 2026-01-21 - Improved spacing and padding */
     .transition-all {
         transition-property: all;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -22,6 +23,119 @@
             opacity: 1;
             transform: translateY(0);
         }
+    }
+
+        display: flex !important;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .uk-suggestion-item:last-child {
+        border-bottom: none;
+    }
+    
+    .uk-suggestion-item:hover,
+    .uk-suggestion-item.active {
+        background-color: #f3f4f6;
+    }
+    
+    .uk-suggestion-item .uk-code {
+        font-weight: 600;
+        color: #1f2937;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        min-width: fit-content;
+    }
+    
+    .uk-suggestion-item .uk-separator {
+        color: #9ca3af;
+        font-weight: 400;
+        margin: 0;
+    }
+    
+    .uk-suggestion-item .uk-name {
+        color: #4b5563;
+        font-size: 0.875rem;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .uk-no-results {
+        padding: 16px;
+        text-align: center;
+        color: #9ca3af;
+        font-size: 0.875rem;
+    }
+
+    #uk_suggestions {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .uk-search-hint {
+        padding: 12px 16px;
+        background-color: #f9fafb;
+        font-size: 0.8125rem;
+        color: #6b7280;
+        font-weight: 500;
+        border-bottom: 1px solid #e5e7eb;
+    }
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .uk-suggestion-item:last-child {
+        border-bottom: none;
+    }
+    
+    .uk-suggestion-item:hover,
+    .uk-suggestion-item.active {
+        background-color: #f3f4f6;
+    }
+    
+    .uk-suggestion-item .uk-code {
+        font-weight: 600;
+        color: #1f2937;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        min-width: fit-content;
+    }
+    
+    .uk-suggestion-item .uk-separator {
+        color: #9ca3af;
+        font-weight: 400;
+        margin: 0;
+    }
+    
+    .uk-suggestion-item .uk-name {
+        color: #4b5563;
+        font-size: 0.875rem;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .uk-no-results {
+        padding: 16px;
+        text-align: center;
+        color: #9ca3af;
+        font-size: 0.875rem;
+    }
+
+    #uk_suggestions {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .uk-search-hint {
+        padding: 12px 16px;
+        background-color: #f9fafb;
+        font-size: 0.8125rem;
+        color: #6b7280;
+        font-weight: 500;
+        border-bottom: 1px solid #e5e7eb;
     }
 </style>
 @endsection
@@ -205,32 +319,29 @@
                         <div>
                             <h3 class="font-semibold text-lg text-gray-800 mb-4">Pilih Unit Kompetensi</h3>
                             
-                            <!-- Bidang Field -->
+                            <!-- Unit Kompetensi Field with Search -->
                             <div class="mb-4">
-                                <label for="id_bidang" class="block text-sm font-medium text-gray-700 mb-1">Bidang Kompetensi <span class="text-red-500">*</span></label>
-                                <select name="id_bidang" id="id_bidang"
-                                       class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('id_bidang') border-red-500 @enderror">
-                                    <option value="" disabled selected>--- Pilih Bidang Kompetensi ---</option>
-                                    @foreach($daftarBidangUK as $bidangUK)
-                                        <option value="{{ $bidangUK->id_bidang }}">
-                                            {{ $bidangUK->nama_bidang }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('id_bidang')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-                            
-                            <!-- Unit Kompetensi Field -->
-                            <div class="mb-4">
-                                <label for="id_uk" class="block text-sm font-medium text-gray-700 mb-1">Unit Kompetensi</label>
-                                <div class="flex space-x-2">
-                                    <select id="id_uk"
-                                           class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                        <option value="" disabled selected>Pilih Bidang Kompetensi Terlebih Dahulu</option>
-                                    </select>
-                                    <button type="button" id="tambahBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm">
+                                <label for="uk_search" class="block text-sm font-medium text-gray-700 mb-2">Cari Unit Kompetensi</label>
+                                <div class="flex gap-3">
+                                    <div class="flex-1 relative">
+                                        <input 
+                                            type="text" 
+                                            id="uk_search" 
+                                            placeholder="Ketik untuk mencari kode atau nama UK..."
+                                            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                            autocomplete="off"
+                                        />
+                                        <!-- Dropdown suggestions -->
+                                        <div id="uk_suggestions" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto">
+                                            <div class="py-3 px-4 bg-gray-50 text-xs text-gray-500 font-medium border-b border-gray-200">Cari berdasarkan kode UK atau nama UK</div>
+                                            <div id="uk_suggestions_list"></div>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        type="button" 
+                                        id="tambahBtn" 
+                                        class="inline-flex items-center px-5 py-2.5 bg-blue-600 border border-transparent rounded-md font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm whitespace-nowrap"
+                                    >
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                                         </svg>
@@ -246,15 +357,14 @@
                             <input type="hidden" name="daftar_id_uk" id="daftar_id_uk_hidden" value="{{ $daftarIdUkJson }}">
                             
                             <!-- Selected Unit Kompetensi Table -->
-                            <div class="mt-4">
-                                <h4 class="text-sm font-medium text-gray-700 mb-2">Unit Kompetensi Terpilih:</h4>
+                            <div class="mt-6">
+                                <h4 class="text-sm font-medium text-gray-700 mb-3">Unit Kompetensi Terpilih:</h4>
                                 <div class="border border-gray-200 rounded-md overflow-hidden">
                                     <table class="min-w-full divide-y divide-gray-200">
                                         <thead class="bg-gray-50">
                                             <tr>
                                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode UK</th>
                                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama UK</th>
-                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Standar</th>
                                                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                             </tr>
                                         </thead>
@@ -313,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const hargaInput = document.getElementById('harga');
     if (hargaInput) {
         hargaInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, ''); // Hapus semua karakter non-digit
+            let value = e.target.value.replace(/\D/g, '');
             if (value) {
                 e.target.value = parseInt(value).toLocaleString('id-ID');
             } else {
@@ -321,7 +431,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Sebelum submit, hapus pemisah ribuan
         const form = hargaInput.closest('form');
         form.addEventListener('submit', function() {
             if (hargaInput.value) {
@@ -330,34 +439,129 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Tambahkan CSRF token untuk semua request AJAX
+    // UK Autocomplete
+    const ukData = @json($ukList);
+    const searchInput = document.getElementById('uk_search');
+    const suggestionsBox = document.getElementById('uk_suggestions');
+    const suggestionsList = document.getElementById('uk_suggestions_list');
+    let selectedUK = null;
+    let currentFocus = -1;
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        currentFocus = -1;
+        
+        if (query.length === 0) {
+            suggestionsBox.classList.add('hidden');
+            return;
+        }
+
+        const filtered = ukData.filter(uk => 
+            uk.kode_uk.toLowerCase().includes(query) || 
+            uk.nama_uk.toLowerCase().includes(query)
+        );
+
+        if (filtered.length === 0) {
+            suggestionsList.innerHTML = '<div class="py-4 px-4 text-center text-gray-400 text-sm">Tidak ada hasil ditemukan</div>';
+            suggestionsBox.classList.remove('hidden');
+            return;
+        }
+
+        suggestionsList.innerHTML = filtered.map(uk => `
+            <div class="flex items-center gap-3 py-3 px-4 cursor-pointer transition-colors duration-150 border-b border-gray-200 hover:bg-gray-50 last:border-b-0" data-id="${uk.id_uk}" data-kode="${uk.kode_uk}" data-nama="${uk.nama_uk}">
+                <span class="font-semibold text-gray-800 text-sm whitespace-nowrap">${uk.kode_uk}</span>
+                <span class="text-gray-400">-</span>
+                <span class="text-gray-600 text-sm flex-1 truncate">${uk.nama_uk}</span>
+            </div>
+        `).join('');
+
+        suggestionsBox.classList.remove('hidden');
+
+        // Add click handlers
+        document.querySelectorAll('#uk_suggestions_list > div').forEach(item => {
+            item.addEventListener('click', function() {
+                selectUK(this);
+            });
+        });
+    });
+
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+        const items = document.querySelectorAll('#uk_suggestions_list > div');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentFocus++;
+            if (currentFocus >= items.length) currentFocus = 0;
+            setActive(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentFocus--;
+            if (currentFocus < 0) currentFocus = items.length - 1;
+            setActive(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (currentFocus > -1 && items[currentFocus]) {
+                selectUK(items[currentFocus]);
+            }
+        } else if (e.key === 'Escape') {
+            suggestionsBox.classList.add('hidden');
+        }
+    });
+
+    function setActive(items) {
+        items.forEach((item, index) => {
+            item.classList.remove('bg-gray-100');
+            if (index === currentFocus) {
+                item.classList.add('bg-gray-100');
+                item.scrollIntoView({ block: 'nearest' });
+            }
+        });
+    }
+
+    function selectUK(element) {
+        selectedUK = {
+            id: element.dataset.id,
+            kode: element.dataset.kode,
+            nama: element.dataset.nama
+        };
+        searchInput.value = `${element.dataset.kode} - ${element.dataset.nama}`;
+        suggestionsBox.classList.add('hidden');
+    }
+
+    // Click outside to close
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.classList.add('hidden');
+        }
+    });
+
+    // Tambahkan CSRF token
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
     
-    // Inisialisasi array daftar Unit Kompetensi
-    let daftarIdUk = JSON.parse('{!! $daftarIdUkJson !!}');
+    // Inisialisasi array daftar UK
+    let daftarUK = JSON.parse('{!! $daftarIdUkJson !!}');
     
     // Fungsi untuk mengisi tabel dengan data Unit Kompetensi yang sudah ada
     function updateUKTable() {
         const unitKompetensiList = {!! $unitKompetensiJson !!};
         const ukTableBody = document.getElementById('ukTableBody');
-        ukTableBody.innerHTML = ''; // Hapus isi tabel saat ini
+        ukTableBody.innerHTML = '';
         
-        // Iterasi setiap id_uk yang ada di daftarIdUk
-        daftarIdUk.forEach(idUk => {
-            // Cari unit kompetensi yang sesuai berdasarkan id_uk
+        daftarUK.forEach(idUk => {
             const uk = unitKompetensiList.find(uk => uk.id_uk === idUk);
             
             if (uk) {
                 const newRow = document.createElement('tr');
+                newRow.className = 'animate-fade-in hover:bg-gray-50';
                 newRow.setAttribute('data-id', uk.id_uk);
                 newRow.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${uk.kode_uk}</td>
                     <td class="px-6 py-4 whitespace-normal text-sm text-gray-700">${uk.nama_uk}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${uk.jenis_standar}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button type="button" class="hapusBtn inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded-md text-white transition-all" data-id="${uk.id_uk}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -372,14 +576,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Update hidden input
-        document.getElementById('daftar_id_uk_hidden').value = JSON.stringify(daftarIdUk);
+        document.getElementById('daftar_id_uk_hidden').value = JSON.stringify(daftarUK);
         
         // Tampilkan pesan "tidak ada data" jika tidak ada baris
-        if (daftarIdUk.length === 0) {
+        if (daftarUK.length === 0) {
             const emptyRow = document.createElement('tr');
             emptyRow.id = 'empty-row';
             emptyRow.innerHTML = `
-                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500 italic">Belum ada unit kompetensi yang dipilih</td>
+                <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500 italic">Belum ada unit kompetensi yang dipilih</td>
             `;
             ukTableBody.appendChild(emptyRow);
         }
@@ -387,86 +591,38 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Panggil fungsi untuk inisialisasi tabel saat halaman di-load
     updateUKTable();
-    
-    // Dependent dropdown handling
-    $('#id_bidang').change(function() {
-        const id_bidang = $(this).val();
-        const ukSelect = $('#id_uk');
-        
-        if (id_bidang) {
-            $.ajax({
-                url: '{{ route("admin.uk.getUK") }}',
-                method: 'GET',
-                data: {
-                    id_bidang: id_bidang
-                },
-                dataType: 'json',
-                beforeSend: function() {
-                    ukSelect.html('<option value="" disabled selected>Loading...</option>');
-                },
-                success: function(data) {
-                    let options = '<option value="" disabled selected>Pilih Unit Kompetensi ...</option>';
-                    if (data && data.length > 0) {
-                        data.forEach(function(uk) {
-                            // Periksa apakah UK sudah ada di daftar
-                            const isInList = daftarIdUk.includes(uk.id_uk);
-                            if (!isInList) {
-                                options += `<option value="${uk.id_uk}" data-kode="${uk.kode_uk}" data-nama="${uk.nama_uk}" data-jenis-standar="${uk.jenis_standar}">${uk.kode_uk} - ${uk.nama_uk}</option>`;
-                            }
-                        });
-                    } else {
-                        options = '<option value="" disabled selected>Tidak ada Unit Kompetensi</option>';
-                    }
-                    ukSelect.html(options);
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching UK data:", error);
-                    console.error("Response:", xhr.responseText);
-                    ukSelect.html('<option value="" disabled selected>Error loading data</option>');
-                }
-            });
-        } else {
-            ukSelect.html('<option value="" disabled selected>Pilih Bidang Kompetensi Terlebih Dahulu</option>');
-        }
-    });
-    
-    // Tambah Unit Kompetensi ke tabel
-    $('#tambahBtn').click(function() {
-        const select = document.getElementById('id_uk');
-        if (!select.value) {
+
+    // Tambah UK ke tabel
+    document.getElementById('tambahBtn').addEventListener('click', function() {
+        if (!selectedUK) {
             alert("Pilih unit kompetensi terlebih dahulu.");
             return;
         }
         
-        const id_uk = select.value;
-        const kodeUK = select.options[select.selectedIndex].getAttribute('data-kode');
-        const namaUK = select.options[select.selectedIndex].getAttribute('data-nama');
-        const jenisStandar = select.options[select.selectedIndex].getAttribute('data-jenis-standar');
-        
-        // Periksa duplikasi
-        if (daftarIdUk.includes(id_uk)) {
+        const id_uk = selectedUK.id;
+        const kodeUK = selectedUK.kode;
+        const namaUK = selectedUK.nama;
+
+        if (daftarUK.includes(id_uk)) {
             alert("Unit kompetensi ini sudah ditambahkan.");
             return;
         }
-        
-        // Tambah ke daftar
-        daftarIdUk.push(id_uk);
-        
-        // Sembunyikan pesan "tidak ada data" jika ada
+
+        daftarUK.push(id_uk);
+        document.getElementById('daftar_id_uk_hidden').value = JSON.stringify(daftarUK);
+
+        // Sembunyikan pesan "tidak ada data"
         const emptyRow = document.getElementById('empty-row');
         if (emptyRow) {
             emptyRow.remove();
         }
-        
+
         // Buat baris baru di tabel
-        const ukTableBody = document.getElementById('ukTableBody');
         const newRow = document.createElement('tr');
-        newRow.className = 'animate-fade-in';
-        newRow.setAttribute('data-id', id_uk);
+        newRow.className = 'animate-fade-in hover:bg-gray-50';
         newRow.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${kodeUK}</td>
             <td class="px-6 py-4 whitespace-normal text-sm text-gray-700">${namaUK}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${jenisStandar}</td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button type="button" class="hapusBtn inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded-md text-white transition-all" data-id="${id_uk}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -476,56 +632,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 </button>
             </td>
         `;
-        ukTableBody.appendChild(newRow);
-        
-        // Update hidden input
-        document.getElementById('daftar_id_uk_hidden').value = JSON.stringify(daftarIdUk);
-        
-        // Reset dropdown
-        select.value = '';
-        
-        // Refresh dropdown untuk menghapus opsi yang sudah dipilih
-        $('#id_bidang').trigger('change');
+
+        document.getElementById('ukTableBody').appendChild(newRow);
+
+        // Reset search
+        searchInput.value = '';
+        selectedUK = null;
+        suggestionsBox.classList.add('hidden');
     });
-    
+
     // Event delegation untuk tombol hapus
-    $('#ukTableBody').on('click', '.hapusBtn', function() {
-        const id_uk = $(this).data('id');
-        const row = $(this).closest('tr');
-        
-        // Hapus id_uk dari daftar
-        const index = daftarIdUk.indexOf(id_uk);
-        if (index !== -1) {
-            daftarIdUk.splice(index, 1);
-            
-            // Update hidden input
-            document.getElementById('daftar_id_uk_hidden').value = JSON.stringify(daftarIdUk);
-            
-            // Animasi penghapusan
-            row.css({
-                'transition': 'opacity 300ms, transform 300ms',
-                'opacity': '0',
-                'transform': 'translateX(10px)'
-            });
-            
-            setTimeout(() => {
-                row.remove();
+    document.getElementById('ukTableBody').addEventListener('click', function(e) {
+        if (e.target.closest('.hapusBtn')) {
+            const button = e.target.closest('.hapusBtn');
+            const row = button.closest('tr');
+            const id_uk = button.getAttribute('data-id');
+
+            // Hapus id_uk dari daftar
+            const index = daftarUK.indexOf(id_uk);
+            if (index !== -1) {
+                daftarUK.splice(index, 1);
                 
-                // Tampilkan pesan "tidak ada data" jika tidak ada baris lagi
-                if (daftarIdUk.length === 0) {
-                    const emptyRow = document.createElement('tr');
-                    emptyRow.id = 'empty-row';
-                    emptyRow.innerHTML = `
-                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500 italic">Belum ada unit kompetensi yang dipilih</td>
-                    `;
-                    document.getElementById('ukTableBody').appendChild(emptyRow);
-                }
+                // Update hidden input
+                document.getElementById('daftar_id_uk_hidden').value = JSON.stringify(daftarUK);
                 
-                // Refresh dropdown jika bidang sudah dipilih
-                if ($('#id_bidang').val()) {
-                    $('#id_bidang').trigger('change');
-                }
-            }, 300);
+                // Animasi penghapusan
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(10px)';
+                row.style.transition = 'opacity 300ms, transform 300ms';
+                
+                setTimeout(() => {
+                    row.remove();
+                    
+                    // Tampilkan pesan "tidak ada data" jika tidak ada baris lagi
+                    if (daftarUK.length === 0) {
+                        const emptyRow = document.createElement('tr');
+                        emptyRow.id = 'empty-row';
+                        emptyRow.innerHTML = `
+                            <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500 italic">Belum ada unit kompetensi yang dipilih</td>
+                        `;
+                        document.getElementById('ukTableBody').appendChild(emptyRow);
+                    }
+                }, 300);
+            }
         }
     });
 });

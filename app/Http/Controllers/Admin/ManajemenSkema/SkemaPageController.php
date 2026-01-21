@@ -100,10 +100,9 @@ class SkemaPageController extends Controller
     }
     public function createDataSkema()
     {
-        $daftarBidangUK = UKBidang::all();
         $ukList = UK::all();
         $bidangKompetensis = BidangKompetensi::all();
-        return view('home.home-admin.tambah-skema', ['ukList' => $ukList, 'daftarBidangUK' => $daftarBidangUK, 'bidangKompetensis' => $bidangKompetensis]);
+        return view('home.home-admin.tambah-skema', ['ukList' => $ukList, 'bidangKompetensis' => $bidangKompetensis]);
     }
     
     public function storeDataSkema(Request $request)

@@ -2,13 +2,21 @@
   "_flowbite-a98d8933.js": {
     "file": "assets/flowbite-a98d8933.js"
   },
+  "node_modules/axios/index.js": {
+    "file": "assets/index-2e581eb1.js",
+    "isDynamicEntry": true,
+    "src": "node_modules/axios/index.js"
+  },
   "resources/css/app.css": {
-    "file": "assets/app-d1fc202f.css",
+    "file": "assets/app-2e5a5598.css",
     "isEntry": true,
     "src": "resources/css/app.css"
   },
   "resources/js/app.js": {
-    "file": "assets/app-c29003fa.js",
+    "dynamicImports": [
+      "node_modules/axios/index.js"
+    ],
+    "file": "assets/app-04482096.js",
     "imports": [
       "_flowbite-a98d8933.js"
     ],

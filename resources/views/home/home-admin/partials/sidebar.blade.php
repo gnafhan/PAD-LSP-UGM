@@ -62,12 +62,6 @@
             </svg>
             <span class="ml-3 transition-all duration-300" x-show="!collapsed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-x-2" x-transition:enter-end="opacity-100 transform translate-x-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-x-0" x-transition:leave-end="opacity-0 transform -translate-x-2">Unit Kompetensi</span>
         </a>
-        <a href="{{ route('admin.bidang-uk.index') }}" class="admin-sidebar-link {{ request()->routeIs('admin.bidang-uk.*') ? 'admin-sidebar-link-active' : '' }}" :class="collapsed ? 'justify-center' : ''" title="Bidang Unit Kompetensi">
-            <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-            <span class="ml-3 transition-all duration-300" x-show="!collapsed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-x-2" x-transition:enter-end="opacity-100 transform translate-x-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-x-0" x-transition:leave-end="opacity-0 transform -translate-x-2">Bidang Unit Kompetensi</span>
-        </a>
         <a href="{{ route('admin.bidang-kompetensi.index') }}" class="admin-sidebar-link {{ request()->routeIs('admin.bidang-kompetensi.*') ? 'admin-sidebar-link-active' : '' }}" :class="collapsed ? 'justify-center' : ''" title="Bidang Kompetensi">
             <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5-6l3 3-3 3M3 5h18M3 19h18" />
