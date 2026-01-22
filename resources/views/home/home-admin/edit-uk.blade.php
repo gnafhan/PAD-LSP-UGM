@@ -94,27 +94,6 @@
                             @enderror
                         </div>
 
-                        <!-- Bidang UK Field -->
-                        <div>
-                            <label for="id_bidang" class="block text-sm font-medium text-gray-700 mb-1">Bidang Unit Kompetensi <span class="text-red-500">*</span></label>
-                            <select name="id_bidang" id="id_bidang"
-                                   class="w-full px-4 py-2.5 bg-gray-50 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('id_bidang') border-red-500 @enderror" required>
-                                @if ($uk->id_bidang != null)
-                                    <option value="{{ $uk->id_bidang }}" selected>{{ $uk->bidang->nama_bidang }}</option>
-                                @else
-                                    <option value="" disabled selected>--- Pilih Bidang Unit Kompetensi ---</option>
-                                @endif
-                                @foreach ($daftarBidangUK as $bidangUK)
-                                    @if (!$uk->id_bidang || $bidangUK->id_bidang != $uk->id_bidang)
-                                        <option value="{{ $bidangUK->id_bidang }}">{{ $bidangUK->nama_bidang }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                            @error('id_bidang')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         <!-- Jenis Standar Field -->
                         <div>
                             <label for="jenis_standar" class="block text-sm font-medium text-gray-700 mb-1">Jenis Standar <span class="text-red-500">*</span></label>

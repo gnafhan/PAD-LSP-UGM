@@ -53,8 +53,7 @@ class UnitKompetensiPageController extends Controller
 
     public function createDataUk()
     {
-        $daftarBidangUK = UKBidang::all();
-        return view('home.home-admin.tambah-uk', compact('daftarBidangUK'));
+        return view('home.home-admin.tambah-uk');
     }
 
     /**
@@ -74,7 +73,6 @@ class UnitKompetensiPageController extends Controller
             'nama_uk' => 'required|string|max:100',
             'elemen_uk' => 'required|array|min:1',
             'elemen_uk.*' => 'required|string|max:255',
-            'id_bidang' => 'required|string|max:20',
             'jenis_standar' => 'required|string|max:50'
         ], [
             'kode_uk.required' => 'Kode unit kompetensi wajib diisi.',
@@ -84,7 +82,6 @@ class UnitKompetensiPageController extends Controller
             'elemen_uk.array' => 'Format data elemen unit kompetensi tidak valid.',
             'elemen_uk.min' => 'Minimal harus ada satu elemen unit kompetensi.',
             'elemen_uk.*.required' => 'Nama elemen tidak boleh kosong.',
-            'id_bidang.required' => 'Bidang unit kompetensi wajib dipilih.',
             'jenis_standar.required' => 'Jenis standar wajib diisi.'
         ]);
 
@@ -101,7 +98,6 @@ class UnitKompetensiPageController extends Controller
         $uk = UK::create([
             'kode_uk' => $validatedData['kode_uk'],
             'nama_uk' => $validatedData['nama_uk'],
-            'id_bidang' => $validatedData['id_bidang'],
             'jenis_standar' => $validatedData['jenis_standar']
         ]);
 
@@ -121,9 +117,8 @@ class UnitKompetensiPageController extends Controller
      */
     public function editDataUk($id)
     {
-        $daftarBidangUK = UKBidang::all();
-        $uk = UK::with('elemen_uk', 'bidang')->findOrFail($id);
-        return view('home.home-admin.edit-uk', compact('uk', 'daftarBidangUK'));
+        $uk = UK::with('elemen_uk')->findOrFail($id);
+        return view('home.home-admin.edit-uk', compact('uk'));
     }
 
     /**
@@ -138,7 +133,6 @@ class UnitKompetensiPageController extends Controller
             'nama_uk' => 'required|string|max:100',
             'elemen_uk' => 'required|array',
             'elemen_uk.*' => 'required|string|max:255',
-            'id_bidang' => 'nullable|string|max:20',
             'jenis_standar' => 'required|string|max:50'
         ]);
 
@@ -146,7 +140,6 @@ class UnitKompetensiPageController extends Controller
         $uk->update([
             'kode_uk' => $validatedData['kode_uk'],
             'nama_uk' => $validatedData['nama_uk'],
-            'id_bidang' => $validatedData['id_bidang'],
             'jenis_standar' => $validatedData['jenis_standar']
         ]);
 
