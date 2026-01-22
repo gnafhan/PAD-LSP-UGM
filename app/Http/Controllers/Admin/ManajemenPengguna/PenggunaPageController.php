@@ -147,10 +147,13 @@ class PenggunaPageController extends Controller
         
         // Hitung statistik
         $totalAsesi = Asesi::count();
+        $totalAdmin = User::where('level', 'admin')->count();
+        $totalAsesor = Asesor::count();
+        
         $totalStats = [
-            'total' => User::count() + Asesor::count() + $totalAsesi,
-            'admin' => User::where('level', 'admin')->count(),
-            'asesor' => Asesor::count(),
+            'total' => $totalAdmin + $totalAsesor + $totalAsesi,
+            'admin' => $totalAdmin,
+            'asesor' => $totalAsesor,
             'asesor_aktif' => Asesor::where('status_asesor', 'aktif')->count(),
             'asesi' => $totalAsesi,
         ];
