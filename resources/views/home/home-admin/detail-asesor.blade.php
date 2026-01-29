@@ -171,6 +171,14 @@
                             @endif
                         </dd>
                     </div>
+                    <div class="sm:col-span-1">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Fakultas
+                        </dt>
+                        <dd class="mt-1 text-sm text-gray-900">
+                            {{ $asesor->fakultas ?: '-' }}
+                        </dd>
+                    </div>
                 </div>
             </div>
         </div>
