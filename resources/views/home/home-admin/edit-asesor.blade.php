@@ -218,6 +218,31 @@
                             </div>
 
                             <div>
+                                <label for="fakultas" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Fakultas
+                                </label>
+                                <div class="mt-1 flex space-x-2">
+                                    <select id="fakultas_select" name="fakultas"
+                                        class="px-4 py-2 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('fakultas') border-red-500 @enderror">
+                                        <option value="">Pilih Fakultas</option>
+                                        @foreach($fakultasList as $fakultas)
+                                            <option value="{{ $fakultas }}" {{ old('fakultas', $asesor->fakultas) == $fakultas ? 'selected' : '' }}>{{ $fakultas }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="button" id="tambahFakultasBtn"
+                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">Fakultas tempat asesor berafiliasi</p>
+                                @error('fakultas')
+                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
                                 <label for="file_sertifikat_asesor" class="block text-sm font-medium text-gray-700 mb-1">
                                     Sertifikat BNSP Asesor Kompetensi
                                 </label>
@@ -344,6 +369,41 @@
                         Batal
                     </button>
                     <button type="submit" id="submitBidangBtn" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Fakultas Baru -->
+<div id="modalTambahFakultas" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Tambah Fakultas Baru</h3>
+                <button type="button" id="closeFakultasModalBtn" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="formTambahFakultas">
+                <div class="mb-4">
+                    <label for="nama_fakultas_baru" class="block text-sm font-medium text-gray-700 mb-2">Nama Fakultas <span class="text-red-500">*</span></label>
+                    <input type="text" id="nama_fakultas_baru" name="nama_fakultas_baru" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                           placeholder="Masukkan nama fakultas" required>
+                    <div id="error_nama_fakultas" class="hidden text-sm text-red-600 mt-1"></div>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="cancelFakultasBtn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        Batal
+                    </button>
+                    <button type="submit" id="submitFakultasBtn" class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                         Simpan
                     </button>
                 </div>
@@ -561,6 +621,69 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 500);
             }
         }, 5000);
+    });
+
+    // ========== FAKULTAS MODAL HANDLERS ==========
+    
+    // Event listener untuk tombol tambah fakultas baru
+    document.getElementById('tambahFakultasBtn').addEventListener('click', function() {
+        document.getElementById('modalTambahFakultas').classList.remove('hidden');
+        document.getElementById('nama_fakultas_baru').focus();
+    });
+
+    // Event listener untuk tombol close modal fakultas
+    document.getElementById('closeFakultasModalBtn').addEventListener('click', function() {
+        document.getElementById('modalTambahFakultas').classList.add('hidden');
+        document.getElementById('formTambahFakultas').reset();
+        document.getElementById('error_nama_fakultas').classList.add('hidden');
+    });
+
+    // Event listener untuk tombol cancel fakultas
+    document.getElementById('cancelFakultasBtn').addEventListener('click', function() {
+        document.getElementById('modalTambahFakultas').classList.add('hidden');
+        document.getElementById('formTambahFakultas').reset();
+        document.getElementById('error_nama_fakultas').classList.add('hidden');
+    });
+
+    // Event listener untuk form tambah fakultas
+    document.getElementById('formTambahFakultas').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const namaFakultas = document.getElementById('nama_fakultas_baru').value.trim();
+        const errorDiv = document.getElementById('error_nama_fakultas');
+        
+        if (!namaFakultas) {
+            errorDiv.textContent = 'Nama fakultas tidak boleh kosong';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+        
+        // Check if fakultas already exists in dropdown
+        const fakultasSelect = document.getElementById('fakultas_select');
+        const existingOptions = Array.from(fakultasSelect.options).map(opt => opt.value.toLowerCase());
+        
+        if (existingOptions.includes(namaFakultas.toLowerCase())) {
+            errorDiv.textContent = 'Fakultas ini sudah ada dalam daftar';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+        
+        // Add new fakultas to dropdown
+        const newOption = document.createElement('option');
+        newOption.value = namaFakultas;
+        newOption.textContent = namaFakultas;
+        fakultasSelect.appendChild(newOption);
+        
+        // Select the new fakultas
+        fakultasSelect.value = namaFakultas;
+        
+        // Close modal
+        document.getElementById('modalTambahFakultas').classList.add('hidden');
+        document.getElementById('formTambahFakultas').reset();
+        errorDiv.classList.add('hidden');
+        
+        // Show success message
+        alert('Fakultas berhasil ditambahkan!');
     });
 });
 </script>

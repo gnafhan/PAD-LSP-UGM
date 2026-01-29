@@ -163,10 +163,18 @@ class AsesorController extends Controller
         // Ambil semua bidang kompetensi untuk dropdown
         $bidangKompetensi = BidangKompetensi::getAllOrdered();
         
+        // Get unique fakultas list from existing asesor
+        $fakultasList = Asesor::whereNotNull('fakultas')
+                              ->where('fakultas', '!=', '')
+                              ->distinct()
+                              ->pluck('fakultas')
+                              ->sort()
+                              ->values();
+        
         // Ambil data tanda tangan aktif
         $asesor->load('tandaTanganAktif');
         
-        return view('home.home-admin.edit-asesor', compact('asesor', 'bidangKompetensi'));
+        return view('home.home-admin.edit-asesor', compact('asesor', 'bidangKompetensi', 'fakultasList'));
     }
 
     /**
